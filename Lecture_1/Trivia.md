@@ -1,3 +1,3 @@
-Introductory slides for Lecture 1 with course trivia can be downloaded in .pdf format from the following link: 
-* https://cernbox.cern.ch/index.php/s/pfVnIGftA7Sq8Rp
+Introductory slides presented during Lecture 1 with all course trivia and few free adverts, can be downloaded in .pdf format from the following direct link: 
+* https://cernbox.cern.ch/index.php/s/LG1mVt84kMoK06y
 
