@@ -1,20 +1,18 @@
 ![](bash_logo.png)
 
-[TBI]: <> "This is a comment"
-
 # Lecture 2: Commands and variables
 
 **Last update**: 20200418
 
 ### Table of Contents
-1. you [Introduction](#Introduction)
+1. [Introduction](#introduction)
 2. [Shell environment](#environment)
      A) [Commands](#commands)
      B) [Variables](#variables)
 3. [Editing a file in the terminal](#editing_file)
-4. [Your first **Bash** script](#first_script)
+4. [Your first **Bash** script](#first-script)
 
-### 1. Introduction <a name="Introduction"></a>
+### 1. Introduction <a name="introduction"></a>
 
 When it comes to the operating systems nowadays, in high-energy experimental physics we mostly rely on **Linux**. That being said, as an experimental physicist you are sooner or later faced with the following situation: You have turned on your computer and launched the terminal...
 
@@ -129,7 +127,7 @@ The output of that command now could look like:
 transfer.ktas.ph.tum.de
 ```
 
-Note the new entry in the last line, which is the content of file _/etc/hostname_ . 
+Note the new entry in the last line, which is the content of file ```/etc/hostname``` . 
 
 We can, of course, combine options and arguments when invoking a command: 
 
@@ -202,7 +200,7 @@ You shall get as an output something like:
 
 ![](help_echo_0b.png)
 
-The command **help** gives you a complete description of any built-in **Bash** command or **Bash** keyword. 
+The command **help** gives a complete description of the built-in **Bash** command or **Bash** keyword. 
 
 Example 2: To see which options are available for **Linux** command  **date**, use:
 
@@ -214,7 +212,7 @@ The first page of a rather lengthy output could look like:
 
 ![](man_date_0b.png)
 
-In order to exit the man pages, press 'q'. You can scroll line-by-line by pressing 'Enter', or page-by-page by pressing 'Spacebar'.
+In order to exit the man pages, press 'q'. You can scroll line-by-line by pressing 'Enter', or page-by-page by pressing 'Spacebar'. 
 
 As you can see, even simple commands, like **date**, can have extensive documentation and a lot of options. It is impossible to memorize all options for all commands, therefore usage of **help** and **man** is needed almost on a daily basis. 
 
@@ -451,7 +449,7 @@ As a final remark, we stress out that ```~/.bashrc``` is executed each time only
 
 
 
-### 4. Your first **Bash** script <a name="first_script"></a>
+### 4. Your first **Bash** script <a name="first-script"></a>
 
 Now that we know few basic commands and how to write and edit files, we can start writing our first **Bash** scripts. The script is a code snippet for interpreted or scripting language, that is typically executed line-by-line.  At the very least, this saves the effort of retyping that particular sequence of commands each time it is invoked. Typically scripts are used to automate the execution of tasks that could alternatively be executed one-by-one by a human operator. A scripting language is a programming language that supports scripts, so clearly **Bash** fits in this category.
 
