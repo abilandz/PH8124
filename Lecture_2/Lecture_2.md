@@ -540,7 +540,7 @@ Var=44
 alias sl=ls
 ```
 
-Save the file and exit the **nano** (press ```CTRL+x``` and choose 'y' followed by 'Enter' ). You can check the content of file  ```~/.bash_aliases```
+Save the file and exit **nano** (press ```CTRL+x``` and choose 'y' followed by 'Enter'). You can check the content of file  ```~/.bash_aliases```
 via 
 
 ```linux
