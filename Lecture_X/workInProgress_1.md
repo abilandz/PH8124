@@ -1,6 +1,9 @@
 ### String manipulation
 
-**Example:** In order to lower/upper cases of characters, , ,, ^ and ^^ can also cope with the ranges: 
+**Example:** In order to lower/upper cases of characters, , ,, ^ and ^^ can also cope with the ranges:
+
+
+
 
 ```bash
 test=aBcDeF

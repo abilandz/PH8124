@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20200420
+**Last update**: 20200426
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -158,16 +158,16 @@ Let's look at them one by one...
 
 * ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some known **Linux** command, **Bash** keyword, etc. In general, _command-name_ can stand for one of the following items:
 
-	1) **Linux** command (i.e. system-wide executable or binary) --- example:  **cat**
-	2) **Bash**  built-in command --- example: **echo**
-	3) **Bash** keyword  --- example: **for**
-	4) alias
-	5) function
-	6) script
+  1) **Linux** command (i.e. system-wide executable or binary) --- example:  **cat**  
+  2) **Bash**  built-in command --- example: **echo**   
+  3) **Bash** keyword  --- example: **for**   
+  4) alias   
+  5) function   
+  6) script   
 
 * ```<option(s)>``` : Options (or flags) are used to modify the default behaviour of command. Options are indicated either with:
 
-	1) **-** (single dash) followed by single character(s), or
+	1) **-** (single dash) followed by single character(s), or    
 	2) **-\-** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
 
 For instance, the frequently used flags **-a** and **-\-all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the second one is easier to memorize. Example for **date** command:
@@ -297,7 +297,7 @@ If you have forgotten all aliases you have introduced in the current terminal se
 ```bash
 alias
 ```
-and all of their definitions will show up! If you want to see what is the definition of the concrete alias you have introduced, use 
+and all alias definitions will show up. If you want to see what is the definition of the concrete alias you have introduced, use 
 
 ```bash
 alias <alias-name>
@@ -314,14 +314,16 @@ If you want to clean up all aliases in the current terminal, use:
 unalias -a
 ```
 
-Aliases are definitely a nice feature, but do not overdo it, because:
+where also for this command the option **-a** stands for 'all'. 
+
+Aliases are definitely a nice feature, but do not overuse them, because:
 
 * By default, aliases are available only in the terminal in which you have defined them. But this can be easily circumvented by modifying the special configuration files ```.bashrc``` and/or ```.bash_aliases``` --- to be clarified later in this section;
 * When you move to another computer your personal aliases are clearly not available there by default;
 * Aliases can overwrite the name of the existing **Linux** or **Bash** command --- aliases will have the higher precedence in execution;
 * Aliases cannot accept options or arguments, like regular commands (or **Bash** functions, as we will see later). 
 
-Aliases are literally shortcuts for commands or whatever else, defined for convenience only to save typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace in the terminal the alias name with its definition, and then execute --- nothing more nor less than that! 
+Aliases are literally shortcuts for lengthy commands or any other lengthy terminal input. They are defined for convenience only to save typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute --- nothing more nor less than that! 
 
 
 #### B) Variables <a name="variables"></a>
@@ -395,11 +397,11 @@ test
 Few final additional remarks on variables in **Bash**:
 
 * They are untyped (i.e. you do not need to specify at declaration whether variables are integers, strings, etc.). By default, all **Bash** variables are strings, but if they contain only digits and if you pass them to some operator which takes as argument(s) only integers, then **Bash** will interpret the variable as an integer;
-* By convention, for built-in **Bash** variable names we use only capital characters, while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var```  or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in variable;
-* The lifetime of a variable is by default limited to the terminal session in which you have defined it. But you can make its existence persistent in any new terminal you open (i.e. in your _environment_) by adding its declaration to the very special **.bashrc** file (more on this in the moment!);
-* It is possible to store in the variable the output of some command, and then manipulate it programmatically (more on this later!);
+* By convention, for built-in **Bash** variable names we use only capital characters, while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var```  or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in **Bash** variable;
+* The lifetime of a variable is by default limited to the terminal session in which you have defined it. But you can make its existence persistent in any new terminal you open (i.e. in your _environment_) by adding its definition to the very special ```.bashrc``` file (more on this in the moment!);
+* It is possible to store in the variable the output of some command, and then manipulate this output programmatically (more on this later!);
 * It is possible to store in the variable the content of an external file (more on this later!);
-* There are some built-in variables always set to some values, e.g. **HOME**, **SHELL**, **PATH**, etc. (more on this later!).
+* There are some built-in variables always set to some values, e.g. **HOME**, **SHELL**, **PATH**, etc. These special variables are the essential part of your **shell** environment, and if they are not set correctly, everything in your current terminal session can start falling apart (more on this later!).
 
 Now that we have covered the very basics of commands and variables, let's see how we can develop the first **Bash** scripts. In order to achieve that, the very first step is to learn how to edit the file in the terminal. 
 
@@ -418,7 +420,7 @@ first
    file.
 CTRL+d
 ```
-In the above construct, command **cat** takes the input directly from the standard input (keyboard by default), and redirects everything via operator ```>``` into the physical file named ```someFile.txt``` in your current working directory. You terminate the input, i.e. you mark the end of the file, by moving to the new line with pressing 'Enter', and then pressing ```CTRL+d``` on an empty line (if you press ```CTRL+d``` when the line is not empty, the input to file is not terminated!). Now you can see the content of your newly created file with:
+In the above construct, command **cat** takes the input directly from the standard input (keyboard by default), and redirects everything via operator ```>``` into the physical file named ```someFile.txt``` in your current working directory. You terminate the input, i.e. you mark the end of the file, by first moving to the new line with pressing 'Enter', and then finally by pressing ```CTRL+d``` on an empty line (if you press ```CTRL+d``` when the line is not empty, the input to the file is not terminated!). Now you can see the content of your newly created file with:
 
 ```linux
 cat someFile.txt
@@ -438,7 +440,7 @@ For that sake, we need to use some simple editor which can be run in the termina
 ```linux 
 nano someFile.txt
 ```
-Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor --- this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano**, and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated --- it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled!).
+Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor --- this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated --- it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled!). But for the lengthy file editing, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however they offer much more features.
 
 We have already seen how to define your own aliases and variables and we already stressed out one important point: Their lifetime is limited to the duration of terminal session in which you have defined them. In any new terminal you start, their definitions are not known. But there is own important thing which happens behind the scene each time you start a new terminal, and before you can start typing anything: **Bash** reads automatically some configuration files end executes line-by-line whatever is being set in them. There are bunch of configuration files which **Bash** might read when you open a new terminal, and the order and precedence of their reading matters. In the most cases of interest, it suffices to know that you need to edit the **Bash** configuration file called ```.bashrc```. This file must be stored directly in your home directory (if it's stored somewhere else **Bash** will not read it by default). In order to highlight that, typically we refer to this important configuration file with ```~/.bashrc```, where the special character ```~``` (tilde) is the shortcut for the absolute path to your home directory. As an example, execute:
 
@@ -449,18 +451,19 @@ The output might look like:
 ```bash
 /home/abilandz
 ```
-This is the absolute path to your home directory in the **Linux** file system, and each time you login, by default this is your starting working directory. This information is alternatively also stored in environment variable ```HOME```, i.e. try:
+This is the absolute path to your home directory in the **Linux** file system. The slash ```/``` delineates directories in the **Linux** directory structure (on **Windows** backslash ```\``` is used instead in the same context). Each time you login, by default this is your starting working directory. This information is alternatively also stored in environment variable ```HOME```, i.e. try:
+
 ```bash
 echo $HOME
 ```
 
-As a final remark, we clarify that ```~/.bashrc``` is executed each time only when you open a new terminal, or when you start a new _subshell_ (to be covered later). However, it is not executed by default when you login for the first time on computer --- at first login, **Bash** executes another special configuration file, called ```~/bash_profile``` . Only if ```~/bash_profile``` does not exist, **Bash** will execute ```~/.bashrc``` also when you login. If none of these two files is available, then **Bash** will execute the default, system-wide configuration file, called ```/etc/profile``` . Remember this ordering, as it can become unclear from which of these configuration files your current shell environment was executed and set.
+As a final remark, we clarify that ```~/.bashrc``` is executed each time only when you open a new terminal, or when you start a new _subshell_ (to be covered later). However, it is not executed by default when you login for the first time on computer --- at first login, **Bash** executes another special configuration file, called ```~/.bash_profile``` . Only if ```~/.bash_profile``` does not exist, **Bash** will execute ```~/.bashrc``` also when you login on the computer for the first time. If none of these two files is available, then **Bash** will execute the default, system-wide configuration file, called ```/etc/profile``` . Remember this ordering, as it can become unclear from which of these configuration files your current **shell** environment was loaded and set. Given this design , even if you completely mess up with your personal settings in ```~/.bash_profile``` and ```~/.bashrc```, the default environment can be still loaded and set from the system-wide file ```/etc/profile```, which you cannot edit directly. This way, you are always guaranteed to have a working environment in your terminal.
 
 
 
 ### 4. Your first **Bash** script <a name="first-script"></a>
 
-Now that we know a few basic commands and how to write and edit files, we can start writing our first **Bash** scripts. The script is a code snippet for interpreted or scripting language, that is typically executed line-by-line.  At the very least, this saves the effort of retyping that particular sequence of commands each time it is invoked. Typically scripts are used to automate the execution of tasks that could alternatively be executed one-by-one by a human operator. A scripting language is a programming language that supports scripts, so clearly **Bash** fits in this category.
+Now that we know a few basic commands and how to write and edit files, we can start writing our first **Bash** scripts. The script is a code snippet for interpreted or scripting language, that is typically executed line-by-line.  At the very least, this saves the effort of retyping that particular sequence of commands each time it is needed. Typically, scripts are used to automate the execution of tasks that could alternatively be executed one-by-one by a human operator. A scripting language is a programming language that supports scripts, so clearly **Bash** fits in this category.
 
 Let us now write your first **Bash** script! For instance, you can type in the terminal:
 
@@ -468,7 +471,7 @@ Let us now write your first **Bash** script! For instance, you can type in the t
 nano first.sh
 ```
 
-Now you are not any longer in the terminal, but in the very simple textual editor called **nano**, and whatever you are typing now, it can be saved in the file ```first.sh``` --- the file which will hold your first **Bash** script (remember that **Bash** scripts always have an extension **.sh**). Your first  **Bash** script could look as follows:
+Recall that now you are not any longer in the terminal, but in the very simple textual editor called **nano**. Whatever you are typing now, it will be saved in the file ```first.sh``` --- the file which will hold your first **Bash** script (by convention **Bash** scripts always have an extension **.sh**). Your first  **Bash** script could look as follows:
 
 ```bash
 #!/bin/bash
@@ -484,7 +487,7 @@ return 0
 Now let us have a closer look at the content of your first **Bash** script:
 
 * The first line is mandatory, namely: ```#!/bin/bash```
-* The first two characters in the first line are mandatory, namely: ```#!``` (shebang or hashbang)
+* The first two characters in the first line are mandatory, namely: ```#!``` (the combination of these two characters is called shebang or hashbang)
 
 What is happening here is the following: ```#!```in the first line indicates to the operating system, that whatever follows next on the first line, must be interpreted as a path to the executable (e.g. executable is ```/bin/bash``` if you want to run **Bash**), which then must be used to interpret the code in all the remaining lines in the script. In this way, you can put up together any script, not necessarily only the one for **Bash** --- you just need to change ```/bin/bash``` in the first line, and point out to some other executable.
 
@@ -499,12 +502,12 @@ source first.sh
 And the output could look like:
 
 ```bash
-Welcome to Bash lecture!
+Welcome to Bash lecture
 Today is:
 Mon Apr 20 16:07:18 CEST 2020
 ```
 
-Finally, ```return 0``` sets the _exit status_ of your script. In general, each command in **Bash** or **Linux** upon execution provides the so-called exit status. This is a fairly general concept, characteristic also for some other programming languages, and it enables us to programmatically check if the command executed successfully or not. The exit status is classified as:
+Finally, ```return 0``` sets the _exit status_ of your script. In general, each command in **Bash** or **Linux** upon execution provides the so-called exit status. This is a fairly general concept, characteristic also for some other programming languages, and it enables us to programmatically check if the command has executed successfully or not. The exit status is classified as:
 
 * 0 : success
 * 1, 2, 3, ... , 255 : various error states
@@ -537,20 +540,20 @@ Var=44
 alias sl=ls
 ```
 
-Save the file (press ```CTRL+x``` and choose 'Yes' ) and exit the **nano**. You can check the content of file  ```~/.bash_aliases```
+Save the file and exit the **nano** (press ```CTRL+x``` and choose 'y' followed by 'Enter' ). You can check the content of file  ```~/.bash_aliases```
 via 
 
 ```linux
 cat ~/.bash_aliases
 ```
 
-Since the content of ```.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions stored there, for instance for aliases and variables, will be re-defined each time you start a new terminal, and you can happily re-use them again and again. As an example, add the followiing line at the very end of ```$HOME/.bashrc``` (if this line is already not inside!)
+Since the content of ```.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions stored there, for instance for aliases and variables, will be re-defined from scratch each time you start a new terminal, and you can re-use them again and again. As an example, add the followiing line at the very end of ```$HOME/.bashrc``` (if this line is already not inside that file; by default it is inside on most **Linux** distributions)
 
 ```bash
 source ~/.bash_aliases
 ```
 
-Now each time you run a new terminal, variable ```Var``` is set to 44, and you can use ```sl``` as the synonym for ```ls``` command, i.e. you do not need to define them again in the new terminal sessions! In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` . This is much safer than to edit directly each time the file ```~/.bashrc``` where also some other, and more important settings, can be defined as well.  In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in file ```~/.bashrc``` at the end the line:
+Now each time you run a new terminal, variable ```Var``` is set to 44, and you can use ```sl``` as the synonym for ```ls``` command, i.e. you do not need to define them again in the new terminal sessions. In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` . This is much safer than to edit directly each time the file ```~/.bashrc``` where also some other, and more important settings, can be defined as well.  In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in file ```~/.bashrc``` the line:
 
 ```bash
 source ~/.bash_aliases
