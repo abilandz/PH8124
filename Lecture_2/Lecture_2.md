@@ -167,7 +167,7 @@ Let's look at them one by one...
 
 * ```<option(s)>``` : Options (or flags) are used to modify the default behaviour of command. Options are indicated either with:
 
-	1) **-** (single dash) followed by single character(s), or    
+	1) **-** (single dash) followed by single character(s), or   
 	2) **-\-** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
 
 For instance, the frequently used flags **-a** and **-\-all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the second one is easier to memorize. Example for **date** command:
@@ -242,7 +242,9 @@ In order to see or list all files and subdirectories in the current working dire
 ```linux
 ls -al
 ```
-For the meaning of flags **-a** and **-l** check the _man pages_ of **ls** command.  In the same spirit, we can create multiple directories in one go, with **mkdir** command, e.g. 
+For the meaning of options **-a** and **-l** check the _man pages_ of **ls** command. As a side remark, we indicate that options may or may not themselves require specific arguments. Options which do not require specific arguments, can be grouped together, i.e. **ls -a -l** is exactly the same as a shorthand **ls -al**. 
+
+In the same spirit, we can create multiple directories in one go, with **mkdir** command, e.g. 
 
 ```linux
 mkdir subdir_1 subdir_2 subdir_3
@@ -397,7 +399,7 @@ test
 Few final additional remarks on variables in **Bash**:
 
 * They are untyped (i.e. you do not need to specify at declaration whether variables are integers, strings, etc.). By default, all **Bash** variables are strings, but if they contain only digits and if you pass them to some operator which takes as argument(s) only integers, then **Bash** will interpret the variable as an integer;
-* By convention, for built-in **Bash** variable names we use only capital characters, while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var```  or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in **Bash** variable;
+* By convention, for built-in **Bash** variable names we use only capital characters, while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var```  or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in **Bash** variable. Variable name starts with a letter or underscore, and may contain any number of following letters, digits and underscores. Variable name can not start with a digit;
 * The lifetime of a variable is by default limited to the terminal session in which you have defined it. But you can make its existence persistent in any new terminal you open (i.e. in your _environment_) by adding its definition to the very special ```.bashrc``` file (more on this in the moment!);
 * It is possible to store in the variable the output of some command, and then manipulate this output programmatically (more on this later!);
 * It is possible to store in the variable the content of an external file (more on this later!);

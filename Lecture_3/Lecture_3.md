@@ -1,10 +1,8 @@
 ![](bash_logo.png)
 
-[TBI]: <> (This is a comment)
-
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20190510
+**Last update**: 20200426
 
 ### Table of Contents
 1. [Linux file system](#file_system)
@@ -34,7 +32,7 @@ echo $PWD
 Both versions return exactly the same answer. However, and as a general rule of thumb, it's always more efficient to get information directly from variable, than by retreiving the same information by executing the command via the so-called command substitution operator (more on this later).
 
 The most important directories in the Linux file system structure are:
- 
+
 * ```/bin``` : most essential user command binaries (executables) used by all users;
 * ```/usr/bin``` : additional user command binaries (executables)
 * ```/dev``` : location of special or device files
@@ -73,42 +71,50 @@ The output could look like this:
 This output looks messy, but in fact it has a well defined structure and is easy to interpret. In the above output, we see absolute paths to few directories, separated, in this context with the field separator, ```:``` (colon). The directories specified in the **PATH** environment variable are extremely important, as only inside them **Bash** will be searching for a corresponding executable for the command name you have typed in the terminal. Literally, command **date** works in the terminal because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** environment variable. Order of directories in **PATH** variable also matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories in **PATH**. The priority of search is from left to right. Therefore, if you have two executables in the filesystem for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```,  and if the content of **PATH** is as in the example above, then after you have typed in the terminal **date**, **Bash** would execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in **PATH**.  Since there is no **date** in ```/usr/bin```, **Bash** continues the search for it in ```/bin```,  finally finds it there, and then executes ```/bin/date``` .  By manipulating the order of directories in **PATH** variable, you can also have your own version of all Linux commands --- just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. As a side remark, if you unset **PATH** variable, all commands will stop working when you type them the terminal, as **Bash** doesn't know where to look for the corresponding executables in the file system. Finally, if you want to add a new directory (e.g. ```/home/abilandz/myCommands```) holding some personal executables to **PATH**, which shall be searched with the higher priority than the already existing directories in **PATH**, redefine the **PATH** with the following standard code snippet:
 ```bash
 PATH="/home/abilandz/myCommands:${PATH}"
-``` 
+```
 For the lower priority, use an alternative:
 ```bash
 PATH="${PATH}:/home/abilandz/myCommands"
-``` 
+```
+
+As a final remark, the **PATH** search is skipped when the command name has ```/``` character. In this case, **Bash** assumes that you have specified the abs path to command name, and tries to execute it on the spot. This explains the standard syntax to execute straight the executable in your current directory:
+
+```bash
+./someExecutable
+```
+
+In this context, the dot ```.``` is merely an absolute path to the current directory (**ls** and **ls .** gives the same answer; the shorthand notation for the parent directory is ```..```) . With this syntax, even if **someExecutable** with a different implementation exists in same directory stored in **PATH**, it will never be searched for an executed. 
 
 Some frequently used Linux commands to work with the file system structure are:
- 
+
 * **cp** : copy file(s)
 ```bash
 cp <abs-path-to-file_1> <abs-path-to-file_2> # copying and renaming a file
 cp <abs-path-to-file-1> <abs-path-to-file-2> ... <abs-path-to-some-directory> # only copying
-``` 
+```
 When the context makes sense, **cp** can also accept the relative paths. 
 
 * **cp -r** : copy directory and preserve its subdirectory structure
 ```bash
 cp -r <abs-path-to-dir_1> <abs-path-to-dir_2> # this will copy <dir_1> into subdirectory of <dir_2>
-``` 
+```
 
 * **rm** : delete file(s)
 ```bash
 rm <file_1> <file_2> ... # delete the specifed (either via absolute or relative path) files
-``` 
+```
 Use **rm** with great care, as after you have deleted the file, there is no way back!
 
 * **rm -rf** : delete one or more directories
 ```bash
 rm -rf <dir_1> <dir_2> ... # delete the specifed (either via absolute or relative path) directoriess
-``` 
+```
 Use **rm -rf** even with the greatear care, as after you have deleted the directory, there is no way back!
 
 * **mv** : move or rename the file
 ```bash
 mv <abs-path-to-file_1> <abs-path-to-file_2> # moving, if two files are NOT in the same directory. Otherwise, just renaming a file
-``` 
+```
 The command **mv** works in the same way with directories (no additional flags are needed, like for **cp** or **rm**).
 
 * **du -sh** : ('disk usage') get the summary (flag **s**) of the size of directory in the human-readable (flag **h**) format 
@@ -279,7 +285,7 @@ return 0
 If you execute script for instance as: 
 ```bash
 source arguments.sh a bbb cc
-``` 
+```
 you should get:
 ```bash
 Total number of arguments is: 3
@@ -363,7 +369,7 @@ Since when you launch a new terminal the file ```${HOME}/.bashrc``` is being sou
 
 
 ### 4. Command precedence <a name="precedence"></a>
- 
+
 We have seen that your very first input in the terminal, before the empty character is encoutered, will be interpreted by **Bash** as the command name, where the command name can stand for alias, built-in **Bash** command (e.g. **echo**), **Linux** executable (e.g. **date**), etc. But what happens if we have for instance alias and **Linux** executable named in the same way? For instance:
 ```linux
 alias date='echo "Hi!"'
