@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20200426
+**Last update**: 20200427
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -154,7 +154,23 @@ Generically, for most cases of interest, we are executing commands in the termin
 
 This is the right moment to stress the importance and profound meaning of empty character: Empty character is the default input field separator (**IFS**) in the world of **Linux**. If you misuse the empty character, a lot of your input in the terminal will be completely incomprehensible to **Bash**, and to **Linux** commands in general.  In the above generic example, empty character separates the three items, which conceptually have a completely different meaning. As the very first step, after you have typed the input in the terminal and pressed 'Enter', the **Bash** splits your input into tokens that are separated (by default, and in a bit simplified picture) with one or more empty characters. Then, it checks whether the very first token is some known **Linux** command, **Bash** keyword, etc.
 
-Let's look at them one by one...
+The command input in **Bash** is terminated either by a new line or by a semi-colon ```;``` . It is completely equivalent to write:
+
+```bash
+echo "Hello World"
+date
+```
+or 
+``````bash
+echo "Hello World";date
+``````
+or 
+``````bash
+echo "Hello World" ;   date
+``````
+
+
+Let us now scrutinize the above generic syntax for command execution term by term:
 
 * ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some known **Linux** command, **Bash** keyword, etc. In general, _command-name_ can stand for one of the following items:
 

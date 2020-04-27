@@ -514,15 +514,13 @@ o AB: options for shopt and set can differ, e.g. hashall option is available onl
 
 
 
-### Shell variables
+### Shell variables (extra) 
 
-o Shell Variables
+**Shell Variables (general)**
+
 o part of environment that you want to modify, but cannot be expressed as on/off choice
    => characteristics of this type are stored in shell variables
 o bash keeps track of built-in variables
-o by convention, built-in variables should have all capital letters
-o definition: var=something # not emty characters round "="
-o $ for referencing
 o unset => use to delete variable
     => makes sense to use only is set's option nounset is set (with this option, shell produced an error when it encouters unset variable)
 abilandz@anteb:~$ set -o nounset
@@ -533,9 +531,8 @@ o echo prints arguments only after bash has evaluated them
 o if the variable is undefined, echo will print a blankline 
 o quoting: some special characters within "" are still interpreted, while within '' not a single special character is interpreted
 o $ survives "", meaning variables are evaluated
-o quotes: shell doesn't split the command input into words, instead it assumes all imput is one word
 
-o Built-in Variables
+**Built-in Variables**
 o some of them are arcana for hackers
 o complete list is in Appendix B
 1/ Editing mode variables
@@ -565,10 +562,10 @@ oo HISTTIMEFORMAT : WONDERFULL!!!!
       TBI: read again page 66 about it, also Table 3.5 about the possible time stamps 
 oo FCEDIT : path of the editor used by 'fc' command
 
-2/ Mail variables
+**3/ Mail variables**
 TBI read this eventually
 
-3/ Prompting variables
+**4/ Prompting variables**
 o shell's prompt is not engraved in stone
 o it is possible to encode date and current directory in the prompt, etc.
 o bash uses four prompt strings:
@@ -610,7 +607,7 @@ o Available prompt customizations:
 
 => TBI: On the meaning of '${debian_chroot:+($debian_chroot)}' in PS1, read the following thread: https://askubuntu.com/questions/372849/what-does-debian-chrootdebian-chroot-do-in-my-terminal-prompt
 
-6/ Directory search path and variables
+**o Directory search path and variables (CDPATH, etc.)**
 o the key variable is CDPATH => it holds colomn separated list of directories
 o it augments functionaliy of cd command
 o by default NOT set
@@ -624,7 +621,7 @@ o The curtent directory is added to CDPATH as an empty string, e.g.
 o CDPATH is not that powerful feature, since the working habits/dirs change rather frequently
 o In this context: set option cdable_vars for shopt command => TBI see top of page 74
 
-7/ Miscellaneous variables
+**Miscellaneous variables**
 o Status variables, not used for customization (like most of previous examples)
 HOME
 SECONDS => number of seconds since the shell was invoked. AB: Each shell level apparently maintains its own counter. AB: The top counter is not affected with lower levels.
@@ -640,7 +637,7 @@ echo $BASH_VERSION
 echo ${BASH_VERSINFO[*]}
 4 3 11 1 release x86_64-pc-linux-gnu
 
-oo Environment variables
+**Environment variables (export)**
 o By default, only a special class of shell variables is known to all subprocesses => environment variables 
 o Any variable can become environment variable, just export it
 o You can either:
