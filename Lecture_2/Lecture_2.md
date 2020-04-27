@@ -6,9 +6,9 @@
 
 ### Table of Contents
 1. [Introduction](#introduction)
-2. [Shell environment](#environment)
-     A) [Commands](#commands)
-     B) [Variables](#variables)
+2. [Shell environment](#environment)  
+     A) [Commands](#commands)  
+     B) [Variables](#variables)  
 3. [Editing a file in the terminal](#editing_file)
 4. [Your first **Bash** script](#first-script)
 
@@ -524,6 +524,13 @@ Welcome to Bash lecture
 Today is:
 Mon Apr 20 16:07:18 CEST 2020
 ```
+
+Equivalently, you can use the shortcut notation ```.``` (dot):
+```bash
+. first.sh
+```
+
+In this context, **source** and ```.``` are synonyms (compare the output of ```help source``` and ```help .```). 
 
 Finally, ```return 0``` sets the _exit status_ of your script. In general, each command in **Bash** or **Linux** upon execution provides the so-called exit status. This is a fairly general concept, characteristic also for some other programming languages, and it enables us to programmatically check if the command has executed successfully or not. The exit status is classified as:
 
