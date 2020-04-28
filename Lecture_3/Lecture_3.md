@@ -275,9 +275,9 @@ chmod -R <some-options-to-change-permissions> <some-directory>
 
 Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
-|  r   |  w   |  x   |  -   |
-| :--: | :--: | :--: | :--: |
-|  4   |  2   |  1   |  0   |
+|permission| r  | w  | x  | -  |
+|:--:|:--:|:--:|:--:|:--:|
+|**value**| 4  | 2  | 1  | 0  |
 
 When these values are added together, the sum is used to set specific permissions. 
 
