@@ -227,15 +227,15 @@ you can get the following example output:
 ```
 It is very important to understand all entries in this output, and how to modify or set some of them. Reading from left to right:
 
-- Column #1:
-o the very first character is _file type_ : ```-``` is ordinary file, ```d``` is directory, ```l``` is soft-link, etc.
-o characters 2, 3 and 4 are fields for r, w or x permissions for user (i.e. for you)
-o characters 5, 6 and 7 are fields for r, w or x permissions for group (i.e. wider group of people where your account belongs to)
-o characters 8, 9 and 10 are fields for r, w or x permissions for anybody else
-- Column #2: Number of files (always 1 for files and 2 or more for directories)
-- Column #3: The user who owns the file ('abilandz' in this case)
-- Column #4: The group of users to which the file belongs ('alice' experiment in this case)
-- Column #5: The size of the file in bytes (for directories, it has another meaning, it is NOT the size of directory) 
+- **Column #1:**
+- the very first character is the file type : ```-``` is ordinary file, ```d``` is directory, ```l``` is soft-link, etc.
+- characters 2, 3 and 4 are fields for ```r```, ```w``` or ```x``` permissions for user (i.e. for you)
+- characters 5, 6 and 7 are fields for ```r```, ```w``` or ```x``` permissions for group (i.e. wider group of people where your account belongs to)
+- characters 8, 9 and 10 are fields for ```r```, ```w``` or ```x``` permissions for anybody else
+- **Column #2:** Number of files (always 1 for files and 2 or more for directories)
+- **Column #3:** The user who owns the file ('abilandz' in this case)
+- **Column #4:** The group of users to which the file belongs ('alice' experiment in this case)
+- **Column #5:** The size of the file in bytes (for directories, it has another meaning, it is NOT the size of directory) 
 
 The meaning of remaining columns is trivial. 
 
