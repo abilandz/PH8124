@@ -229,11 +229,11 @@ It is very important to understand all entries in this output, and how to modify
 
 - **Column #1:**  
 
-  o the very first character is the file type : ```-``` is ordinary file, ```d``` is directory, ```l``` is soft-link, etc.  
+  o the very first character is the file type : ```-``` is an ordinary file, ```d``` is directory, ```l``` is soft-link, etc.  
 
-  o characters 2, 3 and 4 are fields for ```r```, ```w``` or ```x``` permissions for user (i.e. for you)  
+  o characters 2, 3 and 4 are fields for ```r```, ```w``` or ```x``` permissions for the user (i.e. for you)  
 
-  o characters 5, 6 and 7 are fields for ```r```, ```w``` or ```x``` permissions for group (i.e. wider group of people where your account belongs to)  
+  o characters 5, 6 and 7 are fields for ```r```, ```w``` or ```x``` permissions for the group (i.e. wider group of people where your account belongs to)  
 
   o characters 8, 9 and 10 are fields for ```r```, ```w``` or ```x``` permissions for anybody else  
 
@@ -241,38 +241,79 @@ It is very important to understand all entries in this output, and how to modify
 
 - **Column #3:** The user who owns the file ('abilandz' in this case)
 
-- **Column #4:** The group of users to which the file belongs ('alice' experiment in this case)
+- **Column #4:** The group of users to which the file belongs (the 'alice' experiment in this case)
 
-- **Column #5:** The size of the file in bytes (for directories, it has another meaning, it is NOT the size of directory) 
+- **Column #5:** The size of the file in bytes (for directories, it has another meaning, it is NOT the size of directory!) 
 
-The meaning of remaining columns is trivial. 
+The meaning of the remaining columns is trivial. 
 
-File permissions are changed with the command **chmod**. Few examples:
-```linux
+File permissions are changed with the **Linux** command **chmod**. This is best illustrated with a few concrete examples:
+```bash
 chmod o+r someFile.txt
 ```
-After the above command was executed, others (```o```) can (```+```) read (```r```) your file named ```someFile.txt```.
-```linux
+After the above command was executed, others (```o```) can (```+```) read (```r```) your file ```someFile.txt```.
+```bash
 chmod go-w someFile.txt
 ```
-With this version, all group members to which your account belongs to (```g```) and all others (```o```) can NOT (```-```) modify or write to (```w```) to your file ```someFile.txt```.
-```linux
+In the above example, all group members to which your account belongs to (```g```) and all others (```o```) can NOT (```-```) modify or write to (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
+```bash
 chmod u+x someFile.txt
 ```
-With this version, your file ```someFile.txt``` is declared to be an executable and only you as a user (```u```) can (```+```) execute it (```x```). Remember that only the files which are executables are taken into account by **Bash** when searching through the content of directories in **PATH** variable. Therefore, when making your own **Linux** command, two formal aspects must be always met:
-1. directory containing your executable must be included in **PATH**; 
+With the above syntax, the file ```someFile.txt``` is declared to be an executable and only you as a user (```u```) can (```+```) execute it (```x```). Remember that only the files which are executables are taken into account by **Bash** when searching through the content of directories in **PATH** variable. Therefore, when making your own **Linux** command, two formal aspects must be always met:
+
+1. the directory containing your executable must be included in **PATH**; 
 2. your executable must have ```x``` permission.
 
-As the final example:
-```linux
+Next example:
+```bash
 chmod ugo+rwx someFile.txt
 ```
-Now everybody (you, group members and others), can read, modify or execute your file. For directories, you can change permissions in one go for all files in all subdirectories, by specifying the flag ```-R``` (recursive), i.e. by using:
+Now everybody (you as a user (```u```), group members (```g```)  and others (```o```)), can read (```r```), modify or write to (```w```), or execute your file (```x```). For directories, you can change permissions in one go for all files in all subdirectories, by specifying the flag ```-R``` ('recursive'), i.e. by using schematically:
 ```bash
 chmod -R <some-options-to-change-permissions> <some-directory>
 ```
 
-Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parametrs_ . 
+Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
+
+|  r   |  w   |  x   |  -   |
+| :--: | :--: | :--: | :--: |
+|  4   |  2   |  1   |  0   |
+
+When these values are added together, the sum is used to set specific permissions. 
+
+For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6.
+
+If you want to remove all  'read', 'write' and 'execute' permissions, you need to specify 0.
+
+**Example:** Make a new file with default permissions, then remove all permissions, and set the permission pattern to ```-rwx--xr--``` , by using both syntaxes described above. With the first syntax, we would have
+
+```bash
+touch file.log # make a new file
+# the default permission pattern is: -rw-rw-rw-
+chmod ugo-rwx file.log # stripping off all permissions
+# pattern is now: ----------
+chmod u+rwx,g+x,o+r file.log
+# pattern is: -rwx--xr--
+```
+
+With the alternative syntax, we proceeds as follows:
+
+```bash
+touch file.log # make a new file
+# the default permission pattern is: -rw-rw-rw-
+chmod 000 file.log # stripping off all permissions
+# pattern is now: ----------
+chmod 714 file.log
+# pattern is: -rwx--xr--
+```
+
+It practice, it is not needed to remove old permissions and only then to set the new ones --- the old permission can be directly overwritten.
+
+Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_. 
+
+
+
+
 
 
 
