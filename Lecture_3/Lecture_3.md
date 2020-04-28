@@ -197,25 +197,25 @@ File metadata is any file-related information besides its regular content. From 
 
 The meaning of three timestamps is as follows:  
 
-   **Access (a)** : last time a file was accessed (opened) and read without any modification  
-   **Modify (m)** : last time a file was modified (i.e. its content has been edited)  
-   **Change (c)** : last time a file's metadata was changed (e.g. permissions)  
+* **Access (a)** : last time a file was accessed (opened) and read without any modification  
+* **Modify (m)** : last time a file was modified (i.e. its content has been edited)
+* **Change (c)** : last time a file's metadata was changed (e.g. permissions)  
 
 These three timestamps are not an overkill, in fact, they enable a lot of very powerful features when searching for specific files or directories in the file system. For instance, by using them, it is possible to list names of all files modified within the last day, to delete all files which were not accessed for more than 1 year, etc. (more on this later).
 
 Next, each file or directory in **Linux** has three distinct levels of ownership:  
 
-   **User (u)** : the person who created the file
-   **Group (g)** : the wider group to which the person who created the file belongs to
-   **Other (o)** : anybody else   
+* **User (u)** : the person who created the file
+* **Group (g)** : the wider group to which the person who created the file belongs to
+* **Other (o)** : anybody else   
 
 File ownership becomes extremely handy in combination with file permissions, when it's very simple to set common access rights for any group of other users. 
 
-Finally, each file in **Linux** has three distinct levels of permissions (or access rights):  
+Finally, each file in **Linux** has three distinct levels of permissions (or access rights):
 
-   **Read (r)** : file can be read
-   **Write (w)** : file can be written to (i.e. edited)
-   **Execute (x)** : file is executable (i.e. binary, program)
+* **Read (r)** : file can be read
+* **Write (w)** : file can be written to (i.e. edited)
+* **Execute (x)** : file is executable (i.e. binary, program)
 
 For instance, when you execute
 ```bash 
