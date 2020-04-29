@@ -104,7 +104,7 @@ We finalize the explanation of **PATH** variable with the following concluding r
 
 * The search for the corresponding executable, after you have typed the short command name in the terminal, is optimized in the following ways: 
 
-  * Not all the files in the specified directories in **PATH** are considered during the search --- only the files which have the _execute permission_ (```x```) are taken into account by **Bash** (more on this in a moment!);
+  * Not all the files in the specified directories in **PATH** are considered during the search --- only the files which have _execute permission_ (```x```) are taken into account by **Bash** (more on this in a moment!);
 
   * The recently used commands are _hashed_ in the table --- this table is then looked up first by **Bash** after you type the command name in the terminal. To see the current content of the hash table, just type **Bash** built-in command **hash** in the terminal:
 
@@ -116,7 +116,7 @@ We finalize the explanation of **PATH** variable with the following concluding r
     
     ```bash
     hits    command
-     4    /usr/bin/which
+       4    /usr/bin/which
        5    /usr/bin/git
        1    /bin/date
        2    /bin/cat
@@ -138,14 +138,14 @@ Some frequently used **Linux** commands to work within the file system are:
 * **cp** : copy file(s)
 ```bash
 cp <file-1> <file-2> # copying and renaming a file
-cp <file-1> <file-2> ... <directory> # copying two or more files in the same directory
+cp <file-1> <file-2> ... <directory> # copying two or more files in the same directory  
                                      # the names of original files are preserved
 ```
 Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
 * **cp -r** : copy directory and preserve its subdirectory structure
 ```bash
-cp -r <directory-1> <directory-2> # this will copy the whole first directory into
+cp -r <directory-1> <directory-2> # this will copy the whole first directory into  
                                   # a new subdirectory of the second directory
 ```
 
@@ -208,7 +208,7 @@ File metadata is any file-related information besides its content. From the user
 
 The meaning of three timestamps is as follows:  
 
-* **Access (a)** : last time a file was accessed (opened) and read without any modification  
+* **Access (a)** : last time a file was accessed (opened) and read without any modification   
 * **Modify (m)** : last time a file was modified (i.e. its content has been edited)
 * **Change (c)** : last time a file's metadata was changed (e.g. permissions)  
 
@@ -238,7 +238,8 @@ you can get the following example output:
 ```
 It is very important to understand all entries in this output, and how to modify or set some of them. Reading from left to right:
 
-- **Column #1:**  
+* **Column #1:**  
+  * the very first character is the file type : ```-``` is an ordinary file, ```d``` is a directory, ```l``` is soft-link, etc.  
 
   o the very first character is the file type : ```-``` is an ordinary file, ```d``` is a directory, ```l``` is soft-link, etc.  
 
@@ -329,7 +330,7 @@ chmod 714 file.log
 # pattern is: -rwx--xr--
 ```
 
-It practice, it is not needed to remove old permissions and only then to set the new ones, it was done here that way only for the sake of exercise --- the old permission can be directly overwritten.
+It practice, it is not needed to remove old permissions and only then to set the new ones, it was done here that way only for the sake of this exercise --- the old permissions can be directly overwritten.
 
 Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_. 
 
@@ -344,9 +345,10 @@ Before we start developing the new commands from scratch in **Linux**, we need t
 
 ### 2. Positional parameters <a name="positional_parameters"></a>
 
-Let us now see how you can pass some arguments to your script at execution. This would then clearly allow you much more freedom and power, as nothing really needs to be hardcoded in the script body. This is achieved via the so-called _positional parameters_ (sometimes also-called _script arguments_).
+Let us now see how you can pass some arguments to your script at execution. This would then clearly allow you much more freedom and power, as nothing really needs to be hardcoded in the script body. This is achieved via the so-called _positional parameters_ (sometimes also called _script arguments_).
 
-**Example:** We want to develop a script, let's say _favorite.sh_ which takes two arguments, the first one is interpreted as a name of collider, the second as the name of collaboration, and it shall just print someting like: 
+**Example:** We want to develop a script, let's say _favorite.sh_ which takes two arguments, the first one is interpreted as a name of collider, the second as the name of collaboration, and it shall just print something like: 
+
 ```bash
 My favorite collider is <some-collider>, and my favorite experiment is <some-experiment>.
 ```
@@ -371,9 +373,9 @@ the printout looks as follows:
 My favorite collider is LHC, and my favorite experiment is ALICE.
 ```
 
-So how does this work? It's very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` and before the next empty character is encountered, is being declared as the 1st positional parameter, and its value is stored in the internal variable ```${1}``` ("LHC" in the example above).  Whatever you have typed next, and before the next empty character is encountered, is being declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ("ALICE" in the example above). And so on --- in this way you can pass to your script as many arguments as you wish!
+So how does this work? It's very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` and before the next empty character is encountered, is being declared as the 1st positional parameter, and its value is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is being declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on --- in this way you can pass to your script as many arguments as you wish!
 
-Once you fetch programmatically in the body of your script the passed arguments via variables ```${1}```, ```${2}```, etc. , you can do all sort of manipulations on them, which can completely modify the behavior of your script, depending which values you have specified for them. 
+Once you fetch programmatically in the body of your script the supplied arguments via variables ```${1}```, ```${2}```, etc. , you can do all sort of manipulations on them, which can completely modify the behaviour of your script, depending which values you have specified for them. 
 
 Final remark on positional parameters: 
 
@@ -382,14 +384,15 @@ Final remark on positional parameters:
 
 This in combination with looping allows you to programmatically parse over all passed arguments (i.e. no need to hardwire somewhere in your script that you expect exactly certain number of arguments, etc.). 
 
-It is also possible to access directly the very last positional parameter, by using the indirect reference (“value of the value”) ```!``` — the syntax for last positional parameter is : ``` ${!#}``` 
+It is also possible to access directly the very last positional parameter, by using the indirect reference ('value of the value') ```!``` — the syntax for last positional parameter is : ``` ${!#}``` 
 
 **Example**: Proof of principle --- the script _arguments.sh_ which counts and prints all arguments passed to it. 
+
 ```bash
 #!/bin/bash
 
 echo "Total number of arguments is: $#"
-echo "Second argument is: ${2}"
+echo "The second argument is: ${2}"
 echo "The very last argument is: ${!#}"
 
 for pp in $*; do # pp is an arbitrary name of loop variable, here its naming convention reflects 'positional parameters'
@@ -406,7 +409,7 @@ source arguments.sh a bbb cc
 you should get:
 ```bash
 Total number of arguments is: 3
-Second argument is: bbb
+The second argument is: bbb
 The very last argument is: cc
 a
 bbb
@@ -420,7 +423,7 @@ In this way, you can instruct your own script to behave differently if certain o
 
 ### 3. Your first **Linux/Bash** command <a name="first_command"></a>
 
-As the very first and respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, etc., we can consider  **Bash** function. 
+As the very first and respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, etc., we can consider **Bash** function. 
 
 Functions in **Bash** are very similar to scripts, however the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well defined notion of local environment. This means basically that if you have the variable with the same name in your current terminal session and in the script you are sourcing or in the function you are calling, it's much easier to prevent the clash of variables with the same name, if you use functions. In addition, usage of functions to great extent can resemble the usage of **Linux** commands, and in this sense your first function developed in **Bash** can be also treated as your first command! 
 
