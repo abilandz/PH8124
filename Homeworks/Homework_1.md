@@ -1,6 +1,6 @@
 # Homework #1: Using ```Bash``` aliases as your simplest commands
 
-**Last update: 20200427**
+**Last update: 20200430**
 
 **Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as 
 
@@ -48,4 +48,3 @@ The supported time zones are typically sorted out in the directory ```/usr/share
 
 **Challenge #4**: What do you need to do to make alias **tz** available each time you open a new terminal?
 
-In this homework, you have practiced how to create your own simplest possible command on **Linux** by using **Bash** aliases, and how to make them permanently available in your shell environment.
