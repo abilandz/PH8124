@@ -36,7 +36,7 @@ or by referencing the content of environment variable **PWD**, which is always s
 ```bash
 echo $PWD
 ```
-Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it's always much more efficient to get information directly from environment variable like **PWD**, than to retrieve and store in variable the same information by executing the command, via the so-called _command substitution operator_ (more on this later).
+Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it's always much more efficient to get information directly from environment variable like **PWD**, than to retrieve and store in a variable the same information by executing the command, via the so-called _command substitution operator_ (more on this later).
 
 The most important directories in the **Linux** file system structure are:
 
@@ -96,7 +96,7 @@ For the lower priority of your executables, use an alternative standard code sni
 PATH="${PATH}:/home/abilandz/bin"
 ```
 
-In this example you have appended your executables to what is already set in **PATH** --- this way you indicate that you want to use your own version of some standard, system-wide, **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in your terminal, add the above redefinitions of **PATH** into ```~/.bashrc``` file.
+In this example, you have appended your executables to what is already set in **PATH** --- this way you indicate that you want to use your own version of some standard, system-wide, **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in your terminal, add the above redefinitions of **PATH** into ```~/.bashrc``` file.
 
 From the above explanation, it is clear that if you unset the **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
 
@@ -311,7 +311,7 @@ chmod u+rwx,g+x,o+r file.log # set new permissions
 # the final pattern is: -rwx--xr--
 ```
 
-With the alternative syntax, we proceeds as follows:
+With the alternative syntax, we proceed as follows:
 
 ```bash
 touch file.log # make a new file
@@ -322,9 +322,9 @@ chmod 714 file.log
 # pattern is: -rwx--xr--
 ```
 
-It practice, it is not needed to remove old permissions and only then to set the new ones, it was done here that way only for the sake of this exercise --- the old permissions can be directly overwritten.
+It practice, it is not needed to remove old permissions and only then to set the new ones --- it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
 
-Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_. 
+Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_ (or _script arguments_).
 
 
 
@@ -337,18 +337,18 @@ Before we start developing the new commands from scratch in **Linux**, we need t
 
 ### 2. Positional parameters <a name="positional_parameters"></a>
 
-Let us now see how you can pass some arguments to your script at execution. This would then clearly allow you much more freedom and power, as nothing really needs to be hardcoded in the script body. This is achieved via the so-called _positional parameters_ (sometimes also called _script arguments_).
+In this section we discuss how some arguments to your script can be supplied at execution. This clearly will allow you much more freedom and power in the code development, because nothing needs to be hardcoded in the script body. The very same mechanism can be used also in the implementation of **Bash** functions, as we will see later. We introduce now the so-called _positional parameters_ (or _script arguments_).
 
-**Example:** We want to develop a script, let's say _favorite.sh_ which takes two arguments, the first one is interpreted as a name of collider, the second as the name of collaboration, and it shall just print something like: 
+**Example:** We want to develop a script, let's say ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just print something like: 
 
 ```bash
-My favorite collider is <some-collider>, and my favorite experiment is <some-experiment>.
+My favorite collider is <some-collider>. My favorite experiment is <some-experiment>.
 ```
-The solution goes as follows. In **nano** edit the file named _favorite.sh_ with the following content:
+The solution goes as follows. In **nano** edit the file named ```favorite.sh``` with the following content:
 ```bash
 #!/bin/bash
 
-echo "My favorite collider is ${1}, and my favorite experiment is ${2}."
+echo "My favorite collider is ${1}. My favorite experiment is ${2}."
 
 return 0
 ```
@@ -362,23 +362,31 @@ source favorite.sh LHC ALICE
 the printout looks as follows:
 
 ```bash
-My favorite collider is LHC, and my favorite experiment is ALICE.
+My favorite collider is LHC. My favorite experiment is ALICE.
 ```
 
-So how does this work? It's very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` and before the next empty character is encountered, is being declared as the 1st positional parameter, and its value is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is being declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on --- in this way you can pass to your script as many arguments as you wish!
+So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` , and before the next empty character is encountered in the command input, is declared as the 1st positional parameter (or 1st script argument). The value of 1st positional parameter is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on --- in this way you can pass to your script as many arguments as you wish!
 
-Once you fetch programmatically in the body of your script the supplied arguments via variables ```${1}```, ```${2}```, etc. , you can do all sort of manipulations on them, which can completely modify the behaviour of your script, depending which values you have specified for them. 
+Once you fetch programmatically in the body of your script the supplied arguments via variables ```${1}```, ```${2}```, etc. , you can do all sorts of manipulations on them, which can completely modify the behavior of your script. 
 
-Final remark on positional parameters: 
+Few additional remarks on positional parameters: 
 
 * You can programmatically fetch their total number via the special variable: ```$#```
-* You can programmatically fetch them all in one go via the special variables: ```$*``` or ```$@```
 
-This in combination with looping allows you to programmatically parse over all passed arguments (i.e. no need to hardwire somewhere in your script that you expect exactly certain number of arguments, etc.). 
+* You can programmatically fetch them all in one go via the special variables: ```$*``` or ```$@``` . In most cases of interest, these two variables hold the same result. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"```  or ```"$@"``` . But if you drop the double quotes, there is essentially no difference in practice between the content of special variables ```$*``` and ```$@```
 
-It is also possible to access directly the very last positional parameter, by using the indirect reference ('value of the value') ```!``` — the syntax for last positional parameter is : ``` ${!#}``` 
+* It is also possible to access directly the very last positional parameter, by using the indirect reference ('value of the value') operator ```!``` — the syntax for the last positional parameter is : ``` ${!#}``` . As a side remark, indirect reference is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
 
-**Example**: Proof of principle --- the script _arguments.sh_ which counts and prints all arguments passed to it. 
+  ```bash
+  Alice=44 
+  Bob=Alice 
+  echo ${Bob} # prints Alice
+  echo ${!Bob} # prints 44
+  ```
+
+In combination with looping, you can programmatically parse over the all supplied arguments to your script (i.e. there is no need to hardwire in the script that you expect exactly a certain number of arguments, etc.). 
+
+**Example**: Proof of the principle --- below is the script ```arguments.sh``` , which uses the **for** loop (to be covered in detail later), and just counts and prints all arguments supplied to it:
 
 ```bash
 #!/bin/bash
@@ -387,18 +395,18 @@ echo "Total number of arguments is: $#"
 echo "The second argument is: ${2}"
 echo "The very last argument is: ${!#}"
 
-for pp in $*; do # pp is an arbitrary name of loop variable, here its naming convention reflects 'positional parameters'
- echo "$pp"
+for Arg in $*; do
+ echo "${Arg}"
 done
 
 return 0
 ```
 
-If you execute script for instance as: 
+If you execute this script for instance as: 
 ```bash
 source arguments.sh a bbb cc
 ```
-you should get:
+you will get as a printout:
 ```bash
 Total number of arguments is: 3
 The second argument is: bbb
@@ -407,7 +415,11 @@ a
 bbb
 cc
 ```
-In this way, you can instruct your own script to behave differently if certain options (flags) or arguments are passed to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command have been developed to ease the parsing and interpretation of positional parameters (see e.g. **getopts** ('get options') command).
+By using this functionality, you can instruct your own script to behave differently if certain options or arguments are passed to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command has been developed to ease the parsing and interpretation of positional parameters (see the documentation of advanced **getopts** ('get options') command).
+
+
+
+
 
 
 
