@@ -8,7 +8,7 @@
 1. [**Linux** file system](#file_system)  
 	A) [File metadata](#file_metadata)     
 2. [Positional parameters](#positional_parameters)
-3. [Your first **Linux/Bash** commands](#first_command)
+3. [Your first **Linux/Bash** commands: **Bash** functions](#first_command)
 4. [Command precedence](#precedence)
 
 ### 1. **Linux** file system <a name="file_system"></a>
@@ -425,9 +425,9 @@ By using this functionality, you can instruct your own script to behave differen
 
 
 
-### 3. Your first **Linux/Bash** command <a name="first_command"></a>
+### 3. Your first **Linux/Bash** command: Bash functions <a name="first_command"></a>
 
-As the very first and respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, etc., we can consider **Bash** function. 
+As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, etc., we can consider **Bash** function. 
 
 Functions in **Bash** are very similar to scripts, however the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well defined notion of local environment. This means basically that if you have the variable with the same name in your current terminal session and in the script you are sourcing or in the function you are calling, it's much easier to prevent the clash of variables with the same name, if you use functions. In addition, usage of functions to great extent can resemble the usage of **Linux** commands, and in this sense your first function developed in **Bash** can be also treated as your first command! 
 
