@@ -371,11 +371,11 @@ Once you fetch programmatically in the body of your script the supplied argument
 
 Few additional remarks on positional parameters: 
 
-* You can programmatically fetch their total number via the special variable: ```$#```
+* You can programmatically fetch their total number via the  variable: ```$#```
 
-* You can programmatically fetch them all in one go via the special variables: ```$*``` or ```$@``` . In most cases of interest, these two variables hold the same result. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"```  or ```"$@"``` . But if you drop the double quotes, there is essentially no difference in practice between the content of special variables ```$*``` and ```$@```
+* You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@``` . In most cases of interest, these two variables hold the same result. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"```  or ```"$@"``` . But if you drop the double quotes, there is no difference in practice between the content of special variables ```$*``` and ```$@```
 
-* It is also possible to access directly the very last positional parameter, by using the indirect reference ('value of the value') operator ```!``` — the syntax for the last positional parameter is : ``` ${!#}``` . As a side remark, indirect reference is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
+* It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator ```!``` — the syntax for the last positional parameter is : ``` ${!#}``` . As a side remark, indirect reference is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
 
   ```bash
   Alice=44 
@@ -386,7 +386,7 @@ Few additional remarks on positional parameters:
 
 In combination with looping, you can programmatically parse over the all supplied arguments to your script (i.e. there is no need to hardwire in the script that you expect exactly a certain number of arguments, etc.). 
 
-**Example**: Proof of the principle --- below is the script ```arguments.sh``` , which uses the **for** loop (to be covered in detail later), and just counts and prints all arguments supplied to it:
+**Example**: Proof of the principle. Below is the script ```arguments.sh``` , which uses the **for** loop in **Bash** (to be covered in detail later!), and just counts and prints all arguments supplied to it:
 
 ```bash
 #!/bin/bash
@@ -415,7 +415,7 @@ a
 bbb
 cc
 ```
-By using this functionality, you can instruct your own script to behave differently if certain options or arguments are passed to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command has been developed to ease the parsing and interpretation of positional parameters (see the documentation of advanced **getopts** ('get options') command).
+By using this functionality, you can instruct your own script to behave differently if certain options or arguments are passed to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command exists to ease the parsing and interpretation of positional parameters (see the documentation of advanced **getopts** ('get options') command).
 
 
 
