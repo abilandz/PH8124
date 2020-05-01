@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20200429
+**Last update**: 20200501
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
