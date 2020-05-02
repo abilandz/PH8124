@@ -2,12 +2,12 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20200501
+**Last update**: 20200502
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
 	A) [File metadata](#file_metadata)     
-2. [Positional parameters](#positional_parameters)
+2. [Positional parthameters](#positional_parameters)
 3. [Your first **Linux/Bash** commands: **Bash** functions](#first_command)
 4. [Command precedence](#precedence)
 
@@ -348,7 +348,8 @@ The solution goes as follows. In **nano** edit the file named ```favorite.sh``` 
 ```bash
 #!/bin/bash
 
-echo "My favorite collider is ${1}. My favorite experiment is ${2}."
+echo "My favorite collider is ${1}" 
+echo "My favorite experiment at ${1} is ${2}"
 
 return 0
 ```
@@ -362,7 +363,8 @@ source favorite.sh LHC ALICE
 the printout looks as follows:
 
 ```bash
-My favorite collider is LHC. My favorite experiment is ALICE.
+My favorite collider is LHC. 
+My favorite experiment at LHC is ALICE.
 ```
 
 So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` , and before the next empty character is encountered in the command input, is declared as the 1st positional parameter (or 1st script argument). The value of 1st positional parameter is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on --- in this way you can pass to your script as many arguments as you wish!
@@ -373,9 +375,9 @@ Few additional remarks on positional parameters:
 
 * You can programmatically fetch their total number via the  variable: ```$#```
 
-* You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@``` . In most cases of interest, these two variables hold the same result. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"```  or ```"$@"``` . But if you drop the double quotes, there is no difference in practice between the content of special variables ```$*``` and ```$@```
+* You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@``` . In most cases of interest, these two variables hold the same result. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"```  or ```"$@"``` . But if you drop the double quotes, there is no difference between the content of special variables ```$*``` and ```$@```
 
-* It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator ```!``` — the syntax for the last positional parameter is : ``` ${!#}``` . As a side remark, indirect reference is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
+* It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator ```!``` — the syntax for the last positional parameter is ``` ${!#}``` . As a side remark, indirect reference ```!``` is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
 
   ```bash
   Alice=44 
@@ -427,9 +429,9 @@ By using this functionality, you can instruct your own script to behave differen
 
 ### 3. Your first **Linux/Bash** command: Bash functions <a name="first_command"></a>
 
-As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, etc., we can consider **Bash** function. 
+As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, has its own environment, etc., we can consider **Bash** functions. 
 
-Functions in **Bash** are very similar to scripts, however the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well defined notion of local environment. This means basically that if you have the variable with the same name in your current terminal session and in the script you are sourcing or in the function you are calling, it's much easier to prevent the clash of variables with the same name, if you use functions. In addition, usage of functions to great extent can resemble the usage of **Linux** commands, and in this sense your first function developed in **Bash** can be also treated as your first command! 
+Functions in **Bash** are very similar to scripts, however, the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well-defined notion of _local environment_. This means basically that if you have the variable with the same name in your current terminal session, and in the script or in the function you are executing, it's much easier to prevent the clash of these variables if you use functions. In addition, usage of functions to great extent resembles the usage of **Linux** commands, and in this sense, your first function developed in **Bash** can be also treated as your first **Linux** command! 
 
 Example implementation of **Bash** function could look like:
 
@@ -438,25 +440,25 @@ Example implementation of **Bash** function could look like:
 
 function Hello
 {
- # Comment here briefly what this function is supposed to do, or how it shall be used. E.g.:
- ## Usage: Hello <some-name>
+ # This function prints the welcome message 
+ # Usage: Hello <some-name>
 
- echo "Hello there!"
- local NAME=${1}
- echo "Your name is: ${NAME}"
+ echo "Hello!"
+ local Name="${1}"
+ echo "Your name is: ${Name}"
 
  return 0
 
 }
 ```
 
-If you have saved the above snippet in the file _functions.sh_, then in order to call your function **Hello**, please do:
+Save the above code snippet in the file ```functions.sh```. Then, in order to call your function **Hello**, just source that file:
 
 ```bash
 source functions.sh
 ```
 
-From this point onward, the definitions of all functions in the file _functions.sh_ are loaded in the computer's memory, and can be in the current terminal session used as any other command. To check this, try to execute:
+From this point onward, the definitions of all functions in the file ```functions.sh``` are loaded in the computer's memory, and can be in the current terminal session used as any other **Linux** or **Bash** built-in command. To check this, try to execute:
 ```bash
 Hello Alice
 ```
@@ -464,29 +466,33 @@ Hello Alice
 The output is:
 
 ```bash
-Hello there!
+Hello!
 Your name is: Alice
 ```
 
 When compared to the script implementation, there are few differences:
 
-* Usage of key word ```function``` (an alternative syntax exists, ```<function-name>()```, but it's really a matter of taste which one your prefer)
-* Body of the function must be embeded within ```{ ... }```
-* For any variable defined within the function, use the key word ```local```, to restrict its scope only to the body of the function. In this way, you will never encounter the clash between variables with the same name in the terminal and in the function, when you call the function. Defined without this key word, call to function can spoil severely the environment from which the call to the function was issued, which can have really a dire consequences...
-* Programmatically, you can fetch the function name in its body implementation via built-in variable ```FUNCNAME```. For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable ```BASH_SOURCE```.
+* Usage of keyword **function** (an alternative syntax exists, ```<some-function-name>()```, but it's really a matter of taste which one you prefer)
+* Body of the function must be embedded within ```{ ... }```
+* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you call the function. If a variable is defined in the function without the keyword **local**, call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
+* Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME**. For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result 
 
 The rest is the same as for the scripts:
 
 * Functions accept arguments in the same way as scripts, via ```${1}```, ```${2}```, .... variables
-* You can call function within another function, but only if it was defined first -- order matters in scripting language!
-* Do not forget to provide the return value at the end of the function, which sets its exit status, since for most of the time functions are executed equivalently as commands, and then the exit code clearly matters
-* Typically, you implement all your functions in some file, let's say _functions.sh_, and then at the end of ```${HOME}/.bashrc``` you instert the line 
+* You can call a function within another function, but only if it was defined first --- order of implementation matters in scripting languages!
+* Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time functions are executed equivalently as commands, and then the exit status clearly matters
+* Typically, you implement all your functions in some file, let's say ```functions.sh```, and save it in your home directory (or anywhere else). Then, at the end of ```${HOME}/.bash_profile``` and ```${HOME}/.bashrc``` you insert the line:
 
 ```bash 
-source <abs-path-to-your-file>/functions.sh
+source ${HOME}/functions.sh
 ```
 
-Since when you launch a new terminal the file ```${HOME}/.bashrc``` is being sourced before you can type anything, the implementation of your functions from file _functions.sh_ will be automatically sourced as well, which means that your functions are ready for usage, just as **Linux** commands -- in this sense the first **Bash** function you have written can be regarded also as your own first **Linux** command!
+If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands --- in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
+
+
+
+
 
 
 
@@ -494,26 +500,26 @@ Since when you launch a new terminal the file ```${HOME}/.bashrc``` is being sou
 
 ### 4. Command precedence <a name="precedence"></a>
 
-We have seen that your very first input in the terminal, before the empty character is encoutered, will be interpreted by **Bash** as the command name, where the command name can stand for alias, built-in **Bash** command (e.g. **echo**), **Linux** executable (e.g. **date**), etc. But what happens if we have for instance alias and **Linux** executable named in the same way? For instance:
-```linux
+We have seen that your very first input in the terminal, before the empty character is encountered, will be interpreted by **Bash** as the command name, where the command name can stand for an alias, built-in **Bash** command (e.g. **echo**), **Linux** command (e.g. **date**), **Bash** functions (e.g. **Hello** from the previous example), etc. But what happens if we have for instance alias and **Linux** command named in the same way? For instance:
+```bash
 alias date='echo "Hi!"'
 ```
 If after this definition we type in the terminal **date**, we get:
-```linux
+```bash
 date
 Hi!
 ```
-Therefore, the alias execution got precedence over the **Linux** executable named in the same way. 
+What now? Have we just accidentally overwritten and lost permanently the command **date**? Not quite, what happened here is that the alias execution got precedence over the **Linux** command named in the same way. But both the alias **date** and the command **date** now exist simultaneously on your computer.
 
-The command precedence rules in **Bash** are well defined and strictly enforced according to the following order:
-       1) aliases
-       2) **Bash** keywords (**if**, **for**, etc.)
-       3) **Bash** functions
-       4) **Bash** built-in commands (**cd**, **type**, etc.)
-       5) scripts and **Linux** executables (for which search and precedence is determined based on the content of **PATH** variable)
+The command precedence rules in **Bash** are well defined and strictly enforced with the following ordering:
+1. aliases
+2. **Bash** keywords (**if**, **for**, etc.)
+3. **Bash** functions
+4. **Bash** built-in commands (**cd**, **type**, etc.)
+5. scripts with execute permission and **Linux** commands (among them, the precedence is determined based on the ordering in **PATH** variable, as we already discussed)
 
-Given this order, clearly some care is needed when introducing new aliases or functions in **Bash**. If you have used the same name as for some already existing **Linux** executable, that executable will not be invoked when executing the alias or function with that name. If you have overwritten **Linux** executable with some alias, simply unalias that name via:
-```linux
+Given this ordering of command precedence, some care is definitely needed when introducing new aliases or developing new functions in **Bash**, to avoid the name clashes with existing **Linux** commands. If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back:
+```bash
 unalias <some-name>
 ```
 
@@ -524,7 +530,9 @@ type date
 date is /bin/date
 ```
 
-The above line tells that **date** is **Linux** command (or executable, or binary), and **Bash** has found its executable in the file ```/bin/date``` . Two other possibilities:
+The above line tells that **date** is **Linux** command whose executable is ```/bin/date```. 
+
+Two other examples:
 
 ```bash
 type echo
@@ -536,19 +544,32 @@ type ll
 ll is aliased to `ls -alF'
 ```
 
-For the **Bash** functions, **type** command also prints the source code of that function. For instance: 
+For the **Bash** functions, the command **type** also prints the source code of that function. For instance, for the function **Hello** discussed previously in this section you would get:   
+```bash
+type Hello
+Hello is a function
+Hello ()
+{
+    echo "Hello!";
+    local Name="${1}";
+    echo "Your name is: ${Name}";
+    return 0
+}
+```
+
+This is quite handy, because if you have forgotten the details of the implementation of this particular function, you do not need to dig into the file ```functions.sh``` where a lot of your additional functions can be implemented in the meanwhile. 
+
+Another argument is that this way you can see immediately the implementation of some **Bash** functions which were not developed by you (therefore, you have no idea where in the file system is the file with their source code), but are nevertheless available in your terminal session:
+
 ```bash
 type quote
 quote is a function
-quote () 
-{ 
+quote ()
+{
     local quoted=${1//\'/\'\\\'\'};
     printf "'%s'" "$quoted"
 }
-
 ```
 
-
-
-
+Finally, it can happen that accidentally you delete the file ```functions.sh```. If this file was sourced before you deleted it accidentally, you can still retrieve the implementations of your functions from the computer's memory with **type**, and then just redirect the output to some file.
 
