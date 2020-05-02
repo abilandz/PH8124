@@ -259,7 +259,7 @@ After the above command was executed, others (```o```) can (```+```) read (```r`
 ```bash
 chmod go-w someFile.txt
 ```
-In the above example, all group members to which your account belongs to (```g```) and all others (```o```) can NOT (```-```) modify or write to (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
+In the above example, group members to which your account belongs to (```g```) and all others (```o```) can NOT (```-```) modify or write to (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
 ```bash
 chmod u+x someFile.txt
 ```
@@ -342,7 +342,8 @@ In this section we discuss how some arguments to your script can be supplied at 
 **Example:** We want to develop a script, let's say ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just print something like: 
 
 ```bash
-My favorite collider is <some-collider>. My favorite experiment is <some-experiment>.
+My favorite collider is <some-collider>
+My favorite experiment at <some-collider> is <some-experiment>
 ```
 The solution goes as follows. In **nano** edit the file named ```favorite.sh``` with the following content:
 ```bash
@@ -363,8 +364,8 @@ source favorite.sh LHC ALICE
 the printout looks as follows:
 
 ```bash
-My favorite collider is LHC. 
-My favorite experiment at LHC is ALICE.
+My favorite collider is LHC
+My favorite experiment at LHC is ALICE
 ```
 
 So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` , and before the next empty character is encountered in the command input, is declared as the 1st positional parameter (or 1st script argument). The value of 1st positional parameter is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on --- in this way you can pass to your script as many arguments as you wish!
@@ -443,7 +444,7 @@ function Hello
  # This function prints the welcome message 
  # Usage: Hello <some-name>
 
- echo "Hello!"
+ echo "Hello today!"
  local Name="${1}"
  echo "Your name is: ${Name}"
 
@@ -466,13 +467,13 @@ Hello Alice
 The output is:
 
 ```bash
-Hello!
+Hello today!
 Your name is: Alice
 ```
 
 When compared to the script implementation, there are few differences:
 
-* Usage of keyword **function** (an alternative syntax exists, ```<some-function-name>()```, but it's really a matter of taste which one you prefer)
+* Usage of keyword **function** (an alternative syntax exists, ```<some-name>()```, but it's really a matter of taste which one you prefer)
 * Body of the function must be embedded within ```{ ... }```
 * For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you call the function. If a variable is defined in the function without the keyword **local**, call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
 * Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME**. For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result 
@@ -480,16 +481,16 @@ When compared to the script implementation, there are few differences:
 
 The rest is the same as for the scripts:
 
-* Functions accept arguments in the same way as scripts, via ```${1}```, ```${2}```, .... variables
+* Functions accept arguments in exactly the same way as scripts, via special ```${1}```, ```${2}```, ... variables
 * You can call a function within another function, but only if it was defined first --- order of implementation matters in scripting languages!
-* Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time functions are executed equivalently as commands, and then the exit status clearly matters
+* Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time functions are executed equivalently as commands, and then their exit status clearly matters
 * Typically, you implement all your functions in some file, let's say ```functions.sh```, and save it in your home directory (or anywhere else). Then, at the end of ```${HOME}/.bash_profile``` and ```${HOME}/.bashrc``` you insert the line:
 
 ```bash 
 source ${HOME}/functions.sh
 ```
 
-If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands --- in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
+If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands --- in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
 
 
 
@@ -518,14 +519,14 @@ The command precedence rules in **Bash** are well defined and strictly enforced 
 2. **Bash** keywords (**if**, **for**, etc.)  
 3. **Bash** functions  
 4. **Bash** built-in commands (**cd**, **type**, etc.)  
-5. scripts with execute permission and **Linux** commands (among them, the precedence is determined based on the ordering in **PATH** variable, as we already discussed)   
+5. scripts with execute permission and **Linux** commands (at this level, the precedence is determined based on the ordering in **PATH** variable, as we already discussed)   
 
-Given this ordering of command precedence, some care is definitely needed when introducing new aliases or developing new functions in **Bash**, to avoid the name clashes with existing **Linux** commands. If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back:
+Given the above ordering of command precedence, some care is definitely needed when introducing new aliases or developing new functions in **Bash**, to avoid the name clashes with the existing **Linux** commands. If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back:
 ```bash
 unalias <some-name>
 ```
 
-In the case you are not sure to which one of the five cases above the command you intend to use corresponds to, use the **Bash** built-in command **type**:
+In the case you are not sure to which one of the five cases above the command you intend to use in the terminal corresponds to, use the **Bash** built-in command **type**:
 
 ```bash
 type date
@@ -534,7 +535,7 @@ date is /bin/date
 
 The above line tells that **date** is **Linux** command whose executable is ```/bin/date```. 
 
-Two other examples:
+Two other examples in this context:
 
 ```bash
 type echo
@@ -546,7 +547,7 @@ type ll
 ll is aliased to `ls -alF'
 ```
 
-For the **Bash** functions, the command **type** also prints the source code of that function. For instance, for the function **Hello** discussed previously in this section you would get:   
+For the **Bash** functions, the command **type** also prints the source code of that function. For instance, for the function **Hello** discussed previously you would get:   
 ```bash
 type Hello
 Hello is a function
