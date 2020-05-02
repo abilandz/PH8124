@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20200427
+**Last update**: 20200502
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -460,7 +460,7 @@ nano someFile.txt
 ```
 Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor --- this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated --- it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled!). But for the lengthy file editing, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however they offer much more features.
 
-We have already seen how to define your own aliases and variables and we already stressed out one important point: Their lifetime is limited to the duration of terminal session in which you have defined them. In any new terminal you start, their definitions are not known. But there is own important thing which happens behind the scene each time you start a new terminal, and before you can start typing anything: **Bash** reads automatically some configuration files end executes line-by-line whatever is being set in them. There are bunch of configuration files which **Bash** might read when you open a new terminal, and the order and precedence of their reading matters. In the most cases of interest, it suffices to know that you need to edit the **Bash** configuration file called ```.bashrc```. This file must be stored directly in your home directory (if it's stored somewhere else **Bash** will not read it by default). In order to highlight that, typically we refer to this important configuration file with ```~/.bashrc```, where the special character ```~``` (tilde) is the shortcut for the absolute path to your home directory. As an example, execute:
+We have already seen how to define your own aliases and variables and we already stressed out one important point: Their lifetime is limited to the duration of terminal session in which you have defined them. In any new terminal you start, their definitions are not known. But there is one important thing which happens behind the scene each time you start a new terminal, and before you can start typing anything: **Bash** reads automatically some configuration files end executes line-by-line whatever is being set in them. There are bunch of configuration files which **Bash** might read when you open a new terminal, and the order and precedence of their reading matters. In the most cases of interest, it suffices to know that you need to edit the **Bash** configuration file called ```.bashrc```. This file must be stored directly in your home directory (if it's stored somewhere else **Bash** will not read it by default). In order to highlight that, typically we refer to this important configuration file with ```~/.bashrc``` , or equivalently with ```$HOME/.bashrc``` , where the special character ```~``` (tilde) is the shortcut for the absolute path to your home directory. As an example, execute:
 
 ```bash
 echo ~
@@ -469,13 +469,13 @@ The output might look like:
 ```bash
 /home/abilandz
 ```
-This is the absolute path to your home directory in the **Linux** file system. The slash ```/``` delineates directories in the **Linux** directory structure (on **Windows** backslash ```\``` is used instead in the same context). Each time you login, by default this is your starting working directory. This information is alternatively also stored in environment variable ```HOME```, i.e. try:
+This is the absolute path to your home directory in the **Linux** file system. The slash ```/``` delineates directories in the **Linux** directory structure (on **Windows** backslash ```\``` is used instead in the same context). Each time you login, by default this is your starting working directory. This information is alternatively also stored in environment variable **HOME**, i.e. try:
 
 ```bash
 echo $HOME
 ```
 
-As a final remark, we clarify that ```~/.bashrc``` is executed each time only when you open a new terminal, or when you start a new _subshell_ (to be covered later). However, it is not executed by default when you login for the first time on computer --- at first login, **Bash** executes another special configuration file, called ```~/.bash_profile``` . Only if ```~/.bash_profile``` does not exist, **Bash** will execute ```~/.bashrc``` also when you login on the computer for the first time. If none of these two files is available, then **Bash** will execute the default, system-wide configuration file, called ```/etc/profile``` . Remember this ordering, as it can become unclear from which of these configuration files your current **shell** environment was loaded and set. Given this design , even if you completely mess up with your personal settings in ```~/.bash_profile``` and ```~/.bashrc```, the default environment can be still loaded and set from the system-wide file ```/etc/profile```, which you cannot edit directly. This way, you are always guaranteed to have a working environment in your terminal.
+As a final remark, we clarify that ```~/.bashrc``` is executed each time only when you open a new terminal, or when you start a new _subshell_ (to be covered later). However, it is not executed by default when you login for the first time on computer --- at first login, **Bash** executes another special configuration file, called ```~/.bash_profile``` . Only if ```~/.bash_profile``` does not exist, **Bash** will execute ```~/.bashrc``` also when you login on the computer for the first time. If none of these two files is available, then **Bash** will execute the default, system-wide configuration file, called ```/etc/profile``` . Remember this ordering, as it can become unclear from which of these configuration files your current **shell** environment was loaded and set. Given this design, even if you completely mess up with your personal settings in ```~/.bash_profile``` and ```~/.bashrc```, the default environment can be still loaded and set from the system-wide file ```/etc/profile```, which you cannot edit directly. This way, you are always guaranteed to have a working environment in your terminal.
 
 
 
@@ -541,19 +541,21 @@ The exit status is stored in the special variable **$?**. For instance:
 
 ```linux
 date
-echo $? # prints 0 , i.e. success!
+echo $? # prints 0 , i.e. success
 ```
 
 and
 
 ```linux
 date -q # option -q is NOT supported
-echo $? # prints 1 , which is one possible exit status for error
+echo $? # prints 1 , i.e. one possible exit status for error
 ```
 
 Typically in your code, after you have executed the command, you check its exit status. Then, depending on the value of its exit status, your subsequent code can branch in multiple directions. Remember that each **Linux** command has an exit status stored in the special variable **$?** upon its execution, so it shall also your  **Bash** script. As long as you are executing your script via **source** command, you can set the exit status with the keyword **return** (as in the last line in your above script ```first.sh```). 
 
-As another example, when you would be frequently _sourcing_ some file, we consider the case when you want some of your alias definitions of variables to become an integral part of your working environment in **Bash** (i.e. you want them to be available in each new terminal you start), you can achieve this by editing the special configuration file ```~/.bashrc``` . This is one of the hidden files (name starts with ```.``` and therefore not listed by default with ```ls``` command --- in order to see also the hidden files, you need to use ```ls -al```) in your home directory. If ```.bashrc``` is not already in your home directory, then create and edit a brand new one. If it already exists and is non-empty, modify its content only if you really know what you are doing... But it is not a problem to add at the end of this file your own personal definitions, for instance definitions for variables and aliases that you would need again and again. First, let us edit in your home directory the file named for instance ``` ~/.bash_aliases``` . We start by executing in the terminal:
+If you forgot to specify the exit status of your script with the keyword **return **, the special variable **$?** is nevertheless automatically set, but now to the exit status of lastly executed command in your script, which can lead to unexpected results.
+
+As another example, when you would be frequently _sourcing_ some file, we consider the case when you want some of your alias definitions of variables to become an integral part of your working environment in **Bash** (i.e. you want them to be available in each new terminal you start), you can achieve this by editing the special configuration file ```~/.bashrc``` . This is one of the hidden files (name starts with ```.``` and therefore not listed by default with ```ls``` command --- in order to see also the hidden files, you need to use **ls -al**) in your home directory. If ```.bashrc``` is not already in your home directory, then create and edit a brand new one. If it already exists and is not empty, modify its content only if you really know what you are doing... But it is not a problem to add at the end of this file your own personal definitions, for instance definitions for variables and aliases that you would need again and again. First, let us edit in your home directory the file named for instance ``` ~/.bash_aliases``` . We start by executing in the terminal:
 
 ```linux
 nano ~/.bash_aliases
@@ -565,23 +567,22 @@ Var=44
 alias sl=ls
 ```
 
-Save the file and exit **nano** (press ```CTRL+x``` and choose 'y' followed by 'Enter'). You can check the content of file  ```~/.bash_aliases```
-via 
+Save the file and exit **nano** (press ```CTRL+x``` and choose 'y' followed by 'Enter'). You can check the content of file  ```~/.bash_aliases``` via 
 
 ```linux
 cat ~/.bash_aliases
 ```
 
-Since the content of ```.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions stored there, for instance for aliases and variables, will be re-defined from scratch each time you start a new terminal, and you can re-use them again and again. As an example, add the followiing line at the very end of ```$HOME/.bashrc``` (if this line is already not inside that file; by default it is inside on most **Linux** distributions)
+Since the content of ```~/.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions stored there, for instance for aliases and variables, will be re-defined from scratch each time you start a new terminal, and you can re-use them again and again. As an example, add the following line at the very end of ```~/.bashrc``` (if this line is already not inside that file --- by default it is already inside on most **Linux** distributions):
 
 ```bash
 source ~/.bash_aliases
 ```
 
-Now each time you run a new terminal, variable ```Var``` is set to 44, and you can use ```sl``` as the synonym for ```ls``` command, i.e. you do not need to define them again in the new terminal sessions. In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` . This is much safer than to edit directly each time the file ```~/.bashrc``` where also some other, and more important settings, can be defined as well.  In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in file ```~/.bashrc``` the line:
+Now each time you run a new terminal, variable ```Var``` is set to 44, and you can use **sl** as the synonym for the **ls** command, i.e. you do not need to define them again in the new terminal sessions. In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` . This is much safer than to edit directly each time the file ```~/.bashrc``` where also some other, and more important settings, can be defined as well.  In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in the file ```~/.bashrc``` the line:
 
 ```bash
 source ~/.bash_aliases
 ```
 
-
+On the other hand, typically it's very difficult to port the whole ```~/.bashrc``` from one computer to another, especially if they are running different **Linux** distributions.

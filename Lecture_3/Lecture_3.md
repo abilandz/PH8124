@@ -476,6 +476,7 @@ When compared to the script implementation, there are few differences:
 * Body of the function must be embedded within ```{ ... }```
 * For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you call the function. If a variable is defined in the function without the keyword **local**, call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
 * Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME**. For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result 
+* If a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation, then executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process
 
 The rest is the same as for the scripts:
 
@@ -512,11 +513,12 @@ Hi!
 What now? Have we just accidentally overwritten and lost permanently the command **date**? Not quite, what happened here is that the alias execution got precedence over the **Linux** command named in the same way. But both the alias **date** and the command **date** now exist simultaneously on your computer.
 
 The command precedence rules in **Bash** are well defined and strictly enforced with the following ordering:
-1. aliases
-2. **Bash** keywords (**if**, **for**, etc.)
-3. **Bash** functions
-4. **Bash** built-in commands (**cd**, **type**, etc.)
-5. scripts with execute permission and **Linux** commands (among them, the precedence is determined based on the ordering in **PATH** variable, as we already discussed)
+
+1. aliases  
+2. **Bash** keywords (**if**, **for**, etc.)  
+3. **Bash** functions  
+4. **Bash** built-in commands (**cd**, **type**, etc.)  
+5. scripts with execute permission and **Linux** commands (among them, the precedence is determined based on the ordering in **PATH** variable, as we already discussed)   
 
 Given this ordering of command precedence, some care is definitely needed when introducing new aliases or developing new functions in **Bash**, to avoid the name clashes with existing **Linux** commands. If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back:
 ```bash
