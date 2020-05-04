@@ -476,8 +476,6 @@ When compared to the script implementation, there are few differences:
 * Usage of keyword **function** (an alternative syntax exists, ```<some-name>()```, but it's really a matter of taste which one you prefer)
 * Body of the function must be embedded within ```{ ... }```
 * For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you call the function. If a variable is defined in the function without the keyword **local**, call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
-* Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME**. For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result 
-* If a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation, then executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process
 
 The rest is the same as for the scripts:
 
@@ -489,7 +487,6 @@ The rest is the same as for the scripts:
 ```bash 
 source ${HOME}/functions.sh
 ```
-
 If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands --- in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
 
 

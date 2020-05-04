@@ -256,3 +256,70 @@ diff <(head -10 <file1-name>) <(head -10 <file2-name>)
     o echo $RANDOM    
     o shuf -i 1-10
     o shuf -i 1-10 -n 1
+
+
+
+
+
+**Example: sourced script vs. executed script**
+
+
+
+**Example:** Consider the following simple implementation and save it in the file ```someScript.sh``` :
+
+```bash
+#!/bin/bash
+echo $Var
+echo "Process ID of script: $$"
+Var=20
+return 0
+```
+
+On the other hand, the following, slightly modified implementation, save in the file ```someScript``` :
+
+```bash
+#!/bin/bash
+echo $Var
+echo "Process ID of script: $$"
+Var=20
+exit 0
+```
+
+These two implementations are identical, with the only difference being the exit status specification. Now in your terminal execute first:
+
+```bash
+Var=10
+echo "Process ID: $$ 
+echo "Before: $Var"
+source someScript.sh
+echo "After: $Var"
+```
+
+The output is:
+
+```bash
+Process ID: 6164
+Before: 10
+10
+Process ID of script: 6164
+After: 20
+```
+
+Now we do the same for executed script. TBI
+
+
+
+TBI : Introduce special variable $$
+
+
+
+
+
+
+
+**Difference between functions and scripts (extra)**    
+
+Another interesting difference between scripts and functions is the handling of the zeroth (```${0}```) positional parameters. All other positional parameters (```${1}, ${2}, ...```) and corresponding special variables (```${*}, ${@} and ${#}```) have exactly the same meaning within script and function body.  For the scripts, ```${0}``` holds the name of the command used to invoke the script, but only if the script is executed as an executable. If the script is not an executable, i.e. when script is sourced, then only typically 'bash' is printed as the content of ```$0```, because then essentially ```bash some-script.sh``` is being executed behind the scene. 
+
+When it comes to the functions, ```$0``` in the function body retrieves the same meaning as for the scripts --- it is not set to the function name, but rather to the command used to initialize function definition from some file. 
+
