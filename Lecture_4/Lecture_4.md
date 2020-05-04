@@ -45,9 +45,9 @@ Functions are much more suitable for making long scripts modular. In terms of en
 
 If a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation, then executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process.
 
-Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME**. For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
+Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body).  For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
 
-We summarize this comparison with the following conclusion: Use **Bash** scripts only for the very simple cases and **Bash** functions for everything else.
+We summarize the above thorough comparison with the following final conclusion: Use **Bash** scripts only for the very simple cases and **Bash** functions for everything else.
 
 
 
@@ -57,21 +57,20 @@ We summarize this comparison with the following conclusion: Use **Bash** scripts
 
 
 ### 2. Command chain: **&&** and **||** <a name="chain"></a>
-Since every command in **Linux/Bash** has an exit status, we can programatically branch the code execution, depending on whether  commands executed successfully (exit status 0), or failed to execute with some error status (exit status 1--255). For instance, we would like multiple commands to execute one after another, but only in the case of their successful execution. As soon as one of them fails, we would immediately like to abort the execution of all subsequent commands. In **Bash**, we can achive that with the so called _command chain_. 
+Since every command in **Linux/Bash** has an exit status, we can programmatically branch the code execution, depending on whether commands executed successfully (exit status 0), or failed to execute with some error status (exit status 1--255). For instance, we would like multiple commands to execute one after another, but only in the case of their successful execution. As soon as one of them fails, we would immediately like to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the  _command chain_. 
 
 Command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second one will be executed only if the first one executed successfully, for instance:
 
 ```bash
 mkdir TEST_DIR && echo "New directory was made."
-  ```
-
+```
 You will see the printout from **echo** only if directory was successfuly created with **mkdir** command, otherwise if **mkdir** has failed, **echo** will not be executed.
 
 If two commands are chained by ```||``` operator, the second command will be executed only if the first command has failed. For instance, let's intentionally mistype command name to produce an error, and compare
 
-​```bash
+```bash
 mkdirrr TEST_DIR && echo "Cannot make directory"
-  ```
+```
 
 with
 
@@ -109,15 +108,15 @@ Now the output is:
 Hello
 pwddd: command not found
 Failed
-   ```
+```
 
-What happened? The first command in the ```&&``` chain executed successfully, so we proceeded with the next one in the ```&&```  chain. However, the second command (```pwddd```) has failed, broke the  ```&&``` chain, and from that point onward only the comnand  after ```||``` will be executed, and all remaining commands in ```&&``` chain are ignored.
+What happened? The first command in the ```&&``` chain executed successfully, so we proceeded with the next one in the ```&&```  chain. However, the second command (```pwddd```) has failed, broke the  ```&&``` chain, and from that point onward only the command  after ```||``` will be executed, and all remaining commands in ```&&``` chain are ignored.
 
 To clarify the things further, let's have a look at the next example: 
 
-​```bash
+```bash
 echo "Hello" && pwd && dateee || echo "Failed"
-   ```
+```
 
 The output is:
 
@@ -126,16 +125,16 @@ Hello
 /home/abilandz/Lecture/SS2019/Lecture_4
 dateee: command not found
 Failed
- ```
+```
 Now the first two commands in the chain succeeded, the third one has failed and therefore only at that point triggered the execution of the very last command  after the ```||``` operator.
 
 Another frequent use case of command chain is within scripts or functions, in the following schematic way:
-​```bash
+```bash
 <execute-some-command> || return 1 # bail out with specific exit status if this command failed to execute
 ...
 <execute-some-other-command> || return 2 # bail out with specific exit status if this command failed to execute
 ...
- ```
+```
 In this way, we can easily add an additional layer of protection to the execution of scripts and functions, for the case the execution of some command has failed.
 
 
@@ -157,11 +156,11 @@ These 3 distinct categories of the usage of ```[[ ... ]]``` are best explained w
 
 ```bash
 [[ -n ${Var} ]] && echo "YES" || echo "NO"
-  ```
+```
 The very frequent use case is to check in the body of script or function whether user has supplied some value for an expected argument, e.g.:
-​```bash
+```bash
 [[ -n ${1} ]] || return 1 # if user didn't provide value for the first argument, bail out from script/function 
-  ```
+```
 Operator ```-n``` accepts only one argument and checks whether it is set to same value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
 
 **Example 2**: How to check if the content of variable ```Var1``` is equal to the content of variable ```Var2```?
@@ -178,7 +177,7 @@ Note that ========== is comparison operator, while ```=``` is assignment operato
 
 **Example 3**: How to check if one string contains another one as a substring?
 
-​```bash
+```bash
 Var1=abcd
 Var2=bc
 [[ ${Var1} =~ ${Var2} ]] && echo "Var1 contains Var2"
@@ -195,12 +194,12 @@ o ```=~``` : true is first variables contains the seconds as a substring
 When it comes to the second group of operators,  ```-gt, -ge, -lt, -le, -eq```, they are specific in a sense that they accept two arguments both of which must be integers. 
 
 **Example 4**: How to check if variable content is greater than some integer?
-​```bash
+```bash
 Var=44
 [[ ${Var} -gt 10 ]] && echo "YES" || echo "NO"
 ```
 Quite frequently, if our script/function expects user to pass exactly the certain number of arguments, we use the following snippet at the beginning of script/function body, in order to ensure that:
-​```bash
+```bash
 [[ $# -eq 2 ]] || return 1 # script/function expects exactly 2 arguments, otherwise bail out with some error state
 ```
 The meaning of integer operators is obvious, and summarized here:
@@ -507,7 +506,7 @@ done
 return 0
 ```
 then by executing 
-```linux
+```bash
 source forLoop.sh a b c
 ```
 we get the following printout:
@@ -559,7 +558,7 @@ continue some-integer
 
 As a side remark, we have also in the above example used the trivial, nevertheless sometimes very handy, **Linux** command **sleep**. This command does nothing, except that it delays the code execution for the time interval specified via the argument. The argument can be interpreted as the time interval either in seconds (s), minutes (m), hours (h) or days (d):
 
-```linux
+```bash
 sleep 10m # delays the code execution for 10 minutes
 sleep 2h  # delays the code execution for 2 hours
 ```
@@ -597,12 +596,12 @@ line 3 ... 1000
 ```
 
 Finally, execute the script with:
-```linux
+```bash
 source parseFile.sh data.log
 ```
 
 The printout in the terminal shall be:
-```linux
+```bash
 I am reading now: line 1 ... 10 20 30
 I am reading now: line 2 ... 100 200
 I am reading now: line 3 ... 1000

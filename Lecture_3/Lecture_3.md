@@ -123,7 +123,7 @@ We finalize the explanation of **PATH** variable with the following concluding r
        6    /bin/ls
     ```
     
-    Cleary, the hash mechanism adds it a lot to the efficiency of commands' usage in **Linux**.
+    Cleary, the hash mechanism adds it a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty, then each terminal  keeps its own hash table.
 
 * The **PATH** search can be skipped by the user. In particular, when the command name contains the ```/``` (slash) character, not necessarily at the beginning of the name, **Bash** will not perform the search for the corresponding executable --- underlying assumption is that you have now yourself specified the path in the file system, either absolute or relative, to the corresponding executable. In this case, **Bash** tries to execute that command name on the spot. This explains the standard syntax to run the command whose executable is in your current directory: 
 
