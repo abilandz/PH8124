@@ -1,51 +1,46 @@
 # Homework #2: Using external executable as Linux/Bash command
 
-Last update: 20190510
+Last update: 20200504
 
-**Challenge #1**: As a starting point of this homework, please start **nano** editor in the terminal and write the following simple code snippet of C++ programming language (as an example choice, but this homework is fairly generic, and you can use some other programming language that you prefer more) into the file ```Hello.C``` 
+As a starting point of this homework, please start the **nano** editor in the terminal and write the following simple code snippet of C/C++ programming language (this is just an example choice --- this homework is fairly generic, and you can use some other programming language that you prefer more!) into the file ```Hello.C``` 
 
 ```c
 #include <stdio.h>
 int main()
 {
-  printf("\n Hello external world!\n\n");
-
-  return 0;
-
+ printf("\n Hello from C/C++ executable!\n\n");
+ return 0;
 }
 ```
 
-Then, compile the above code, in order to create an executable (or binary) file. For instance, you can compile C++ code by using ```gcc``` compiler:
+Then, compile the above code, in order to create an executable (or binary) file. For instance, you can compile C/C++ code by using the widely used and freely available **gcc** compiler, with the following generic syntax:
 
-```linux
-gcc Hello.C -o hi
-```
-The name which follows immediately after the flag **-o**, the **gcc** compiler interprets as the name of the final compiled executable. The remaining argument is the source code which needs to be compiled (in this case, the file ```Hello.C```).
-
-If the compilation succeded, you shall see the new file ``hi`` in your current directory, something like:
-```linux
-ls -al
--rwxrwxr-x 1 abilandz abilandz    8559 Mai 10 16:00 hi
-``` 
-
-The question now is, how to use this new executable ``hi``, created with an external C++ programming language, as any other **Linux** command? If you type in the terminal only the name of executable, you get the error:
 ```bash
-hi
-hi: command not found
+gcc <input-source-code> -o <final-executable>
 ```
-Temporarily, you can resolve this problem, by specifying explicitely where in the file system your executable sits, e.g. 
-```linux
-$PWD/hi
-```
-or using the shortcut version
-```
-./hi
-```
-But above two temporary solutions are very limited in scope, in a sense that they will work only if you execute them exactly from the same directory where the executable **hi** physically sits. And you definitely want to be able to call your executable from any place in the file system hierarchy!
 
-**Please answer the following questions:**
-1. Which environment variable do you need to modify and how, in order to fix the above error message ```hi: command not found```?
-2. What do you need to do in order to be able to use **hi** straight as any other **Linux** command in any new terminal you open?
-3. Which command do you need to execute in order to prevent everybody except you to run **hi** executable?
+In your case:
 
+```bash
+gcc Hello.C -o hello
+```
+The name which follows immediately after the flag **-o** the **gcc** compiler interprets as the name of the final compiled executable. If you omit this part in the command input, the default name of executable is rather plain: ```a.out``` .
 
+If the compilation went through, you will find the new file ``hello`` in your current directory, something like:
+```bash
+-rwxrwxrwx 1 abilandz abilandz 8392 May  4 11:32 hello
+```
+
+By default after the **gcc** compilation, you, your group members and everybody else got all permissions (```r```, ```w```, and ```x```) for the file ```hello```. 
+
+**Challenge #1**: Which command do you need to execute to remove the write (```w```) permission both for your group and everybody else, on the file ```hello``` (this is a very simple safety measure, as after this nobody except you will be able to overwrite this executable, accidentally or not). Which command do you need to execute in the terminal to remove the execute (```x```) permission on the file ```hello``` for everybody, expect for you and your group members? Which command do you need to execute to remove the read and write permissions on the source code ```Hello.C``` for everybody except you (this way, nobody except you can see and edit the details of implementation which eventually led to the executable ```hello```)? 
+
+**Challenge #2:** If you type in the terminal **hello** you get an error message, something like:
+
+```bash
+hello
+hello: command not found
+```
+If you are in the same directory where ```hello``` sits, you can circumvent this by using ```./hello``` instead. If you are outside of that directory, you have to prepend the absolute path to that directory before the executable name ```hello```, which is very tedious and inconvenient.
+
+What do you need to do to fix this problem permanently, i.e. you want to be able to use the external C/C++ executable in the terminal only by its name **hello**, at any point in the file system, each time you login, and each time you open a new terminal --- just like any other **Linux** or **Bash** command?
