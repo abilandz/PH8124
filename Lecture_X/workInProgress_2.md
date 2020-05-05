@@ -109,47 +109,6 @@ o see also <https://unix.stackexchange.com/questions/424471/whats-the-difference
 
 
 
-### Special files
-
-o The following 3 have special meaning to Bash, and must be in your home directory:
-1/ .bash_profile
-     oo the most important bash file, executed each time you log in to the system
-     oo executed only by the login shell
-     oo .profile and .bash_login are synonyms for .bash_profile, read only if .bash_profile is not available
-           => the point here is that .profile are read by sh and ksh. So those settings can be retained by bash
-           => .login is read by csh , but do not use that!! Difference in syntax is too big
-     oo if only .profile and .bash_login are available, .bash_login is read 
-     Priority:
-     .bash_profile => .bash_login => .bashrc => .profile
-     TBI: Why in my case .bashrc is read before .profile ???
-2/ .bash_logout
-     oo Executed every time when login shell exits
-     oo Use case: a) Delete all temporary files; b) Calculate how much time I've been logged in, etc.
-3/ .bashrc
-     oo Read when we start a subshell (typing bash)
-     oo If you need these commands also at log in, just source .bashrc in .bash_profile
-     oo If .bashrc is empty, nothing is executed when you start a subshell 
-o These 3 files modify your own environment, when you login, start new shell, or log out.
-4/ /etc/profile
-o If they do NOT exist, your account is using only a system-wide default file /etc/profile
-   => sudo is needed to modify it
-5/ /etc/bash.bashrc TBI
-
-oo The Environment File
-o Although env. variables will always be known to subprocesses, the shell must be explicitly told which other variables, options, aliases, etc. are to be communicated to subprocesses. The solution: put all such definitions in the enviroonment file. bash's default environment file is .bashrc
-   => 'rc' suffix is common in Unix to initialization files. According to the folkore, is stands for 'run commands'  
-o General rule: as few definitions as possible in .bash_profile, and as many as possible in .bashrc
-o The only thing that really needs to be in .bash_profile are env. variables and their exports and commands that aren't definitions but actually run or produce output when you log in
-    => Example: You can put date command in .bash_profile
-    => Example: Put source .bashrc in .bash_profile
-o aliases and options shall go in .bashrc
-
-
-
-
-
-
-
 
 
 
