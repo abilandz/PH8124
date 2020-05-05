@@ -583,15 +583,15 @@ By convention, the name of all configuration files in the home directory begins 
 These are the personal configuration files in the user's home directory, which can be edited directly:
 
 - ```~/.bash_profile``` : this configuration file is only executed by **Bash** each time you log in on the computer. There are two synonyms for this file:  ```~/.bash_login``` and ```~/.profile``` . They are executed at login only if ```~/.bash_profile``` is not present in your home directory. The files ```~/.bash_profile``` and ```~/.bash_login``` can be read only by **Bash**, while ```~/.profile``` is read also by some other shells, e.g. **sh** and **ksh**
-- ```~/.bashrc``` : this configuration file is read with the highest priority when you open a new terminal, or when you start a new _subshell_ (covered later in the lecture). This file can be read also at login only if you add a line ```source ~/.bashrc```  in ```~/.bash_profile```  
+- ```~/.bashrc``` : this configuration file is read with the highest priority when you open a new terminal, or when you start a new _subshell_ (covered later in the lecture). This file will be read also at login only if you add a line ```source ~/.bashrc```  in ```~/.bash_profile```  
 
-- ```.bash_logout```: Executed whenever you log out from the computer. This is rarely used, but by editing this file, you can for instance automatically delete all temporary files at exit
+- ```~/.bash_logout```: Executed whenever you log out from the computer. This is rarely used, but by editing this file, you can for instance automatically delete all temporary files at exit
 
 #### System-wide (default) configuration files
 
 If by accident you have deleted your personal configuration files in your home directory, as a backup solution you can always rely on the two system-wide configuration files, which you cannot edit directly without having the administrator privileges:
 
-- ```/etc/profile``` : the default, system-wide, configuration file which is read at login. It is read before ```~/.bash_profile```. This means that you will always have some default settings enabled after you login in the computer, whether or not ```~/.bash_profile``` with your personal settings exists or not
+- ```/etc/profile``` : the default, system-wide, configuration file which is read at login. It is read before ```~/.bash_profile```. This means that you will always have some default settings enabled after you log in on the computer, whether or not ```~/.bash_profile``` with your personal settings exists or not
 
 - ```/etc/bash.bashrc``` : the default, system-wide, configuration file which is read each time you open a new terminal or start a new subshell. It is read before ```~/.bashrc```. This means that you will always have some default settings enabled after you open a new terminal or start a subshell, whether or not ```~/.bashrc``` with your personal settings exists or not  
 
@@ -605,7 +605,7 @@ In the most cases of interest, it suffices to know that you need to edit directl
 source ~/.bash_aliases
 ```
 
-For instance, let us edit in your home directory the file named ``` ~/.bash_aliases``` (any other name is perfectly fine). We start by executing in the terminal:
+For instance, let us edit in your home directory the file named ``` ~/.bash_aliases``` (any other name is perfectly fine as this is your personal file, not a special configuration file!). We start by executing in the terminal:
 
 ```bash
 nano ~/.bash_aliases
@@ -624,12 +624,12 @@ Save the file and exit **nano** (press ```CTRL+x``` and choose 'y' followed by '
 cat ~/.bash_aliases
 ```
 
-or, if the file got to lengthy and you need to scroll page-by-page, via 
+or, if the file got too lengthy and you need to scroll page-by-page, via 
 ```bash
 more ~/.bash_aliases
 ```
 
-Since the content of ```~/.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions stored there, for instance for aliases and variables, will be re-defined from scratch each time you start a new terminal, and you can re-use them again and again. 
+Since the content of ```~/.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions, for instance for aliases and variables, will be re-defined from scratch each time you start a new terminal, and you can re-use them again and again. 
 
 Now add the following line at the very end of ```~/.bashrc``` (if this line is already not inside that file --- by default it is already inside on most **Linux** distributions):
 
@@ -637,4 +637,6 @@ Now add the following line at the very end of ```~/.bashrc``` (if this line is a
 source ~/.bash_aliases
 ```
 
-Each time you run a new terminal, the variable ```Var``` is set to 44, and you can use **sl** as the synonym for the **ls** command, i.e. you do not need to define them again in the new terminal sessions. In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` . This is much safer than to edit directly each time the file ```~/.bashrc``` where also some other, and more important settings, can be defined as well.  In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in the files ```~/.bashrc``` and ```~/.bash_profile``` the line ```source ~/.bash_aliases```. On the other hand, typically it's very difficult to port the whole ```~/.bashrc``` from one computer to another, especially if they are running different **Linux** distributions.
+Each time you run a new terminal, the variable ```Var``` is set to 44, and you can use **sl** as the synonym for the **ls** command, i.e. you do not need to define them again in the new terminal sessions. In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` . 
+
+Finally, we remark that it is much safer to edit directly ```~/.bash_aliases``` than to edit directly the file ```~/.bashrc```, where also some other and more important settings can be defined as well. In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in ```~/.bashrc``` and ```~/.bash_profile``` the line ```source ~/.bash_aliases```. On the other hand, typically it's very difficult to port the whole ```~/.bashrc``` from one computer to another, especially if they are running different **Linux** distributions.
