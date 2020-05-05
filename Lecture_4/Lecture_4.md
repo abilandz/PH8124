@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200504
+**Last update**: 20200505
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
