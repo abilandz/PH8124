@@ -57,46 +57,59 @@ We summarize the above thorough comparison with the following final conclusion: 
 
 
 ### 2. Command chain: **&&** and **||** <a name="chain"></a>
-Since every command in **Linux/Bash** has an exit status, we can programmatically branch the code execution, depending on whether commands executed successfully (exit status 0), or failed to execute with some error status (exit status 1--255). For instance, we would like multiple commands to execute one after another, but only in the case of their successful execution. As soon as one of them fails, we would immediately like to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the  _command chain_. 
+Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1.. 255). For instance, we would like multiple commands to execute one after another, but only if all of them execute successfully. As soon as one command has failed, we would immediately to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
 
-Command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second one will be executed only if the first one executed successfully, for instance:
-
-```bash
-mkdir TEST_DIR && echo "New directory was made."
-```
-You will see the printout from **echo** only if directory was successfuly created with **mkdir** command, otherwise if **mkdir** has failed, **echo** will not be executed.
-
-If two commands are chained by ```||``` operator, the second command will be executed only if the first command has failed. For instance, let's intentionally mistype command name to produce an error, and compare
+The command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second command will be executed only if the first one executed successfully. For instance:
 
 ```bash
-mkdirrr TEST_DIR && echo "Cannot make directory"
+mkdir someDirectory && echo "New directory was made."
+New directory was made.
 ```
-
-with
+You will see the printout from **echo** only if a directory was successfully made with the command **mkdir**. On the other hand, if **mkdir** has failed, the command chain has broken, and **echo** is not executed. For instance, we can intentionally mistype **mkdir** just to simulate the failure of the first command in the chain:
 
 ```bash
-mkdirrr TEST_DIR || echo "Cannot make directory"
+mkdirrr someDirectory && echo "New directory was made."
+mkdirrr: command not found
 ```
 
-Only in the second case **echo** was executed.
+In this case, **echo** is not executed because the failure of **mkdirrr** has broken the command chain ```&&```.
 
-The most frequent use case is to group multiple commands with the ```&&``` operator, and append the very last command with  ```||``` .  In that case, if any of the commands chained with ```&&``` fails, that chain is broken, and then the command after ```||``` operator is executed. On the other hand, if all commands chained with ```&&``` execute successfully,  the command after ```||``` will never be executed.
+On the other hand, if two commands are chained by ```||``` operator, the second command in the chain will be executed only if the first command has failed:
 
-For instance:
+```bash
+mkdirrr someDirectory || echo "Cannot make directory. Sorry."
+Cannot make directory. Sorry.
+```
+
+The frequent use case of the command chain is to combine both ```&&``` and ```||``` operators in the following way:
+
+1. start a command chain by grouping multiple commands with the ```&&``` operator   
+
+2. append at the end of command chain the very last command with the  ```||``` operator     
+
+Schematically:
+
+```bash
+<command1> && <command2> && <command3> ... || <lastCommand>
+```
+
+The main point behind this construct is the following: **lastCommand** is executed if and only if any of the commands **command1**, **command2**, ..., has failed. The command **lastCommand** is not executed only if all commands **command1**, **command2**, ..., have executed successfully. Typically, the last command in the above chain would be some error printout accompanied with the code termination, either with **exit** or **return**. Therefore, the **lastCommand** is a sort of safe guard for the execution of all previous commands in the chain. 
+
+**Example**: Consider the following command chain
 
 ```bash
 echo "Hello" && pwd && date || echo "Failed"
 ```
 
-This creates the following output:
+Since all commands executed successfully, it creates the following output:
 
 ```bash
 Hello
-/home/abilandz/Lecture/SS2019/Lecture_4
+/home/abilandz/Lecture/PH8214/Lecture_4
 Mi 15. Mai 07:53:25 CEST 2019
 ```
 
-Since all three commands chained with  the ```&&``` operator executed successfuly, the very last command after ```||``` operator, namely ```echo "Failed"```,  will never be executed. Now we introduce some error, e.g. we mistype something intentionally, for instance: 
+The very last command after ```||``` operator, **echo "Failed"**, is not executed. Now we introduce some error, e.g. we mistype something intentionally: 
 
 ```bash
 echo "Hello" && pwddd && date || echo "Failed"
@@ -110,32 +123,17 @@ pwddd: command not found
 Failed
 ```
 
-What happened? The first command in the ```&&``` chain executed successfully, so we proceeded with the next one in the ```&&```  chain. However, the second command (```pwddd```) has failed, broke the  ```&&``` chain, and from that point onward only the command  after ```||``` will be executed, and all remaining commands in ```&&``` chain are ignored.
+The first command in the ```&&``` chain executed successfully, and the execution continued with the next command in the ```&&```  chain. However, the second command **pwddd** has failed, and therefore has broken the ```&&``` chain. From that point onwards, only the command  after ```||``` will be executed, and all the remaining commands in ```&&``` chain are ignored. 
 
-To clarify the things further, let's have a look at the next example: 
-
+In practice, the most frequent use case of the command chain is illustrated in the following schematic way:
 ```bash
-echo "Hello" && pwd && dateee || echo "Failed"
-```
-
-The output is:
-
-```bash
-Hello
-/home/abilandz/Lecture/SS2019/Lecture_4
-dateee: command not found
-Failed
-```
-Now the first two commands in the chain succeeded, the third one has failed and therefore only at that point triggered the execution of the very last command  after the ```||``` operator.
-
-Another frequent use case of command chain is within scripts or functions, in the following schematic way:
-```bash
-<execute-some-command> || return 1 # bail out with specific exit status if this command failed to execute
-...
-<execute-some-other-command> || return 2 # bail out with specific exit status if this command failed to execute
+<someCommand> || return 1 
+<someOtherCommand> || return 2
 ...
 ```
-In this way, we can easily add an additional layer of protection to the execution of scripts and functions, for the case the execution of some command has failed.
+This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible by inspecting the content of that variable upon termination, to programmatically fix the particular reason of the failure, without intervening manually in the code. 
+
+
 
 
 
