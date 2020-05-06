@@ -123,15 +123,15 @@ pwddd: command not found
 Failed
 ```
 
-The first command in the ```&&``` chain executed successfully, and the execution continued with the next command in the ```&&```  chain. However, the second command **pwddd** has failed, and therefore has broken the ```&&``` chain. From that point onwards, only the command  after ```||``` will be executed, and all the remaining commands in ```&&``` chain are ignored. 
+The first command in the ```&&``` chain executed successfully, and the execution continued with the next command in the ```&&```  chain. However, the second command **pwddd** has failed, and therefore has broken the ```&&``` chain. From that point onwards, only the command  after ```||``` will be executed, and all the remaining commands in ```&&``` chain are ignored (the command **date** in this case). 
 
-In practice, the most frequent use case of the command chain is illustrated in the following schematic way:
+In practice, the most frequent use case of the command chain is illustrated schematically:
 ```bash
 <someCommand> || return 1 
 <someOtherCommand> || return 2
 ...
 ```
-This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible by inspecting the content of that variable upon termination, to programmatically fix the particular reason of the failure, without intervening manually in the code. 
+This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible by inspecting the content of that variable upon termination, to fix programmatically the particular reason of the failure, without intervening manually in the code. 
 
 
 
