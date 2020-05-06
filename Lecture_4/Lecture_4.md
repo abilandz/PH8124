@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200505
+**Last update**: 20200506
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -23,29 +23,29 @@
 ### 1. Scripts vs. functions <a name="s_vs_f"></a>
 Now that we have seen how to implement in **Bash** both scripts and functions, we can discuss briefly their similarities, differences and typical use cases.
 
-First, let us start with the execution details of scripts. In general, we run any **Bash** script either by 'sourcing' or 'executing' that script. The first case corresponds to the following syntax:
+First, let us start with the execution details of scripts. In general, we run any **Bash** script either by 'sourcing' or by 'executing' that script. The first case corresponds to the following syntax:
 
 ```bash 
 source someScript.sh # sourcing the script
 ```
-When executed this way, all lines in the script are read and executed by **Bash** one-by-one, just as if they were typed in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the key word **return**. Script does not run in a separate process (more on this later).
+When executed this way, all lines in the script are read and executed by **Bash** one-by-one, just as if they were typed separately in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the key word **return**. Script does not run in a separate process (more on this later).
 ```bash 
 someScript # executing the script 
 ```
 This way, you are running your script as any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file has also the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal, and cannot modify it globally. Therefore, it is much safer to run scripts this way, if you want to keep your current shell environment clean. The exit status of the executed script is specified with the key word **exit**. When executed this way, script runs in a separate process (more on this later).
 
-On the other hand, functions behave differently. After you source the file where function is implemented, **Bash** stores that function in computer's memory, and from that point onwards you can use that function as any other **Linux** or **Bash** command. For functions, there is no need to bother with using keyword **source**, setting the execute permission, modifying **PATH**, etc. That means that if you have added to your ```~/.bashrc``` file the following line:
+On the other hand, functions behave differently. After you source the file where function is implemented, **Bash** stores that function in computer's memory, and from that point onwards you can use that function as any other **Linux** or **Bash** command. For functions, there is no need to bother with using keyword **source**, setting the execute permission, modifying **PATH**, etc. That means that if you have added to your ```~/.bashrc``` the following line:
 
   ```
 source ~/functions.sh
   ```
-where in the example file ```~/functions.sh``` you have the implementation of your **Bash** functions, you can use effortlessly all your functions.
+where in the example file ```~/functions.sh``` you have the implementation of your **Bash** functions, you can use effortlessly all your functions in any new terminal you open.
 
 Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts, due to keyword **local**, which can be used only in the function body, and which limits the scope and lifetime of variable defined in the function only to the function execution.
 
 If a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation, then executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process.
 
-Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body).  For the scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
+Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body).  For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
 
 We summarize the above thorough comparison with the following final conclusion: Use **Bash** scripts only for the very simple cases and **Bash** functions for everything else.
 
