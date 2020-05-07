@@ -19,7 +19,7 @@ Then, compile the above code, in order to create an executable (or binary) file.
 gcc <input-source-code> -o <final-executable>
 ```
 
-In this particular case, you could compile with have something like:
+In this particular case, you could compile with something like:
 
 ```bash
 gcc Hello.C -o hello
