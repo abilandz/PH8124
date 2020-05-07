@@ -1,6 +1,6 @@
 # Homework #2: Using external executable as Linux/Bash command
 
-Last update: 20200506
+**Last update: 20200506**
 
 As a starting point of this homework, start the **nano** editor in the terminal and write the following simple code snippet of C/C++ programming language (this is just an example choice --- this homework is fairly generic, and you can instead use some other programming language that you prefer more!) into the file ```Hello.C``` 
 
