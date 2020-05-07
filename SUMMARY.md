@@ -8,6 +8,6 @@
 * [Lecture 6](./Lecture_6/Lecture_6.md_TBI)
 * [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1](./Homeworks/Homework_1.md)
-    * [Homework 2](./Homeworks/Homework_2.md_TBI)
+    * [Homework 2](./Homeworks/Homework_2.md)
 * [Final Project](./Final_Project.md_TBI)
 
