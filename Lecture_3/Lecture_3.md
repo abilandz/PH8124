@@ -7,7 +7,7 @@
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
 	A) [File metadata](#file_metadata)     
-2. [Positional parthameters](#positional_parameters)
+2. [Positional parameters](#positional_parameters)
 3. [Your first **Linux/Bash** commands: **Bash** functions](#first_command)
 4. [Command precedence](#precedence)
 
