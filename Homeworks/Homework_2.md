@@ -1,4 +1,4 @@
-
+![](bash_logo.png)
 
 # Homework #2: Using external executable as Linux/Bash command
 

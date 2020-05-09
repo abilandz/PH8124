@@ -1,3 +1,4 @@
+![](bash_logo.png)
 
 # Homework #1: Using ```Bash``` aliases as your simplest commands
 
