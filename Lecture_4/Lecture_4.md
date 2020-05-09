@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200506
+**Last update**: 20200509
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -57,7 +57,7 @@ We summarize the above thorough comparison with the following final conclusion: 
 
 
 ### 2. Command chain: **&&** and **||** <a name="chain"></a>
-Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1.. 255). For instance, we would like multiple commands to execute one after another, but only if all of them execute successfully. As soon as one command has failed, we would immediately to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
+Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1.. 255). For instance, we would like multiple commands to execute one after another, but only if all of them execute successfully. As soon as one command has failed, we would like immediately to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
 
 The command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second command will be executed only if the first one executed successfully. For instance:
 
@@ -65,7 +65,7 @@ The command chain is a sequence of commands separated either with ```&&``` or ``
 mkdir someDirectory && echo "New directory was made."
 New directory was made.
 ```
-You will see the printout from **echo** only if a directory was successfully made with the command **mkdir**. On the other hand, if **mkdir** has failed, the command chain has broken, and **echo** is not executed. For instance, we can intentionally mistype **mkdir** just to simulate the failure of the first command in the chain:
+You will see the printout from **echo** only if the directory was successfully made with the command **mkdir**. On the other hand, if **mkdir** has failed, the command chain has broken, and **echo** is not executed. For instance, we can intentionally mistype **mkdir** just to simulate the failure of the first command in the chain:
 
 ```bash
 mkdirrr someDirectory && echo "New directory was made."
@@ -78,14 +78,15 @@ On the other hand, if two commands are chained by ```||``` operator, the second 
 
 ```bash
 mkdirrr someDirectory || echo "Cannot make directory. Sorry."
+mkdirrr: command not found
 Cannot make directory. Sorry.
 ```
 
 The frequent use case of the command chain is to combine both ```&&``` and ```||``` operators in the following way:
 
-1. start a command chain by grouping multiple commands with the ```&&``` operator   
+1. start a command chain by grouping multiple commands with the ```&&``` operator;   
 
-2. append at the end of command chain the very last command with the  ```||``` operator     
+2. append at the end of command chain the very last command with the  ```||``` operator.     
 
 Schematically:
 
@@ -93,12 +94,12 @@ Schematically:
 <command1> && <command2> && <command3> ... || <lastCommand>
 ```
 
-The main point behind this construct is the following: **lastCommand** is executed if and only if any of the commands **command1**, **command2**, ..., has failed. The command **lastCommand** is not executed only if all commands **command1**, **command2**, ..., have executed successfully. Typically, the last command in the above chain would be some error printout accompanied with the code termination, either with **exit** or **return**. Therefore, the **lastCommand** is a sort of safe guard for the execution of all previous commands in the chain. 
+The main point behind this construct is the following: **lastCommand** is executed if and only if any of the commands **command1**, **command2**, ..., has failed. The command **lastCommand** is not executed only if all of the commands **command1**, **command2**, ..., have executed successfully. Typically, the last command in the above chain would be some error printout accompanied with the code termination, either with **exit** or **return**. Therefore, the **lastCommand** is a sort of safe guard for the execution of all previous commands in the chain. 
 
 **Example**: Consider the following command chain
 
 ```bash
-echo "Hello" && pwd && date || echo "Failed"
+decho "Hello" && pwd && date || echo "Failed"
 ```
 
 Since all commands executed successfully, it creates the following output:
@@ -142,132 +143,157 @@ This way, it is possible to add easily an additional layer of protection for the
 
 
 ### 3. Test construct: **[[ ... ]]** <a name="test"></a>
-For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not  work with some older **Bash** versions. Test constructs also return the exit status --- if the test was succesful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can devide the use case of test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the correspondingly meaningful operators:
+For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not  work with some older **Bash** versions. Test constructs also return the exit status --- if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
 
 * General case: ```-z, -n, ==, != , =~```
 * Integers: ```-gt, -ge, -lt, -le, -eq```
 * Files and directories:  ```-f, -d, -e, -s, -nt, -ot```
 
-These 3 distinct categories of the usage of ```[[ ... ]]``` are best explained with few concrete examples. 
+These 3 distinct categories of the usage of ```[[ ... ]]``` are best explained with a few concrete examples --- we start with the general case. 
 
-**Example 1**: How to check if some variable ```Var``` has been initialized?
+#### General case ####
+
+**Example 1**: How to check if some variable **Var** has been initialized?
 
 ```bash
-[[ -n ${Var} ]] && echo "YES" || echo "NO"
+[[ -n ${Var} ]] && echo Yes || echo No
 ```
-The very frequent use case is to check in the body of script or function whether user has supplied some value for an expected argument, e.g.:
-```bash
-[[ -n ${1} ]] || return 1 # if user didn't provide value for the first argument, bail out from script/function 
-```
-Operator ```-n``` accepts only one argument and checks whether it is set to same value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
+Remember the correct syntax and the extreme importance of empty characters within the test construct ```[[ ... ]]```, as this is a typical source of errors:
 
-**Example 2**: How to check if the content of variable ```Var1``` is equal to the content of variable ```Var2```?
+```bash
+[[ -n ${Var} ]] # correct
+[[-n ${Var} ]]  # wrong
+[[ -n ${Var}]]  # wrong
+[[ -n${Var} ]]  # wrong
+```
+
+The very frequent use case is to check at the very beginning of the body of a script or a function if the user has supplied some value for the mandatory argument:
+
+```bash
+[[ -n ${1} ]] || return 1
+```
+If the user didn't provide value for the first argument, the above code snippet will terminate the subsequent execution.
+
+The operator ```-n``` accepts only one argument and checks whether it is set to same value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
+
+**Example 2**: How to check if the content of variable **Var1** is equal to the content of variable **Var2**?
 
 We can illustrate this example with the following code snippet:
 
 ```bash
 Var1=a
 Var2=ab
-[[ ${Var1} == ${Var2} ]] && echo "The same." || echo "Not the same."
+[[ ${Var1} == ${Var2} ]] && echo Yes || echo No
 ```
 
-Note that ========== is comparison operator, while ```=``` is assignment operator. Comparison operator ```==``` treats both arguments as strings, and since by default any variable in **Bash** is string, this operator is applicable to any variable content. Another operator, ```!=```, does the opposite, it exits with 0 if two strings are not the same. 
+Note that ```==```  is the comparison operator, while ```=``` is the assignment operator. The comparison operator ```==``` expects two arguments, and it treats both LHS and RHS argument as strings. Since by default any variable in **Bash** is string, this operator is applicable to any variable content. In particular, you can also compare integers this way, but it's much safer to do integer comparison with the ```-eq``` operator, as explained below. The operator ```!=``` does the opposite to ```==```, i.e. it exits with 0 if two strings are not the same. 
 
-**Example 3**: How to check if one string contains another one as a substring?
+**Example 3**: How to check if one string contains another string as a substring?
 
 ```bash
 Var1=abcd
 Var2=bc
 [[ ${Var1} =~ ${Var2} ]] && echo "Var1 contains Var2"
 ```
-This frequently used operator is supported only in ```[[ ... ]]``` construct. 
+This frequently used operator is supported only within ```[[ ... ]]```, but not within ```[ ... ]```. 
 
-The summary:
-o ```-z``` : true is variable is zero (null)
-o ```-n``` : true is variable holds some value
-o ```==``` : true is two variables are exactly the same
-o ```!=``` : true is two variables are not exactly the same 
-o ```=~``` : true is first variables contains the seconds as a substring
+The executive summary for the first category of operators is provided with the following table:
 
-When it comes to the second group of operators,  ```-gt, -ge, -lt, -le, -eq```, they are specific in a sense that they accept two arguments both of which must be integers. 
+| Operator | Outcome (exit status) |
+| :--:     | :--     |
+| [[ -z ${Var} ]] | true (0) if Var is zero (null) |
+| [[ -n ${Var} ]] | true (0) if Var holds some value |
+| [[ ${Var1} == {Var2} ]] | true (0) if Var1 and Var2 are exactly the same |
+| [[ ${Var1} != {Var2} ]] | true (0) if Var1 and Var2 are not exactly the same |
+| [[ ${Var1} =~ {Var2} ]] | true (0) if Var1 contains Var2 as a substring |
 
-**Example 4**: How to check if variable content is greater than some integer?
+
+#### Integers  ####
+When it comes to the second group of operators,  ```-gt, -ge, -lt, -le, -eq```, they are specific in a sense that they can accept only integers as arguments. 
+
+**Example 4**: How to check if one integer is greater than some other integer?
+
 ```bash
 Var=44
-[[ ${Var} -gt 10 ]] && echo "YES" || echo "NO"
+[[ ${Var} -gt 10 ]] && echo Yes || echo No
 ```
-Quite frequently, if our script/function expects user to pass exactly the certain number of arguments, we use the following snippet at the beginning of script/function body, in order to ensure that:
+Quite frequently, if your script or function demands that a user must provide exactly the certain number of arguments, you can use the following standard code snippet at the beginning of your code:
 ```bash
-[[ $# -eq 2 ]] || return 1 # script/function expects exactly 2 arguments, otherwise bail out with some error state
+[[ $# -eq 2 ]] || return 1
 ```
-The meaning of integer operators is obvious, and summarized here:
-o ```-gt``` : true if the 1st integer is greater than the 2nd integer
-o ```-ge``` : true if the 1st integer is greater than or equal to the 2nd integer
-o ```-lt``` : true if the 1st integer is lower than the 2nd integer
-o ```-le``` : true if the 1st integer is lower than or equal to the 2nd integer
-o ```-eq``` : true if two integers are exactly the same
+In the above example, if a user did not provide exactly two arguments, the code execution terminates.
 
-We can of course check if the two integers are the same by treating them as strings and using the more general string operator ```==```, but whenever we are sure that our variables shall contain integer content, ```-eq``` shall be preferred, as it will produce an error message, in the case variables due to some bug in the code hold non-integer content.
+Since the meaning of integer operators is rather obvious, we just provide the executive summary of their usage with the following table:
 
-The very last group of operators, ```-f, -d, -e, -s, -nt, -ot```, expects their argument(s) to be either files or directories. The first 4 accept one argument, while the last 2 take two arguments. Their meaning is illustrated in the following examples.
+| Operator | Outcome (exit status) |
+| :--:     | :--     |
+| [[ ${Var1} -gt {Var2} ]] | true (0) if Var1 is greater than Var2 |
+| [[ ${Var1} -ge {Var2} ]] | true (0) if Var1 is greater than or equal to Var2 |
+| [[ ${Var1} -lt {Var2} ]] | true (0) if Var1 is smaller than Var2 |
+| [[ ${Var1} -le {Var2} ]] | true (0) if Var1 is smaller than or equal to Var2 |
+| [[ ${Var1} -eq {Var2} ]] | true (0) if Var1 is equal to Var2 |
+
+We can of course check if the two integers are the same by using the more general string comparison operator ```==``` (all variables are strings in **Bash**), but whenever you are sure that variables must contain integer content, ```-eq``` is clearly preferred over ```==```.
+
+
+#### Files and directories  ####
+The very last group of operators, ```-f, -d, -e, -s, -nt, -ot```, expects their argument(s) to be either files or directories. The first four accept one argument, while the last two take two arguments. Their meaning is illustrated in the following examples.
 
 **Example 5**: How to check if the file ```${HOME}/test.txt``` exists or not?
 
 ```bash
-File=${HOME}/test.txt
-[[ -f ${File} ]] && echo "File exists." || echo "File doesn't exist."
+Var=${HOME}/test.txt
+[[ -f ${Var} ]] && echo "${Var} exists." || echo "${Var} doesn't exist."
 ```
-Analogously, we can check for the existence of directory with operator ```-d```, for instance:
+Analogously, we can check for the existence of a directory with operator ```-d```, for instance:
 
 ```bash
-Dir=${HOME}/Some-directory
-[[ -d ${Dir} ]] && echo "Directory exists." || echo "Directory doesn't exist."
+Var=${HOME}/SomeDirectory
+[[ -d ${Var} ]] && echo "${Var} exists." || echo "${Var} doesn't exist."
 ```
-Frequently, we want to trigger some action only if the file is non-empty, we can check that with operator ```-s```, e.g. 
+Frequently, we want to trigger some code execution only if the file is non-empty, we can check that with the operator ```-s```, as in the following example: 
 
 ```bash
-File=${HOME}/test.txt
-[[ -s $File ]] && echo "File is not empty" || echo "File is empty"
+Var=${HOME}/test.txt
+[[ -s ${Var} ]] && echo "${Var} is not empty" || echo "${Var} is empty"
 ```
-For instance, if your script or function is expected to extract some data from the file that user needs to supply as the very first argument, you can implement the following protection at the very beginning:
+For instance, if your script or function is expected to extract some data from the file that user needs to supply as the very first argument, you can implement the following protection at the very beginning against the empty file:
 ```bash
 [[ -s ${1} ]] || return 1
 ```
-Finally, it is possible to compare some file attributes directly, e.g. the modification time. 
+Finally, it is possible to compare directly some file attributes, for instance the modification time. 
 
-**Example 6**: How to check if the file ```${HOME}/test1.txt``` is newer (i.e. modified later) than the file ```${HOME}/test2.txt```? 
+**Example 6**: How to check if the file ```${HOME}/test1.txt``` is newer (i.e. modified more recently) than the file ```${HOME}/test2.txt```? 
 
-This can be answered with operator ```-nt``` ('newer than') which takes two arguments, e.g. in the following example code snippet:
+This can be answered with operator ```-nt``` ('newer than') which takes two arguments:
 ```bash
 File1=${HOME}/test1.txt
 File2=${HOME}/test2.txt
-[[ $File1 -nt $File2 ]] && echo "1st file is newer" || echo "2nd file is newer"
+[[ ${File1} -nt ${File2} ]] && echo "${File1} is newer" || echo "${File2} is newer"
 ```
-Summary of the most important test operators in this last category:
-o ```-f``` : variable is a file, and the file exists
-o ```-d``` : variable is a directory, and the directory exists
-o ```-e``` : variable is a file or directory, and it exists
-o ```-s``` : variable is a file, it exists, and it is not empty
-o ```-nt``` : first file is newer than the second file
-o ```-ot``` : first file is is older than the second file
+The executive summary of the most important test operators in this last category is provided in the following table: 
+| Operator | Outcome (exit status) |
+| :--:     | :--     |
+| [[ -f ${Var} ]] | true (0) if Var is a file, and that file exists |
+| [[ -d ${Var} ]] | true (0) if Var is a directory, and if that directory exists |
+| [[ -e ${Var} ]] | true (0) if Var is either a file or a directory, and it exists |
+| [[ -s ${Var} ]] | true (0) if Var is a file, and that file is not empty |
+| [[ ${Var1} -nt {Var2} ]] | true (0) if a file Var1 is newer than a file Var2 |
+| [[ ${Var1} -ot {Var2} ]] | true (0) if a file Var1 is older than a file Var2 |
 
-For other available options, please check the corresponding documentation of test constructs by executing in the terminal:
+
+In this section we have summarized the most important options --- for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
 ```bash
 help test
 ```
-or
-```bash
-help [[
-```
-Finally, we can use the test construct ```[[ ... ]]``` to branch the code execution, depending on whether some command executed correctly, or if it failed. If it failed, we can branch even further the code execution depending on the exit status of particular error. This is achieved by storing and testing the content of special variable ```$?```.
+At the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch the code execution, depending on whether some command executed correctly, or it has failed. If it has failed, we can branch even further the code execution depending on the exit status of particular error. This is achieved by storing and testing the content of special variable **$?**, schematically:
 
-Schematically:
 ```bash
-execute-some-command # whatever you execute here, variable $? is updated with the exit status of that command
-ExitStatus=$? # store permanently the exit status of previous command, otherwise $? gets updated at each new command execution below!!
-[[ $ExitStatus -eq 0 ]] && some-code-if-command-worked
-[[ $ExitStatus -eq 1 ]] && some-other-code-to-handle-this-particular-error-state
-[[ $ExitStatus -eq 2 ]] && some-other-code-to-handle-this-particular-error-state
+someCommand # variable $? gets updated with the exit status of this command
+ExitStatus=$? # store permanently the exit status of previous command
+[[ ${ExitStatus} -eq 0 ]] && some-code-if-command-worked
+[[ ${ExitStatus} -eq 1 ]] && some-other-code-to-handle-this-particular-error-state
+[[ ${ExitStatus} -eq 2 ]] && some-other-code-to-handle-this-particular-error-state
 ...
 ```
 Later we will see that such a code branching can be optimized even further with ```if-elif-else-fi``` or ```case-in-esac``` command blocks. 
