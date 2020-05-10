@@ -28,20 +28,20 @@ First, let us start with the execution details of scripts. In general, we run an
 ```bash 
 source someScript.sh # sourcing the script
 ```
-When executed this way, all lines in the script are read and executed by **Bash** one-by-one, just as if they were typed separately in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the key word **return**. Script does not run in a separate process (more on this later).
+When executed this way, all lines in the script are read and executed by **Bash** one-by-one, just as if they were typed separately in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the keyword **return**. Script does not run in a separate process (more on this later).
 ```bash 
 someScript # executing the script 
 ```
-This way, you are running your script as any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file has also the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal, and cannot modify it globally. Therefore, it is much safer to run scripts this way, if you want to keep your current shell environment clean. The exit status of the executed script is specified with the key word **exit**. When executed this way, script runs in a separate process (more on this later).
+This way, you are running your script as any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file has also the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal, and cannot modify it globally. Therefore, it is much safer to run scripts this way, if you want to keep your current shell environment clean. The exit status of the executed script is specified with the keyword **exit**. When executed this way, the script runs in a separate process (more on this later).
 
-On the other hand, functions behave differently. After you source the file where function is implemented, **Bash** stores that function in computer's memory, and from that point onwards you can use that function as any other **Linux** or **Bash** command. For functions, there is no need to bother with using keyword **source**, setting the execute permission, modifying **PATH**, etc. That means that if you have added to your ```~/.bashrc``` the following line:
+On the other hand, functions behave differently. After you source the file where a function is implemented, **Bash** stores that function in the computer's memory, and from that point onwards you can use that function as any other **Linux** or **Bash** command. For functions, there is no need to bother with using keyword **source**, setting the execute permission, modifying **PATH**, etc. That means that if you have added to your ```~/.bashrc``` the following line:
 
-  ```
+```bash
 source ~/functions.sh
-  ```
+```
 where in the example file ```~/functions.sh``` you have the implementation of your **Bash** functions, you can use effortlessly all your functions in any new terminal you open.
 
-Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts, due to keyword **local**, which can be used only in the function body, and which limits the scope and lifetime of variable defined in the function only to the function execution.
+Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts, due to keyword **local**, which can be used only in the function body, and which limits the scope and lifetime of a variable defined in the function only to the function execution.
 
 If a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation, then executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process.
 
@@ -94,7 +94,7 @@ Schematically:
 <command1> && <command2> && <command3> ... || <lastCommand>
 ```
 
-The main point behind this construct is the following: **lastCommand** is executed if and only if any of the commands **command1**, **command2**, ..., has failed. The command **lastCommand** is not executed only if all of the commands **command1**, **command2**, ..., have executed successfully. Typically, the last command in the above chain would be some error printout accompanied with the code termination, either with **exit** or **return**. Therefore, the **lastCommand** is a sort of safe guard for the execution of all previous commands in the chain. 
+The main point behind this construct is the following: **lastCommand** is executed if and only if any of the commands **command1**, **command2**, ..., has failed. The command **lastCommand** is not executed only if all of the commands **command1**, **command2**, ..., have executed successfully. Typically, the last command in the above chain would be some error printout accompanied by the code termination, either with **exit** or **return**. Therefore, the **lastCommand** is a sort of safeguard for the execution of all previous commands in the chain. 
 
 **Example**: Consider the following command chain
 
@@ -124,7 +124,7 @@ pwddd: command not found
 Failed
 ```
 
-The first command in the ```&&``` chain executed successfully, and the execution continued with the next command in the ```&&```  chain. However, the second command **pwddd** has failed, and therefore has broken the ```&&``` chain. From that point onwards, only the command  after ```||``` will be executed, and all the remaining commands in ```&&``` chain are ignored (the command **date** in this case). 
+The first command in the ```&&``` chain executed successfully, and the execution continued with the next command in the ```&&```  chain. However, the second command **pwddd** has failed, and therefore has broken the ```&&``` chain. From that point onwards, only the command after ```||``` will be executed, and all the remaining commands in ```&&``` chain are ignored (the command **date** in this case). 
 
 In practice, the most frequent use case of the command chain is illustrated schematically:
 ```bash
@@ -143,7 +143,7 @@ This way, it is possible to add easily an additional layer of protection for the
 
 
 ### 3. Test construct: **[[ ... ]]** <a name="test"></a>
-For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not  work with some older **Bash** versions. Test constructs also return the exit status --- if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
+For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not work with some older **Bash** versions. Test constructs also return the exit status --- if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
 
 * General case: ```-z, -n, ==, != , =~```
 * Integers: ```-gt, -ge, -lt, -le, -eq```
@@ -174,7 +174,7 @@ The very frequent use case is to check at the very beginning of the body of a sc
 ```
 If the user didn't provide value for the first argument, the above code snippet will terminate the subsequent execution.
 
-The operator ```-n``` accepts only one argument and checks whether it is set to same value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
+The operator ```-n``` accepts only one argument and checks whether it is set to the same value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
 
 **Example 2**: How to check if the content of variable **Var1** is equal to the content of variable **Var2**?
 
@@ -186,7 +186,7 @@ Var2=ab
 [[ ${Var1} == ${Var2} ]] && echo Yes || echo No
 ```
 
-Note that ```==```  is the comparison operator, while ```=``` is the assignment operator. The comparison operator ```==``` expects two arguments, and it treats both LHS and RHS argument as strings. Since by default any variable in **Bash** is string, this operator is applicable to any variable content. In particular, you can also compare integers this way, but it's much safer to do integer comparison with the ```-eq``` operator, as explained below. The operator ```!=``` does the opposite to ```==```, i.e. it exits with 0 if two strings are not the same. 
+Note that ```==```  is the comparison operator, while ```=``` is the assignment operator. The comparison operator ```==``` expects two arguments, and it treats both LHS and RHS arguments as strings. Since by default any variable in **Bash** is a string, this operator is applicable to any variable content. In particular, you can also compare integers this way, but it's much safer to do integer comparison with the ```-eq``` operator, as explained below. The operator ```!=``` does the opposite to ```==```, i.e. it exits with 0 if two strings are not the same. 
 
 **Example 3**: How to check if one string contains another string as a substring?
 
@@ -286,7 +286,7 @@ In this section we have summarized the most important options --- for the other 
 ```bash
 help test
 ```
-At the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch the code execution, depending on whether some command executed correctly, or it has failed. If it has failed, we can branch even further the code execution depending on the exit status of particular error. This is achieved by storing and testing the content of special variable **$?**, schematically:
+In the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch the code execution, depending on whether some command executed correctly, or it has failed. If it has failed, we can branch even further the code execution depending on the exit status of a particular error. This is achieved by storing and testing the content of special variable **$?**, schematically:
 
 ```bash
 someCommand # variable $? gets updated with the exit status of this command
@@ -344,11 +344,11 @@ echo "Your surname is ${Surname}."
 Your surname is Hetfield.
 ```
 
-The user supplied arguments to the **read** command, **Name** and **Surname**, have become variables **Name** and **Surname**, initialized with the user's input from the keyboard, ```James``` and ```Hetfield```, respectively. 
+The user-supplied arguments to the **read** command, **Name** and **Surname**, have become variables **Name** and **Surname**, initialized with the user's input from the keyboard, ```James``` and ```Hetfield```, respectively. 
 
-If there are more words in the user's input from the keyboard, than the variables supplied as arguments to **read**, all excess words are stored to the last variable. 
+If there are more words in the user's input from the keyboard than the variables supplied as arguments to **read**, all excess words are stored to the last variable. 
 
-**Example 3**: Previous example re-re-visited,  but now using **read** with less arguments that there are words in the user's input.
+**Example 3**: The previous example re-re-visited,  but now using **read** with fewer arguments that there are words in the user's input.
 
 ```bash
 read Var1 Var2
@@ -373,13 +373,13 @@ read Answer
 [[ ${Answer} == yes ]] && do-something-if-yes
 [[ ${Answer} == no ]] && do-something-if-no
 ```
-In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers the user a lot of flexibility on how to handle and modify the code execution at run-time.
+In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers to the user a lot of flexibility on how to handle and modify the code execution at run-time.
 
-The default behaviour of **read** can be modified with a bunch of options (see **help read** for the full list). Here we summarize only the most frequently used ones:
+The default behavior of **read** can be modified with a bunch of options (execute in the terminal **help read** for the full list). Here we summarize only the most frequently used ones:
 
 ```bash
 -p : specify prompt
--s : do not echo input coming from a terminal
+-s : no printing of input coming from a terminal
 -t : timeout
 ```
 
@@ -395,21 +395,21 @@ read -p "Please choose either 1, 2 or 3: "
 echo ${REPLY}
 ```
 
-For the more complicated menus **Bash** offers built-in command **select** which is covered later in the lecture.
+For the more complicated menus, **Bash** offers built-in command **select** which is covered later in the lecture.
 
 The flag ```-s``` ('silent') hides in the terminal the user input:
 
 ```bash
 read -s Password
 ```
-Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. This is a very simple-minded mechanism how you can handle passwords, etc. 
+Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. This is a very simple-minded mechanism for how you can handle passwords, etc. 
 
 Finally, with the following example:
 
 ```bash
 read -t 5
 ```
-the user is given 5 seconds to provide some input from a keyboard to the command **read**. If the user within the specified time interval does not provide any input, the **read** command reaches the timeout and terminates. The code execution proceeds like nothing happened. Therefore, within the specified time interval we are given the chance to type something and to modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and your scripts both interactive and flexible during execution.
+the user is given 5 seconds to provide some input from a keyboard. If the user within the specified time interval does not provide any input, the **read** command reaches the timeout and terminates. The code execution proceeds like nothing happened. Therefore, within the specified time interval we are given the chance to type something and to modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and your scripts both interactive and flexible during execution.
 
 The command **read** can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with loops---this is covered at the end of today's lecture.
 
@@ -491,7 +491,7 @@ Floating point arithmetic cannot be done directly in **Bash** in any other way e
 
 
 ### 6. Loops: **for**, **while** and **until** <a name="loops"></a>
-Just like any other programming language, **Bash** also supports loops. Two most frequently used loops are **for** and **while** loops, and mostly they will be discussed here.  The third available loop, **until** loop, differs only marginaly from **while** loop, and won't be addressed in detail. In particular, **while** loop runs the loop while the condition is ```true```, where the  **until** loops runs the loop until the condition is ```true``` (i.e. while the condition is ```false```). Besides that, there is no much of a difference between these two versions, and it's a matter of taste which one is preferably used. On the other hand, there are few non-trivial differences between **for** and **while** loops, both in terms of syntax and use cases.
+Just like any other programming language, **Bash** also supports loops. Two most frequently used loops are **for** and **while** loops, and mostly they will be discussed here.  The third available loop, **until** loop, differs only marginaly from **while** loop, and won't be addressthan ed in detail. In particular, **while** loop runs the loop while the condition is ```true```, where the  **until** loops runs the loop until the condition is ```true``` (i.e. while the condition is ```false```). Besides that, there is no much of a difference between these two versions, and it's a matter of taste which one is preferably used. On the other hand, there are few non-trivial differences between **for** and **while** loops, both in terms of syntax and use cases.
 
 The syntax of **for** and **while** loops is fairly straightforward, and can be grasped easily from few concrete examples, we start first with the **for** loop examples.
 
@@ -508,7 +508,7 @@ The output is:
 3
 4
 ```
-This version of **for** loop iterates over all elements of list, specified between key words **in** and delimiter **;**. If you omit **;** then you need to terminate the list input with new line, i.e. by placing key word **do** in the new line. Therefore, an equivalent implementation is: 
+This version of **for** loop iterates over all elements of list, specified between keywords **in** and delimiter **;**. If you omit **;** then you need to terminate the list input with new line, i.e. by placing keyword **do** in the new line. Therefore, an equivalent implementation is: 
 ```bash
 for Var in 1 2 3 4
 do
@@ -588,7 +588,7 @@ while [[ ! -f someFile.log]]; do # checking if the file exists
 done
 ```
 
-With key words **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these 3 loops these commands are meaningless, and will produce an error. If you have nested loops, you can from inner loop continue or break directly the outerloop. The outer loop level you want to continue or break, you specify with 
+With keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these 3 loops these commands are meaningless, and will produce an error. If you have nested loops, you can from inner loop continue or break directly the outerloop. The outer loop level you want to continue or break, you specify with 
 
 ```bash
 break some-integer
