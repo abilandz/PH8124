@@ -3,14 +3,14 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200509
+**Last update**: 20200510
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
 2. [Command chain: **&&** and **||**](#chain)
 3. [Test construct: **[[ ... ]]**](#test)
 4. [Catching user input: **read**](#read)
-5. [Arithmetics in **Bash**](#arithmetics)
+5. [Arithmetic in **Bash**](#arithmetic)
 6. [Loops: **for**, **while** and **until**](#loops)
 7. [Parsing the file content: **while**+**read**](#parsing_files)
 
@@ -305,105 +305,125 @@ Later we will see that such a code branching can be optimized even further with 
 
 
 ### 4. Catching user input: **read** <a name="read"></a>
-We have seen so far how variables can be initialized in a non-interactive way, i.e. by assigning to them some concrete values at declaration, now we will see how the user input from the keayboard on-the-fly can be stored directly in some variables. In essence, this feature enables your scripts to be interactive, in a sense that at run time (during script execution), with your input from the keayboard you can steer the script execution in one direction or another. This is achieved with very powerful **Bash** built-in command **read**.
+We have seen already how variables can be initialized in a non-interactive way, by initializing them with some concrete values at declaration. We will see now how the user input from the keyboard can be on-the-fly stored directly in some variable. In essence, this feature enables **Bash** scripts and functions to be interactive, in a sense that during the code execution (i.e. at run time), with your input from the keyboard you can steer the code execution in one direction or another. This is achieved with a very powerful **Bash** built-in command **read**.
 
-The **read** command by default saves the keyboard input into the built-in variable **REPLY**, otherwise you can specify yourself the variable name(s) which will hold your input from the keyboard. The default field separator in the input is an empty character, and the input is terminated by pressing the 'Enter'.
+By default, the command **read** saves input from the keyboard into its built-in variable **REPLY**. Alternatively,  you can specify yourself directly the name of the variable(s) which will store the input from the keyboard. This is best illustrated with examples.
 
-**Example 1**: If we use **read** without arguments, the entire line of user input is assigned to built-in variable **REPLY**
+**Example 1**: If we use **read** without arguments, the entire line of user input is stored in the built-in variable **REPLY**, as this code snippets demonstrate:
 
 ```bash
-read # after you have executed 'read' in the terminal, the command is waiting for your input from the keyboard. 
-# 11 22 33 => this is example user input. Terminate your input by pressing 'Enter'
-echo $REPLY # whatever you have typed, was stored in variable REPLY 
-11 22 33 # content of REPLY
+read
 ```
 
-Another generic usage of **read** command is to specify one or moree arguments when executing it, in the following schematic way:
+After you have executed **read** in the terminal, this command is waiting for your input from the keyboard. Just type some example input, e.g. ```1 22 333```, and press 'Enter'. Now you can programmatically retrieve the input from the keyboard:  
+
+```bash
+echo ${REPLY} 
+1 22 333
+```
+
+Instead of relying on built-in variable **REPLY**, another generic usage of **read** is to specify one or more arguments explicitly, in the following schematic way:
 
 ```bash
 read Var1 Var2 ...
 ```
-This version takes a line from the keyboard input and breaks it down into words delimited by input field separators (e.g. by one or more empty character).
+This version takes a line from the keyboard input and breaks it down into words delimited by input field separators. The default input field separator is an empty character, and the input is terminated by pressing the 'Enter'.
 
-
-**Example 2**: Previous example re-visited,  but now using **read** with arguments.
-
-```bash
-read A B # arguments A and B become variables, initialized with the user input 
-# 11 22 => this is example user input, terminate input with 'Enter' 
-echo "A is $A"
-echo "B is $B"
-```
-The output is:
-```linux
-A is 11
-B is 22
-```
-
-If there are more words (at input, separated with empty characters) than variables supplied as arguments to **read**, all excess words are assigned to the last variable.
-
-
-**Example 3**: Previous example re-visited,  but now using **read** with less arguments that there are words in the user input.
+**Example 2**: The previous example re-visited, but now using **read** with arguments.
 
 ```bash
-read A B # arguments A and B become variables, initialized with the user input 
-# 11 22 33 44 => this is example user input, terminate input with 'Enter' 
-echo "A is $A"
-echo "B is $B"
-```
-The output is:
-```linux
-A is 11
-B is 22 33 44
+read Name Surname
 ```
 
-The execution branching of code execution at run-time, depending on the user's input at run-time, can be achieved in the following simplified and schematic way:
+After typing that in the terminal, **read** is waiting for your feedback. Type something back, e.g. ```James Hetfield```, and press 'Enter'. Now type in the terminal:
+
 ```bash
-read ANSWER
-[[ $ANSWER == yes ]] && do-something-specific-for-yes
-[[ $ANSWER == no ]] && do-something-specific-for-no
+echo "Your name is ${Name}."
+Your name is James.
+echo "Your surname is ${Surname}."
+Your surname is Hetfield.
 ```
-In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements to be covered later, the **read** command offers user a lot of flexibility on how to handle and modify the code execution at run-time.
 
-The **read** command can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with loops. It's not the most efficient way to parse the file content, so it's recommended in this context only to parse the content of short files. 
+The user supplied arguments to the **read** command, **Name** and **Surname**, have become variables **Name** and **Surname**, initialized with the user's input from the keyboard, ```James``` and ```Hetfield```, respectively. 
 
-The default behaviour of **read** can be modified with bunch of options (see ```help read``` for full documentations), here we summarize the most frequently used ones:
+If there are more words in the user's input from the keyboard, than the variables supplied as arguments to **read**, all excess words are stored to the last variable. 
+
+**Example 3**: Previous example re-re-visited,  but now using **read** with less arguments that there are words in the user's input.
+
+```bash
+read Var1 Var2
+```
+Feed to **read** the following input from the keyboard ```1 22 a bb```, and press 'Enter'. If you now execute in the terminal
+
+```bash
+echo "Var1 is ${Var1}"
+echo "Var2 is ${Var2}"
+```
+
+for the output you get:
+
+```bash
+Var1 is 1
+Var2 is 22 a bb
+```
+
+The branching of the code execution at run-time, depending on the user's input from the keyboard, can be achieved in the following simplified and schematic way:
+```bash
+read Answer
+[[ ${Answer} == yes ]] && do-something-if-yes
+[[ ${Answer} == no ]] && do-something-if-no
+```
+In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers the user a lot of flexibility on how to handle and modify the code execution at run-time.
+
+The default behaviour of **read** can be modified with a bunch of options (see **help read** for the full list). Here we summarize only the most frequently used ones:
 
 ```bash
 -p : specify prompt
 -s : do not echo input coming from a terminal
--t : timeout => script can wait for the input some time, but will continue if input never arrives
+-t : timeout
 ```
 
 For instance:
 ```bash
-read -p "Answer either YES or NO: "
-echo $REPLY
+read -p "Waiting for the answer: "
+echo ${REPLY}
 ```
-The specified message in the prompt of **read**, like in the example above, can hint to the user what to do or what to type. 
+The specified message in the prompt of **read** can hint to the user what to type:
 
 ```bash
-read -s
-echo $REPLY
+read -p "Please choose either 1, 2 or 3: "
+echo ${REPLY}
 ```
-The flag ```-s``` ('silent') hides in the terminal the user input, but you can handly it nevertheless programatically, as it was stored in variable (**REPLY** in above example). This is the very simple-minded mechanism how you can handle passwords, etc. 
+
+For the more complicated menus **Bash** offers built-in command **select** which is covered later in the lecture.
+
+The flag ```-s``` ('silent') hides in the terminal the user input:
+
+```bash
+read -s Password
+```
+Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. This is a very simple-minded mechanism how you can handle passwords, etc. 
 
 Finally, with the following example:
 
 ```bash
 read -t 5
 ```
-user is given for instance 5 seconds to provide its input to **read**. If user within that interval does not provide any input, the **read** command simply bails out, and the code execution proceeds like nothing happened. So basically within the specified time interval we are given the chance to type something and to modify the default execution of the code.  If we are not around during code execution and cannot type anything, code always proceeds with the default execution, after the timeout is met. All above flags can be combined, which can make the usage of **read** command quite handy, and your scripts both interactive and flexible during execution.
+the user is given 5 seconds to provide some input from a keyboard to the command **read**. If the user within the specified time interval does not provide any input, the **read** command reaches the timeout and terminates. The code execution proceeds like nothing happened. Therefore, within the specified time interval we are given the chance to type something and to modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and your scripts both interactive and flexible during execution.
+
+The command **read** can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with loops---this is covered at the end of today's lecture.
+
+
+
+ 
 
 
 
 
 
 
-
-
-### 5. Arithmetics in **Bash** <a name="arithmetics"></a>
-We have already learned that whatever we type first in the terminal, and before the next empty character is being encountered, it is being interpreted by **Bash** as command, function, etc. For this reason we cannot do directly the arithmetics in **Bash**, as for instance:
+### 5. Arithmetic in **Bash** <a name="arithmetic"></a>
+We have already learned that whatever we type first in the terminal, and before the next empty character is being encountered, it is being interpreted by **Bash** as command, function, etc. For this reason we cannot do directly the arithmetic in **Bash**, as for instance:
 
 ```bash
 1+1
@@ -419,7 +439,7 @@ would produce an error, since command named '1+1' doesn't exist. Other trials pr
 1: command not found
 ```
 
-Instead, we use special operator ```(( ... ))``` to do integer arithmetics in **Bash**, for instance:
+Instead, we use special operator ```(( ... ))``` to do integer arithmetic in **Bash**, for instance:
 
 ```bash
 echo $((1+1))
@@ -438,7 +458,7 @@ Counter=1
 echo ${Counter} # prints 11
 ```
 
-Within ```(( ... ))``` we can use all standard operators to perform integer arithmetics: ```+, -, /, *, %, ++, --, **, +=, -=, /=, *=``` , with obvious meanings. For instance, we can raise integer to some exponent in the following way:
+Within ```(( ... ))``` we can use all standard operators to perform integer arithmetic: ```+, -, /, *, %, ++, --, **, +=, -=, /=, *=``` , with obvious meanings. For instance, we can raise integer to some exponent in the following way:
 ```bash
 Int=5
 Exp=2
@@ -462,7 +482,7 @@ echo $((8%3)) # prints 2
 echo $((9%3)) # prints 0
 ```
 
-Floating point arithmetics cannot be done directly in **Bash** in any other way either, but this is not a severe limitation, as we can always invoke some external Linux command, like **bc** ('basic calculator') to perform it --- more on this later!
+Floating point arithmetic cannot be done directly in **Bash** in any other way either, but this is not a severe limitation, as we can always invoke some external Linux command, like **bc** ('basic calculator') to perform it --- more on this later!
 
 
 
@@ -597,6 +617,12 @@ Now we will see how we can combine some of the functionalities learned today.
 ### 7. Parsing the file content: **while**+**read** <a name="parsing_files"></a>
 Very frequently, we need within script or function to parse the content of an external file, and to perform some action line by line. This can be achieved very conveniently with the widely used **while+read** construct in **Bash**.
 
+
+
+20200510 It's not the most efficient way to parse the file content, so it's recommended in this context only to parse the content of short files.
+
+
+
 As an example, let us have a look at the following script, named ```parseFile.sh```. This scripts takes one argument and that argument must be a file:
 
 ```bash
@@ -630,7 +656,7 @@ I am reading now: line 1 ... 10 20 30
 I am reading now: line 2 ... 100 200
 I am reading now: line 3 ... 1000
 ```
-As we can see, **while+read** construct automatically reads through all lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is variable named ```Line``` --- if we do not specify any variable, then built-in variable **REPLY** is used automatically). That means that in each iteration within **while** loop we have at our disposal the content of line from the external file in the variable ```Line```, and then we can manipulate its content within the script programatically.
+As we can see, **while+read** construct automatically reads through all lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is variable named ```Line``` --- if we do not specify any variable, then built-in variable **REPLY** is used automatically). That means that in each iteration within **while** loop we have at our disposal the content of line from the external file in the variable ```Line```, and then we can manipulate its content within the script programmatically.
 
 
 
