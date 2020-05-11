@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200510
+**Last update**: 20200511
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -423,53 +423,68 @@ The command **read** can be used in some other contexts as well, e.g. to parse t
 
 
 ### 5. Arithmetic in **Bash** <a name="arithmetic"></a>
-We have already learned that whatever we type first in the terminal, and before the next empty character is being encountered, it is being interpreted by **Bash** as command, function, etc. For this reason we cannot do directly the arithmetic in **Bash**, as for instance:
-
-```bash
-1+1
-```
-would produce an error, since command named '1+1' doesn't exist. Other trials produce similar error messages:
+We have already seen that, whatever is typed first in the terminal and before the next empty character is encountered, **Bash** will try to interpreted as command, function, etc. For this reason, we cannot do directly arithmetic in **Bash**. For instance:
 
 ```bash
 1+1
 1+1: command not found
+```
+is producing an error, because a command named **1+1** doesn't exist. Other trials produce slightly different error messages, but the reason for the failure is aways the same:
+
+```bash
 1+ 1
 1+: command not found
 1 + 1
 1: command not found
 ```
 
-Instead, we use special operator ```(( ... ))``` to do integer arithmetic in **Bash**, for instance:
+Instead, we must use the special operator ```(( ... ))``` to do integer arithmetic in **Bash**. For instance:
 
 ```bash
 echo $((1+1))
 ```
-produces the desired printout:
-```linux
+produces the desired printout
+```bash
 2
 ```
 
 
-Operator ```(( ... ))``` can also swalow the variables:
+The operator ```(( ... ))``` can also swallow the variables:
 
 ```bash
 Counter=1
-((Counter+=10)) # doing some integer manipulation on variable named 'Counter'
+((Counter+=10)) # doing some integer manipulation
 echo ${Counter} # prints 11
 ```
 
-Within ```(( ... ))``` we can use all standard operators to perform integer arithmetic: ```+, -, /, *, %, ++, --, **, +=, -=, /=, *=``` , with obvious meanings. For instance, we can raise integer to some exponent in the following way:
+Within ```(( ... ))``` we can use all standard operators to perform integer arithmetic: ```+, -, /, *, %, ++, --, **, +=, -=, /=, *=``` , with self-explanatory meanings. 
+
+**Example:** How to calculate powers of integers in **Bash**? We can raise an integer to some exponent in the following way:
+
 ```bash
 Int=5
 Exp=2
 echo $((Int**Exp)) # prints 25
 ```
-Operator ```(( ... ))``` can handle only integers, both in terms of input and output. For instance, this produces an error:
+As you can see from the above example, it is not necessary within ```(( ... ))``` to reference the content of variable explicitly with **$**, the operator itself takes care of that. The following lengthier code is also correct
+
+```bash
+echo $(($Int**$Exp)) # prints 25
+echo $((${Int}**${Exp})) # prints 25
+```
+
+but clearly it's not as clear and elegant as the very first version. 
+
+Operator ```(( ... ))``` can handle only integers, both in terms of input and output. An attempt to use floating point numbers leads to an error:
+
 ```bash
 echo $((1+2.4))
 bash: 1+2.4: syntax error: invalid arithmetic operator (error token is ".4")
 ```
+Floating point arithmetic cannot be done directly in **Bash**, but this is not a severe limitation, because we can always invoke some **Linux** command to perform it, like **bc** ('basic calculator'), which is always available---more on this later!
+
 When it comes to division which doesn't yield as the final result an integer, **Bash** doesn't report the error, instead it reports as the result the integer after the fractional part (remainder) is discarded:
+
 ```bash
 echo $((7/3)) # prints 2 
 echo $((8/3)) # prints 2
@@ -482,7 +497,7 @@ echo $((8%3)) # prints 2
 echo $((9%3)) # prints 0
 ```
 
-Floating point arithmetic cannot be done directly in **Bash** in any other way either, but this is not a severe limitation, as we can always invoke some external Linux command, like **bc** ('basic calculator') to perform it --- more on this later!
+The most frequent use case of ```(( ... ))``` operator is to increment the content of variable within loops, which we cover next.
 
 
 
@@ -491,11 +506,12 @@ Floating point arithmetic cannot be done directly in **Bash** in any other way e
 
 
 ### 6. Loops: **for**, **while** and **until** <a name="loops"></a>
-Just like any other programming language, **Bash** also supports loops. Two most frequently used loops are **for** and **while** loops, and mostly they will be discussed here.  The third available loop, **until** loop, differs only marginaly from **while** loop, and won't be addressthan ed in detail. In particular, **while** loop runs the loop while the condition is ```true```, where the  **until** loops runs the loop until the condition is ```true``` (i.e. while the condition is ```false```). Besides that, there is no much of a difference between these two versions, and it's a matter of taste which one is preferably used. On the other hand, there are few non-trivial differences between **for** and **while** loops, both in terms of syntax and use cases.
+Just like any other programming language **Bash** also supports loops. The most frequently used loops are **for** and **while** loops, and only they will be discussed in this section in detail. The third possibility, the loop **until**, differs only marginally from the **while** loop, and therefore it won't be addressed separately. In particular, the **while** loop runs the loop _while_ the condition is ```true```, where the **until** loop runs the loop _until_ the condition is ```true``` (i.e. while the condition is ```false```).  Besides that, there is no much of a difference between these two versions, and it's a matter of taste which one is preferred to be used. On the other hand, there are a few non-trivial differences between **for** and **while** loops, both in terms of syntax and use cases.
 
-The syntax of **for** and **while** loops is fairly straightforward, and can be grasped easily from few concrete examples, we start first with the **for** loop examples.
+The syntax of **for** and **while** loops is fairly straightforward, and can be grasped easily from a few concrete examples. We start first with the examples for the **for** loop.
 
 **Example 1**: Looping over specified list elements.
+
 ```bash
 for Var in 1 2 3 4; do
  echo "$Var"
@@ -508,7 +524,8 @@ The output is:
 3
 4
 ```
-This version of **for** loop iterates over all elements of list, specified between keywords **in** and delimiter **;**. If you omit **;** then you need to terminate the list input with new line, i.e. by placing keyword **do** in the new line. Therefore, an equivalent implementation is: 
+This version of **for** loop iterates over all elements of list. These elements are specified between keyword **in** and delimiter ```;```. If you omit ```;``` the list needs to be terminated with the new line. Therefore, a completely equivalent implementation is: 
+
 ```bash
 for Var in 1 2 3 4
 do
@@ -528,40 +545,40 @@ The output is:
 abc
 4.44
 ```
-Later we will see that we can even loop over the elements in the in-lined output of some command.
+Later we will see that we can even loop directly over the output of some command (e.g. over all files in a certain directory which match some naming convention, etc.).
 
-**Example 2**:  Looping over all arguments passed to the script.
+**Example 2**:  Looping over all arguments supplied to the script or function.
 
-We have already seen that we can loop over all arguments passed to the script in the following way:
+We have already seen that we can loop over all arguments supplied to the script in the following way:
 ```bash
-for pp in $*; do # we can use also $@ instead of $*, the difference is mostly in some marginal use cases 
- echo "pp = $pp"
+for Arg in $*; do
+ echo "Arg = ${Arg}"
 done
 ```
-Since this is a frequently used feature, there exists a shorthand version of it. For instance, if you have the following script named ```forLoop.sh```
+Since this is a frequently used feature, there exists a shorthand version when you need to loop over the arguments. Consider the following script named ```forLoop.sh```, in which we have dropped completely the list of elements in the first line of **for** loop:
 
 ```bash
 #!/bin/bash
 
-for pp; do
- echo "pp = $pp"
+for Arg; do
+ echo "Arg = $Arg"
 done
 
 return 0
 ```
-then by executing 
+By executing 
 ```bash
-source forLoop.sh a b c
+source forLoop.sh a bb ccc
 ```
-we get the following printout:
-```linux
-pp = a
-pp = b
-pp = c
+you get the following printout:
+```bash
+Arg = a
+Arg = bb
+Arg = ccc
 ```
-Therefore, if the list of elements is not explicitly specified after keyword **in**, it is defaulted to the arguments passed to the script.
+Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list is defaulted to all arguments supplied to that script or function.
 
-There exists also the C-style version of **for** loop in **Bash**, which can handle explicitly the incremental variable. The C-style version of **for** loop in **Bash** looks schematically as:
+There exists also the C-style version of **for** loop in **Bash**, which can handle explicitly the incremental variable. The C-style version looks schematically as:
 
 ```bash
 for ((Counter=0; Counter<$MaxValue; Counter++)); do
@@ -569,12 +586,12 @@ for ((Counter=0; Counter<$MaxValue; Counter++)); do
 done
 ```
 
-When it comes to the **while** loop, it is used very frequently and conveniently in the combination with test construct ```[[ ... ]]```. The following code snippets illustrate its most typical use cases. For the C-style while loop, we would use the following syntax:
+When it comes to the **while** loop, it is used very frequently and conveniently in the combination with the test construct ```[[ ... ]]```. The following code snippets illustrate its most typical use cases. For the C-style while loop, we would use the following syntax:
 
 ```bash
 Counter=1
 while [[ $Counter -lt 10 ]]; do
- echo "Counter is equal to $Counter"
+ echo "Counter is equal to: $Counter"
  ((Counter++))
 done
 ```
@@ -582,33 +599,73 @@ done
 Another frequent use case is illustrated with the following example:
 
 ```bash
-while [[ ! -f someFile.log]]; do # checking if the file exists
- ... do something with the file someFile.log ...
- sleep 1m # try again after 1 minute
+while [[ -f someFile.log ]]; do # checking if a file exists
+ ...  some work involving file someFile.log ...
+ sleep 1m # pause code execution for 1 minute
 done
 ```
 
-With keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these 3 loops these commands are meaningless, and will produce an error. If you have nested loops, you can from inner loop continue or break directly the outerloop. The outer loop level you want to continue or break, you specify with 
+This loop will keep repeating as long as the file ```someFile.log``` is available. When the file is deleted ```[[ -f someFile.log ]]``` evaluates to ```false```, and the loop terminates.
+
+As a side remark, in the above example we have used the trivial, nevertheless sometimes very handy, **Linux** command **sleep**. This command does nothing, except that it delays the code execution for the time interval specified via the argument. The argument can be interpreted as the time interval either in seconds (s), minutes (m), hours (h) or days (d):
 
 ```bash
-break some-integer
+sleep 10m # pause code execution for 10 minutes
+sleep 2h  # pause code execution for 2 hours
+```
+
+This command can be used in the simplest cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of some loop within the infinite cycle.
+
+**Example 3:** Infinite loops with the specified periodicity.
+
+The following loop will keep running forever, with the periodicity once per hour:
+
+```bash
+while true; do
+ ... some code that you need again and again ...
+ sleep 1h
+done
+```
+
+A more sophisticated way to set up the scheduled execution of your code can be achieved with the command **crontab** (check out its man pages). 
+
+With the keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these thee loops these commands are meaningless, and will produce an error. Their usage is illustrated with the following code snippet:
+
+```bash
+Counter=0
+Max=3
+while true; do 
+ ((Counter++))
+ [[ ${Counter} -lt ${Max} ]] && echo "Still running" && continue
+ echo "Terminating" && break
+done
+```
+
+Upon execution, it leads to the following printout:
+
+```bash
+Still running
+Still running
+Terminating
+```
+
+If you have nested the loops, you can from the inner loop continue or break directly the outer loop. The outer loop level you want to continue or break, is specified with 
+
+```bash
+break <someInteger>
 ```
 
 or
 
 ```bash
-continue some-integer
+continue <someInteger>
 ```
 
-As a side remark, we have also in the above example used the trivial, nevertheless sometimes very handy, **Linux** command **sleep**. This command does nothing, except that it delays the code execution for the time interval specified via the argument. The argument can be interpreted as the time interval either in seconds (s), minutes (m), hours (h) or days (d):
+In the next section we discuss how we can combine different functionalities covered by now, and establish another frequently used feature.
 
-```bash
-sleep 10m # delays the code execution for 10 minutes
-sleep 2h  # delays the code execution for 2 hours
-```
-This command can be used to avoid, in the simple cases, a conflict among concurrently running processes, or to determine the periodicity of some scripts which are run within infinite cycle, but for instance need to be executed only a few times per day (more sophisticated way to achieve this is by using ```crontab```). 
 
-Now we will see how we can combine some of the functionalities learned today.
+
+
 
 
 
