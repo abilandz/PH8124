@@ -627,7 +627,7 @@ while true; do
 done
 ```
 
-A more sophisticated way to set up the scheduled execution of your code can be achievaed with the command **crontab** (check out its man pages). 
+A more sophisticated way to set up the scheduled execution of your code can be achieved with the command **crontab** (check out its man pages). 
 
 With the keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these thee loops these commands are meaningless, and will produce an error. Their usage is illustrated with the following code snippet:
 
