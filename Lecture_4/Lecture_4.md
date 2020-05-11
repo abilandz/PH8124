@@ -552,7 +552,7 @@ Later we will see that we can even loop directly over the output of some command
 We have already seen that we can loop over all arguments supplied to the script in the following way:
 ```bash
 for Arg in $*; do
- echo "Arg = ${Arg}"
+ echo "Arg is: ${Arg}"
 done
 ```
 Since this is a frequently used feature, there exists a shorthand version when you need to loop over the arguments. Consider the following script named ```forLoop.sh```, in which we have dropped completely the list of elements in the first line of **for** loop:
@@ -561,7 +561,7 @@ Since this is a frequently used feature, there exists a shorthand version when y
 #!/bin/bash
 
 for Arg; do
- echo "Arg = $Arg"
+ echo "Arg is: $Arg"
 done
 
 return 0
@@ -572,9 +572,9 @@ source forLoop.sh a bb ccc
 ```
 you get the following printout:
 ```bash
-Arg = a
-Arg = bb
-Arg = ccc
+Arg is: a
+Arg is: bb
+Arg is: ccc
 ```
 Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list is defaulted to all arguments supplied to that script or function.
 
@@ -599,8 +599,8 @@ done
 Another frequent use case is illustrated with the following example:
 
 ```bash
-while [[ -f someFile.log ]]; do # checking if a file exists
- ...  some work involving file someFile.log ...
+while [[ -f someFile.log ]]; do # check if the file exists
+ ...  some work involving the file someFile.log ...
  sleep 1m # pause code execution for 1 minute
 done
 ```
@@ -627,7 +627,7 @@ while true; do
 done
 ```
 
-A more sophisticated way to set up the scheduled execution of your code can be achieved with the command **crontab** (check out its man pages). 
+A more sophisticated way to set up the scheduled execution of your code can be achievaed with the command **crontab** (check out its man pages). 
 
 With the keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these thee loops these commands are meaningless, and will produce an error. Their usage is illustrated with the following code snippet:
 
@@ -661,7 +661,7 @@ or
 continue <someInteger>
 ```
 
-In the next section we discuss how we can combine different functionalities covered by now, and establish another frequently used feature.
+In the next section, we discuss how we can combine different functionalities covered by now, and establish another frequently used feature.
 
 
 
