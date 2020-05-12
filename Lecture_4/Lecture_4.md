@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200511
+**Last update**: 20200512
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -672,13 +672,7 @@ In the next section, we discuss how we can combine different functionalities cov
 
 
 ### 7. Parsing the file content: **while**+**read** <a name="parsing_files"></a>
-Very frequently, we need within script or function to parse the content of an external file, and to perform some action line by line. This can be achieved very conveniently with the widely used **while+read** construct in **Bash**.
-
-
-
-20200510 It's not the most efficient way to parse the file content, so it's recommended in this context only to parse the content of short files.
-
-
+Very frequently, we need within script or function to parse the content of an external file, and to perform some action line by line. This can be achieved very conveniently with the widely used **while+read** construct in **Bash**. This is not the most efficient way to parse the file content, so it is recommended only to parse the content of short files this way.
 
 As an example, let us have a look at the following script, named ```parseFile.sh```. This scripts takes one argument and that argument must be a file:
 
@@ -695,11 +689,14 @@ done < $File
 return 0
 ```
 
+The content of the file is redirected to the loop with ```<``` operator at the end of the loop.
+
 Then, edit some temporary file, named for instance ```data.log```, with the following simple content:
+
 ```bash
-line 1 ... 10 20 30
-line 2 ... 100 200
-line 3 ... 1000
+10 20 30
+100 200
+abcd
 ```
 
 Finally, execute the script with:
@@ -707,13 +704,13 @@ Finally, execute the script with:
 source parseFile.sh data.log
 ```
 
-The printout in the terminal shall be:
+The printout in the terminal is:
 ```bash
-I am reading now: line 1 ... 10 20 30
-I am reading now: line 2 ... 100 200
-I am reading now: line 3 ... 1000
+I am reading now: 10 20 30
+I am reading now: 100 200
+I am reading now: abcd
 ```
-As we can see, **while+read** construct automatically reads through all lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is variable named ```Line``` --- if we do not specify any variable, then built-in variable **REPLY** is used automatically). That means that in each iteration within **while** loop we have at our disposal the content of line from the external file in the variable ```Line```, and then we can manipulate its content within the script programmatically.
+As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is variable named **Line** --- if we do not specify any variable, then built-in variable **REPLY** is used automatically also in this context). That means that in each iteration within **while** loop we have at our disposal the content of line from the external file in the variable **Line**, and then we can manipulate its content within the script programmatically.
 
 
 

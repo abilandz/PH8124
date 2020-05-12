@@ -1,46 +1,39 @@
 # Homework #3: **Bash** functions
 
-Last update: 20200506
+Last update: 20200512
 
-**Challenge #1**: Develop the **Bash** function named ```LargestFile``` which will take as an arguments bunch of files, and print only the one with the largest size, together with its size. The user would like for instance to use your function in the following way:
+**Challenge #1**: Develop the **Bash** function named ```OldestFile``` which will take as an arguments a list of files, and: 
+
+	1. terminate with the error exit status 1 if the user called the function without supplying any arguments
+ 	2. terminate with the error exit status 2 if some file which the use have supplied does not exist (and print the name of that problematic file)
+ 	3. print the name of the file which wasn't edited (modified) for the longest period
+ 	4. then prompt the question to the user: "Do you want to delete that file [y/n]? "
+ 	5. if the user replied 'y', the function deletes that file, and terminates with the success exit status 0
+ 	6. if the user replied 'n' just terminate the function with the success exit status 0
+ 	7. if the user replied something else, print the warning, and terminate the function call with the error exit status 3
+
+The user would like to use your function in the following schematic way:
 
 ```bash
-LargestFile file1.log file2.log ... fileN.log
+OldestFile file1.log file2.log ... fileN.log
 ```
 The output of your function could look like:
 ```bash
-The file with the largest size is:
+The oldest file is:
 ... some-file-name ...
-
-Its size is:
-... some-size ...
+Do you want to delete that file [y/n]? 
+Deleted. # (only if the answer was 'y')
 ```
-After looking at this output, user then can decide whether or not to delete this file. If some file that user passed does not exist, bail out with error status 1 and error message pointing out which file doesn't exist.
+**Hint #1**: It suffices to use command chain operators ```&&``` and ```||``` in combination with the test construct ```[[ ... ]]```.  
 
-**Two hints**: To loop over all files passed as arguments to the function, you could use the following:
+**Hint #2**: To loop over all arguments supplied to the function, use the following code snippet:
+
 ```bash
 for File in $*; do
- echo "file is: $File"
+ ... some action on ${File} ...
 done
 ```
 
-To store programmatically output of a command execution directly into variable, you could use ```$( ... )``` construct, for instance:
-```bash
-FileSize=$(stat -c %s some-file.log)
-echo $FileSize # prints size of some-file.log
-```
+**Challenge #2**: What do you need to do to be able to use the function ```OldestFile``` just like any other **Bash** or **Linux** command (i.e. to be able to call it only by its name from any place in the filesystem, each time you login on computer or open a new terminal)?
 
-**Challenge #2**: Develop the **Bash** function named ```EmptyDirectory``` which will take as arguments exactly one argument, which must be a directory. The function returns 0 if directory is empty, 1 if directory is not empty, and 2 if user passed as an argument something else instead of directory (also non-existing directory for simplicity let's classify this way). User wants to use your function in the following example way:
-
-```bash
-EmptyDirectory some-directory && echo "Empty" || echo "Not empty or non-existing"
-```
-
-**Hint**: Check the documentation of **ls** command, and then just emulate in your function usage of that command with one specific flag.
-
-**Please answer the following questions:**
-
-1. Please send via email the source code of both functions above --- I will try to use them on my computer and will provide a detailed feedback as a genuine
-user!
-2. What do you need to do in order to be able to use functions ```LargestFile``` and ```EmptyDirectory```  straight as any other **Linux** command in ay new
-terminal you open?
+ 
