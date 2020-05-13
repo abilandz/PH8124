@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200512
+**Last update**: 20200513
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -510,7 +510,7 @@ Just like any other programming language **Bash** also supports loops. The most 
 
 The syntax of **for** and **while** loops is fairly straightforward, and can be grasped easily from a few concrete examples. We start first with the examples for the **for** loop.
 
-**Example 1**: Looping over specified list elements.
+**Example 1**: Looping over the specified list of elements.
 
 ```bash
 for Var in 1 2 3 4; do
@@ -524,7 +524,7 @@ The output is:
 3
 4
 ```
-This version of **for** loop iterates over all elements of list. These elements are specified between keyword **in** and delimiter ```;```. If you omit ```;``` the list needs to be terminated with the new line. Therefore, a completely equivalent implementation is: 
+This version of **for** loop iterates over all elements of a list. These elements are specified between keyword **in** and delimiter ```;```. If you omit ```;``` the list needs to be terminated with the new line. Therefore, a completely equivalent implementation is: 
 
 ```bash
 for Var in 1 2 3 4
@@ -532,7 +532,7 @@ do
  echo "$Var"
 done
 ```
-Elements of list are separated with the empty character, and elements can be pretty much anything, e.g. consider: 
+Elements of a list are separated with the empty characters, and elements can be pretty much anything, e.g. consider: 
 ```bash
 Test=abc
 for Var in 1 ${Test} 4.44; do
@@ -547,9 +547,9 @@ abc
 ```
 Later we will see that we can even loop directly over the output of some command (e.g. over all files in a certain directory which match some naming convention, etc.).
 
-**Example 2**:  Looping over all arguments supplied to the script or function.
+**Example 2**:  Looping over all arguments supplied to a script or a function.
 
-We have already seen that we can loop over all arguments supplied to the script in the following way:
+We have already seen that we can loop over all arguments supplied to a script or a function in the following way:
 ```bash
 for Arg in $*; do
  echo "Arg is: ${Arg}"
@@ -576,17 +576,18 @@ Arg is: a
 Arg is: bb
 Arg is: ccc
 ```
-Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list is defaulted to all arguments supplied to that script or function.
+Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list has defaulted to all arguments supplied to that script or function.
 
-There exists also the C-style version of **for** loop in **Bash**, which can handle explicitly the incremental variable. The C-style version looks schematically as:
+There exists also the C-style version of **for** loop in **Bash**, which can handle explicitly the increment of a variable. The C-style version looks schematically as:
 
 ```bash
+MaxValue=someValue
 for ((Counter=0; Counter<$MaxValue; Counter++)); do
  ... some commands ...
 done
 ```
 
-When it comes to the **while** loop, it is used very frequently and conveniently in the combination with the test construct ```[[ ... ]]```. The following code snippets illustrate its most typical use cases. For the C-style while loop, we would use the following syntax:
+When it comes to the **while** loop, it is used very frequently and conveniently in the combination with the test construct ```[[ ... ]]```. The following code snippets illustrate its most typical use cases. For the C-style while loop, we would use the following example syntax:
 
 ```bash
 Counter=1
@@ -596,29 +597,29 @@ while [[ $Counter -lt 10 ]]; do
 done
 ```
 
-Another frequent use case is illustrated with the following example:
+Another frequently used case is illustrated in the following example:
 
 ```bash
-while [[ -f someFile.log ]]; do # check if the file exists
- ...  some work involving the file someFile.log ...
+while [[ -f someFile ]]; do # check if the file exists
+ ...  some work involving the file someFile ...
  sleep 1m # pause code execution for 1 minute
 done
 ```
 
-This loop will keep repeating as long as the file ```someFile.log``` is available. When the file is deleted ```[[ -f someFile.log ]]``` evaluates to ```false```, and the loop terminates.
+This loop will keep repeating as long as the file ```someFile``` is available. When the file is deleted ```[[ -f someFile ]]``` evaluates to ```false```, and the loop terminates.
 
 As a side remark, in the above example we have used the trivial, nevertheless sometimes very handy, **Linux** command **sleep**. This command does nothing, except that it delays the code execution for the time interval specified via the argument. The argument can be interpreted as the time interval either in seconds (s), minutes (m), hours (h) or days (d):
 
 ```bash
-sleep 10m # pause code execution for 10 minutes
-sleep 2h  # pause code execution for 2 hours
+sleep 10m # pause the code execution for 10 minutes
+sleep 2h  # pause the code execution for 2 hours
 ```
 
-This command can be used in the simplest cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of some loop within the infinite cycle.
+This command can be used in the simplest cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of infinite loops.
 
 **Example 3:** Infinite loops with the specified periodicity.
 
-The following loop will keep running forever, with the periodicity once per hour:
+The following loop will keep running forever, with the periodicity of once per hour:
 
 ```bash
 while true; do
@@ -627,13 +628,15 @@ while true; do
 done
 ```
 
-A more sophisticated way to set up the scheduled execution of your code can be achieved with the command **crontab** (check out its man pages). 
+In the above code snippet, we have used the **Bash** built-in command **true**, which does nothing except it returns the success exit status 0 each time it is called. There is also **Bash** built-in command **false**, which does nothing except it returns the error exit status 1. 
 
-With the keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these thee loops these commands are meaningless, and will produce an error. Their usage is illustrated with the following code snippet:
+A more sophisticated way to set up the scheduled execution of your code can be achieved with the command **crontab** (check out its man page). 
+
+With the keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these three loops these commands are meaningless, and will produce an error. Their usage is illustrated with the following code snippet:
 
 ```bash
 Counter=0
-Max=3
+Max=4
 while true; do 
  ((Counter++))
  [[ ${Counter} -lt ${Max} ]] && echo "Still running" && continue
@@ -646,22 +649,23 @@ Upon execution, it leads to the following printout:
 ```bash
 Still running
 Still running
+Still running
 Terminating
 ```
 
-If you have nested the loops, you can from the inner loop continue or break directly the outer loop. The outer loop level you want to continue or break, is specified with 
+If you have nested the loops, you can from the inner loop continue or break directly the outer loop. The level of the outer loop that you want to continue or break, is specified with the following syntax: 
 
 ```bash
-break <someInteger>
+break someInteger
 ```
 
 or
 
 ```bash
-continue <someInteger>
+continue someInteger
 ```
 
-In the next section, we discuss how we can combine different functionalities covered by now, and establish another frequently used feature.
+In the next section, we discuss how we can combine some of these different functionalities covered by now, and establish another frequently used feature, which is especially handy when we need to parse through the file content line-by-line.
 
 
 
@@ -672,9 +676,9 @@ In the next section, we discuss how we can combine different functionalities cov
 
 
 ### 7. Parsing the file content: **while**+**read** <a name="parsing_files"></a>
-Very frequently, we need within script or function to parse the content of an external file, and to perform some action line by line. This can be achieved very conveniently with the widely used **while+read** construct in **Bash**. This is not the most efficient way to parse the file content, so it is recommended only to parse the content of short files this way.
+Very frequently, we need within a script or a function to parse through the content of an external file, and to perform some programmatic action line by line. This can be achieved very conveniently by combining the **while** loop and the **read** command. We remark, however, that this is not the most efficient way to parse the file content, its usage is recommended only for the short files.
 
-As an example, let us have a look at the following script, named ```parseFile.sh```. This scripts takes one argument and that argument must be a file:
+As a concrete example, let us have a look at the following script, named ```parseFile.sh```. This script takes one argument and that argument must be a file:
 
 ```bash
 #!/bin/bash
@@ -710,7 +714,7 @@ I am reading now: 10 20 30
 I am reading now: 100 200
 I am reading now: abcd
 ```
-As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is variable named **Line** --- if we do not specify any variable, then built-in variable **REPLY** is used automatically also in this context). That means that in each iteration within **while** loop we have at our disposal the content of line from the external file in the variable **Line**, and then we can manipulate its content within the script programmatically.
+As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** --- if we do not specify any variable, then the built-in variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have at our disposal the content of a line from the external file in the variable, and then we can manipulate its content within the script programmatically.
 
 
 

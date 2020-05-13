@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200512
+**Last update**: 20200513
 
 
 ### Table of Contents
@@ -17,35 +17,36 @@
 
 
 ### 1. Command substitution: $( ... ) <a name="command_substitution"></a>
-We have already seen that values can be stored in variables by explicit assignment (by using operator ```=```) or by user supplying them as command line arguments (positional parameters) to the script or function. In practice, however, one frequently wants to store the output of some command directly into variable, or even the content of external file. This can be achieved with the so-called _command substitution operator_ ```$( ... )```.  For instance, we have already seen that the file size in bytes can be printed with the following:
+We have already seen that a value can be stored in a variable by explicit assignment (using the operator ```=```),  or of the user supplies variables as command line arguments (positional parameters) to a script or a function. In practice, however, one frequently wants to store the output of some command directly into the variable, or even the content of an external file. This can be achieved with the so-called _command substitution operator_ ```$( ... )```.  For instance, we have already seen that the file size in bytes can be printed with the following:
 
 ```bash
-stat -c %s someFile.log # prints file size in bytes, something like 37162529
+stat -c %s someFile.log
 ```
-But how can we fetch the above printout programmatically, and do some manipulation with it later in our code? We can achieve that with the following construct:
+But how can we fetch the above printout programmatically, and do some manipulation with it later in our code? This is precisely the case where we need to use the command substitution operator:
 ```bash
 FileSize=$(stat -c %s someFile.log)
 ```
-Now the size of file 'someFile.log' is stored directly in the variable 'FileSize' and from this point onwards we can reference content of that variable in the same way as the content of any other variable:
+Now the size of file ```someFile.log``` is stored directly in the variable **FileSize** and from this point onwards we can reference content of that variable in the same way as the content of any other variable:
 ```bash
-echo $FileSize # prints file size in bytes, something like 37162529
+echo ${FileSize}
 ```
 
-The operaror ```$( ... )``` can do much more than that. For instance, it can literally in-line the output of any command at the place where this operator was used. 
+The operator ```$( ... )``` can do much more than that. For instance, it can literally in-line the output of any command at the place where this operator was used. 
 
 **Example 1**: How to produce the following single-line output, with the current time stamp embedded:
-```linux
+```bash
 Today is Mo 20. Mai 15:33:07 CEST 2019 . What a nice day...
 ```
 This can be achieved with:
 ```bash
 echo "Today is $(date) . What a nice day..."
 ```
-The command substitution operator literally in-lined the output of **date** command at the place where it was used. This way, we can very elegantly achieve the desired more complex functionality by combining in the very same terminal input multiple commands, which otherwise we would need to execute one-by-one. 
+The command substitution operator literally in-lined the output of **date** command at the place where it was used. This way, we can very elegantly achieve the desired more complex functionality by combining in the very same command input multiple commands, which otherwise we would need to execute one-by-one. 
 
 Command substitution operator ``` $( ... ) ``` is a very neat construct, and it is used more frequently than you would expect. One classical use case is to avoid hardwiring any user specific information in your code, since it can change from one computer to another.
 
-**Example 2**: How to store programatically your user name, in the case env. variable **USER** is not set?
+**Example 2**: How to store programmatically your user name, in case the environment variable **USER** is not set?
+
 ```bash
 UserName=$(whoami) 
 ```
