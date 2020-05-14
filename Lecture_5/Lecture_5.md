@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200513
+**Last update**: 20200514
 
 
 ### Table of Contents
@@ -22,7 +22,7 @@ We have already seen that a value can be stored in a variable by explicit assign
 ```bash
 stat -c %s someFile.log
 ```
-But how can we fetch the above printout programmatically, and do some manipulation with it later in our code? This is precisely the case where we need to use the command substitution operator:
+But how can we fetch the above printout programmatically, and do some manipulation with it later in our code? This is precisely the case when we need to use the command substitution operator:
 ```bash
 FileSize=$(stat -c %s someFile.log)
 ```
@@ -33,7 +33,8 @@ echo ${FileSize}
 
 The operator ```$( ... )``` can do much more than that. For instance, it can literally in-line the output of any command at the place where this operator was used. 
 
-**Example 1**: How to produce the following single-line output, with the current time stamp embedded:
+**Example 1**: How to produce the following single-line output, with the current timestamp embedded:
+
 ```bash
 Today is Mo 20. Mai 15:33:07 CEST 2019 . What a nice day...
 ```
@@ -43,107 +44,120 @@ echo "Today is $(date) . What a nice day..."
 ```
 The command substitution operator literally in-lined the output of **date** command at the place where it was used. This way, we can very elegantly achieve the desired more complex functionality by combining in the very same command input multiple commands, which otherwise we would need to execute one-by-one. 
 
-Command substitution operator ``` $( ... ) ``` is a very neat construct, and it is used more frequently than you would expect. One classical use case is to avoid hardwiring any user specific information in your code, since it can change from one computer to another.
+Command substitution operator ``` $( ... ) ``` is a very neat construct, and it is used frequently. One classical use case is to avoid hardwiring any specific information in your code, since it can change from one computer to another.
 
-**Example 2**: How to store programmatically your user name, in case the environment variable **USER** is not set?
+**Example 2**: You are working in parallel on two computers, which do not have the same version of the command that you use in your code. You would like to use if possible all the latest functionalities of that command, but if that's not available, you would still like to run your code with the older version of that command. Can you make the code transparent to such a difference? You can do it schematically as follows:
 
 ```bash
-UserName=$(whoami) 
+Version=$(commandName -v) # flag '-v' typically prints the version
+[[ $Version -lt someTreshold ]] && use-older-functionalities
+[[ $Version -ge someTreshold ]] && use-newer-functionalities
 ```
-You can nest fearlessly command substitution operators, like in the following example. 
+This is just a schematic solution --- most likely the output of **commandName -v** will have some additional information that you need to filter out,  but all that can be still done within the command substitution operator.
 
-**Example 3**: How can you get programmatically only the name of the parent directory of the directory in which your script sits (knowing that env. variable **PWD** holds only the absolute path of script's directory)? 
+You can fearlessly nest the command substitution operators, like in the following example. 
 
-In order to solve this problem, we need first to introduce two widely used **Linux** commands in this context: **basename** and **dirname**. The command **basename** is typically used in the following way: It takes as an argument the absolute path to some directory or file, and drops the absolute path part, i.e. it leaves only the base directory or file name. This is illustrated with the following code snippets:
-```linux
-SomeDirectoryPath=/home/abilandz/Lecture/SS2019/Lecture_5
-basename $SomeDirectoryPath # prints Lecture_5
-```
-and for files:
-```linux
-SomeFilePath=/home/abilandz/Lecture/SS2019/Lecture_5/someFile.log
-basename $SomeFilePath # prints someFile.log
-```
-On the other hand, the command **dirname** does the opposite: It prints only the absolute path part to the specified directory or file. For instance: 
-```linux
-SomeDirectoryPath=/home/abilandz/Lecture/SS2019/Lecture_5
-dirname $SomeDirectoryPath # prints /home/abilandz/Lecture/SS2019
-```
-and for files:
-```linux
-SomeFilePath=/home/abilandz/Lecture/SS2019/Lecture_5/someFile.log
-dirname $SomeFilePath # prints also /home/abilandz/Lecture/SS2019/Lecture_5
-```
+**Example 3**: How can you get programmatically only the name of the parent directory of the directory in which your script sits (knowing that the environment variable **PWD** holds the full absolute path of script's directory)? 
 
-Therefore, the solution to our initial problem is fairly elegant and concise, if we use these two commands in combination with command substitution operator:
+To solve this problem, we need first to introduce two widely used **Linux** commands in this context: **basename** and **dirname**. The command **basename** is typically used in the following way: It takes as an argument the absolute path to some directory or file, and drops the part which corresponds to an absolute path. This is illustrated with the following code snippets:
 ```bash
-ParentDirectoryName=$(basename $(dirname $PWD))
+DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
+basename ${DirectoryPath}
+Lecture_5 # only the directory name is printed
 ```
-or a bit less efficiently (just to demonstate that nesting of command substitution operators is not a problem):
+On the other hand, the command **dirname** does the opposite: It prints only the absolute path to the specified directory or file. If we reuse the above example: 
 ```bash
-ParentDirectoryName=$(basename $(dirname $(pwd)))
+DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
+dirname ${DirectoryPath} 
+/home/abilandz/Lecture/PH8124 # only the abs. path is printed
+```
+The commands **basename** and **dirname** can be used in exactly the same way for files.
+
+Therefore, the solution to our initial problem can be fairly elegant and concise, if we use these two commands in combination with command substitution operator:
+```bash
+DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
+ParentDirectoryName=$(basename $(dirname $DirectoryPath))
+echo $ParentDirectoryName
+PH8124 # only the parent directory name is printed
+```
+We can use multiple commands within the same command substitution operator, they just need to be separated with delimiter ```;```, as in the following example:
+```bash
+Var=$(date;pwd)
+echo "$Var"
+```
+The printout is
+
+```
+Thu May 14 11:58:28 CEST 2020
+/home/abilandz/Lecture
 ```
 
-We can use multiple commands within same command substitution operator, e.g.:
-```bash
-echo $(date; pwd; ls)
-```
-but such generalization is not used that frequently in practice. 
+It is perfectly fine to inline the output of your function with this operator:
 
-It is perfectly fine to inline the output of your function with this operator, e.g.:
 ```bash
 echo "Output of my function is: $(someFunction) . Very nice!" 
 ```
 
-Finally, the very neat use case of command substitution operator is to  put the content of some external file in the variable. The relevant syntax is:
-```bash
-FileContent=$(< someFile.log) 
-```
-In the above example, ```<``` is just a shortcut for command **cat**, which can be used as well in this context directly. This great funcionality circumvents the neccessity of dealing with too many temporary physical files during code execution, when we are interested to keep the file content only at particular time. With the above definition, the following two commands yield exactly the same answer initially:
-```bash
-cat someFile.log # reads the content of physical file
-echo "$FileContent" # references the content of variable
-```
-However, if the content of pysical file ```someFile.log``` changes, that change does not affect the value of variable **FileContent**, and we did not need to create physically any temporary file to achieve that.
+or to store the printout of a function in the variable:
 
-Command substitution operator is frequently used in combination with **for** loop, when we want to iterate over all elements in the output of some command. Also in this context distinct elements of the list are separated with one or more empty characters. This is best illustrated with the following example:
+```bash
+Var=$(someFunction)
+```
 
-**Example 4**: How can we loop over all files in the current directory and do something with each of them?
+Finally, the very neat use case of the command substitution operator is to store the content of some external file in the variable. The relevant syntax is:
+
+```bash
+FileContent=$(< someFile) 
+```
+In the above example, ```<``` is just a shortcut for the command **cat**, which can be used completely equivalently in this context:
+```bash
+FileContent=$(cat someFile) 
+```
+
+
+This great functionality circumvents the necessity of dealing with too many temporary files during the code execution, when we are interested to keep the file content only at a particular time. With the above definitions, the following two commands yield exactly the same answer initially:
+
+```bash
+cat someFile # reads the content of a physical file
+echo "${FileContent}" # references the content of variable
+```
+However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file: if we store that information in the variable, we have removed completely the dependency of our code on that external file.
+
+The command substitution operator is frequently used in combination with the **for** loop, when we want to iterate over all elements in the output of some command. Also in this context distinct elements of the list are separated with one or more empty characters. This is best illustrated with the following example:
+
+**Example 4**: How can we loop over all files in the current directory and print the size of each file?
 
 One example solution is provided with the following code snippet:
 ```bash
 for File in $(ls $PWD); do
- echo $File
- echo -e "It's size is: $(stat -c %s $File) \n" 
+ [[ -f $File ]] && Size=$(stat -c %s $File) || continue
+ echo "The size of ${File} is: ${Size}" 
 done
 ```
-Note that if you would have used the lengthy output of **ls**, e.g. by specifying flags **-al**, then variable 'File' would loop over all entries in the command output separated with one or more empty characters, also over the permission field, user name etc.  This is illustrated also in the following example:
+Note that if you would have used the lengthy output of **ls** by specifying the flag **-l**, then the loop variable **File** would loop over all entries in the command output separated with one or more empty characters, therefore also over the permission field, user name, etc. This is illustrated in the following example:
+
 ```bash
-date
-echo "Looping over all entries in the 'date' output:"
 for Var in $(date); do
  echo $Var
 done
 ```
 The output is:
-```linux
-Fr 24. Mai 08:25:16 CEST 2019
-Looping over all entries in the 'date' output:
-Fr
-24.
-Mai
-08:25:16
-CEST
-2019
-```
-This is another example of understanding the importance of empty character being the default field separator in **Linux/Bash**.
-
-At the end, we would like to remark that backticks ``` ` ... ` ``` do the same thing as command substitution operator ``` $( ... ) ```, please compare:
 ```bash
-echo "Today is: $(date) . Thanks for info."
-echo "Today is: `date` . Thanks for info."
+Thu
+May
+14
+13:13:50
+CEST
+2020
 ```
-There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` doesn't work properly in each case, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be used instead of ``` ` ... ` ``` almost exclusively.
+This is another example to illustrate the importance of empty character as being the default field separator in **Linux/Bash**.
+
+In the end, we would like to remark that the backticks ``` ` ... ` ``` do the same thing as command substitution operator ``` $( ... ) ```:
+```bash
+echo "Today is: $(date) . Thanks for the info."
+echo "Today is: `date` . Thanks for the info."
+```
+**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` doesn't work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferably used in **Bash** instead of backticks ``` ` ... ` ```.
 
 
 
