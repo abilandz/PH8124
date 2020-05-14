@@ -165,6 +165,8 @@ echo "Today is: `date` . Thanks for the info."
 
 
 
+
+
 ### 2. Input/Output (I/O) and redirections <a name="io"></a>
 In the previous section we have seen how we can embed the output of one command into the input of another command with the command substitution operator---let us now clarify in more detail the input and output streams of **Linux** commands.  By convention, each **Linux** program has three standard input/output (I/O) channels set:
 
