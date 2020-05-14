@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20200502
+**Last update**: 20200514
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -518,7 +518,16 @@ The command precedence rules in **Bash** are well defined and strictly enforced 
 4. **Bash** built-in commands (**cd**, **type**, etc.)  
 5. scripts with execute permission and **Linux** commands (at this level, the precedence is determined based on the ordering in **PATH** variable, as we already discussed)   
 
-Given the above ordering of command precedence, some care is definitely needed when introducing new aliases or developing new functions in **Bash**, to avoid the name clashes with the existing **Linux** commands. If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back:
+Given the above ordering of command precedence, some care is definitely needed when introducing new aliases or developing new functions in **Bash**, to avoid the name clashes with the existing **Linux** commands. 
+
+Additional profiling of command precedence can be achieved with **Bash** built-in commands **builtin**, **command**, and **enable** (check their 'help' pages in **Bash**). For instance, we can force that always the **Bash** built-in command **echo** is executed, even if the alias or function named **echo** exists, with the following syntax:
+
+```bash
+builtin echo <some-text>
+```
+
+If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back:
+
 ```bash
 unalias <some-name>
 ```

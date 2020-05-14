@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200513
+**Last update**: 20200514
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -99,7 +99,7 @@ The main point behind this construct is the following: **lastCommand** is execut
 **Example**: Consider the following command chain
 
 ```bash
-decho "Hello" && pwd && date || echo "Failed"
+echo "Hello" && pwd && date || echo "Failed"
 ```
 
 Since all commands executed successfully, it creates the following output:
@@ -151,7 +151,7 @@ For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]`
 
 These 3 distinct categories of the usage of ```[[ ... ]]``` are best explained with a few concrete examples --- we start with the general case. 
 
-#### General case ####
+#### General case
 
 **Example 1**: How to check if some variable **Var** has been initialized?
 
@@ -208,7 +208,7 @@ The executive summary for the first category of operators is provided with the f
 | [[ ${Var1} =~ {Var2} ]] | true (0) if Var1 contains Var2 as a substring |
 
 
-#### Integers  ####
+#### Integers
 When it comes to the second group of operators,  ```-gt, -ge, -lt, -le, -eq```, they are specific in a sense that they can accept only integers as arguments. 
 
 **Example 4**: How to check if one integer is greater than some other integer?
@@ -236,7 +236,7 @@ Since the meaning of integer operators is rather obvious, we just provide the ex
 We can of course check if the two integers are the same by using the more general string comparison operator ```==``` (all variables are strings in **Bash**), but whenever you are sure that variables must contain integer content, ```-eq``` is clearly preferred over ```==```.
 
 
-#### Files and directories  ####
+#### Files and directories
 The very last group of operators, ```-f, -d, -e, -s, -nt, -ot```, expects their argument(s) to be either files or directories. The first four accept one argument, while the last two take two arguments. Their meaning is illustrated in the following examples.
 
 **Example 5**: How to check if the file ```${HOME}/test.txt``` exists or not?
