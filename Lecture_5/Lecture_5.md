@@ -3,15 +3,14 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200514
+**Last update**: 20200517
 
 
 ### Table of Contents
 1. [Command substitution: **$( ... )**](#command_substitution)
 2. [Input/Output (I/O) and redirections](#io)
-3. [Conditional statements](#conditional_statements)
-
-
+3. [Code blocks: **{ ... }**](#code_blocks)
+4. [Conditional statements](#conditional_statements)
 
 
 
@@ -168,21 +167,21 @@ echo "Today is: `date` . Thanks for the info."
 
 
 ### 2. Input/Output (I/O) and redirections <a name="io"></a>
-In the previous section we have seen how we can embed the output of one command into the input of another command with the command substitution operator---let us now clarify in more detail the input and output streams of **Linux** commands.  By convention, each **Linux** program has three standard input/output (I/O) channels set:
+In the previous section we have seen how we can embed the output of one command into the input of another command with the command substitution operator ```$( ... )```. Let us now make a further progress in this direction and clarify in more detail the input and output streams of **Linux** commands. By convention, each **Linux** command has three standard input/output (I/O) channels set. More concretely, each **Linux** command has a single way of:
 
-* a single way of accepting input called standard input (_stdin_) --- file descriptor 0 
-* a single way of producing output called standard output (_stdout_) --- file descriptor 1
-* a single way of producing error messages called standard error (_stderr_) --- file descriptor 2
+* accepting input : **standard input (_stdin_)** = file descriptor 0 
+* producing output : **standard output (_stdout_)** = file descriptor 1
+* producing error messages : **standard error (_stderr_)** = file descriptor 2
 
-Each program that you invoke has these three standard I/O channels set to some default values. By default, standard input is keyboard (but also can be file redirection, touchscreen, etc.). On the other hand, standard output and standard error are by default set to screen. The most important thing to remember is:
+Each command that you execute has these three standard I/O channels set to some default values. By default, standard input is keyboard (but it can be also a file redirection, touchscreen, etc.). On the other hand, standard output and standard error are by default set to screen. The most important things to remember is:
 
-* _stdout_ (file descriptor 1): This is the textual stream you see on the terminal if command executed successfully;
-* _stderr_ (file descriptor 2): This is the textual stream you see on the terminal if command failed (a.k.a. error message).
+* _stdout_ (file descriptor 1): This is the textual stream you see in the terminal if a command executed successfully;
+* _stderr_ (file descriptor 2): This is the textual stream you see in the terminal if a command failed (a.k.a. error message).
 
 For instance, when the command **date** executes successfully, it produces the following:
 ```bash
 date
-Fr 23. Nov 14:21:42 CET 2018
+Sun May 17 11:53:03 CEST 2020
 ```
 The above printout is an example _stdout_ stream of command **date**.  On the other hand, when the command **date** fails, for instance when it is called with the flag which is not supported:
 ```bash
@@ -192,60 +191,89 @@ it will print the error message:
 ```bash
 date: invalid option -- 'q'
 ```
-The above printout is an example _stderr_ stream of command **date**. This behaviour is true for basically all **Linux** commands. Since these two streams, _stdout_ and _stderr_, are always available, now we will learn how to handle them programatically. In practice, one can programatically fetch the _stdout_ of some command, parse it and depending on its content, issue some specific action. In the similar fashion, one can fetch programmatically _stderr_ ('error message') of some  command, and depending on its content issue some specific action to fix the problem.
+The above printout is an example _stderr_ stream of command **date**. This behaviour is true for basically all **Linux** commands.
 
-How can we programmatically handle those _stdout_ and _stderr_ streams? For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
+Since these two streams, _stdout_ and _stderr_, are always set for a command, we will now see how to handle them programmatically. In practice, one can programmatically fetch the _stdout_ of some command, parse through it, and depending on its content, issue some specific action. In the similar fashion, one can fetch programmatically _stderr_ (i.e. error message) of some  command, and depending on its content, issue some specific action to fix that particular problem. For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
 
-* ```1>``` : captures and redirects to file only the successful output of command (_stdout_);
-* ```2>``` : captures and redirects to file only the error message of command (_stderr_);
-* ```&>``` : captures and redirects to the same file both the successful output (_stdout_) and the error message (_stderr_).
+* ```1>``` : captures and redirects to file only the successful output of command (_stdout_)
+* ```2>``` : captures and redirects to file only the error message if the command failed (_stderr_)
+* ```&>``` : captures and redirects to the same file both the successful output (_stdout_) and the error message (_stderr_)
 
-For instance, if we want to redirect the _stdout_ stream of command into the file, we would use:
+For instance, if we want to redirect the _stdout_ stream of **date** command into a file, we would use:
 ```bash
 date 1> output.log
 ```
-Whatever the command **date** was printing on the terminal, now is re-directed to the physical file 'output.log' (please see its content with **cat**). In an analogous way, we can also programmatically redirect the error message, just need to change the file descriptor:
+Whatever the command **date** was printing on the terminal, now is re-directed to the physical file named ```output.log```. If that file doesn't exist, it will be automatically created at this point. The file's location in the file system can be specified also in this context both with an absolute and a relative path. If you now execute:
+
 ```bash
-date 2> error.log
+cat output.log
+```
+
+you get back the output of **date** command:
+
+```bash
+Sun May 17 11:53:03 CEST 2020
+```
+
+In this sense, by using ```1>``` redirection, the printout of some command during execution is stored permanently in the physical file on a local disk.
+
+In an analogous way, we can also programmatically redirect the error message of a command, just need to change the file descriptor:
+
+```bash
+date -q 2> error.log
 ```
 It's perfectly feasible to combine both examples on the same line:
 ```bash
-date 1> output.log 2> error.log
+someCommand 1> output.log 2> error.log
 ```
 We can also redirect both _stdout_ and _stderr_ in the same file with ```&>``` operator:
 ```bash
-date &> outputAndError.log
+someCommand &> outputAndError.log
 ```
 
-This way we can keep the whole information which our command has produced during execution permanently in the files, separately for _stdout_ and _stderr_, or combined together. If we re-execute the above examples, the existing content of physical files will be overwritten with new information. If instead you want new information to be appended to the existing content of specified file, use instead the operators: ```1>>```, ```2>>``` and ```&>>```. If the specified file doesn't exist, it will be automatically created in the directory where the command was executed.
+This way we can keep the whole printout which a command has produced during execution permanently in some local files, separately for _stdout_ and _stderr_, or combined together. Then later at any point by inspecting those printouts in the files we can trace back the whole execution, which helps enormously the code development and debugging.
 
-If file descriptor number is not specified, it is defaulted to 1, i.e. ```>``` is exactly the same as ```1>```, and ```>>``` is exactly the same as ```1>>```.
+If we re-execute the above examples, the previous content of specified files will be overwritten with the new information. If instead you want the new information to be appended to the existing content of those files, use instead the operators: ```1>>```, ```2>>``` and ```&>>```. 
 
-There is also ```2>&1``` redirection which is frequenty used, but it's exactly the same as  ```&>``` (the second one was added later in the **Bash**, so the first one is more portable in a sense that only that one can be used in some older **Bash** versions). The redirector ```2>&1``` says literally: Send _stderr_ (file descriptor 2) to the same place as _stdout_ (file descriptor 1). When ```2>&1``` is used, order matters---first we need to indicate where 1> is going, and only then 2>&1 makes sense to use.
+If the file descriptor number is not specified, it is defaulted to 1, i.e. ```>``` is exactly the same as ```1>```, and ```>>``` is exactly the same as ```1>>```.
 
+Especially in the older **Bash** scripts you will see also ```2>&1``` redirection, but it has exactly the same meaning as ```&>```, which was added only in more recent versions of **Bash**. The redirector ```2>&1``` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) has been sent. When ```2>&1``` is used, the order matters --- first we need to indicate where ```1>``` is redirected, and only then ```2>&1``` makes sense to use. Because of this limitation, in practice it's much easier to use ```&>``` in such a context.
 
  ![](blackHole.jpg)
 
-Yes, there is also black hole in **Linux**, just it is called ```/dev/null```.  What for instance if you couldn't care less about the printout of your command on the terminal, and you do not want to waste the disk space either to redirect it to some files? No worries, anything you redirect to ```/dev/null``` is lost forever.
+There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the useless printout of some verbose command in the terminal, and you do not want to waste the disk space either to redirect it to some file. Quite frequently, some commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
 
-**Example 1:** What do you need to do if you want to redirect only the successful output of your command to the file, and you do not want to see the error messages (sometimes the very annoying and harmless warnings are classified this way!) neither on the terminal, nor in the file? Then schematically you would do:
+**Example** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? This request is solved with the following code snippet: 
 
 ```bash
-someCommand 1>output.log 2>/dev/null
+someCommand 1>someFile 2>/dev/null
 ```
 
-Let us also say a few words of the last file descriptor 0, _stdin_ ('standard input'). In generlal, _stdin_ comes from the keyboard, but we can also feed the command with the content of some file. Schematically, we would use:
+With the above construct, the file ```someFile``` will contain only the successful output of ```someCommand```. On the other hand, all error messages are permanently lost, because they were redirected to the ```/dev/null```.
+
+Finally, let us also say a few words about the last file descriptor 0, _stdin_ ('standard input'). In general, _stdin_ comes from the keyboard, but we can also feed a command with the content of some file. Schematically, we would use:
+
 ```bash
 someCommand < someFile
 ```
-The operator ```<``` redirects the content of file as the argument to command. This operator is the shortcut synonym for ```0<```. Since some commands, e.g. **cat** expect by default input from the file, all these versions are giving exactly the same answer:
+The operator ```<``` redirects the content of ```someFile``` into the argument of ```someCommand```. In fact, ```<``` is nothing but the shortcut synonym for ```0<``` redirection. Because a lot of commands, e.g. **cat** or **more**, expect by default an input from a file, the below three versions are all equivalent:
 ```bash
 cat someFile
 cat < someFile
 cat 0< someFile
 ```
 
-Clearly, file descriptors are extremely nice feature, but it would be even nicer if we would be able to use them to handle  e.g. the output streams of multiple commands, or code blocks, in one go, instead of redirecting the output streams of each command separately---this is possible in **Bash** by using the code blocks!
+When you are checking the content of some file with **cat**, you are essentially redirecting its content into _stdin_ (file descriptor 0) for the **cat** command. 
+
+
+
+
+
+
+
+### 3. Code blocks: **{ ... }** <a name="code_blocks"></a>
+
+Clearly, all three file descriptors are extremely nice feature, but it would be even nicer if we would be able to use them to handle the output streams of multiple commands in one go, instead of redirecting the output stream of each command separately. This is possible in **Bash** by using the _code blocks_.
 
 Code block is basicaly any sequence of commands within curly bracess ```{ ... }```. Few important remarks about the code block:
 a) ```{ ... }``` inherits the environment and CAN modify it globally
@@ -309,7 +337,22 @@ done <someFile.log 1>output.log 2>error.log
 ```
 This way for instance, we can parse and modify programmatically the current file 'someFile.log' line-by-line, and save the modified new file in 'output.log'.
 
+
+
+
+
+**Example TBI:** Code block within the command chain.
+
+```bash
+someCommand && { command1; command2; ... } || { command1; command2; ... } 
+```
+
+
+
+
+
 As a side remark, curly braces are also used in a completely different context, to define easily the sequences, via the so-called _brace expansion_. Please try these examples:
+
 ```bash
 touch File.{log,png,pdf}
 ```
@@ -358,12 +401,9 @@ Without brace expansion, the solution would take some work as you would need to 
 
 
 
- 
 
 
-
-
-### 3. Conditional statements <a name="conditional_statements"></a>
+### 4. Conditional statements <a name="conditional_statements"></a>
 It is possible also in **Bash** to branch the execution of your code, and it works very similar like in the other programming languages. For simpler cases we would use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** conditional is more suitable for more complex cases.
 
 We use **if-elif-else-fi** to branch the code execution after checking the outcome of test construct ```[[ ... ]]```, i.e. schematically:
