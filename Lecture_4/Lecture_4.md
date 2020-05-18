@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200514
+**Last update**: 20200518
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -203,9 +203,9 @@ The executive summary for the first category of operators is provided with the f
 | :--:     | :--     |
 | [[ -z ${Var} ]] | true (0) if Var is zero (null) |
 | [[ -n ${Var} ]] | true (0) if Var holds some value |
-| [[ ${Var1} == {Var2} ]] | true (0) if Var1 and Var2 are exactly the same |
-| [[ ${Var1} != {Var2} ]] | true (0) if Var1 and Var2 are not exactly the same |
-| [[ ${Var1} =~ {Var2} ]] | true (0) if Var1 contains Var2 as a substring |
+| [[ ${Var1} == ${Var2} ]] | true (0) if Var1 and Var2 are exactly the same |
+| [[ ${Var1} != ${Var2} ]] | true (0) if Var1 and Var2 are not exactly the same |
+| [[ ${Var1} =~ ${Var2} ]] | true (0) if Var1 contains Var2 as a substring |
 
 
 #### Integers
@@ -227,11 +227,11 @@ Since the meaning of integer operators is rather obvious, we just provide the ex
 
 | Operator | Outcome (exit status) |
 | :--:     | :--     |
-| [[ ${Var1} -gt {Var2} ]] | true (0) if Var1 is greater than Var2 |
-| [[ ${Var1} -ge {Var2} ]] | true (0) if Var1 is greater than or equal to Var2 |
-| [[ ${Var1} -lt {Var2} ]] | true (0) if Var1 is smaller than Var2 |
-| [[ ${Var1} -le {Var2} ]] | true (0) if Var1 is smaller than or equal to Var2 |
-| [[ ${Var1} -eq {Var2} ]] | true (0) if Var1 is equal to Var2 |
+| [[ ${Var1} -gt ${Var2} ]] | true (0) if Var1 is greater than Var2 |
+| [[ ${Var1} -ge ${Var2} ]] | true (0) if Var1 is greater than or equal to Var2 |
+| [[ ${Var1} -lt ${Var2} ]] | true (0) if Var1 is smaller than Var2 |
+| [[ ${Var1} -le ${Var2} ]] | true (0) if Var1 is smaller than or equal to Var2 |
+| [[ ${Var1} -eq ${Var2} ]] | true (0) if Var1 is equal to Var2 |
 
 We can of course check if the two integers are the same by using the more general string comparison operator ```==``` (all variables are strings in **Bash**), but whenever you are sure that variables must contain integer content, ```-eq``` is clearly preferred over ```==```.
 
@@ -278,8 +278,8 @@ The executive summary of the most important test operators in this last category
 | [[ -d ${Var} ]] | true (0) if Var is a directory, and if that directory exists |
 | [[ -e ${Var} ]] | true (0) if Var is either a file or a directory, and it exists |
 | [[ -s ${Var} ]] | true (0) if Var is a file, and that file is not empty |
-| [[ ${Var1} -nt {Var2} ]] | true (0) if a file Var1 is newer than a file Var2 |
-| [[ ${Var1} -ot {Var2} ]] | true (0) if a file Var1 is older than a file Var2 |
+| [[ ${Var1} -nt ${Var2} ]] | true (0) if a file Var1 is newer than a file Var2 |
+| [[ ${Var1} -ot ${Var2} ]] | true (0) if a file Var1 is older than a file Var2 |
 
 
 In this section we have summarized the most important options --- for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
