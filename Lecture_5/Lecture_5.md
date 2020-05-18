@@ -3,13 +3,13 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200517
+**Last update**: 20200518
 
 
 ### Table of Contents
 1. [Command substitution: **$( ... )**](#command_substitution)
 2. [Input/Output (I/O) and redirections](#io)
-3. [Code blocks: **{ ... }**](#code_blocks)
+3. [Code blocks and brace expansion: **{ ... }**](#code_blocks_and_brace_expansion)
 4. [Conditional statements](#conditional_statements)
 
 
@@ -243,7 +243,7 @@ Especially in the older **Bash** scripts you will see also ```2>&1``` redirectio
 
 There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the useless printout of some verbose command in the terminal, and you do not want to waste the disk space either to redirect it to some file. Quite frequently, some commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
 
-**Example** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? This request is solved with the following code snippet: 
+**Example:** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? This request is solved with the following code snippet: 
 
 ```bash
 someCommand 1>someFile 2>/dev/null
@@ -271,14 +271,17 @@ When you are checking the content of some file with **cat**, you are essentially
 
 
 
-### 3. Code blocks: **{ ... }** <a name="code_blocks"></a>
+### 3. Code blocks and brace expansion: **{ ... }** <a name="code_blocks_and_brace_expansion"></a>
 
-Clearly, all three file descriptors are extremely nice feature, but it would be even nicer if we would be able to use them to handle the output streams of multiple commands in one go, instead of redirecting the output stream of each command separately. This is possible in **Bash** by using the _code blocks_.
+Clearly, the file descriptors are extremely nice feature, but they would be even nicer if we would be able to use them to handle the output streams of multiple commands in one go, instead of redirecting the output stream of each command separately. This is possible in **Bash** by using the _code blocks_.
 
-Code block is basicaly any sequence of commands within curly bracess ```{ ... }```. Few important remarks about the code block:
-a) ```{ ... }``` inherits the environment and CAN modify it globally
-b) ```{ ... }``` has its own 1> and 2> streaming facilities
-c) ```{ ... }``` does NOT launch a separate process. Therefore, the rest of the script needs to wait for all commands in the code block to finish
+**Bash** code block is basically any sequence of commands within curly braces ```{ ... }```. 
+
+Before presenting the concrete use cases, we first summarize the general facts about the code block:
+
+1. ```{ ... }``` inherits the environment and can modify it globally  
+2. ```{ ... }``` has its own ```1>``` and ```2>``` streaming facilities  
+3. ```{ ... }``` does not launch a separate process. Therefore, the rest of a script or a function needs to wait for all commands in the code block to finish
 
 Consider the following code snippet:
 ```bash
@@ -286,26 +289,46 @@ echo "before code block"
 {
  echo "inside code block"
  date 
- dateee # intentionally mistype something here
+ dateee # intentionally introduced error
 } 1>output.log 2>error.log 
 ```
-If we now check the content of files _output.log_ and _error.log_ with **cat**, we find the following in _output.log_:
+In the very last line, we have redirected the _stdout_ and _stderr_ streams of all commands within the code block in one go. If we now check the content of files ```output.log``` and ```error.log```, we find the following lines in the file ```output.log```:
+
 ```bash
 inside code block
 Do 23. Mai 08:56:49 CEST 2019
 ```
-and in _error.log_
+and the following line in the file ```error.log```:
 ```bash
 dateee: command not found
 ```
-On the other hand, on the scren the only printout is:
+On the other hand, on the screen the only printout is:
 ```bash
 before code block
 ```
-Another piece of code in the same script can be embeded in another code block, and redirected to another files. This way we can easily profile the code with redirectors, and decide what goes in the screen and what is arxived in files. 
-Tipically, code blocks ```{ ... }``` are used when it's not beneficial to break down the whole script into functions.
+because we didn't redirect the first **echo** command anywhere.
 
-To check the influence of code block on the environment, please execute the following code snippet:
+Another piece of code in the same script or function can be embedded into another code block, and then redirected to another files. This way we can easily profile the code with redirectors, and decide what goes on the screen and what is archived in files. Typically, code blocks ```{ ... }``` are used when it's not beneficial to break down some large monolithic script into functions.
+
+When it comes to redirections, it is possible to treat loops in an analogous way as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, you can disentangle what is happening in a particular loop, from what is happening in the rest of the code. Schematically, we would use for **for** loop:
+
+```bash
+for Var in someList; do
+ ... some commands ...
+done 1>output.log 2>error.log
+```
+
+We can simultaneously feed the **while** loop from an external file, and redirect its _stdout_ and _stderr_ in some other external files, schematically:
+
+```bash
+while read Line; do
+ ... some commands ...
+done <someFile.log 1>output.log 2>error.log
+```
+
+This way, for instance, we can parse and modify programmatically the example file ```someFile.log``` line-by-line, save the modified new content immediately in the file ```output.log```, and all errors which might occur during the editing in a separate file ```error.log```.
+
+To check the influence of code block on the environment in your terminal, you can execute the following code snippet:
 ```bash
 Var=44
 echo "Before : $Var"
@@ -313,51 +336,42 @@ echo "Before : $Var"
  echo "Inside : $Var"
  Var=55
 }
-echo "After : $Var"
+echo "After  : $Var"
 ```
 Upon execution, this code snippet produces:
 ```bash
 Before : 44
 Inside : 44
-After : 55
+After  : 55
 ```
-So, the code block inherits all settings from the global environment, and all modifications made inside the code block are propagated outside to the global environment. Some of these remarks can be relaxed by enclosing the code block within different type of braces, namely ```( ... ) ```, to define the _subshells_---this will be covered later. 
+From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. some variables might get a new value) are propagated outside to the global environment, after the code block terminates. The different behaviour can  be obtained by enclosing the particular code within different type of braces, namely the round  braces ```( ... ) ```, to define the _subshell_---this will be covered later.
 
-Very importantly, **for** and **while** loop have their own _stdout_ and _stderr_ streams, which you can redirect to the output files with ```1>``` and ```2>``` operators. In this way, you can disentangle what is happening in a particular loop, from what is happening in the rest of the script. Schematically, we would use for **for** loop:
-```bash
-for Var in some-list; do
- ... some commands ...
-done 1>output.log 2>error.log
-```
-We can simultaneously feed **while** loop from external fie, and redirect its _stdout_ and _stderr_ also in external files, schematically:
-```bash
-while read Line; do
- ... some commands ...
-done <someFile.log 1>output.log 2>error.log
-```
-This way for instance, we can parse and modify programmatically the current file 'someFile.log' line-by-line, and save the modified new file in 'output.log'.
+Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the next example illustrates.  
 
-
-
-
-
-**Example TBI:** Code block within the command chain.
+**Example:** Is it possible to condense the following lines into a single line:
 
 ```bash
-someCommand && { command1; command2; ... } || { command1; command2; ... } 
+someCommand
+ExitStatus=$?
+[[ $ExitStatus -eq 0 ]] && command1 && command2 && ... 
+[[ $ExitStatus -ne 0 ]] && commandA && commandB && ... 
 ```
 
-
-
-
-
-As a side remark, curly braces are also used in a completely different context, to define easily the sequences, via the so-called _brace expansion_. Please try these examples:
+By using the code blocks, this can be rewritten much more elegantly and efficiently as:
 
 ```bash
-touch File.{log,png,pdf}
+someCommand && { command1 && command2 && ... ; } || { commandA && commandB && ... ; } 
 ```
-This automatically creates three files with the same name, but different exensions: ```File.log```,  ```File.png``` and ```File.pdf```.
-The syntax to generate sequences is demonstrated in the following examples:
+
+Note the mandatory trailing semicolon ```;``` within each code block in this context. This is important, because you need to indicate that ```}``` is not an argument to the last command within the code block---the last command input is terminated with semicolon ```;```.
+
+**Brace expansion**
+
+We close this section with a side remark on curly braces. Besides being used to mark the code blocks, curly braces are also used in a completely different context to define programmatically the sequences, via the so-called _brace expansion_. 
+
+
+The syntax to generate sequences by using the brace expansion is demonstrated with the following concrete examples:
+
 ```bash
 echo {1..10}
 echo {1..10..2}
@@ -365,7 +379,7 @@ echo {10..1}
 echo {a..f}
 echo {-4..4}
 ```
-The printouts are:
+The corresponding printouts are:
 ```bash
 1 2 3 4 5 6 7 8 9 10
 1 3 5 7 9
@@ -373,29 +387,49 @@ The printouts are:
 a b c d e f
 -4 -3 -2 -1 0 1 2 3 4
 ```
-Brace expansion is very frequently used in enumerating sequentially either files or directories. For instance:
-```bash
-mkdir Dir_{0..9}
-```
-will in one go and effortlessly create 10 directories named ```Dir_0```, ```Dir_1```, ... ```Dir_9```.  We can both prepend and append strings:
-```bash
-touch File_{0..9}.log
-```
-This will create 10 new files sequentially named ```File_0.log```, ```File_1.log```, ... ```File_9.log```. 
+Brace expansion is very frequently used in enumerating sequentially either files or directories. 
 
-Having directories or files named sequentially, we can easily manipulate only a subset. For instance, if we have some sequentially named files.
+**Example 1: ** How to make 100 new directories named ```Dir_0, Dir_1, ... Dir_99```? 
 
-**Example 2**: Imagine that in some directory you have the following situation:
+The solution is very elegant by using the brace expansion mechanism:
+
 ```bash
-File_1.log File_2.log File_3.log ... File_9999.log
-File_1.inf File_2.inf File_3.inf ... File_9999.inf
-File_1.dat File_2.dat File_3.dat ... File_9999.dat
+mkdir Dir_{0..99}
 ```
-How to delete each 4th file, from 111 to 222, whose extension is either .log or .inf? If you use brace expansion, the solution is trivial:
+**Example 2: ** How to make 100 new file named ```File_0.data, File_1.data, ... File_99.data```? 
+
+We can both prepend and append strings to the brace expansion, so also in this case there is a very elegant solution:
+
 ```bash
+touch File_{0..99}.data
+```
+Brace expansion can be used also in combination with arbitrary string patterns. 
+
+**Example 3:** How to make three new files named ```someLengthyFileName.log```, ```someLengthyFileName.png``` and ```someLengthyFileName.pdf``` in one go?
+
+The solution is:
+
+```bash
+touch someLengthyFileName.{log,png,pdf}
+```
+
+which clearly saves a lot of typing.
+
+Multiple brace expansions can be combined in the same command input. For instance, having already named directories or files sequentially, we can easily manipulate only a subset of them, by using the brace expansion.
+
+**Example 4**: Imagine that in some directory you have the following files:
+
+```bash
+File_0.log File_1.log ... File_999.log
+File_0.inf File_1.inf ... File_999.inf
+File_0.dat File_1.dat ... File_999.dat
+```
+How to delete each 4th file within the interval 111 to 222, whose extension is either ```.log``` or ```.inf```? If you use the brace expansion, the solution is very simple and elegant:
+```bash
+ls File_{111..222..4}.{log,inf} # always ls before deleting!
 rm File_{111..222..4}.{log,inf}
 ```
-Without brace expansion, the solution would take some work as you would need to set up the script with loops and string comparisons, etc.
+Without brace expansion, the solution would take some serious work as you would need to set up the script with loops, string comparisons, etc.
 
 
 
