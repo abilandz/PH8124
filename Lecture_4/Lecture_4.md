@@ -272,11 +272,11 @@ File2=${HOME}/test2.txt
 [[ ${File1} -nt ${File2} ]] && echo "${File1} is newer" || echo "${File2} is newer"
 ```
 The executive summary of the most important test operators in this last category is provided in the following table: 
-| Operator ...... | Outcome (exit status) |
+| Operator | Outcome (exit status) |
 | :--:     | :--     |
-| [[ -f ${Var} ]] | true (0) if Var is a file, and that file exists |
-| [[ -d ${Var} ]] | true (0) if Var is a directory, and if that directory exists |
-| [[ -e ${Var} ]] | true (0) if Var is either a file or a directory, and it exists |
+| [[ -f ${Var} ]] | true (0) if Var is the existing file |
+| [[ -d ${Var} ]] | true (0) if Var is the existing directory |
+| [[ -e ${Var} ]] | true (0) if Var is existing file or directory |
 | [[ -s ${Var} ]] | true (0) if Var is a file, and that file is not empty |
 | [[ ${Var1} -nt ${Var2} ]] | true (0) if a file Var1 is newer than a file Var2 |
 | [[ ${Var1} -ot ${Var2} ]] | true (0) if a file Var1 is older than a file Var2 |
