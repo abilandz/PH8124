@@ -278,8 +278,8 @@ The executive summary of the most important test operators in this last category
 | [[ -d ${Var} ]] | true (0) if Var is a directory, and if that directory exists |
 | [[ -e ${Var} ]] | true (0) if Var is either a file or a directory, and it exists |
 | [[ -s ${Var} ]] | true (0) if Var is a file, and that file is not empty |
-| [[ ${Var1} -nt ${Var2} ]] | true (0) if a file Var1 is newer than a file Var2 |
-| [[ ${Var1} -ot ${Var2} ]] | true (0) if a file Var1 is older than a file Var2 |
+| [[ ${Var1} -nt ${Var2} ]] | true (0) if file Var1 is newer than file Var2 |
+| [[ ${Var1} -ot ${Var2} ]] | true (0) if file Var1 is older than file Var2 |
 
 
 In this section we have summarized the most important options --- for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
