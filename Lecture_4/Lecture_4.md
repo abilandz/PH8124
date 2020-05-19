@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200518
+**Last update**: 20200519
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -175,6 +175,18 @@ The very frequent use case is to check at the very beginning of the body of a sc
 If the user didn't provide value for the first argument, the above code snippet will terminate the subsequent execution.
 
 The operator ```-n``` accepts only one argument and checks whether it is set to the same value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
+
+If you forgot to specify an operator within the test construct, it is defaulted to ```-n```, i.e. 
+
+```bash
+[[ ${Var} ]]
+```
+
+is equivalent to 
+
+```bash
+[[ -n ${Var} ]]
+```
 
 **Example 2**: How to check if the content of variable **Var1** is equal to the content of variable **Var2**?
 
@@ -496,6 +508,20 @@ echo $((7%3)) # prints 1
 echo $((8%3)) # prints 2
 echo $((9%3)) # prints 0
 ```
+
+Besides supporting integer arithmetic operators within, ```(( ... ))``` we can also perform integer comparison by using the familiar ```<```,```<=```, ```==```, ```>=``` and ```>``` operators. This is an alternative to integer comparison within the test construct ```[[ ... ]]``` which has its own operators for integer comparison. For instance, the following code snippet
+
+```bash
+(( ${Var1} < ${Var2} ))  
+```
+
+ is equivalent to
+
+```bash
+[[ ${Var1} -lt ${Var2} ]]  
+```
+
+and so on. 
 
 The most frequent use case of ```(( ... ))``` operator is to increment the content of variable within loops, which we cover next.
 
