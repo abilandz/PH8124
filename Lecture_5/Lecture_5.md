@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200518
+**Last update**: 20200519
 
 
 ### Table of Contents
@@ -424,12 +424,12 @@ File_0.log File_1.log ... File_999.log
 File_0.inf File_1.inf ... File_999.inf
 File_0.dat File_1.dat ... File_999.dat
 ```
-How to delete each 4th file within the interval 111 to 222, whose extension is either ```.log``` or ```.inf```? If you use the brace expansion, the solution is very simple and elegant:
+How to delete each 4th file within the interval 111 to 222, whose extension is ```.log``` or ```.inf```, but not ```.dat```? If you use the brace expansion, the solution is very simple and elegant:
 ```bash
 ls File_{111..222..4}.{log,inf} # always ls before deleting!
 rm File_{111..222..4}.{log,inf}
 ```
-Without brace expansion, the solution would take some serious work as you would need to set up the script with loops, string comparisons, etc.
+Without brace expansion the solution would take much more work. It is also possible to nest brace expansion, but this is rarely used in practice.
 
 
 
@@ -438,45 +438,75 @@ Without brace expansion, the solution would take some serious work as you would 
 
 
 ### 4. Conditional statements <a name="conditional_statements"></a>
-It is possible also in **Bash** to branch the execution of your code, and it works very similar like in the other programming languages. For simpler cases we would use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** conditional is more suitable for more complex cases.
+We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similar like in other programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
 
-We use **if-elif-else-fi** to branch the code execution after checking the outcome of test construct ```[[ ... ]]```, i.e. schematically:
+The typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on the outcome of test construct ```[[ ... ]]```. Schematically:
 ```bash
-if [[ some-expression ]]; then
-  some code when this test is true
-elif [[ some-other-expression ]]; then 
-  some code when this test is true
- ...
+if [[ someExpression ]]; then
+ some code when someExpression succeeds
+elif [[ someOtherExpression ]]; then 
+ some code when someOtherExpression succeeds 
+ ... even more elif statements ...
 else 
-  some code when all tests above are false
+  some code when all tests above failed
 fi
 ```
-You can have as many **elif**'s as you wish, but the last statement shall be **else**.
+You can have as many different **elif**'s branches as you wish, but the very last branch must start with the keyword **else**, and be closed with the keyword **fi**. The keyword **then** doesn't need to be placed on the same line with keywords **if** and **elif**, a completely equivalent syntax is:
 
-Another typical use case is to branch the code execution depending on whether command or function execution succeeded or failed, schematically:
 ```bash
-if some-command; then
-  some code when this command worked
-elif some-other-command; then 
-  some code when this command worked
- ...
+if [[ someExpression ]]
+then
+ some code when someExpression succeeds
+elif [[ someOtherExpression ]]
+then 
+ some code when someOtherExpression succeeds 
+ ... even more elif statements ...
+else 
+  some code when all tests above failed
+fi
+```
+
+However, if the keyword **then** is placed on the same line with keywords **if** and **elif**, it has to be separated with semicolon ```;```. The first syntax is more suitable for writing directly in the terminal.  
+
+Another typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on whether a command or a function execution succeeded (exit status 0) or failed (exist status 1 to 255).  Schematically:
+```bash
+if someCommand; then
+  some code when someCommand succeeded
+elif someOtherCommand; then 
+  some code when someOtherCommand succeeded
+  ... even more elif statements ...
 else 
   some code when all commands above failed
 fi
 ```
-If interested only in checking the exit status of command, and want to suppress any output stream when executing that command, that can be achieved with:
+In practice, you frequently need to check only the exit status of a command, and do not need to see any output stream when executing that command. That can be achieved with:
 ```bash
-if some-command &>/dev/null; then
+if someCommand &>/dev/null; then
 ```
-In the same way you can use all other file descriptors, like ```1>``` and ```2>```, as a part of **if** or **elif** statement.
+In the same way, you can use all other file descriptors, like ```1>``` and ```2>```, as a part of **if** or **elif** statement.
 
+It is possible to use the command chain within the same **if** or **elif** statement:
 
-On the other hand, the syntax of **case-in-esac** conditional statement is more elaborate, but more powerful. Schematically, for most frequent use cases it looks like:
 ```bash
-case some-value in 
- first-possibility) some code when this possibility is met ;;
- second-possibility) some code when this possibility is met ;;
- *) some code when non of specified possibilities above is met ;;
+if someCommand && someFunction; then
+```
+In this example, the corresponding branch will be executed if the exit status of all chained commands is 0.
+
+Finally, it is also possible to execute sequentially different commands within the same **if** or **elif** statement:
+
+```bash
+if command1; someFunction; command2; then
+```
+
+In this example, the corresponding branch will be executed only if the exit status of the very last command **command2** is 0, the exit status of previous commands play no role with this syntax. 
+
+On the other hand, the syntax of **case-in-esac** conditional statement is more elaborate, but also more elegant and powerful. For the most frequent use cases the syntax looks like:
+
+```bash
+case someValue in 
+ firstOption) some code when this option is met ;;
+ secondOption) some code when this option is met ;;
+ *) some code when all options are not met ;;
 esac 
 ```
 The thing to remember is that in **case-in-esac** conditional statement one specific code block is embedded within ```)``` and ```;;``` (yes, double semicolon, no empty character is allowed among them!).
@@ -498,7 +528,7 @@ case $Flag in
   ;;
 esac
 ```
-In this way, with the **case-in-esac** conditiona; statement (additionally embedded in the **for** loop for instance) you can in the simplest way change the default behavior of your script or function, depending on which flags (options) user has supplied. For more elaborate cases to parse command line arguments in such context, see **Bash** built-in command **getopts**.
+In this way, with the **case-in-esac** conditional; statement (additionally embedded in the **for** loop for instance) you can in the simplest way change the default behaviour of your script or function, depending on which flags (options) user has supplied. For more elaborate cases to parse command line arguments in such context, see **Bash** built-in command **getopts**.
 
 Multiple statements can be grouped with ```|``` (OR), schematically:
 ```bash
@@ -570,7 +600,7 @@ while :; do
 done
 ```
 
-We can also use 'do-nothing' ```:``` command to write a multi-line comment in **Bash** in combination with the so-called _here-documents_---thsi will be covered later.
+We can also use 'do-nothing' ```:``` command to write a multi-line comment in **Bash** in combination with the so-called _here-documents_---this will be covered later.
 
 
 
