@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200519
+**Last update**: 20200520
 
 
 ### Table of Contents
@@ -546,10 +546,10 @@ Multiple options can be grouped with ```|``` (OR) under the same statement, sche
 ```bash
 case someValue in 
  firstOption | secondOption | ... ) 
-      ... some code when one option in this group is met ... 
+      ... some code when one option of this group is met ... 
     ;;
  someOtherOption | yetAnotherOption | ... ) 
-      ... some code when one option in this group is met ... 
+      ... some code when one option of this group is met ... 
     ;;
     ... even more options ... 
 *) some code when all specified options are not met ;;
@@ -563,59 +563,69 @@ The **case-in-esac** conditional statement recognizes the so-called POSIX bracke
 
 Example use case:
 ```bash
-Var=4
-case $1 in
+Var=someValue
+case $Var in
  [[:alpha:]]) 
-             echo "Var is a single alphabetic character" 
-           ;;
+   echo "Var is a single alphabetic character" 
+ ;;
  [[:digit:]]) 
-             echo "Var is a single digit" 
-           ;;
+   echo "Var is a digit" 
+ ;;
  *) 
    echo "Var is something else" 
  ;;
 esac
 ```
 
-As the final remark, when developing the code using conditional statements, sometimes we are not sure immediately what to implement in the particular branch. We cannot leave that branch empty or only put a commentas both cases produce error:
+As the final remark, when developing the code using conditional statements, sometimes we are not sure immediately what to implement in the particular branch. We cannot leave that branch empty or only insert a comment, because both will produce an error:
 ```bash
-if [[ 2 -gt 1 ]]; then
+if [[ ${Var1} -gt ${Var2} ]]; then
  # I will implement this part later 
 fi 
 ```
 The error message is:
-```linux
-bash: while.sh: line 4: syntax error near unexpected token `fi'
-bash: while.sh: line 4: `fi '
-```
-For this sake, we need to use the  so-called 'do-nothing' command ```:``` as a placeholder.
-
-So the correct solution to the above problem would be:
 ```bash
-if [[ 2 -gt 1 ]]; then
+line 4: syntax error near unexpected token `fi'
+line 4: `fi '
+```
+For this sake, we need to use the so-called 'do-nothing' command as placeholder. The syntax of  'do-nothing' command is simple a colon ```:```.
+
+The correct solution to the above problem is:
+```bash
+if [[ ${Var1} -gt ${Var2} ]]; then
  : # I will implement this part later 
 fi 
 ```
-'Do nothing' command ```:``` does literally nothing, except that it always returns the exit status 0, i.e. it always succeeds in what it needs to do, which is not surprising given that fact that it does nothing. Quite remarkably, even such a simple command has some interesting and frequent use cases.
+'Do nothing' command ```:``` does literally nothing, except that it always returns the exit status 0, i.e. it always succeeds in what it needs to do, which is not surprising given that fact that it does nothing:
 
-**Example 1:** How to empty the already existing file, preserving all its permissions?
 ```bash
-: > someFile.log
-```
-Literally, we have redirected nothing into the file, so its content is now nothing, while preserving the same file permissions. The above simple line is equivalent to: 
-```bash
-Var=$(some-code-to-extract-and-save-the-permissions-of someFile.log)
-rm someFile.log
-touch someFile.log # empty file is created, but with some default permissions 
-chmod get-permissions-from-$Var someFile.log
+:
+echo $?
+# prints 0
 ```
 
-**Example 2:** Infinite loop in **Bash**.
+Quite remarkably, even such a simple command has some interesting and frequent use cases.
+
+**Example:** How to empty the already existing file, keeping all file permissions intact?
+
+```bash
+: > someFile
+```
+Literally, we have redirected nothing into the existing file, therefore its content is now nothing. Note that we have kept all file permissions intact in a process. Therefore, this is in general not the same as deleting the existing file, and then creating a new empty file with the same name: 
+
+```bash
+rm someFile
+touch someFile
+```
+
+because now the permissions of a new file are set to default permissions, and we need to invest some additional work to set again our own permissions.
+
+**Example:** Infinite loop in **Bash**.
 
 The simplest implementation is:
-```
+```bash
 while :; do
- some-commands
+ ... some code ...
 done
 ```
 
