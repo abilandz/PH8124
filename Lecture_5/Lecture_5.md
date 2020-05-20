@@ -440,7 +440,10 @@ Without brace expansion the solution would take much more work. It is also possi
 ### 4. Conditional statements <a name="conditional_statements"></a>
 We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similar like in other programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
 
+**if-elif-else-fi**
+
 The typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on the outcome of test construct ```[[ ... ]]```. Schematically:
+
 ```bash
 if [[ someExpression ]]; then
  some code when someExpression succeeds
@@ -498,49 +501,65 @@ Finally, it is also possible to execute sequentially different commands within t
 if command1; someFunction; command2; then
 ```
 
-In this example, the corresponding branch will be executed only if the exit status of the very last command **command2** is 0, the exit status of previous commands play no role with this syntax. 
+In this example, the corresponding branch will be executed only if the exit status of the very last command **command2** is 0, the exit status of previous commands play no role with this version. 
 
-On the other hand, the syntax of **case-in-esac** conditional statement is more elaborate, but also more elegant and powerful. For the most frequent use cases the syntax looks like:
+**case-in-esac**
+
+On the other hand, the syntax of **case-in-esac** conditional statement is more elaborate, but also more elegant and powerful. The generic syntax looks like:
 
 ```bash
 case someValue in 
  firstOption) some code when this option is met ;;
  secondOption) some code when this option is met ;;
- *) some code when all options are not met ;;
+ ... even more options ...
+ *) some code when all specified options are not met ;;
 esac 
 ```
-The thing to remember is that in **case-in-esac** conditional statement one specific code block is embedded within ```)``` and ```;;``` (yes, double semicolon, no empty character is allowed among them!).
+The thing to remember is that in **case-in-esac** conditional statement a specific branch of code execution is embedded within round brace ```)``` and double semicolon ```;;``` (yes, double semicolon, no empty character is allowed here!). This peculiar syntax, the unbalanced round brace ```)``` and the double semicolon ```;;``` are special to **case-in-esac** conditional statement, and therefore easy to remember.
 
-Example code snippet to illustrate the syntax: 
+The usage of **case-in-esac** conditional statement is best illustrated with a few concrete examples.
+
+**Example:** How to implement the support for options in your script or function? 
+
+Schematically, for the simplest cases, that can be achieved with the following code snippet:
+
 ```bash
 Flag=$1
 case $Flag in
  -a) 
-     echo "You have specified option -a for your script/function."
+     echo "The option -a has been specified!"
      echo "For the option -a we do the following..." 
   ;;
  -b) 
-     echo "You have specified option -b for your script/function."
-     echo "For the option -b we do the following"   
+     echo "The option -b has been specified!"
+     echo "For the option -b we do the following..."   
   ;; 
-  *) echo "Specified flag not supported"
-     return 1
+  *) 
+     echo "The specified flag is not supported"
+     return 1 # bail out with error exit status
   ;;
 esac
 ```
-In this way, with the **case-in-esac** conditional; statement (additionally embedded in the **for** loop for instance) you can in the simplest way change the default behaviour of your script or function, depending on which flags (options) user has supplied. For more elaborate cases to parse command line arguments in such context, see **Bash** built-in command **getopts**.
+For more elaborate cases on how to parse command line arguments in such context, see **Bash** built-in command **getopts**.
 
-Multiple statements can be grouped with ```|``` (OR), schematically:
+Multiple options can be grouped with ```|``` (OR) under the same statement, schematically:
 ```bash
-case some-value in 
- first-possibility|second-possibility) some common code when either first or second possibility is met ;;
- *) some code when neither first or second possibility is met ;;
+case someValue in 
+ firstOption | secondOption | ... ) 
+      ... some code when one option in this group is met ... 
+    ;;
+ someOtherOption | yetAnotherOption | ... ) 
+      ... some code when one option in this group is met ... 
+    ;;
+    ... even more options ... 
+*) some code when all specified options are not met ;;
 esac 
 ```
-The **case-in-esac** conditional statement recognizes the so-called POSIX brackets, few most important examples are: 
-o ```[[:alpha:]]``` Alphabetic characters	[a-zA-Z]
-o ```[[:digit:]]``` Digits [0-9]
-o ```[[:alnum:]]``` Alphanumeric characters	[a-zA-Z0-9] 
+The **case-in-esac** conditional statement recognizes the so-called POSIX brackets. The most important examples are:   
+
+* ```[[:alpha:]]``` Alphabetic characters [a-zA-Z]  
+* ```[[:digit:]]``` Digits [0-9]       
+* ```[[:alnum:]]``` Alphanumeric characters [a-zA-Z0-9]    
 
 Example use case:
 ```bash
