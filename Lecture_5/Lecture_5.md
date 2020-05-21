@@ -173,7 +173,7 @@ In the previous section we have seen how we can embed the output of one command 
 * producing output : **standard output (_stdout_)** = file descriptor 1
 * producing error messages : **standard error (_stderr_)** = file descriptor 2
 
-Each command that you execute has these three standard I/O channels set to some default values. By default, standard input is keyboard (but it can be also a file redirection, touchscreen, etc.). On the other hand, standard output and standard error are by default set to screen. The most important things to remember is:
+Each command that you execute has these three standard I/O channels set to some default values. By default, standard input is a keyboard (but it can be also a file redirection, touchscreen, etc.). On the other hand, standard output and standard error are by default set to screen. The most important things to remember is:
 
 * _stdout_ (file descriptor 1): This is the textual stream you see in the terminal if a command executed successfully;
 * _stderr_ (file descriptor 2): This is the textual stream you see in the terminal if a command failed (a.k.a. error message).
@@ -191,12 +191,12 @@ it will print the error message:
 ```bash
 date: invalid option -- 'q'
 ```
-The above printout is an example _stderr_ stream of command **date**. This behaviour is true for basically all **Linux** commands.
+The above printout is an example _stderr_ stream of command **date**. This behavior is true for basically all **Linux** commands.
 
-Since these two streams, _stdout_ and _stderr_, are always set for a command, we will now see how to handle them programmatically. In practice, one can programmatically fetch the _stdout_ of some command, parse through it, and depending on its content, issue some specific action. In the similar fashion, one can fetch programmatically _stderr_ (i.e. error message) of some  command, and depending on its content, issue some specific action to fix that particular problem. For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
+Since these two streams, _stdout_ and _stderr_, are always set for a command, we will now see how to handle them programmatically. In practice, one can programmatically fetch the _stdout_ of some command, parse through it, and depending on its content, issue some specific action. In a similar fashion, one can fetch programmatically _stderr_ (i.e. error message) of some  command, and depending on its content, issue some specific action to fix that particular problem. For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
 
 * ```1>``` : captures and redirects to file only the successful output of command (_stdout_)
-* ```2>``` : captures and redirects to file only the error message if the command failed (_stderr_)
+* ```2>``` : captures and redirects to file only the error message if command failed (_stderr_)
 * ```&>``` : captures and redirects to the same file both the successful output (_stdout_) and the error message (_stderr_)
 
 For instance, if we want to redirect the _stdout_ stream of **date** command into a file, we would use:
@@ -217,7 +217,7 @@ Sun May 17 11:53:03 CEST 2020
 
 In this sense, by using ```1>``` redirection, the printout of some command during execution is stored permanently in the physical file on a local disk.
 
-In an analogous way, we can also programmatically redirect the error message of a command, just need to change the file descriptor:
+Analogously, we can also programmatically redirect the error message of command, just need to change the file descriptor:
 
 ```bash
 date -q 2> error.log
@@ -231,9 +231,9 @@ We can also redirect both _stdout_ and _stderr_ in the same file with ```&>``` o
 someCommand &> outputAndError.log
 ```
 
-This way we can keep the whole printout which a command has produced during execution permanently in some local files, separately for _stdout_ and _stderr_, or combined together. Then later at any point by inspecting those printouts in the files we can trace back the whole execution, which helps enormously the code development and debugging.
+This way we can keep the whole printout which command has produced during execution permanently in some local files, separately for _stdout_ and _stderr_, or combined . Then later at any point by inspecting those printouts in the files we can trace back the whole execution, which helps enormously the code development and debugging.
 
-If we re-execute the above examples, the previous content of specified files will be overwritten with the new information. If instead you want the new information to be appended to the existing content of those files, use instead the operators: ```1>>```, ```2>>``` and ```&>>```. 
+If we re-execute the above examples, the previous content of specified files will be overwritten with the new information. If instead, you want the new information to be appended to the existing content of those files, use instead the operators: ```1>>```, ```2>>``` and ```&>>```. 
 
 If the file descriptor number is not specified, it is defaulted to 1, i.e. ```>``` is exactly the same as ```1>```, and ```>>``` is exactly the same as ```1>>```.
 
@@ -256,7 +256,7 @@ Finally, let us also say a few words about the last file descriptor 0, _stdin_ (
 ```bash
 someCommand < someFile
 ```
-The operator ```<``` redirects the content of ```someFile``` into the argument of ```someCommand```. In fact, ```<``` is nothing but the shortcut synonym for ```0<``` redirection. Because a lot of commands, e.g. **cat** or **more**, expect by default an input from a file, the below three versions are all equivalent:
+The operator ```<``` redirects the content of ```someFile``` into the argument of ```someCommand```. In fact, ```<``` is nothing but the shortcut synonym for ```0<``` redirection. Because a lot of commands, e.g. **cat** or **more**, expect by default input from a file, the below three versions are all equivalent:
 ```bash
 cat someFile
 cat < someFile
@@ -273,7 +273,7 @@ When you are checking the content of some file with **cat**, you are essentially
 
 ### 3. Code blocks and brace expansion: **{ ... }** <a name="code_blocks_and_brace_expansion"></a>
 
-Clearly, the file descriptors are extremely nice feature, but they would be even nicer if we would be able to use them to handle the output streams of multiple commands in one go, instead of redirecting the output stream of each command separately. This is possible in **Bash** by using the _code blocks_.
+Clearly, the file descriptors are an extremely nice feature, but they would be even nicer if we would be able to use them to handle the output streams of multiple commands in one go, instead of redirecting the output stream of each command separately. This is possible in **Bash** by using the _code blocks_.
 
 **Bash** code block is basically any sequence of commands within curly braces ```{ ... }```. 
 
@@ -308,9 +308,9 @@ before code block
 ```
 because we didn't redirect the first **echo** command anywhere.
 
-Another piece of code in the same script or function can be embedded into another code block, and then redirected to another files. This way we can easily profile the code with redirectors, and decide what goes on the screen and what is archived in files. Typically, code blocks ```{ ... }``` are used when it's not beneficial to break down some large monolithic script into functions.
+Another piece of code in the same script or function can be embedded into another code block, and then redirected to some other files. This way we can easily profile the code with redirectors, and decide what goes on the screen and what is archived in files. Typically, code blocks ```{ ... }``` are used when it's not beneficial to break down some large monolithic script into functions.
 
-When it comes to redirections, it is possible to treat loops in an analogous way as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, you can disentangle what is happening in a particular loop, from what is happening in the rest of the code. Schematically, we would use for **for** loop:
+When it comes to redirections, it is possible to treat loops analogously as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, you can disentangle what is happening in a particular loop, from what is happening in the rest of the code. Schematically, we would use for **for** loop:
 
 ```bash
 for Var in someList; do
@@ -344,7 +344,7 @@ Before : 44
 Inside : 44
 After  : 55
 ```
-From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. some variables might get a new value) are propagated outside to the global environment, after the code block terminates. The different behaviour can  be obtained by enclosing the particular code within different type of braces, namely the round  braces ```( ... ) ```, to define the _subshell_---this will be covered later.
+From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. some variables might get a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_---this will be covered later.
 
 Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the next example illustrates.  
 
@@ -396,7 +396,7 @@ The solution is very elegant by using the brace expansion mechanism:
 ```bash
 mkdir Dir_{0..99}
 ```
-**Example 2: ** How to make 100 new file named ```File_0.data, File_1.data, ... File_99.data```? 
+**Example 2: ** How to make 100 new files named ```File_0.data, File_1.data, ... File_99.data```? 
 
 We can both prepend and append strings to the brace expansion, so also in this case there is a very elegant solution:
 
@@ -438,7 +438,7 @@ Without brace expansion the solution would take much more work. It is also possi
 
 
 ### 4. Conditional statements <a name="conditional_statements"></a>
-We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similar like in other programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
+We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similar to other programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
 
 **if-elif-else-fi**
 
@@ -540,7 +540,7 @@ case $Flag in
   ;;
 esac
 ```
-For more elaborate cases on how to parse command line arguments in such context, see **Bash** built-in command **getopts**.
+For more elaborate cases on how to parse command-line arguments in such context, see **Bash** built-in command **getopts**.
 
 Multiple options can be grouped with ```|``` (OR) under the same statement, schematically:
 ```bash
@@ -588,7 +588,7 @@ The error message is:
 line 4: syntax error near unexpected token `fi'
 line 4: `fi '
 ```
-For this sake, we need to use the so-called 'do-nothing' command as placeholder. The syntax of  'do-nothing' command is simple a colon ```:```.
+For this sake, we need to use the so-called 'do-nothing' command as a placeholder. The syntax of  'do-nothing' command is simple a colon ```:```.
 
 The correct solution to the above problem is:
 ```bash
