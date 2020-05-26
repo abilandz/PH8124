@@ -1,15 +1,13 @@
 ![](bash_logo.png)
 
-[TBI]: <> (This is a comment)
-
 # Lecture 6: String manipulation. Arrays. Piping (```|```). Command output and file manipulation with **sed**, **awk** and **grep** 
 
-**Last update**: 20190606
+**Last update**: 20200526
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
 2. [Arrays](#arrays)
-3. [Piping (```|```)](#piping)
+3. [Piping: ```|```](#piping)
 4. [Command output and file manipulation with **sed**, **awk** and **grep**](#sed_awk_grep)
 
 
@@ -21,63 +19,66 @@
 
 
 ### 1. String manipulation <a name="string_manipulation"></a>
-**Bash** offers a lot of built-in functionalities to manipulate the content of variables programatically. Since the whole file content can be stored in **Bash** variable, this way we can also to certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, when performance starts to matter, external programs like **sed**, **awk** or **grep**, or in extreme cases **perl**, are more suitable. 
+**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For a very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**. 
 
-String operators in **Bash**  are used in combination with curly bracket syntax. They are used to manipulate content of variables, typically in one of the following ways: 
-1/ Remove, replace or modify portions of variable's content  that match patterns
-2/ Ensure that variable exists (i.e. that it is defined and has non-null value)
-3/ Set default values for variables
+String operators in **Bash** can be used only in combination with curly brace syntax, ```${Var}```, when the content of a variable is referenced. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
-Generic syntax for manipulating variable's content is:
+1. Remove, replace or modify portion of variable's content that matches some patterns   
+2. Ensure that variable exists (i.e. that it is defined and has non-zero value)   
+3. Set the default value for variable   
+
+Generic syntax for manipulating the content of variable is:
 ```bash
-${Var/Old-pattern/New-Pattern}
+${Var/old-pattern/new-pattern}
 ```
 or 
 ```bash
-${Var//Old-pattern/New-Pattern}
+${Var//old-pattern/new-pattern}
 ```
-The first version will replace only the first occurrence of the pattern within the string, while the second version will replace all occurrences. That is illustrated with the following code snippet:
+The first version will replace only the first occurrence of the pattern 'old-pattern' with 'new-pattern' within the string which is stored in the variable 'Var', while the second version will replace all occurrences. This is illustrated with the following code snippet:
 ```bash
 Var=aaBBaa
 echo ${Var/aa/CCC}
 echo ${Var//aa/CCC}
 ```
-gives:
+which prints:
 ```bash
-CCCBBaa # only the first occurence of old-pattern 'aa' was replaced with new pattern 'CCC'
-CCCBBCCC # all occurences of old-pattern 'aa' were replaced with new pattern 'CCC'
+CCCBBaa
+CCCBBCCC
 ```
-It is perfectly fine to re-define the variable on the spot to the new content, e.g.:
+It is perfectly fine to re-define the variable on the spot with the new content:
 ```bash
 Var=${Var/aa/CCC}
 ```
-Also, new and old patterns do not have to be hardwired, instead can be passed as well via variables:
+The new and old patterns do not have to be hardwired, instead, they can be specified via variables:
 ```bash
 Var=aaBBaa
 Old=aa
 New=CCC
 Var=${Var/$Old/$New}
 ```
-Curly brace syntax interprets some characters in a special way. This is illustrated with the following examples.
+The curly brace syntax interprets some characters in a special way. This is illustrated with the following examples.
 
-**Example 1:** How to get programatically the length of the string?
+**Example 1:** How to get programmatically the length of the string?
+
 ```bash
-Var=12345678 
+Var=1a3b56F8 
 echo ${#Var} # prints 8 
 ```
 
 **Example 2:** How to lower/upper cases of all characters in the string?
+
 ```bash
 Var=aBcDeF 
 echo ${Var,,} # prints 'abcdef' 
 echo ${Var^^} # prints 'ABCDF' 
 ```
 
-Is is also possible with this functionality to select substring from variable content, the generic syntax is:
+It is also possible with the curly brace syntax to select substring from variable content, with the following generic syntax is:
 ```bash
 ${Var:offset:length} 
 ```
-The above construct returns substring, starting at 'offset', and up to 'length' characters. The first character in 'Var' is at offset 0. If 'length' is ommited, it goes all the way until the end of 'Var'. If 'offset' is less than 0, then it counts from the end of 'Var'. This is illustrated with following examples:
+The above construct returns substring, starting at 'offset', and up to 'length' characters. The first character in the content of variable 'Var' is at the offset 0. If 'length' is omitted, it goes all the way until the end of 'Var'. If 'offset' is less than 0, then it counts from the end of 'Var'. This is illustrated with the following examples:
 ```bash
 Var=0123456789
 echo ${Var:0:4} # prints '0123'
@@ -86,67 +87,82 @@ echo ${Var:5} # prints '56789'
 echo ${Var:(-2)} # prints '89'
 echo ${Var:(-3):2} # prints '78'
 ```
-It is mandatory to embed negative offset within round braces ```(...)``` here, since without it, in this particular context **Bash** interprets negative values in a very special way---this is clarified next.
+It is mandatory to embed negative offset within round braces ```( ... )``` in the above example, since otherwise **Bash** interprets negative integers after colon ```:``` in such a context in a very special way---this is clarified next.
 
-By using string operators one can determine the default value of variable under certain conditions. Most frequently one enounters the following two use cases:
+By using string operators one can set the default value of variable. Most frequently, one encounters the following two use cases:  
 
-1.```${Var:-defaultValue}``` => if 'Var' exists and isn't null, return it's value. Otherwise, return 'defaultValue'. Used typically to return the default value, if variable is undefined.
-```bash
-Var=44
-echo ${Var:-100} # prints 44
-```
-However,
-```bash
-unset Var
-echo ${Var:-100} # prints 100
-```
-This has a beautiful use case when our script or function expects user to pass an argument. Even if the user forgot to do it, we can nevertheless execute the code for some default value---it suffices to have the following example code snippet: 
-```bash
-Var=${1:-someDefaultValue}
-```
-This literally means that 'Var' is set to the first argument user has supplied to the script or function, but even if the user didn't supply anything, the code will execute by setting 'Var' to 'someDefaultValue'. 
+1. ```${Var:-defaultValue}``` : if 'Var' exists and it is not null, return its value. Otherwise, return the hardwired 'defaultValue'. This is basically a protection that variable always has some content. For instance:
 
-2.```${Var:?message}``` => if 'Var' exists and isn't null, return it's value. Otherwise, prints 'Var', followed by 'messsage', and abort the current function execution (in the case it is used in script, it only prints the error message). For instance, in the body of your function you can add protection via:
-```bash
-local Var=${1:?first argument is missing}
-```
-In the case user has forgotten to provide the first argument, you bail out automatically with error message: 
-```bash
-bash: 1: first argument is missing
-```
-If you do not specify message, the default message will be produced. For instance:
-```bash
-Var=${3:?}
-```
-In the case user has forgotten to provide the third argument, this now produces the default error message: 
-```bash
-bash: 3: parameter null or not set
-```
-In the above examples ':' is optional, i.e. we could as well use: ```${Var-defaultValue}``` and ```${Var?message}```. Omitting ':' translates literally the phrase 'exists and isn't null' into 'exists'. The difference in behavior tipically concerns only the case like:
+   ```bash
+    Var=44
+    echo ${Var:-100} # prints 44
+   ```
+However:
+
+   ```bash
+   unset Var
+   echo ${Var:-100} # prints 100
+   ```
+
+   This syntax has a very important use case when a script or a function expects the user to supply an argument. Even if the user forgot to do it, we can nevertheless execute the code for some default and meaningful value of that argument. For instance:
+   
+   ```bash
+   Var=${1:-defaultValue}
+   ```
+
+   This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'.   
+
+2. ```${Var:?someMessage}``` : if 'Var' exists and it is not null, return its value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
+
+   ```bash
+   function myFunction
+   {
+    local Var=${1:?first argument is missing}
+    ... some code ... 
+   } 
+   ```
+
+   In case the user has forgotten to provide the first argument, your function will terminate automatically with the error message: 
+   ```bash
+   myFunction
+   bash: 1: first argument is missing
+   ```
+   If you do not specify the message, the default message will be produced. For instance:
+
+   ```bash
+   unset someVariable 
+   Var=${someVariable:?}
+   ```
+   will produce the following error message:
+   ```bash
+   -bash: someVariable: parameter null or not set
+   ```
+   
+
+In both of these examples we have used colon ```:``` within the curly braces, but this is optional. However, if we omit the colon ```:``` and use instead the syntax ```${Var-defaultValue}``` and ```${Var?someMessage}```, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns the cases like this:
+
 ```bash
 Var= # Var exists but it is NULL
 echo ${Var:-44} # prints 44
 echo ${Var-44} # prints nothing
 ```
-Therefore, quite trivially we can ensure in **Bash** that all variables are used only if they were set, at least to some default values, and bail out with the error message otherwise.
+When replacing old patterns with the new ones, **Bash** can handle a few wildcard characters. The most important wildcards are:  
 
-When replacing old patterns with the new ones, **Bash** can handle few wildcard characters, the most important ones are:
+1.  ```*``` : zero or more characters    
+2.  ```?``` : any single character     
+3.  ```[ ... ]``` : character sets and ranges
 
-1.```*``` : zero or more characters
-2.```?``` : any single character 
-3.```[ ... ]``` : character sets and ranges
-
-Few examples illustrate their usage:
+Their usage is best illustrated with a few concrete examples:
 ```bash
 Var=1234a5678
 echo ${Var/a*/TEST} # prints '1234TEST'
 ```
-The pattern 'a*' matches any string starting with 'a' and folowed by 0 or more other characters.
+Here the pattern with the wildcard, 'a*', matches any string starting with 'a' and followed by 0 or more other characters.
 ```bash
 Var=a1234a5678
 echo ${Var//a?/TEST} # prints 'TEST234TEST678'
 ```
-The pattern 'a?*' matches any string starting with 'a' and folowed by exactly one other character (in the above example, it matched both 'a1' and 'a5').
+The pattern with the wildcard 'a?' matches a string starting with character 'a' and followed by exactly one other character (in the above example, it matched both 'a1' and 'a5', which were both replaced, due to ```//``` specification within curly braces, into a new pattern 'TEST').
 ```bash
 Var=abcde12345
 echo ${Var//[b24]/TEST} # prints 'aTESTcde1TEST3TEST5'
@@ -156,19 +172,19 @@ The pattern '[b24]' matches any single character specified within ```[ ... ]``` 
 Var=abcde12345
 echo ${Var//[b-e]/TEST} # prints 'aTESTTESTTESTTEST12345'
 ```
-The pattern '[b-e]' matches all single characters in the specified range within ```[ ... ]``` (in the above example, 'b', 'c', 'd' and 'e', i.e. all characters in the range 'b-4', were all replaced with 'TEST').
+The pattern '[b-e]' matches all single characters in the specified range within ```[ ... ]``` (in the above example, 'b', 'c', 'd' and 'e', i.e. all characters in the range 'b-e' were all replaced with the new pattern 'TEST').
 
-The real power of wildcards come into play when the above functionalities are being combined:
+The real power of wildcards is manifested when they are combined:
 ```bash
 Var=a1b2c3d4e5
 echo ${Var//[b-d]?/TEST} # prints 'a1TESTTESTTESTe5'
 ```
-The pattern '[b-d]?' matches all single characters in the specified range 'b-d' followed up by exactly one other character (in the above example, 'b2', 'c3' and 'd4', were all replaced with 'TEST').
+The pattern '[b-d]?' matches all single characters in the specified range 'b-d' followed up by exactly one other character (in the above example, 'b2', 'c3' and 'd4' were all replaced with 'TEST').
 ```bash
 Var=acebfd11g
 echo ${Var^^[c-f]} # prints 'aCEbFD11g'
 ```
-The pattern '^^[c-f]' will capitalize all single characters, but only in the specified range 'c-f', therefore 'c', 'd', 'e' and 'f' in the above example.
+The pattern '^^[c-f]' will capitalize all single characters, but only in the specified range 'c-f', therefore only 'c', 'd', 'e' and 'f' in the above example get capitalized. 
 
  
 
@@ -187,7 +203,7 @@ The array elements are separated with one or more empty characters, elements can
 echo ${SomeArray[0]} # prints '5'
 echo ${SomeArray[2]} # prints 'ccc' 
 ```
-To get programatically all array entries, we can use ```${array-name[*]}``` syntax:
+To get programmatically all array entries, we can use ```${array-name[*]}``` syntax:
 ```bash
 echo ${SomeArray[*]} # prints '5 a ccc 44'
 ```
@@ -215,7 +231,7 @@ unset SomeArray[2]
 echo ${SomeArray[*]} # prints '5 a 44'
 echo ${#SomeArray[*]} # prints '3', i.e. the size was also reset
 ```
-On the other hand, unsetting array alement with:
+On the other hand, unsettling array element with:
 ```bash
 SomeArray[2]= # WRONG!! The total size of array is not reset
 ```
@@ -228,7 +244,7 @@ the penultimate array entry is:
 ```bash
 echo ${SomeArray[-2]}
 ```
-and so on. To append directly to the already existing array a new element, we can use programatically always the following trick:
+and so on. To append directly to the already existing array a new element, we can use programmatically always the following trick:
 ```bash
 SomeArray[${#SomeArray[*]}]=12345 # appending a new element
 ```
@@ -247,7 +263,7 @@ echo "Number of files: ${#Array[*]}"
 **Example 2:** How to append one array to another, without using loops?
 
 The solution is:
-```
+```bash
 Array1=( 1 2 3 )
 Array2=( a b c )
 NewArray=( ${Array1[*]} ${Array2[*]} )
@@ -255,6 +271,7 @@ echo ${NewArray[*]} # prints '1 2 3 a b c'
 ```
 
 **Example 3:** Using brace expansion at array declaration.
+
 ```bash
 SomeArray=( file_{1..3}.{pdf,eps} )
 echo ${SomeArray[*]} # print all array elements
@@ -264,7 +281,7 @@ The printout is:
 file_1.pdf file_1.eps file_2.pdf file_2.eps file_3.pdf file_3.eps
 ```
 
-**Example 4:** How can we catch user's input directy into an array?
+**Example 4:** How can we catch user's input directly into an array?
 
 We have already seen that by using **read** command we can catch user's input, but if we want to store the input in few different variables, that quickly become inconvenient. And quite frequently we cannot really foresee the length of user's input. For instance, how to handle the user's reply to the question: "Which countries you visited so far?" That can be solved elegantly with arrays:
 ```bash
@@ -284,7 +301,7 @@ Countries=( $REPLY ) # yes, we can also initialize the content of array with the
 Multi-dimensional (associative) arrays are rarely used in **Bash**, but nevertheless they are supported. They need to be declared explicitly with **Bash** built-in command **declare** and flag **-A**, e.g.
 ```bash
 declare -A SomeArray
-``` 
+```
 After such declaration, **Bash** understands how to cope with the following syntax:
 ```bash
 SomeArray[1,2,3]=a
@@ -308,7 +325,7 @@ echo ${SomeArray[2,3,1]} # prints 'bb'
 
 
 
-### 3. Piping <a name="piping"></a>
+### 3. Piping: ```|``` <a name="piping"></a>
 We have already seen that commands can take their input directly from the user or from files. But in general, one command can take automatically the output of another command as its input. This mechanism is called _piping_ and it's very generic **Linux** concept. 
 
 In order to redirect output of one command as an input to another, we use operator ```|``` ('pipe'), schematically as:
@@ -322,9 +339,9 @@ It is possible to chain this way multiple commands::
 firstCommand | secondCommand | thirdCommand | ...
 ```
 
-The power of _piping_ is best illustrated in the combination with the three commands **sed**, **awk** and **grep** for text parsing and manipulation, which we will cover in the next section.  Usage of pipe ```|``` eliminates the need for making temporary files to redirect and store the output of one command, and then supply that temporay file as an input to another command.  We can with pipes very easily make our own version of already existing commands (e.g. by slighly changing the output format and wrapping up the implementation in some **Bash** function). We now provide few frequently use cases of piping.
+The power of _piping_ is best illustrated in the combination with the three commands **sed**, **awk** and **grep** for text parsing and manipulation, which we will cover in the next section.  Usage of pipe ```|``` eliminates the need for making temporary files to redirect and store the output of one command, and then supply that temporary file as an input to another command.  We can with pipes very easily make our own version of already existing commands (e.g. by slightly changing the output format and wrapping up the implementation in some **Bash** function). We now provide few frequently use cases of piping.
 
-We have already seen that **Bash** supports directly only integer arithmetics with the construct ```(( ... ))```. Floating point arithmetics in **Bash** can be done by piping the desired expression into the external programm **bc** ('basic calculator'). 
+We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. Floating point arithmetic in **Bash** can be done by piping the desired expression into the external program **bc** ('basic calculator'). 
 
 **Example 1:** How would you divide 10/7 at the precision of 30 significant digits? 
 Solution is given by the following code snippet:
@@ -332,7 +349,7 @@ Solution is given by the following code snippet:
 echo "scale=30; 10/7" | bc
 ```
 The output is:
-```
+```bash
 1.428571428571428571428571428571
 ```
 The key word **scale** sets the precision. For sophisticated cases, i.e. if you want to use special functions, etc, use: ```bc -l``` (flag **-l** loads additionally the heavy mathematical libraries). If the scale is not specified, it is defaulted to 1 when ```bc``` is called, and to 20 when ```bc -l``` is called.
@@ -352,7 +369,7 @@ j(n,x) : The bessel function of integer order n of x.
 echo "e(2)" | bc -l # prints '7.38905609893065022723'
 ```
 
-**Example 3:** What do you need to do if you want to see _stdout_ of your command on the screen during execution but in parallel to be redirected to some file (very reasonanle requirement in fact because you typically want to see what your command is doing, but also eventually to trace back all execution history)?
+**Example 3:** What do you need to do if you want to see _stdout_ of your command on the screen during execution but in parallel to be redirected to some file (very reasonable requirement in fact because you typically want to see what your command is doing, but also eventually to trace back all execution history)?
 
 This can be achieved with the **tee** command, schematically:
 ```bash
@@ -364,7 +381,7 @@ date | tee date.log
 ```
 prints the current time on the screen, but also simultaneously dumps it in the file ```date.log``` (check its content with ```cat date.log```).
 
-The command **tee** writes simulteneously its input to _stdout_ (screen) and redirects it to the files. By default **tee** overwrites the content of file, if we want to append instead, use the following version:
+The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default **tee** overwrites the content of file, if we want to append instead, use the following version:
 ```bash
 someCommand | tee -a someFile.log 
 ```
@@ -383,7 +400,7 @@ In the same spirit, you can keep the execution log of any script, functions, cod
 
 ### 4. Command output and file manipulation with **sed**, **awk** and **grep** <a name="sed_awk_grep"></a>
 
-Any text can be parsed, filtered, modifed programmatically, etc., directly whether it is command output, or sitting in some physical file, with the three great commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them, gives you a lot of power with programmatic text manipulation. Their usage is best learned from concrete examples.
+Any text can be parsed, filtered, modified programmatically, etc., directly whether it is command output, or sitting in some physical file, with the three great commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them, gives you a lot of power with programmatic text manipulation. Their usage is best learned from concrete examples.
 
 The command **grep** ('Globally search a Regular Expression and Print') is used to filter out from the command output or from the physical file the lines containing the certain pattern.
 
@@ -442,7 +459,7 @@ cat grepOutput.log
 ```
 
 Just like we can grep the content of the files, we can equivalently handle the command output---this is the prime use case of pipes.
- 
+
 **Example 2:** How to select in the current directory only the files whose names begin with example pattern 'ce' and ends with '.dat'? The content of directory is:
 ```bash
 array.sh   be3.dat  be8.dat  ce1.log  ce4.dat  ce6.log  ce9.dat
@@ -525,7 +542,7 @@ What happened above is literally the following:
 1. **date** command produced the output ```Do 6. Jun 09:44:59 CEST 2019```
 2. that output was piped to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The results is ```09:44:59```
 3. in the 2nd pipe the stream ```09:44:59``` was fed again to **awk** command, but now with the non-default field separator ```:``` . With respect to that field separator, the 2nd field is minutes. 
- 
+
 As a rule of thumb, fields separators in **awk** shall be always single characters---composite field separators can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, etc.).  Different  single characters can be treated as field separators in one go simultaneously just embed them all within ```[ ... ]```, for instance:
 ```bash
 echo "1+10:44+1000:123" | awk 'BEGIN{FS="[+:]"} {print $3}' 
@@ -533,7 +550,7 @@ echo "1+10:44+1000:123" | awk 'BEGIN{FS="[+:]"} {print $3}'
 The output is
 ```bash
 44
-``` 
+```
 The main limitation of **awk** when used within **Bash** scripts is that it cannot swallow directly the **Bash** variables, i.e. we need to initialize first some internal **awk** variables with the content of  **Bash** variables, before we can use them within **awk**.
 
 Finally, there is **sed** ('Stream Editor'), a non-interactive text file editor. It parses the command output or file content line-by-line, and performs specified operations on them. We illustrate its usage also with some basic examples.
@@ -548,7 +565,7 @@ line 4
 The solution is:
 ```bash
 sed "2i Some text" sedTest.dat
-``` 
+```
 This will insert in the second line (the meaning of '2i' specifier) of the file ```sedTest.dat``` the text _"Some text"_. The original file is not modified, only the **sed** output stream. The output on the screen is:
 ```bash
 line 1

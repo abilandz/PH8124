@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200520
+**Last update**: 20200525
 
 
 ### Table of Contents
@@ -243,13 +243,41 @@ Especially in the older **Bash** scripts you will see also ```2>&1``` redirectio
 
 There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the useless printout of some verbose command in the terminal, and you do not want to waste the disk space either to redirect it to some file. Quite frequently, some commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
 
-**Example:** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? This request is solved with the following code snippet: 
+**Example 1:** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? 
+
+This problem is solved with the following code snippet: 
 
 ```bash
 someCommand 1>someFile 2>/dev/null
 ```
 
 With the above construct, the file ```someFile``` will contain only the successful output of ```someCommand```. On the other hand, all error messages are permanently lost, because they were redirected to the ```/dev/null```.
+
+**Example 2:** How to set programmatically separate _stdout_ and _stderr_ streams in your own code? 
+
+This question is answered with the following concrete example, in which a function expects some arguments from the user. If the user supplied arguments, the functions prints successfull _stdout_ stream, and if the user failed to provide arguments, it prints the error message via _stderr_ stream:
+
+```bash
+function myFunction
+{
+ [[ $# -eq 0 ]] && echo "Error: No arguments" >&2 && return 1
+ echo "Arguments supplied" >&1 && return 0
+}
+```
+
+With such an implementation, it is now possible programmatically to handle both _stdout_ and _stderr_ streams of this function:
+
+```bash
+myFunction a b c 1>output.log 2>error.log
+```
+
+In the above use case, the user has supplied some arguments ('a', 'b', 'c'), and therefore only the file ```output.log``` is filled, with the message defined in the function body for the _stdout_ stream, namely 'Arguments supplied'.
+
+```bash
+myFunction 1>output.log 2>error.log
+```
+
+In the above example, no arguments were supplied. This is treated as an error within the function and it triggers its _stderr_ stream, which is the message defined as 'Error: No arguments' in the function body.
 
 Finally, let us also say a few words about the last file descriptor 0, _stdin_ ('standard input'). In general, _stdin_ comes from the keyboard, but we can also feed a command with the content of some file. Schematically, we would use:
 
