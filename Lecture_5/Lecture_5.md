@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200525
+**Last update**: 20200528
 
 
 ### Table of Contents
@@ -126,7 +126,7 @@ The command substitution operator is frequently used in combination with the **f
 
 **Example 4**: How can we loop over all files in the current directory and print the size of each file?
 
-One example solution is provided with the following code snippet:
+One simple solution (works only if filenames do not contain empty characters!) is provided with the following code snippet:
 ```bash
 for File in $(ls $PWD); do
  [[ -f $File ]] && Size=$(stat -c %s $File) || continue
