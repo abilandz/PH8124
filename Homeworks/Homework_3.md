@@ -2,7 +2,7 @@
 
 # **Bash** functions
 
-**Last update: 20200514**
+**Last update:** 20200514
 
 **Challenge #1**: Develop the **Bash** function named ```OldestFile``` which takes as arguments a list of files. The function does the following:  
 

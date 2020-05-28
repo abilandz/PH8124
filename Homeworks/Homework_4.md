@@ -1,38 +1,66 @@
-# Homework #4: Filtering and reformatting the file content programmatically
+![](bash_logo.png)
 
-Last update: 20190524
+# Filtering and reformatting the file content programmatically
 
-**Challenge #1**: As a starting point, please dump the following lines into the file named 'oldData.log':
+**Last update:** 20200527
+
+As a starting point to this homework, dump the following lines (including the empty lines!) in the file named ```scrambled.txt```:
+
 ```bash
-22 35 38 97
-67 14 83 54
-80 18 25 19
-79 65 11 97
-22  a 44 de
-67 19 17 25
-41 22 15 68
-70 86 28 65
-   23 23
-57 29 62 89
-11 44
-69 94 42 22
-77 88 61 42
-```
-Write a script which will:
-1. Take the file 'oldData.log' as an argument; 
-2. Filter out programmatically from that file into the new file named 'newData.log' only the 2nd and 4th columns, but only from the lines which have the expected valid entries (in this case, expected valid entry is defined as a line which have exactly 4 integers, other lines are discarded);
-3. Into the new file, dump also programmatically the sum of entries in the 2nd  and 4th column, i.e. your final format shall be:
-```bash
-35 97 => Sum is 132
-14 54 => Sum is 68
-...
-88 42 => Sum is 130
-```
-In the case the data of your experiment or Monte Carlo simulations was dumped in some ASCII files, this challenge is the trivial prototype of operation you typically need to perform: Cleaning up the data sample and doing some reformatting programmatically. 
+Bash  is       an  sh-compatible command language 
 
-**Hint #1**: Use **while+read** construct to parse the file content programmatically and ```1>>``` operator to dump the filtered and reformatted content into the new file.
+       interpreter that     executes commands read 
+        
+from       the standard   input or from a         file.
+Bash also   incorporates     useful features from 
 
-** Hint #2**: To chek if some variable ```Var``` is an integer, please use the following test construct:
-```bash
-[[ "$Var" =~ ^[+-]?[[:digit:]]+$ ]] && echo "Integer" || echo "Non-integer"
+
+    the Korn and      C shells (ksh and csh).
 ```
+
+**Challenge #1**: Develop a **Bash** function named ```FileInspector``` which does the following:
+
+1. it takes exactly one argument, which must be a non-empty file
+2. parses line-by-line through the file content, in each line counts the number of words, and replaces all occurrences of multiple empty characters with the single empty character
+3. removes all empty lines
+4. counts the number of non-empty lines
+5. finally, the function dumps the reformatted file content in the new file named ```sorted.txt```
+6. the last line contains the number of lines, and the timestamp (obtained via **date** command)
+
+For instance, for the above starting file ```scrambled.txt```, the reformatted new file ```sorted.txt``` shall look like this:
+
+```bash
+6: Bash is an sh-compatible command language
+5: interpreter that executes commands read
+8: from the standard input or from a file.
+6: Bash also incorporates useful features from
+8: the Korn and C shells (ksh and csh).
+Number of lines is 5, sorted on Wed May 27 16:08:00 CEST 2020
+```
+
+The first number in each line is the number of words on that line.
+
+**Hint #1:** To parse line-by-line programmatically through the file content, use **while+read**.
+
+**Hint #2:** To parse through all words in a single line, use schematically:
+
+```bash
+for Word in ${Line}; do
+ ... 
+done
+```
+
+where **Line** is the name of variable used in the previous **while+read** step.
+
+**Hint #3:** Use the same **while+read** loop to process a line from the starting file, and to dump in the very same loop iteration the reformatted line to the new file.
+
+**Hint #4**: The command **echo** preserves the multiple empty characters only if the arguments supplied to it are embedded within the quotes. Without quotes, 1 or more empty characters becomes 1 empty character in the **echo** printout.
+
+
+
+**Challenge #2:** Write a **Bash** script which, after being sourced, does the following:  
+
+1. Prompts in the terminal with the message: ```Do you want to continue [Y/n]?```
+2. If the user has replied 'Y', it prints ```OK, continuing!```, and executes any further code in the script
+3. If the user has replied 'n', it prints ```Hasta la vista!```, and terminates with the exit status 0
+4. If the user has replied something else, it prints: ```Sorry, that option is not supported (yet).```, and terminates with the error exit status 1
