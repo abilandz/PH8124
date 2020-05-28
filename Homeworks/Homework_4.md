@@ -2,7 +2,7 @@
 
 # Filtering and reformatting the file content programmatically
 
-**Last update:** 20200527
+**Last update:** 20200528
 
 As a starting point to this homework, dump the following lines (including the empty lines!) in the file named ```scrambled.txt```:
 
@@ -52,7 +52,15 @@ done
 
 where **Line** is the name of variable used in the previous **while+read** step.
 
-**Hint #3:** Use the same **while+read** loop to process a line from the starting file, and to dump in the very same loop iteration the reformatted line to the new file.
+**Hint #3:** Use the same **while+read** loop to process a line from the starting file, and to dump in the very same loop iteration the reformatted line to the new file, something like:
+
+```bash
+while read Line; do
+ ... some code ...
+done < scrambled.txt 1>sorted.txt 
+```
+
+
 
 **Hint #4**: The command **echo** preserves the multiple empty characters only if the arguments supplied to it are embedded within the quotes. Without quotes, 1 or more empty characters becomes 1 empty character in the **echo** printout.
 
@@ -63,4 +71,4 @@ where **Line** is the name of variable used in the previous **while+read** step.
 1. Prompts in the terminal with the message: ```Do you want to continue [Y/n]?```
 2. If the user has replied 'Y', it prints ```OK, continuing!```, and executes any further code in the script
 3. If the user has replied 'n', it prints ```Hasta la vista!```, and terminates with the exit status 0
-4. If the user has replied something else, it prints: ```Sorry, that option is not supported (yet).```, and terminates with the error exit status 1
+4. For any other reply, it prints: ```Sorry, that option is not supported (yet).```, and terminates with the error exit status 1
