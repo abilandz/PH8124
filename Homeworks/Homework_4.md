@@ -50,7 +50,7 @@ for Word in ${Line}; do
 done
 ```
 
-where **Line** is the name of variable used in the previous **while+read** step.
+where **Line** is the name of the variable used in the previous **while+read** step.
 
 **Hint #3:** Use the same **while+read** loop to process a line from the starting file, and to dump in the very same loop iteration the reformatted line to the new file, something like:
 
@@ -62,7 +62,7 @@ done < scrambled.txt 1>sorted.txt
 
 
 
-**Hint #4**: The command **echo** preserves the multiple empty characters only if the arguments supplied to it are embedded within the quotes. Without quotes, 1 or more empty characters becomes 1 empty character in the **echo** printout.
+**Hint #4**: The command **echo** preserves the multiple empty characters only if the arguments supplied to it are embedded within the quotes. Without quotes, 1 or more empty characters become 1 empty character in the **echo** printout.
 
 
 
