@@ -1,8 +1,8 @@
-echo ![](bash_logo.png)
+![](bash_logo.png)
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). Command output and file manipulation with **sed**, **awk** and **grep** 
 
-**Last update**: 20200529
+**Last update**: 20200530
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -19,15 +19,15 @@ echo ![](bash_logo.png)
 
 
 ### 1. String manipulation <a name="string_manipulation"></a>
-**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For a very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**. 
+**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to a certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**. 
 
 String operators in **Bash** can be used only in combination with curly brace syntax, ```${Var}```, when the content of a variable is referenced. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
-1. Remove, replace or modify portion of variable's content that matches some patterns   
-2. Ensure that variable exists (i.e. that it is defined and has non-zero value)   
-3. Set the default value for variable   
+1. Remove, replace or modify a portion of variable's content that matches some patterns   
+2. Ensure that variable exists (i.e. that it is defined and has a non-zero value)   
+3. Set the default value for a variable   
 
-Generic syntax for manipulating the content of variable is:
+The generic syntax for manipulating the content of the variable is:
 ```bash
 ${Var/old-pattern/new-pattern}
 ```
@@ -57,7 +57,7 @@ Old=aa
 New=CCC
 Var=${Var/$Old/$New}
 ```
-The curly brace syntax interprets some characters in a special way. This is illustrated with the following examples.
+The curly-brace syntax interprets some characters in a special way. This is illustrated with the following examples.
 
 **Example 1:** How to get programmatically the length of the string?
 
@@ -89,9 +89,9 @@ echo ${Var:(-3):2} # prints '78'
 ```
 It is mandatory to embed negative offset within round braces ```( ... )``` in the above example, since otherwise **Bash** interprets negative integers after colon ```:``` in such a context in a very special way---this is clarified next.
 
-By using string operators one can set the default value of variable. Most frequently, one encounters the following two use cases:  
+By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:  
 
-1. ```${Var:-defaultValue}``` : if 'Var' exists and it is not null, return its value. Otherwise, return the hardwired 'defaultValue'. This is basically a protection that variable always has some content. For instance:
+1. ```${Var:-defaultValue}``` : if 'Var' exists and it is not null, return its value. Otherwise, return the hardwired 'defaultValue'. This is basically protection that variable always has some content. For instance:
 
    ```bash
     Var=44
@@ -139,7 +139,7 @@ However:
    ```
    
 
-In both of these examples we have used colon ```:``` within the curly braces, but this is optional. However, if we omit the colon ```:``` and use instead the syntax ```${Var-defaultValue}``` and ```${Var?someMessage}```, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns the cases like this:
+In both of these examples we have used colon ```:``` within the curly braces, but this is optional. However, if we omit the colon ```:``` and use instead the syntax ```${Var-defaultValue}``` and ```${Var?someMessage}```, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns cases like this:
 
 ```bash
 Var= # Var exists but it is NULL
@@ -162,7 +162,7 @@ Here the pattern with the wildcard, 'a*', matches any string starting with 'a' a
 Var=a1234a5678
 echo ${Var//a?/TEST} # prints 'TEST234TEST678'
 ```
-The pattern with the wildcard 'a?' matches a string starting with character 'a' and followed by exactly one other character (in the above example, it matched both 'a1' and 'a5', which were both replaced, due to ```//``` specification within curly braces, into a new pattern 'TEST').
+The pattern with the wildcard 'a?' matches a string starting with the character 'a' and followed by exactly one other character (in the above example, it matched both 'a1' and 'a5', which were both replaced, due to ```//``` specification within curly braces, into a new pattern 'TEST').
 ```bash
 Var=abcde12345
 echo ${Var//[b24]/TEST} # prints 'aTESTcde1TEST3TEST5'
@@ -201,7 +201,7 @@ The pattern '^^[c-f]' will capitalize all single characters, but only in the spe
 ```bash
 SomeArray=( 5 a ccc 44 )
 ```
-Array elements are separated with one or more empty characters. To reference the content of particular array element, we use again the curly brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
+Array elements are separated with one or more empty characters. To reference the content of a particular array element, we use again the curly brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
 ```bash
 echo ${SomeArray[0]} # prints '5'
 echo ${SomeArray[2]} # prints 'ccc' 
@@ -233,7 +233,7 @@ The total number of elements in an array is given by the syntax ```${#ArrayName[
 ```bash
 echo ${#SomeArray[*]} # prints '4'
 ```
-We can set the value of particular array element directly:
+We can set the value of a particular array element directly:
 ```bash
 SomeArray[2]=ddd
 ```
@@ -241,7 +241,7 @@ Now if we print all elements, the initial 3rd element 'ccc' was replaced with th
 ```bash
 echo ${SomeArray[*]} # prints '5 a ddd 44'
 ```
-In order to remove a particular element of an array, we need to explicitly use the key word **unset**. This way, the length of an array and all indices are automatically recalculated:
+In order to remove a particular element of an array, we need to explicitly use the keyword **unset**. This way, the length of an array and all indices are automatically recalculated:
 ```bash
 unset SomeArray[2]
 echo ${SomeArray[*]} # prints '5 a 44'
@@ -265,7 +265,7 @@ or
 SomeArray=()
 ```
 
-The array index works also backwards. The last array element is:
+The array index works also backward. The last array element is:
 
 ```bash
 echo ${SomeArray[-1]}
@@ -322,9 +322,9 @@ some_file_0.dat some_file_1.dat some_file_2.dat some_file_3.dat
 
 By using this functionality, we can prepend programmatically to all file names in a given directory the absolute path to that directory --- we just need to prepend the pattern **${PWD}/**. 
 
-The power and flexibility of arrays come from the fact that at array declaration within ```( ... )``` a lot of other **Bash** functionalities are supported, for instance the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That in particular means that we can effortlessly store the entire output of command into an array, and then do some manipulation element-by-element. 
+The power and flexibility of arrays come from the fact that at array declaration within ```( ... )``` a lot of other **Bash** functionalities are supported, for instance, the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That in particular means that we can effortlessly store the entire output of a command into an array, and then do some manipulation element-by-element. 
 
-**Example 2:** Count the number of  words in an external file using arrays. 
+**Example 2:** Count the number of words in an external file using arrays. 
 
 The solution is very simple and elegant:
 ```bash
@@ -363,7 +363,7 @@ The printout is:
 file_0.pdf file_0.eps file_1.pdf file_1.eps file_2.pdf file_2.eps file_3.pdf file_3.eps
 ```
 
-**Example 5:** How to store output of some command in array?
+**Example 5:** How to store the output of some command in array?
 
 ```bash
 SomeArray=( $(date) )
@@ -382,7 +382,7 @@ echo "Current time: ${SomeArray[3]}"
 
 **Example 6:** How can we catch the user's input directly into an array?
 
-We have already seen that by using **read** command we can catch the user's input, but if we want to store the input in a few different variables, that quickly becomes inconvenient. And quite frequently, we cannot really foresee the length of user's input. For instance, how to handle the user's reply to the question: "Which countries you visited?" That can be solved elegantly with arrays:
+We have already seen that by using **read** command we can catch the user's input, but if we want to store the input in a few different variables, that quickly becomes inconvenient. And quite frequently, we cannot foresee the length of the user's input. For instance, how to handle the user's reply to the question: "Which countries you visited?" That can be solved elegantly with arrays:
 ```bash
 read -p "Which countries you visited? " -a Countries
 ```
@@ -395,7 +395,7 @@ echo "Number of countries is: ${#Countries[*]}"
 echo "The first country is: ${Countries[0]}"
 echo "The last country is: ${Countries[-1]}"
 ```
-But what if the user visited New Zealand, or Northern Ireland? Since these countries contain an empty character in their names, the code above clearly cannot handle these cases in the correct way. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and a lot of **Linux** commands reply on its content. We can proceed in the following schematic way:
+But what if the user visited New Zealand or Northern Ireland? Since these countries contain an empty character in their names, the code above clearly cannot correctly handle these cases. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and a lot of **Linux** commands rely on its content. We can proceed in the following schematic way:
 
 ``` bash
 DefaultIFS="$IFS" # save default
@@ -404,14 +404,21 @@ IFS=somethingNew
 IFS="$DefaultIFS" # revert back
 ```
 
-The better solution for our example is therefore:
+This is the frequently encountered case in practice, when a certain variable needs to be set only during the command execution. There exists a specialized syntax applicable to cover such uses cases:
 
 ```bash
-DefaultIFS="$IFS"
-IFS=','
-read -p "List (comma separated) countries you visited: " -a Countries
-IFS="$DefaultIFS"
+SomeVariable=someValue SomeCommand
 ```
+
+Note that there is no semicolon ```;``` between variable definition and command execution, this way the new definition of variable **SomeVariable** is visible only during the execution of **SomeCommand**. As soon as command terminates, **SomeVariable** gets automatically reset to its default value (if any).
+
+The final solution for our example is therefore:
+
+```bash
+IFS=',' read -p "List (comma separated) countries you visited: " -a Countries
+```
+
+This way, the input field separator will be comma ```,``` but only during the execution of **read**.
 
 Now if the User replied 'New Zealand,Northern Ireland' we have that:
 
@@ -422,7 +429,7 @@ echo ${Countries[1]}
 # prints: Northern Ireland
 ```
 
-As the final remark on arrays, we indicate that multidimensional (associative) arrays are rarely used in **Bash**, but nevertheless they are supported. They need to be declared explicitly with **Bash** built-in command **declare** and flag **-A**:
+As the final remark on arrays, we indicate that multidimensional (associative) arrays are rarely used in **Bash**, but nevertheless, they are supported. They need to be declared explicitly with **Bash** built-in command **declare** and flag **-A**:
 
 ```bash
 declare -A SomeArray
@@ -432,13 +439,13 @@ After such declaration, **Bash** understands how to cope with the following synt
 SomeArray[1,2,3]=a
 SomeArray[2,3,1]=bb
 ```
-To reference the content of elements in multidimensional arrays, we use the syntax:
+To reference the content of elements in multidimensional arrays, we use:
 ```bash
 echo ${SomeArray[1,2,3]} # prints 'a' 
 echo ${SomeArray[2,3,1]} # prints 'bb'
 ```
 
-
+The indices do not have to be hardwired --- index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer. 
 
 
 
