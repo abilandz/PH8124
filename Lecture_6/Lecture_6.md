@@ -29,11 +29,11 @@ String operators in **Bash** can be used only in combination with curly brace sy
 
 The generic syntax for manipulating the content of the variable is:
 ```bash
-${Var/old-pattern/new-pattern}
+${Var/OldPattern/NewPattern}
 ```
 or 
 ```bash
-${Var//old-pattern/new-pattern}
+${Var//OldPattern/NewPattern}
 ```
 The first version will replace only the first occurrence of the pattern 'old-pattern' with 'new-pattern' within the string which is stored in the variable 'Var', while the second version will replace all occurrences. This is illustrated with the following code snippet:
 ```bash
@@ -302,7 +302,7 @@ The solution to the first question is:
 Files=( ${Files[*]/%/.dat} )
 ```
 
-In the above code snippet, we have first appended (operator ```%```) to all array elements the same extension '.dat', and immediately redefined the array to the new content. The array elements are now:
+In the above code snippet, we have first appended (by specifying ```%```) to all array elements the same extension '.dat', and immediately redefined the array to the new content. The array elements are now:
 
 ```bash
 echo ${Files[*]}
@@ -313,7 +313,7 @@ The solution to the second question is:
 ```bash
 Files=( ${Files[*]/#/some_} )
 ```
-In the above code snippet, we have first prepended (operator ```#```) to all array elements the same string 'some_' , and we have then redefined the array to the new content, so the array elements are now :
+In the above code snippet, we have first prepended (by specifying ```#```) to all array elements the same string 'some_' , and we have then redefined the array to the new content, so the array elements are now :
 
 ```bash
 echo ${Files[*]}
