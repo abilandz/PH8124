@@ -1,8 +1,8 @@
-![](bash_logo.png)
+echo ![](bash_logo.png)
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). Command output and file manipulation with **sed**, **awk** and **grep** 
 
-**Last update**: 20200526
+**Last update**: 20200529
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -192,51 +192,81 @@ The pattern '^^[c-f]' will capitalize all single characters, but only in the spe
 
 
 
+
+
 ### 2. Arrays <a name="arrays"></a>
 
-**Bash** also supports arrays, i.e. variables containing multiple values, which can be of same type or of different type. In **Bash** array index starts with zero, and there is no limit to the size of an array. There are few ways in which array elements can be declared, the quickest one is to use round braces ```( ... )```. This is illustrated in the following code snippet:
+**Bash** also supports arrays, i.e. variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. Array index in **Bash** starts with zero, and there is no limit to the size of an array. There are a few ways in which an array can be initialized with its elements --- the quickest one is to use the round braces ```( ... )```. This syntax is illustrated with the following code snippet:
+
 ```bash
 SomeArray=( 5 a ccc 44 )
 ```
-The array elements are separated with one or more empty characters, elements can be any string, not necessarily of the same type. To reference the content of particular array element, we use again curly brace notation ```${array-name[index]}```, for instance:
+Array elements are separated with one or more empty characters. To reference the content of particular array element, we use again the curly brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
 ```bash
 echo ${SomeArray[0]} # prints '5'
 echo ${SomeArray[2]} # prints 'ccc' 
 ```
-To get programmatically all array entries, we can use ```${array-name[*]}``` syntax:
+To get programmatically all array entries, we can use ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax, for instance:
 ```bash
 echo ${SomeArray[*]} # prints '5 a ccc 44'
 ```
+The difference between ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax matters only when used within double quotes, and the explanation is the same as for a difference between ```"$*"``` and "$@" when referring to the list of positional parameters (see Lecture #2).
+
 This means that we can very conveniently loop over all array entries with:
+
 ```bash
-for Entry in  ${SomeArray[*]}; do
+for Entry in ${SomeArray[*]}; do
  echo $Entry
 done
 ```
-Total number of elements in an array is given by the syntax ```${#array-name[*]}```, i.e..
+The printout is:
+
+```bash
+5
+a
+ccc
+44
+```
+
+The total number of elements in an array is given by the syntax ```${#ArrayName[*]}```:
+
 ```bash
 echo ${#SomeArray[*]} # prints '4'
 ```
-We can assign value directly:
+We can set the value of particular array element directly:
 ```bash
 SomeArray[2]=ddd
 ```
-Now if we print all elements, we get:
+Now if we print all elements, the initial 3rd element 'ccc' was replaced with the new value 'ddd', and we get:
 ```bash
 echo ${SomeArray[*]} # prints '5 a ddd 44'
 ```
-In order to remove the element of an array, we need to explicitly use the key word **unset**:
+In order to remove a particular element of an array, we need to explicitly use the key word **unset**. This way, the length of an array and all indices are automatically recalculated:
 ```bash
 unset SomeArray[2]
 echo ${SomeArray[*]} # prints '5 a 44'
-echo ${#SomeArray[*]} # prints '3', i.e. the size was also reset
+echo ${#SomeArray[*]} # prints '3', the array was resized
 ```
-On the other hand, unsettling array element with:
+On the other hand, unsetting the array element with:
 ```bash
-SomeArray[2]= # WRONG!! The total size of array is not reset
+SomeArray[2]= # WRONG!!
 ```
-is wrong, since the total size of array was not reset, i.e. this particular element is still counted, only it has now NULL content. 
-The array index works also backwards, i.e. the last array element is:
+is wrong, since the total size of an array was not reset, i.e. this particular element is still counted as a part of an array, only it has now NULL content. 
+
+The whole array can be reset either with
+
+```bash
+unset SomeArray
+```
+
+or 
+
+```bash
+SomeArray=()
+```
+
+The array index works also backwards. The last array element is:
+
 ```bash
 echo ${SomeArray[-1]}
 ```
@@ -244,61 +274,156 @@ the penultimate array entry is:
 ```bash
 echo ${SomeArray[-2]}
 ```
-and so on. To append directly to the already existing array a new element, we can use programmatically always the following trick:
+and so on. To append directly to the already existing array a new element, we can use programmatically the following code snippet:
 ```bash
-SomeArray[${#SomeArray[*]}]=12345 # appending a new element
+SomeArray[${#SomeArray[*]}]=SomeValue
 ```
 
-The power and flexibility of arrays come from the fact that at declaration within ```( ... )``` a lot of other **Bash** functionalities are being supported, for instance the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That in particular means that we can effortlessly store the entire output of command into an array, and then do some manipulation element-by-element. 
+The above syntax works, because array indexing starts from 0 and ends with N-1, where N is the total number of array elements. Since ```${#SomeArray[*]}``` gives the total number of array elements N, the above syntax just appends the new N-th entry.
 
-**Example 1:** Count the number of files in the specified directory using arrays. 
+Quite frequently, we need to prepend or append the same string to all array elements. This can be achieved  elegantly with the following syntax:
 
-The solution is very simple:
 ```bash
-SomeDir=$PWD # using for simplicity the current working directory. but it can be anything esle
-Array=( $(ls $SomeDir) )
-echo "Number of files: ${#Array[*]}"
+SomeArray=${SomeArray[*]/#/SomePattern} # prepend
+SomeArray=${SomeArray[*]/%/SomePattern} # append
 ```
 
-**Example 2:** How to append one array to another, without using loops?
+**Example 1:** We have the following starting array which just contains some file names:
+
+```bash
+Files=( file_0 file_1 file_2 )
+```
+
+How to append to all file names the same file extension '.dat'? How to prepend to all file names the same string 'some_'?
+
+The solution to the first question is:
+
+```bash
+Files=( ${Files[*]/%/.dat} )
+```
+
+In the above code snippet, we have first appended (operator ```%```) to all array elements the same extension '.dat', and immediately redefined the array to the new content. The array elements are now:
+
+```bash
+echo ${Files[*]}
+file_0.dat file_1.dat file_2.dat
+```
+
+The solution to the second question is:
+```bash
+Files=( ${Files[*]/#/some_} )
+```
+In the above code snippet, we have first prepended (operator ```#```) to all array elements the same string 'some_' , and we have then redefined the array to the new content, so the array elements are now :
+
+```bash
+echo ${Files[*]}
+some_file_0.dat some_file_1.dat some_file_2.dat some_file_3.dat
+```
+
+By using this functionality, we can prepend programmatically to all file names in a given directory the absolute path to that directory --- we just need to prepend the pattern **${PWD}/**. 
+
+The power and flexibility of arrays come from the fact that at array declaration within ```( ... )``` a lot of other **Bash** functionalities are supported, for instance the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That in particular means that we can effortlessly store the entire output of command into an array, and then do some manipulation element-by-element. 
+
+**Example 2:** Count the number of  words in an external file using arrays. 
+
+The solution is very simple and elegant:
+```bash
+FileContent=$(< SomeFile)
+SomeArray=( ${FileContent} )
+echo "Number of words: ${#SomeArray[*]}"
+```
+
+In the first line we have stored the content of an external file ```SomeFile``` into variable **FileContent**, and then just defined the array elements by referencing its content. The empty characters which separate the words in the file, now separate the array elements in the definition. 
+
+At the expense of becoming a bit cryptic, the above solution can be condensed even further:
+
+```bash
+SomeArray=( $(< SomeFile) )
+echo "Number of words: ${#SomeArray[*]}"
+```
+
+**Example 3:** How to append entries of one array to another, without using loops?
 
 The solution is:
 ```bash
-Array1=( 1 2 3 )
-Array2=( a b c )
-NewArray=( ${Array1[*]} ${Array2[*]} )
-echo ${NewArray[*]} # prints '1 2 3 a b c'
+Array_1=( 1 2 3 )
+Array_2=( a b c d )
+NewArray=( ${Array_1[*]} ${Array_2[*]} )
+echo ${NewArray[*]} # prints '1 2 3 a b c d'
 ```
 
-**Example 3:** Using brace expansion at array declaration.
+**Example 4:** Using brace expansion at array declaration.
 
 ```bash
-SomeArray=( file_{1..3}.{pdf,eps} )
-echo ${SomeArray[*]} # print all array elements
+SomeArray=( file_{0..3}.{pdf,eps} )
+echo ${SomeArray[*]}
 ```
 The printout is:
 ```bash
-file_1.pdf file_1.eps file_2.pdf file_2.eps file_3.pdf file_3.eps
+file_0.pdf file_0.eps file_1.pdf file_1.eps file_2.pdf file_2.eps file_3.pdf file_3.eps
 ```
 
-**Example 4:** How can we catch user's input directly into an array?
+**Example 5:** How to store output of some command in array?
 
-We have already seen that by using **read** command we can catch user's input, but if we want to store the input in few different variables, that quickly become inconvenient. And quite frequently we cannot really foresee the length of user's input. For instance, how to handle the user's reply to the question: "Which countries you visited so far?" That can be solved elegantly with arrays:
 ```bash
-read -p "Which countries you visited so far? " -a Countries
+SomeArray=( $(date) )
 ```
-By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be stored in an array (in the above example named 'Countries'). Then we can immediately write for instance:
+
+We can now extract from the output of **date** only a particular entry:
+
+```bash
+echo ${SomeArray[*]}
+# prints: 'Fri May 29 16:24:25 CEST 2020'
+echo "Current month: ${SomeArray[1]}"
+# prints: 'Current month: May'
+echo "Current time: ${SomeArray[3]}"
+# prints: 'Current time: 16:24:25'
+```
+
+**Example 6:** How can we catch the user's input directly into an array?
+
+We have already seen that by using **read** command we can catch the user's input, but if we want to store the input in a few different variables, that quickly becomes inconvenient. And quite frequently, we cannot really foresee the length of user's input. For instance, how to handle the user's reply to the question: "Which countries you visited?" That can be solved elegantly with arrays:
+```bash
+read -p "Which countries you visited? " -a Countries
+```
+By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be split according to the empty character, i.e. the default input field separator into words, and then each word is stored as a separate element in an array (in the above example, that arrayed is named 'Countries'). 
+
+Then we can immediately write for instance:
+
 ```bash
 echo "Number of countries is: ${#Countries[*]}"
 echo "The first country is: ${Countries[0]}"
 echo "The last country is: ${Countries[-1]}"
 ```
-Alternative, one line lengthier solution, is:
-```bash
-read -p "Which countries you visited so far? "
-Countries=( $REPLY ) # yes, we can also initialize the content of array with the content of variable
+But what if the user visited New Zealand, or Northern Ireland? Since these countries contain an empty character in their names, the code above clearly cannot handle these cases in the correct way. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and a lot of **Linux** commands reply on its content. We can proceed in the following schematic way:
+
+``` bash
+DefaultIFS="$IFS" # save default
+IFS=somethingNew
+... some code with new IFS ...
+IFS="$DefaultIFS" # revert back
 ```
-Multi-dimensional (associative) arrays are rarely used in **Bash**, but nevertheless they are supported. They need to be declared explicitly with **Bash** built-in command **declare** and flag **-A**, e.g.
+
+The better solution for our example is therefore:
+
+```bash
+DefaultIFS="$IFS"
+IFS=','
+read -p "List (comma separated) countries you visited: " -a Countries
+IFS="$DefaultIFS"
+```
+
+Now if the User replied 'New Zealand,Northern Ireland' we have that:
+
+```bash
+echo ${Countries[0]}
+# prints: New Zealand
+echo ${Countries[1]}
+# prints: Northern Ireland
+```
+
+As the final remark on arrays, we indicate that multidimensional (associative) arrays are rarely used in **Bash**, but nevertheless they are supported. They need to be declared explicitly with **Bash** built-in command **declare** and flag **-A**:
+
 ```bash
 declare -A SomeArray
 ```
@@ -307,7 +432,7 @@ After such declaration, **Bash** understands how to cope with the following synt
 SomeArray[1,2,3]=a
 SomeArray[2,3,1]=bb
 ```
-To reference the content, we use the syntax:
+To reference the content of elements in multidimensional arrays, we use the syntax:
 ```bash
 echo ${SomeArray[1,2,3]} # prints 'a' 
 echo ${SomeArray[2,3,1]} # prints 'bb'
