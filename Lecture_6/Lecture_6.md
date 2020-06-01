@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). Command output and file manipulation with **sed**, **awk** and **grep** 
 
-**Last update**: 20200530
+**Last update**: 20200601
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -458,25 +458,37 @@ The indices do not have to be hardwired --- index of **Bash** arrays can be any 
 
 
 ### 3. Piping: ```|``` <a name="piping"></a>
-We have already seen that commands can take their input directly from the user or from files. But in general, one command can take automatically the output of another command as its input. This mechanism is called _piping_ and it's very generic **Linux** concept. 
+We have already seen that commands can take their input directly from the user or from files. But in general, one command can take automatically the output of another command as its input. This mechanism is called _piping_ and it is very generic concept in **Linux**. 
 
-In order to redirect output of one command as an input to another, we use operator ```|``` ('pipe'), schematically as:
+In order to use the output of one command as the input to another, we use operator ```|``` ('pipe'), schematically as:
 
 ```bash
 firstCommand | secondCommand
 ```
-It is possible to chain this way multiple commands::
+It is possible to chain with pipe operator ```|``` multiple commands:
 
 ```bash
 firstCommand | secondCommand | thirdCommand | ...
 ```
 
-The power of _piping_ is best illustrated in the combination with the three commands **sed**, **awk** and **grep** for text parsing and manipulation, which we will cover in the next section.  Usage of pipe ```|``` eliminates the need for making temporary files to redirect and store the output of one command, and then supply that temporary file as an input to another command.  We can with pipes very easily make our own version of already existing commands (e.g. by slightly changing the output format and wrapping up the implementation in some **Bash** function). We now provide few frequently use cases of piping.
+In the above example, the successful output, i.e. the _stdout_ stream, of ```firstCommand``` has become the input, i.e. the _stdin_, to ```secondCommand```. That command now processes that input, and produces its own output, which is then becoming the input to the ```thirdCommand```, and so on.
 
-We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. Floating point arithmetic in **Bash** can be done by piping the desired expression into the external program **bc** ('basic calculator'). 
+It is possible to redirect simultaneously both _stdout_ and _stderr_ stream of one command into _stdin_ of another, with the slightly modified pipe operator ```|&```, schematically:
+
+```bash
+firstCommand |& secondCommand
+```
+
+In the above example, both the successful output stream and the error message of ```firstCommand``` are simultaneously redirected as an input to ```secondCommand```. 
+
+Usage of pipe ```|``` eliminates the need for making temporary files to redirect and store the output of one command, and then supply that temporary file as an input to another command. All commands chained with ```|``` in the pipeline are running simultaneously and data flow among them is automated without any restriction on the size. 
+
+We now provide a few frequently use cases of piping. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program **bc** ('basic calculator'). 
 
 **Example 1:** How would you divide 10/7 at the precision of 30 significant digits? 
-Solution is given by the following code snippet:
+
+The solution is given by the following code snippet:
+
 ```bash
 echo "scale=30; 10/7" | bc
 ```
@@ -484,7 +496,9 @@ The output is:
 ```bash
 1.428571428571428571428571428571
 ```
-The key word **scale** sets the precision. For sophisticated cases, i.e. if you want to use special functions, etc, use: ```bc -l``` (flag **-l** loads additionally the heavy mathematical libraries). If the scale is not specified, it is defaulted to 1 when ```bc``` is called, and to 20 when ```bc -l``` is called.
+The key word **scale** sets the precision in **bc** program. Instead of using **bc** interactively and providing via keyboard _stdin_ for it's execution, we have just piped the _stdout_ of **echo** as an input to **bc**.
+
+For more sophisticated use cases, for instance when you want to use special mathematical functions, etc, use **bc -l**. The flag '-l' (ell) loads in the memory in addition the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it is defaulted to 1 when **bc** is called, and to 20 when **bc -l** is called.
 
 The math library of **bc** defines the following example functions:
 ```bash
@@ -497,36 +511,41 @@ j(n,x) : The bessel function of integer order n of x.
 ```
 
 **Example 2:** How would you calculate ```e^2``` to the precision of 20 significant digits? 
+
 ```bash
 echo "e(2)" | bc -l # prints '7.38905609893065022723'
 ```
 
-**Example 3:** What do you need to do if you want to see _stdout_ of your command on the screen during execution but in parallel to be redirected to some file (very reasonable requirement in fact because you typically want to see what your command is doing, but also eventually to trace back all execution history)?
+Another typical use case of pipe operator ```|``` is in a combination with **tee** command. Quite frequently, when a certain command is executing, we would like to see its output on the screen, but also simultaneously redirected to some file, so that any time later we can carefully inspect the whole command output by reading through the content of that file.    
 
 This can be achieved with the **tee** command, schematically:
 ```bash
-someCommand | tee someFile.log 
+someCommand | tee someFile.log  
 ```
-For instance:
+For instance, the code snippet:
+
 ```bash
 date | tee date.log
 ```
-prints the current time on the screen, but also simultaneously dumps it in the file ```date.log``` (check its content with ```cat date.log```).
+will print the current time on the screen, but it will also simultaneously dump it permanently in the file named ```date.log``` (check its content with **cat date.log**). In the very same spirit, it is possible to keep the full execution log of any script, function, code block ```{ ... }```, loops, etc.
 
-The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default **tee** overwrites the content of file, if we want to append instead, use the following version:
+The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default, **tee** overwrites the content of file, if we want to append instead to the already existing non-empty file, use the following version:
 ```bash
 someCommand | tee -a someFile.log 
 ```
 
-In the same spirit, you can keep the execution log of any script, functions, code block ```{ ... }```, loops, etc. This way, you can always recover in great detail what your code was doing throughout its execution.
+Flag '-a' in this particular case stands for 'append'.
 
+As the final remark on the pipelines, we consider the following important question: If the pipeline, composed of multiple commands, has failed during execution, how to figure out programmatically which particular command(s) in the pipeline have failed? In order to answer this question, we need to inspect the status of built-in variable **PIPESTATUS**. This variable is an array holding the exit status of each command in the last executed pipeline:
 
+```bash
+echo "scale=5000; e(2)" | bc -l | more
+echo ${PIPESTATUS[*]} # prints '0 0 0'
+```
 
+In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully, therefore the array **PIPESTATUS** holds three zeroes. If only the single command has been executed, that is a trivial pipeline, and **PIPESTATUS** array has only one entry, the very same information which is stored in **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute a command, even the trivial ones like **echo**.  
 
-
-
-
-
+The power of piping is best illustrated in the combination with the three powerful commands **sed**, **awk** and **grep**, which are the core **Linux** utilities for text parsing and manipulation, which we cover in the next section.
 
 
 
