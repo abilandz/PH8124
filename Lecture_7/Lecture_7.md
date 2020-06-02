@@ -1,10 +1,8 @@
 ![](bash_logo.png)
 
-[TBI]: <> "This is a comment"
-
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20190626
+**Last update**: 20200602
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -379,7 +377,7 @@ the script execution will wait until all jobs running in the background are term
 We have already seen that we can suspend the running job by hitting ```Ctrl+Z```, and that we can terminate the running job with ```kill -9 <job-PID>```. Conceptually, there is no much of a difference in what is happening in these two cases, and these two examples are just a small subset of _signals_ that we can send to the running process. In this section we cover in detail from the user's side how the signals can be sent programmatically to the running processes, and therefore modify its running conditions. In the next section, we will cover this topic from programmer's side, i.e. we will discuss the code which needs to be implemented so that your process can receive and handle the signals. 
 
 Loosely speaking, a signal is a message that a user or a process sends to another running proccess when some abnormal event takes place or when we want another process to do something. As we already saw, two processes can communicate with pipes ```|```, signals are another way for running processes to communicate with each other.
- 
+
 All available signals have: 
 
 * numbers (starting from 1)
@@ -413,11 +411,11 @@ sleep 10m &
 we can terminate it equivalently either with
 ```bash
 kill -9 9485
-``` 
+```
 or with
 ```bash
 kill -SIGKILL 9485
-``` 
+```
 In both cases, we get:
 ```bash
 jobs -l 
@@ -427,7 +425,7 @@ We can also use the shortcut versions, which are also case insensitive:
 ```bash
 kill -KILL 9485
 kill -kill 9485
-``` 
+```
 From the table above, we see there are 64 different signals we can send to the running process. Note, however, that some signals are typically used only by operating system, to tell process that something went wrong (e.g. division by zero was encountered). As another remark, we indicate that it is somewhat more portable to use signal by its name instead of by its number, across different platforms: It is unlikely that the name of the signal like ```KILL``` will be interpreted in any other way, however number ```9``` can be.
 
 After we have illustrated the simple use case of **Bash** built-in command **kill**, let us now elaborate on it more in detail. The command **kill** is used to send signal to already running job, or to any new job. If used without arguments, it will send the default signal to the running process. That default signal is ```TERM``` (number 15), which usually has the same effect as signal ```INT``` (number 2). So whenever you were executing a command like this in a shell:
@@ -460,7 +458,7 @@ jobs -l
 [2]- 11126 Quit                    (core dumped) sleep 20m
 ```
 The message ```'^\Quit (core dumped)'``` indicates that there is a file called 'core' which contains the image of the process to which you sent a signal. The name 'core' is a very old-fashioned name for computer's memory, and 'core dumps' are generated when the process receives certain signals (such as ```SIGQUIT```, ```SIGSEGV```, etc.), which the Linux kernel sends to the process when it accesses memory outside its address space. Typically that happens because of errors in how pointers are used.
- 
+
 The signals ```INT```, ```TSTP``` and ```QUIT``` are the only three signals which can be used with control keys: ```Ctrl+C```, ```Ctrl+Z``` and ```Ctrl+\```, respectively. 
 
 Although it sounds trivial, it makes actually a big difference with which signal we kill the job. Recommended ordering of killing is the following:
@@ -492,7 +490,7 @@ We have already seen how we can send the signal to the process, assuming that pr
 trap some-command signal1 signal2 ...
 ```
 This syntax shall be interpreted as follows: When any of signals ```signal1 signal2 ...``` is received, execute command ```some-command```, then resume the execution. After the execution of ```some-command``` finishes, the script resumes execution just after the command that was interrupted. In this context, ```some-command``` can be also a script or a function. On the other hand,  ```signal1 signal2 ...``` can be specified either by signal name or by number. To get list of available signals, you can use either **kill -l** or **trap -l**, their output is exactly the same.
- 
+
 The usage of **trap** is best illustrated with examples. Please write the script named 'trapExample.sh' with the following content:
 ```bash
 #!/bin/bash
