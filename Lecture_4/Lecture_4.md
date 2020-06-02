@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200519
+**Last update**: 20200602
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -509,7 +509,7 @@ echo $((8%3)) # prints 2
 echo $((9%3)) # prints 0
 ```
 
-Besides supporting integer arithmetic operators within, ```(( ... ))``` we can also perform integer comparison by using the familiar ```<```,```<=```, ```==```, ```>=``` and ```>``` operators. This is an alternative to integer comparison within the test construct ```[[ ... ]]``` which has its own operators for integer comparison. For instance, the following code snippet
+Besides supporting integer arithmetic operators within, ```(( ... ))``` we can also perform integer comparison by using the familiar ```<```,```<=```, ```==```, ```!=```, ```>=``` and ```>``` operators. This is an alternative to integer comparison within the test construct ```[[ ... ]]``` which has its own operators for integer comparison. For instance, the following code snippet
 
 ```bash
 (( ${Var1} < ${Var2} ))  
