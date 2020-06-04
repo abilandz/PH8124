@@ -2,7 +2,7 @@
 
 # Homework #5: Playing with **Bash** arrays.
 
-**Last update:** 20200603
+**Last update:** 20200604
 
 **Challenge #1**: Write your own version of **date** command, named **Date**, which has the following example printout:
 
@@ -14,7 +14,7 @@ Have a nice time!
 
 Everything is the same as in the standard **date** command, except that:  
 
-1. Output stream is formatted in a different way  
+1. The output stream is formatted in a different way  
 2. The name of the month is printed in all capitals
 3. Time zone is dropped 
 

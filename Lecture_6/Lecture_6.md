@@ -458,7 +458,7 @@ The indices do not have to be hardwired --- index of **Bash** arrays can be any 
 
 
 ### 3. Piping: ```|``` <a name="piping"></a>
-We have already seen that commands can take their input directly from the user or from files. But in general, one command can take automatically the output of another command as its input. This mechanism is called _piping_ and it is very generic concept in **Linux**. 
+We have already seen that commands can take their input directly from the user or from files. But in general, one command can take automatically the output of another command as its input. This mechanism is called _piping_ and it is a very generic concept in **Linux**. 
 
 In order to use the output of one command as the input to another, we use operator ```|``` ('pipe'), schematically as:
 
@@ -483,7 +483,7 @@ In the above example, both the successful output stream and the error message of
 
 Usage of pipe ```|``` eliminates the need for making temporary files to redirect and store the output of one command, and then supply that temporary file as an input to another command. All commands chained with ```|``` in the pipeline are running simultaneously and data flow among them is automated without any restriction on the size. 
 
-We now provide a few frequently use cases of piping. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program **bc** ('basic calculator'). 
+We now provide a few frequently use cases of piping. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program **bc** ('basic calculator'). 
 
 **Example 1:** How would you divide 10/7 at the precision of 30 significant digits? 
 
@@ -496,9 +496,9 @@ The output is:
 ```bash
 1.428571428571428571428571428571
 ```
-The key word **scale** sets the precision in **bc** program. Instead of using **bc** interactively and providing via keyboard _stdin_ for it's execution, we have just piped the _stdout_ of **echo** as an input to **bc**.
+The keyword **scale** sets the precision in **bc** program. Instead of using **bc** interactively and providing via keyboard _stdin_ for its execution, we have just piped the _stdout_ of **echo** as an input to **bc**.
 
-For more sophisticated use cases, for instance when you want to use special mathematical functions, etc, use **bc -l**. The flag '-l' (ell) loads in the memory in addition the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it is defaulted to 1 when **bc** is called, and to 20 when **bc -l** is called.
+For more sophisticated use cases, for instance when you want to use special mathematical functions, etc, use **bc -l**. The flag '-l' (ell) loads in the memory in addition the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it has defaulted to 1 when **bc** is called, and to 20 when **bc -l** is called.
 
 The math library of **bc** defines the following example functions:
 ```bash
@@ -529,21 +529,21 @@ date | tee date.log
 ```
 will print the current time on the screen, but it will also simultaneously dump it permanently in the file named ```date.log``` (check its content with **cat date.log**). In the very same spirit, it is possible to keep the full execution log of any script, function, code block ```{ ... }```, loops, etc.
 
-The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default, **tee** overwrites the content of file, if we want to append instead to the already existing non-empty file, use the following version:
+The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default, **tee** overwrites the content of a file, if we want to append instead to the already existing non-empty file, use the following version:
 ```bash
 someCommand | tee -a someFile.log 
 ```
 
 Flag '-a' in this particular case stands for 'append'.
 
-As the final remark on the pipelines, we consider the following important question: If the pipeline, composed of multiple commands, has failed during execution, how to figure out programmatically which particular command(s) in the pipeline have failed? In order to answer this question, we need to inspect the status of built-in variable **PIPESTATUS**. This variable is an array holding the exit status of each command in the last executed pipeline:
+As the final remark on the pipelines, we consider the following important question: If the pipeline, composed of multiple commands, has failed during execution, how to figure out programmatically which particular command(s) in the pipeline have failed? In order to answer this question, we need to inspect the status of the built-in variable **PIPESTATUS**. This variable is an array holding the exit status of each command in the last executed pipeline:
 
 ```bash
 echo "scale=5000; e(2)" | bc -l | more
 echo ${PIPESTATUS[*]} # prints '0 0 0'
 ```
 
-In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully, therefore the array **PIPESTATUS** holds three zeroes. If only the single command has been executed, that is a trivial pipeline, and **PIPESTATUS** array has only one entry, the very same information which is stored in **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute a command, even the trivial ones like **echo**.  
+In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully, therefore the array **PIPESTATUS** holds three zeroes. If only the single command has been executed, that is a trivial pipeline, and **PIPESTATUS** array has only one entry, the very same information which is stored in **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute command, even the trivial ones like **echo**.  
 
 The power of piping is best illustrated in the combination with the three powerful commands **sed**, **awk** and **grep**, which are the core **Linux** utilities for text parsing and manipulation, which we cover in the next section.
 
@@ -551,7 +551,7 @@ The power of piping is best illustrated in the combination with the three powerf
 
 ### 4. **sed**, **awk** and **grep** <a name="sed_awk_grep"></a>
 
-Frequently a text needs to be parsed through and inspected, or updated after the search for some patterns has been performed, in general, modified programmatically for one reason or another. The text in this context can stand for any textual stream coming out of a command upon execution, or for any text saved in some physical file. Clearly, it is impractical and in some cases unfeasible to make all such changes in some graphics based editors. In this section, we cover instead how the text can be manipulated programmatically, with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
+Frequently a text needs to be parsed through and inspected, or updated after the search for some patterns has been performed, in general, modified programmatically for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution, or for any text saved in some physical file. Clearly, it is impractical and in some cases unfeasible to make all such changes in some graphics based editors. In this section, we cover instead how the text can be manipulated programmatically, with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
 
 **grep**
 
@@ -595,7 +595,7 @@ test TEST Test 11test test22
 test TEST Test 11test test
 ```
 
-By default, the specified pattern ('test' in above example) is case sensitive and it doesn't have to be an exact match, therefore here the patterns '11test', 'test22' and 'test' were all the matching patterns. Each line which contains one or more of matching patterns is printed by **grep** on the screen by default, but it can be also redirected to a physical file:
+By default, the specified pattern ('test' in the above example) is case sensitive and it doesn't have to be an exact match, therefore here the patterns '11test', 'test22' and 'test' were all the matching patterns. Each line which contains one or more of matching patterns is printed by **grep** on the screen by default, but it can be also redirected to a physical file:
 
 ```bash
 grep "test" grepExample.txt > filtered.txt
@@ -659,7 +659,7 @@ test TEST Test 11test test22
 test TEST Test 11test test
 ```
 
-The special character '^' is an anchor for beginning of a line, and a lot of other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use '$':
+The special character '^' is an anchor for the beginning of a line, and a lot of other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use '$':
 
 ```bash
 grep "t22$" grepExample.txt
@@ -715,7 +715,7 @@ test TEST Test 11test test22
 test TEST Test 11test test
 ```
 
-Each of these three lines have at least one exact occurrence of the specified pattern 'Test'.
+Each of these three lines has at least one exact occurrence of the specified pattern 'Test'.
 
 It is also possible to combine patterns, with the special character '\\|':
 
@@ -764,7 +764,7 @@ else
 fi
 ```
 
-**Example 2:** How to select in the current directory only the files whose names begin with the example pattern 'ce' and end up with the pattern '.dat'? The content of directory is:
+**Example 2:** How to select in the current directory only the files whose names begin with the example pattern 'ce' and end up with the pattern '.dat'? The content of the directory is:
 
 ```bash
 array.sh   be3.dat  be8.dat  ce1.log  ce4.dat  ce6.log  ce9.dat
@@ -796,7 +796,7 @@ ce9.dat
 
 Now we move to **awk** (named after the initials of its authors: Aho, Weinberg and Kernighan), which is a programming language by itself, designed for text processing. One can easily teach the whole semester only about **awk**, here we will cover only its most important functionalities and which are not available as built-in **Bash** functionalities. The frequently heard comment about **awk** is that its syntax and usage are awkward. Nevertheless, in a lot of cases of practical interest **awk** provides the best and the most elegant solution.
 
-After we supply some input to **awk**, it will break each line of input into fields, separated by default with one or more empty characters. After that, **awk** parses the input and operates on each separate field. Just like with the **grep** command, **awk** can take its input either from a physical file, or from the output stream of another command via pipe. For instance, if a certain command has produced an output which consists of column-wise entries separated with one or more empty characters, we can get hold of each field programmatically. For instance:
+After we supply some input to **awk**, it will break each line of input into fields, separated by default with one or more empty characters. After that, **awk** parses the input and operates on each separate field. Just like with the **grep** command, **awk** can take its input either from a physical file, or from the output stream of another command via a pipe. For instance, if a certain command has produced an output that consists of column-wise entries separated with one or more empty characters, we can get hold of each field programmatically. For instance:
 
 ```bash
 date
@@ -884,7 +884,7 @@ CEST
 ```
 and so on. 
 
-But what if we want to parse the command output or file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full time stamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. In order to set the field separator **FS** to some non-default value,  we use schematically the following syntax:
+But what if we want to parse the command output or file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:1be2' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator **FS** to some non-default value,  we use schematically the following syntax:
 
 ```bash
 awk 'BEGIN {FS="some-new-single-character-field-separator"} ... '
@@ -909,7 +909,7 @@ What happened above is literally the following:
 2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was ```16:18:44```  
 3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 2nd field is minutes, which finally yields the final output ```18```   
 
-As a rule of thumb, field separators in **awk** shall be always single characters---composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, etc.).  
+As a rule of thumb, field separators in **awk** shall be always single characters---composite multi-character field separators are possible, but can lead to some inconsistent behavior among different **awk** versions (e.g. **gawk**, **mawk**, etc.).  
 
 On the other hand, different single characters can be treated as field separators simultaneously, they just all need to be embedded within ```[ ... ]```. For instance, we can treat during the same **awk** execution all three characters colon ```:```, semi-colon ```;``` and comma ```,``` as equivalent field separators in the following code snippet:
 
@@ -952,7 +952,7 @@ Change: 2020-05-29 08:32:38.081673700 +0200
  Birth: -
 ```
 
-If we are interested only to print on the screen only a particular line, we need to use **sed** with the flag '-n' and the specifier 'p' ('print'). Flag '-n' is needed to suppress the default printout of original file. To print only the 2nd line, we can use the following syntax:
+If we are interested only to print on the screen only a particular line, we need to use **sed** with the flag '-n' and the specifier 'p' ('print'). Flag '-n' is needed to suppress the default printout of the original file. To print only the 2nd line, we can use the following syntax:
 
 ```bash
 stat test.sh | sed -n 2p
@@ -1002,7 +1002,7 @@ This will in the 2nd line of the file ```sedTest.dat``` insert the new text 'Som
 * '-i' is a flag which instructs **sed** that we want to modify the original file in-place
 * 'ni' as an argument indicates that we want to insert something on the nth line
 
-Clearly, it can be potentially dangerous to modify directly the original file in-place, because once the original file is overwritten, there is no way back. To prevent that, we can automatically create the backup of original file by using the slightly modified flag '-i.backup':
+Clearly, it can be potentially dangerous to modify directly the original file in-place, because once the original file is overwritten, there is no way back. To prevent that, we can automatically create the backup of the original file by using the slightly modified flag '-i.backup':
 
 ```bash
 sed -i.backup "2i Some text" sedTest.dat
@@ -1011,7 +1011,7 @@ This will in the second line of the file ```sedTest.dat``` insert the text new '
 
 **Example 3:** How to delete the 4th from the above file ```sedTest.dat```?
 
-To delete lines of file of command output, we need to use the specifier 'd' ('delete') in **sed**. For instance, if we want to delete the 4th line, we can use the following syntax: 
+To delete lines of the file's of the command's output, we need to use the specifier 'd' ('delete') in **sed**. For instance, if we want to delete the 4th line, we can use the following syntax: 
 
 ```bash
 sed "4d" sedTest.dat
@@ -1020,7 +1020,7 @@ This will delete the 4th ('4d' specifier) line in the file ```sedTest.dat```. We
 ```bash
 sed "2,4d" sedTest.dat
 ```
-This will delete the 2nd, 3rd and 4th lines in the file ```sedTest.dat```. The previous comments about in-place modification and backuping of original file apply also in this context.
+This will delete the 2nd, 3rd and 4th lines in the file ```sedTest.dat```. The previous comments about in-place modification and backup of the original file apply also in this context.
 
 **Example 4:** Finally, we also illustrate how to replace one pattern in the file with another. This is achieved with the following generic syntax:
 
@@ -1031,7 +1031,7 @@ This will substitute ('s' specifier) in each line of file ```sedTest.dat``` only
 ```bash
 sed "s/firstPattern/secondPattern/g" someFile
 ```
-Note the additional specifier 'g' (for 'global') at the end of expression. For instance, if we consider the file ```example.log``` with the following content:
+Note the additional specifier 'g' (for 'global') at the end of an expression. For instance, if we consider the file ```example.log``` with the following content:
 
 ```bash
 momentum energy
@@ -1105,7 +1105,7 @@ Change: 2020-05-14 13:13:46.970442600 +0200
  Birth: -
 ```
 
-Finally, **sed** provides full support for pattern matching via regular expressions, which increases its power and applicability tremendeously.
+Finally, **sed** provides full support for pattern matching via regular expressions, which increases its power and applicability tremendously.
 
 
 
