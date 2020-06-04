@@ -1,14 +1,14 @@
 ![](bash_logo.png)
 
-# Lecture 6: String manipulation. Arrays. Piping (```|```). Commands **sed**, **awk** and **grep** 
+# Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20200603
+**Last update**: 20200604
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
 2. [Arrays](#arrays)
 3. [Piping: ```|```](#piping)
-4. [Commands **sed**, **awk** and **grep**](#sed_awk_grep)
+4. [**sed**, **awk** and **grep**](#sed_awk_grep)
 
 
 
@@ -549,7 +549,7 @@ The power of piping is best illustrated in the combination with the three powerf
 
 
 
-### 4. Commands **sed**, **awk** and **grep** <a name="sed_awk_grep"></a>
+### 4. **sed**, **awk** and **grep** <a name="sed_awk_grep"></a>
 
 Frequently a text needs to be parsed through and inspected, or updated after the search for some patterns has been performed, in general, modified programmatically for one reason or another. The text in this context can stand for any textual stream coming out of a command upon execution, or for any text saved in some physical file. Clearly, it is impractical and in some cases unfeasible to make all such changes in some graphics based editors. In this section, we cover instead how the text can be manipulated programmatically, with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
 
@@ -893,7 +893,7 @@ For instance, if we want to use colon ```:``` as a field separator in **awk**, w
 ```bash
 awk 'BEGIN {FS=":"} ... '
 ```
-To extract only the minutes from the output of **date** command, we use the following code snippet:
+To extract only the minutes from the output of **date** command, we can use the following code snippet:
 ```bash
 date
 date | awk '{print $4}' | awk 'BEGIN {FS=":"}{print $2}'
@@ -904,9 +904,10 @@ Wed Jun  3 16:18:44 CEST 2020
 18
 ```
 What happened above is literally the following:  
-1. **date** command produced the output ```Wed Jun  3 16:18:16 CEST 2020```  
-2. that output was piped to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result at this step was ```16:18:44```  
-3. in the 2nd pipe, the output stream ```16:18:44``` was sent to **awk** command, which is in the 2nd pipe run with non-default field separator ```:``` . With respect to ```:``` as a field separator in ```16:18:44```, the 2nd field is minutes, i.e. '18'   
+
+1. the command **date** produced its output ```Wed Jun  3 16:18:44 CEST 2020```    
+2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was ```16:18:44```  
+3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 2nd field is minutes, which finally yields the final output ```18```   
 
 As a rule of thumb, field separators in **awk** shall be always single characters---composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, etc.).  
 
@@ -919,24 +920,71 @@ The output is
 ```bash
 44
 ```
-The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly get the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables, before we can use them during **awk** execution, which in practice can be a bit, well, awkward. This limitation is not present in the command **sed**, which we cover next.
+The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables, before we can use them during **awk** execution, which in practice can be a bit, well, awkward. This limitation is not present in the command **sed**, which we cover next.
 
 **sed**
 
-Finally, there is **sed** ('Stream Editor'), a non-interactive text file editor. It parses the command output or file content line-by-line, and performs specified operations on them. We illustrate its usage also with some basic examples.
+Finally, there is **sed** ('Stream Editor'), a non-interactive text file editor. It parses the command output or file content line-by-line, and performs specified operations on them. Typically, **sed** covers the following use cases:   
 
-**Example 1:** How to insert a new 2nd line of text in the already existing file ```sedTest.dat```, which has the following content:
+1. printing selected lines from a file
+2. inserting new lines in a file
+3. deleting specified lines in a file
+4. searching for and replacing the patterns in a file
+
+We illustrate all four use cases with a few basic examples.
+
+**Example 1:** How to print only the specified lines from the command output? As a concrete example, we consider the output of **stat** command:
+
+```bash
+stat test.sh
+```
+
+The output is:
+
+```bash
+ File: test.sh
+  Size: 177             Blocks: 0          IO Block: 4096   regular file
+Device: 2h/2d   Inode: 21673573207029672  Links: 1
+Access: (0666/-rw-rw-rw-)  Uid: ( 1000/abilandz)   Gid: ( 1000/abilandz)
+Access: 2020-05-01 12:46:20.551223700 +0200
+Modify: 2020-05-29 08:32:38.081673700 +0200
+Change: 2020-05-29 08:32:38.081673700 +0200
+ Birth: -
+```
+
+If we are interested only to print on the screen only a particular line, we need to use **sed** with the flag '-n' and the specifier 'p' ('print'). Flag '-n' is needed to suppress the default printout of original file. To print only the 2nd line, we can use the following syntax:
+
+```bash
+stat test.sh | sed -n 2p
+```
+
+The output is now only the 2nd line:
+
+```bash
+Size: 177             Blocks: 0          IO Block: 4096   regular file
+```
+
+With the slightly modified specifier 'p' we can indicate the line ranges. For instance, the syntax
+
+```bash
+stat test.sh | sed -n 2,5p
+```
+
+will print lines 2, 3, 4 and 5, and so on.
+
+**Example 2:** How to insert a new 2nd line of text in the already existing file ```sedTest.dat```, which has the following content:
+
 ```bash
 line 1
 line 2
 line 3
 line 4
 ```
-The solution is:
+In general, to insert a new line with **sed**, we need to use the specifier 'i'. The solution is:
 ```bash
 sed "2i Some text" sedTest.dat
 ```
-This will insert in the second line (the meaning of '2i' specifier) of the file ```sedTest.dat``` the text _"Some text"_. The original file is not modified, only the **sed** output stream. The output on the screen is:
+This will insert in the second line (the meaning of '2i' specifier) of the file ```sedTest.dat``` the new text 'Some text'. The original file is not modified, only the **sed** output stream. The **sed** output stream on the screen is:
 ```bash
 line 1
 Some text
@@ -944,17 +992,27 @@ line 2
 line 3
 line 4
 ```
-In the case you want the original file to be modified on the spot, you need to use flag ```-i``` ('in-place edit') for **sed** :
+The above modified output stream can be redirected to a new file with ```1> someFile```, but we can also modify in-place the original file. To achieve this, we need to use the flag ```-i``` ('in-place edit') for **sed** :
+
 ```bash
 sed -i "2i Some text" sedTest.dat
 ```
-This will in the second line of the file ```sedTest.dat``` instert the text _"Some text"_. The original file is modified, without backup. Clearly, this can be potentially dangerous, as once the original file is overwritten, there is no way back. To prevent that, we can automatically create the backup of original file by using the flag ```-i.backup```:
+This will in the 2nd line of the file ```sedTest.dat``` insert the new text 'Some text' and the original file is modified, without backup. Remember in this context different meaning of 'i':   
+
+* '-i' is a flag which instructs **sed** that we want to modify the original file in-place
+* 'ni' as an argument indicates that we want to insert something on the nth line
+
+Clearly, it can be potentially dangerous to modify directly the original file in-place, because once the original file is overwritten, there is no way back. To prevent that, we can automatically create the backup of original file by using the slightly modified flag '-i.backup':
+
 ```bash
 sed -i.backup "2i Some text" sedTest.dat
 ```
-This will in the second line of the file ```sedTest.dat``` instert the text _"Some text"_. The original file is modified, but also the backup of original file was created, in the new file ```sedTest.dat.backup```
+This will in the second line of the file ```sedTest.dat``` insert the text new 'Some text'. The original file is modified, however now also the backup of the original file was created automatically, and is saved in new file named ```sedTest.dat.backup```.
 
-Besides inserting new lines in the file, **sed** can also delete lines from a file programmatically. For instance, if we want to delete the 4th line, we use the following syntax: 
+**Example 3:** How to delete the 4th from the above file ```sedTest.dat```?
+
+To delete lines of file of command output, we need to use the specifier 'd' ('delete') in **sed**. For instance, if we want to delete the 4th line, we can use the following syntax: 
+
 ```bash
 sed "4d" sedTest.dat
 ```
@@ -962,33 +1020,92 @@ This will delete the 4th ('4d' specifier) line in the file ```sedTest.dat```. We
 ```bash
 sed "2,4d" sedTest.dat
 ```
-This will delete the 2nd, 3rd and 4th lines in the file ```sedTest.dat```.
+This will delete the 2nd, 3rd and 4th lines in the file ```sedTest.dat```. The previous comments about in-place modification and backuping of original file apply also in this context.
 
-Finally, we also illustrate how to replace one pattern in the file with another. This is achieved with the following generic syntax:
+**Example 4:** Finally, we also illustrate how to replace one pattern in the file with another. This is achieved with the following generic syntax:
+
 ```bash
 sed "s/firstPattern/secondPattern/" someFile
 ```
-This will substitute ('s' specifier) in each line of file ```sedTest.dat``` only the first occurence of ```firstPattern``` with ```secondPattern```. On the other hand, if we want to replace all occurences, we need to use the following, slightly modified syntax: 
+This will substitute ('s' specifier) in each line of file ```sedTest.dat``` only the first occurrence of ```firstPattern``` with ```secondPattern```. On the other hand, if we want to replace all occurrences, we need to use the following, slightly modified syntax: 
 ```bash
 sed "s/firstPattern/secondPattern/g" someFile
 ```
-Note the additional specifier 'g' for 'global' at the end of expression. The nice thing about **sed** is that it can interpret **Bash** variables directly (**awk** for instance cannot), i.e. it is perfectly feasible in your script to have something like:
+Note the additional specifier 'g' (for 'global') at the end of expression. For instance, if we consider the file ```example.log``` with the following content:
+
 ```bash
-Before=SomeOldPatern
-After=SomeNewPatern
+momentum energy
+energy momentum momentum
+momentum energy momentum
+```
+
+We can replace only the first occurrence of 'momentum' with 'p' on each line with the following syntax:
+
+```bash
+sed "s/momentum/p/" example.log
+```
+
+The result is:
+
+```bash
+p energy
+energy p momentum
+p energy momentum
+```
+
+On the other hand, we can replace all occurrence of 'momentum' with 'p' on each line with the slightly modified syntax:
+
+```bash
+sed "s/momentum/p/g" example.log
+```
+
+Now the result is:
+
+```bash
+p energy
+energy p p
+p energy p
+```
+
+The very convenient thing about **sed** is that it can interpret **Bash** variables directly. It is perfectly feasible in your script to have something like:
+
+```bash
+Before=OldPatern
+After=NewPatern
 sed "s/${Before}/${After}/" someFile
 ```
-With **sed** we can also trivially modify the output stream of some command:
+This gives a lot of flexibility, because old and new patterns can be supplied via arguments, etc. In the same spirit, we can use **sed** to modify on-the-fly the output stream of any command:
+
 ```bash
 date
-date | sed "s/Do/Thursday/"
+date | sed "s/Wed/Wednesday/"
 ```
 The output is:
 ```bash
-Do 6. Jun 13:40:15 CEST 2019
-Thursday 6. Jun 13:40:15 CEST 2019
+Wed Jun  3 21:08:49 CEST 2020
+Wednesday Jun  3 21:08:49 CEST 2020
 ```
-Finally, **sed** provides full support for pattern matching via regular expressions.
+Another example, when we insert a new line on-the-fly in the output stream of some command:
+
+```bash
+stat test.sh | sed "4i => File permissions, and other thingies:"
+```
+
+The output is:
+
+```bash
+  File: test.sh
+  Size: 62              Blocks: 0          IO Block: 4096   regular file
+Device: 2h/2d   Inode: 26740122787573808  Links: 1
+=> File permissions, and other thingies:
+Access: (0666/-rw-rw-rw-)  Uid: ( 1000/abilandz)   Gid: ( 1000/abilandz)
+Access: 2020-05-11 12:38:23.820690300 +0200
+Modify: 2020-05-14 13:13:46.970442600 +0200
+Change: 2020-05-14 13:13:46.970442600 +0200
+ Birth: -
+```
+
+Finally, **sed** provides full support for pattern matching via regular expressions, which increases its power and applicability tremendeously.
 
 
 
