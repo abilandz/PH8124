@@ -2,7 +2,49 @@
 
 Last update: 20190628
 
+**Challenge #2**: Monte Carlo generator has produced the following output for the _x_ and _y_ components of particle momenta:
+
+```bash
+px 0.123 py 0.333
+warning: output is zero px 0 py 0
+px 1.233 py 3.134
+px -0.113 py 0.193
+error: incomplete output py 1.123
+px 3.311 py -0.011
+error: incomplete output px 2.012
+px 0.222 py 3.123
+fatal: wrong formatting 2.0sf1fse2.32
+px -0.388 py 5.136
+warning: output is zero px 0 py 0
+px 0.324 py -1.133
+px 0.355 py -2.134
+```
+
+By combining pipes, **grep**, **awk** and **sed**, write down a one-line code snippet which will filter out and reformat the above output into:
+
+```bash
+Px = 0.123 , Py = 0.333
+Px = 1.233 , Py = 3.134
+Px = -0.113 , Py = 0.193
+Px = 3.311 , Py = -0.011
+Px = 0.222 , Py = 3.123
+Px = -0.388 , Py = 5.136
+Px = 0.324 , Py = -1.133
+Px = 0.355 , Py = -2.134
+```
+
+
+
+ 
+
+
+
+
+
+
+
 **Challenge #1**: Please develop a **Bash** function called 'Safeguard', which does the following:
+
 1. It takes optionally two arguments: user name and number ```MAX```. If arguments are not supplied, default them to the output of ```${USER}``` and 80, respectively
 2. It checks for all processes for the specified user which are exceeding either 'CPU' of 'MEM' consuption, when compared to ```MAX```
 3. Prints only PID numbers of those processes 

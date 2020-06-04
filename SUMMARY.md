@@ -12,5 +12,5 @@
     * [Homework 2](./Homeworks/Homework_2.md)
     * [Homework 3](./Homeworks/Homework_3.md)
     * [Homework 4](./Homeworks/Homework_4.md)
+    * [Homework 5](./Homeworks/Homework_5.md)
 * [Final Project](./Final_Project.md_TBI)
-
