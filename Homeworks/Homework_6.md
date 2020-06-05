@@ -1,8 +1,10 @@
-# Homework #6: Using grep, sed and awk
+![](bash_logo.png)
 
-Last update: 20190628
+# Homework #6: Coding adventures with grep, sed and awk
 
-**Challenge #2**: Monte Carlo generator has produced the following output for the _x_ and _y_ components of particle momenta:
+**Last update:** 20200605
+
+**Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
 ```bash
 px 0.123 py 0.333
@@ -20,7 +22,7 @@ px 0.324 py -1.133
 px 0.355 py -2.134
 ```
 
-By combining pipes, **grep**, **awk** and **sed**, write down a one-line code snippet which will filter out and reformat the above output into:
+Copy and save the above printout in the file ```output.dat```, as the starting point for this exercise. By combining pipes, **grep**, **awk** and **sed**, write down a one-line code snippet which will filter out, reformat and update in-place the file ```output.dat``` with the following new format and content:
 
 ```bash
 Px = 0.123 , Py = 0.333
@@ -33,62 +35,36 @@ Px = 0.324 , Py = -1.133
 Px = 0.355 , Py = -2.134
 ```
 
+Make sure that the starting file was stored in some backup file, in the case reformatting fails.
 
+**Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments only directories, and whose printout is:
 
- 
+1. directory name
+2. list of subdirectories 
+3. files in that directory sorted with respect to size, largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size```
+4. ignores '.' and '..' in the printout, as well as all hidden files whose name starts with ''.' 
 
+For instance, the output could look like:
 
-
-
-
-
-
-**Challenge #1**: Please develop a **Bash** function called 'Safeguard', which does the following:
-
-1. It takes optionally two arguments: user name and number ```MAX```. If arguments are not supplied, default them to the output of ```${USER}``` and 80, respectively
-2. It checks for all processes for the specified user which are exceeding either 'CPU' of 'MEM' consuption, when compared to ```MAX```
-3. Prints only PID numbers of those processes 
-
-**Hint**: Parse through the output of **top -b** with **grep** and **awk**.
-
-By building on top of this example, in practice you can develop a script which will run in an infinite cycle in the background, once per 15 minutes let's say, and which will kill any process with memory leak, which is threatening to freeze down your machine.
-
-
-**Challenge #2**: As a starting point, please save the following text in the file _example.log_:
-```linux
-000138107 COPIED DELETED
-000139123 NOT_COPIED NOT_DELETED
-000140447 COPIED NOT_DELETED
-```
-1.Programatically, insert in that file as a new 3rd column the field 'NOT_MERGED', i.e. the updated file shall look like:
-```linux 
-000138107 COPIED NOT_MERGED DELETED
-000139123 NOT_COPIED NOT_MERGED NOT_DELETED
-000140447 COPIED NOT_MERGED NOT_DELETED
-```
-2.Programatically, count the number of entries in the file for each flag, e.g. provide the following summary:
-```linux
-COPIED: 2
-NOT_COPIED: 1
-MERGED: 0
-NOT_MERGED: 3
-DELETED: 1
-NOT_DELETED: 2
-```
-**Hint**: Parse and manipulate the file content with **grep** and **sed**. For counting, **wc -l** might be handy. 
-
-
-**Challenge #3**: Define the one-line alias 'my-ls', which will for the current working directory print all files and subdirectories, in the following format:
 ```bash
-name-of-file month date hour:min
+Directory "Lecture"
+Subdirectories: Backup Test Leftovers 
+test.html                 Jun  02  14:44  23
+bash_logo.png             Mar  11  10:22  444
+Lecture_7_20200606_0b.md  Jun  06  15:25  1234
 ```
-E.g. the output could look like:
-```linux
-Lecture_7_20190625_0b.md Jun 25 15:25
-test.html                Jun 25 14:44
-```
-**Hint #1:** Pipe the output of **ls -al** to **awk**, and print only the fields you want to see, and in the order you want them to appear.
-**Hint #2:** To ensure that all columns have the same width, pipe the previous printout to **column -t**  .
+
+**Hint #1:** Develop a function **Ls**, in its body execute the standard **ls** with carefully chosen options (check for instance **man ls** for the meaning of the flags '-l', '-S', '-r')
+
+**Hint #2:** To differentiate between files and subdirectories, pipe the **ls** executed with flag '-l' to **grep**, and then just use either **grep -v "^d"** or **grep "^d"** (file metadata begin with 'd' only for directories)   
+
+**Hint #3:** To extract and order the relevant fields, pipe further to **awk** (for files), or store trmporarily in some array (for subdirectories) 
+
+**Hint #4:** To ensure that all columns have the same width, pipe further to **column -t** 
+
+
+
+
 
 
 
