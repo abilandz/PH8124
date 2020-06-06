@@ -2,7 +2,7 @@
 
 # Homework #6: Coding adventures with grep, sed and awk
 
-**Last update:** 20200605
+**Last update:** 20200606
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
@@ -35,7 +35,7 @@ Px = 0.324 , Py = -1.133
 Px = 0.355 , Py = -2.134
 ```
 
-Make sure that the starting file was stored in some backup file, in the case reformatting fails.
+**Hint #1:** First, execute the commands without modifying the starting file in-place, i.e. just inspect the output stream corresponding to the modified file. Once the output stream looks the way you want, re-execute the commands but now modify the starting file in-place, and make sure that the starting file was automatically stored in some backup file, just in case.
 
 **Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments only directories, and whose printout is:
 

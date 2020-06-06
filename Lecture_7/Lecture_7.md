@@ -2,7 +2,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20200602
+**Last update**: 20200606
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -14,60 +14,78 @@
 
 ### 1. Escaping: ```\``` <a name="escaping"></a>
 
-Some characters in **Bash**  have a special meaning, e.g. ```echo $Var```  would reference the content of variable named 'Var' since the variable is preceded with the special character ```$```, but ```$``` itself would not appear in the printout. If you want to see also the special character ```$``` in the printout, you have to _escape_ its special meaning with backslash character ```\```. 
+Some characters in **Bash** have a special meaning. As an elementary example:
 
-The escaping mechanism in **Bash** is illustrated in the following simple example:
+```bash
+echo $Var
+```
+
+would reference the content of variable named ```Var``` since the variable is preceded with the special character ```$```, but ```$``` itself would not appear in the printout. To see also the special character ```$``` in the printout, we need to _escape_ (or kill) its special meaning with the backslash character ```\```. 
+
+The escaping mechanism in **Bash** is illustrated  in the following example:
 ```bash
 Var=44
 echo $Var
 echo \$Var
 ```
-The above lines produce the following output:
+The above code snippet produces the following output:
 ```bash
 44
 $Var
 ```
-It is possible in the same way to escape the special meaning of any other special character, and in all other contexts (not necessarily only in their printout as demonstrated here). If there are multiple special characters in the input expression, they can be escaped one by one with backslash ```\```. 
+It is possible in the same way to escape the special meaning of any other special character, and in any other context (not necessarily only in their printout as demonstrated here). If there are multiple special characters in the input expression, they can to be escaped one-by-one with backslash ```\```. 
 
-Please compare: 
+As another example, we consider the double quotes ```"..."```, which also have a special meaning in **Bash** (clarified in the next section!) and are not printed by default:
 ```bash
 echo "Hi "there""
-Hi there # no quotes in the printout!
+Hi there # no quotes in the printout
 ```
-with 
+However, we can escape the special meaning of two inner-most quotes, and they will show up in the printout:
 ```bash
 echo "Hi \"there\""
-Hi "there" # two quotes which were escaped appear in the printout!
+Hi "there"
 ```
-As another example, please compare: 
+Finally, we can also escape the special meaning of two outer-most quotes:
+
+```bash
+echo \"Hi \"there\"\"
+"Hi "there""
+```
+
+As another example, we compare: 
+
 ```bash
 echo "Today is: $(date)"
-Today is: Tue Jun 18 10:27:18 DST 2019
+Sat Jun  6 19:24:20 CEST 2020
 ```
 with 
 ```bash
 echo "Today is: \$(date)" 
-Today is: $(date) # nothing happens as the command substitution operator was escaped!
+Today is: $(date) 
 ```
 
-We have already seen that in **Bash** the command input is terminated either with semicolon ```;``` or with the new line. Frequently, the command input can span over few lines in the terminal, and in order to handle such a case, you need to escape the end-of-line, just place backslash ```\``` at the end of line. Important: In this context, backslash ```\``` must not be followed with the empty character, as that would kill the special meaning of empty character, not the end of line. This is a frequent source of an error.
+In the second example nothing happened, because the command substitution operator was escaped.
 
-Example of multi-line input in the terminal:
+We have already seen that in **Bash** the command input is terminated either with semicolon ```;``` or with the new line. Frequently, the command input needs to span over a few lines in the terminal, and in order to handle such a case, we need to escape the end of the line, i.e. we need to kill the special meaning of new line. To achieve that, it suffices to place backslash ```\``` at the very end of the line:
 
 ```bash
 echo "Welcome \
 to \
 the \
-lecture"
+lecture PH8124."
 ```
 
-This produces one line output:
+This produces the one-line output:
 
 ```bash
-Welcome to the lecture
+Welcome to the lecture PH8124.
 ```
 
-One line printout was produced despite the fact that command input was split across multiple lines, because each new line was escaped. 
+When used to escape the new line, backslash ```\``` must be the very last character on that line. The frequent mistake occurs when ```\``` is followed by an empty character, because then it will merely escape the special meaning of an empty character, and not the special meaning of new line. 
+
+Alternatively, we can escape the meaning of special characters with strong (single) quotes ```'...'```, which is the topic of next section.
+
+
 
 
 
@@ -77,9 +95,11 @@ One line printout was produced despite the fact that command input was split acr
 
 ### 2. Quotes: ```'...'``` and ```"..."``` <a name="quotes"></a>
 
-#### Strong (single) quotes
+**Strong (single) quotes**
 
-In the compound expression, with a bunch of special characters, it is not needed to escape each special character one-by-one, you can kill 'em all by embedding the whole compound expression within the strong (single) quotes ```' ... '``` . This is the primary use case of such quotes, i.e. they can be literally understood with the following phrase: what you see is what you get. These quotes preserve the exact number of empty characters. For instance:
+In complex expressions, containing a huge number of special characters, it becomes quickly impractical to escape the special meaning of each character separately with ```\```. Instead, they can be escaped all in one go by embedding the whole expression within strong (single) quotes ```'...'``` . This is the primary use case of strong quotes, and their meaning can be literally understood with the following phrase: _what you see is what you get_. 
+
+For instance:
 
 ```bash
 Var1=44
@@ -93,9 +113,98 @@ The printout is literally:
 $Var1   $Var2
 ```
 
-Neither variable was referenced, as the special meaning of both ```$``` 's was killed with the strong quotes, and the exact number of empty characters was also preserved. These quotes are used frequently to pass the file or directory name which contain empty characters as a single argument to some command (otherwise, empty characters in the file name would be interpreted via their special meaning as field separators). A single quote may not occur between single quotes, even when preceded by a backslash.
+Neither variable was referenced, because the special meaning of both ```$```'s was killed with strong quotes, and the exact number of empty characters was also preserved in the printout. 
 
-#### Weak (double) quotes
+Strong quotes are used frequently to pass the file or directory whose name contain empty characters:
+
+```bash
+ls 'crazy name'
+```
+
+Without strong quotes, the command **ls** would interpret 'crazy' and 'name' separately, as two different arguments. 
+
+Single quotes may not occur between single quotes, even when preceded by a backslash.
+
+As the last remark, strong quotes appear in a rarely used context, which is here outlined just for completeness sake. Some characters cannot be represented with the literal syntax, instead we need to use _backslash-escaped characters_ for them. The best examples are new line and tab space, which are represented with '\n' and '\t', respectively. However, neither **Bash** nor lot of **Linux** commands by default interpret such backslash-escaped characters. For instance:
+
+```bash
+echo "Hi\nthere"
+```
+
+prints literally:
+
+```bash
+Hi\nthere
+```
+
+We need to instruct **echo** to interpret backslash-escaped characters by supplying a flag '-e':
+
+```bash
+echo -e "Hi\nthere"
+```
+
+The printout it now:
+
+```bash
+Hi
+there
+```
+
+Similarly:
+
+```bash
+echo -e "Hi\tthere"
+```
+
+prints the tab space: 
+
+```bash
+Hi      there
+```
+
+and so on.
+
+In general, we can force **Bash** to interpret directly the backslash-escaped characters by using the following generic syntax**: **
+
+```bash
+$'whatever'
+```
+
+With this syntax, we do not rely any longer on the details of command implementation, and whether there exists some option, like '-e' for **echo**, which will instruct the command to interpret backslash-escaped characters. For instance:
+
+```bash
+echo $'Hi\nthere'
+```
+
+will print:
+
+```bash
+Hi
+there
+```
+
+Now **Bash** has interpreted the special meaning of '\n' character, not the **echo** command.
+
+**Example:** Prompt the user with the following multi-line question in **read** command:
+
+```bash
+Dear User,
+do you want to continue [Y/n]? 
+```
+
+The problem here is that the command **read**, unlike **echo**, does not have a specialized flag to interpret the backslash-escaped characters. Therefore, the simplest solution is to use ```$``` in combination with single quotes:
+
+```bash
+read -p $'Dear User,\ndo you want to continue [Y/n]? ' Answer
+```
+
+In the next section, we clarify the meaning of weak (double) quotes ```"..."```. 
+
+
+
+
+
+**Weak (double) quotes**
 
 Unlike the strong quotes, the weak (double) quotes ```" ... "``` preserve the special meaning of some special characters, while the special meaning of all others is stripped off. The exact number of empty characters is preserved as well. Just like within strong quotes, within double quotes the empty character does not retain its special meaning, i.e. it is not any longer the default field separator. The special meaning of following special characters or constructs are preserved within double quotes:
 
