@@ -1,12 +1,14 @@
 ![](bash_logo.png)
 
+
+
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20200606
+**Last update**: 20200608
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
-2. [Quotes: ```' ... '``` and ```" ... "```](#quotes)
+2. [Quotes: ```'...'``` and ```"..."```](#quotes)
 3. [Handling processes and jobs](#handling_processes_and_jobs)
 
 
@@ -123,6 +125,19 @@ ls 'crazy name'
 
 Without strong quotes, the command **ls** would interpret 'crazy' and 'name' separately, as two different arguments. 
 
+To illustrate the importance of strong quotes, consider the following example:
+
+```bash
+echo 100 > 10 # WRONG!!
+```
+
+We wanted to print a literal inequality, ```100 > 10```, on the screen but the above code snippet didn't produce any printout on the screen. Instead, something completely different has happened: **echo** printed only ```100``` but that was redirected immediately into the file named ```10```. We can circumvent this problem with:
+
+```bash
+echo '100 > 10'
+100 > 10
+```
+
 Single quotes may not occur between single quotes, even when preceded by a backslash.
 
 As the last remark, strong quotes appear in a rarely used context, which is here outlined just for completeness sake. Some characters cannot be represented with the literal syntax, instead we need to use _backslash-escaped characters_ for them. The best examples are new line and tab space, which are represented with '\n' and '\t', respectively. However, neither **Bash** nor lot of **Linux** commands by default interpret such backslash-escaped characters. For instance:
@@ -206,28 +221,56 @@ In the next section, we clarify the meaning of weak (double) quotes ```"..."```.
 
 **Weak (double) quotes**
 
-Unlike the strong quotes, the weak (double) quotes ```" ... "``` preserve the special meaning of some special characters, while the special meaning of all others is stripped off. The exact number of empty characters is preserved as well. Just like within strong quotes, within double quotes the empty character does not retain its special meaning, i.e. it is not any longer the default field separator. The special meaning of following special characters or constructs are preserved within double quotes:
-
-* ```$``` : referencing content of variable 
-* ```$( ... )``` : command substitution operator
-* ```$(( ... ))``` : arithmetic expression evaluation
-* ```\``` : backslash preserves its special meaning within double quotes in some cases, for instance if it is followed by ```$```, ```"```, `\`, or newline.
-
-For instance, let us redo the above example with double quotes:
+Unlike the strong quotes, the weak (double) quotes ```"..."``` preserve the special meaning of some special characters, while the special meaning of all others is stripped off. Just like within strong quotes, within double quotes the empty character does not retain its special meaning, i.e. it is not any longer the default field separator. The exact number of empty characters is preserved within weak quotes:
 
 ```bash
-Var1=44
-Var2=440
-echo "$Var1   $Var2"
+echo "a b    c"
+echo  a b    c
 ```
 
 The output is:
 
 ```bash
-40   440
+a b    c
+a b c
 ```
 
-which means that within double quotes the content of variables is referenced with the special character ```$``` , and the exact number of empty characters is being preserved. 
+We can now compare the effect of two types of quotes in the following example:
+
+```bash
+Var1=44
+Var2=440
+```
+
+* no quotes:   
+
+  ```bash
+  echo $Var1   $Var2
+  44 440
+  ```
+  
+* strong quotes:   
+
+  ```bash
+  echo '$Var1   $Var2'
+  $Var1   $Var2
+  ```
+  
+* weak quotes:   
+
+  ```bash
+  echo "$Var1   $Var2"
+  44   440
+  ```
+
+In each case we got a different result. Within double quotes the content of variables is referenced with the special character ```$``` , and the exact number of empty characters is preserved. 
+
+The special meaning of the following special characters or constructs are preserved within weak quotes ```"..."```:
+
+* ```$``` : referencing content of variable   
+* ```$( ... )``` : command substitution operator
+* ```$(( ... ))``` : arithmetic expression evaluation
+* ```\``` : backslash preserves its special meaning within double quotes only in some cases, for instance, when it is followed by ```$```, ```"```, `\`, or newline.
 
 Nested double quotes are allowed as long as the inner ones are escaped with ```\``` . For instance, 
 
@@ -254,7 +297,7 @@ prints
 '44'
 ```
 
-To leading order, only the **Bash** constructs which begin with ```$``` or ```\``` keep their special meaning within double quotes.
+To memorize the rules easier, to leading order only the **Bash** constructs which begin with ```$``` or ```\``` keep their special meanings within double quotes.
 
 
 
