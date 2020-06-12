@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20200611
+**Last update**: 20200612
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -686,13 +686,13 @@ On the other hand, when we hit ```Ctrl+Z``` to suspend a running process, we are
 ```bash
 kill -TSTP somePID
 ```
-The signal ```TSTP``` ('suspend') has a signal number ```20```, so pressing ```Ctrl+Z``` is also equivalent to the following command input:
+The signal ```TSTP``` ('suspend') has a signal number ```20```, so pressing ```Ctrl+Z``` is also equivalent to the following:
 
 ```bash
 kill -20 somePID
 ```
 
-When we hit ```Ctrl+C``` to interrupt the running process, we are using a shortcut for sending the ```INT``` signal. Pressing ```Ctrl+C``` is therefore completely equivalent to the following command input: 
+When we hit ```Ctrl+C``` to interrupt the running process, we are using a shortcut for sending the ```INT``` signal. Pressing ```Ctrl+C``` is therefore completely equivalent to: 
 
 ```bash
 kill -INT somePID
@@ -704,12 +704,12 @@ or a shorter version (see the above table):
 kill -2 somePID
 ```
 
-Last but not least, when you hit ```Ctrl+\``` to quit a running process, you have used the shortcut for sending the 'quit' signal:
+Yet another way to terminate a running process is to send the ```QUIT``` signal (number 3):
 
 ```bash
-kill -QUIT somePID # signal number is 3
+kill -QUIT somePID
 ```
-This case typically also produces the message 'core dumped', for instance:
+This case typically produces the message 'core dumped', for instance:
 ```bash
 sleep 20m &
 [2] 11126
@@ -717,46 +717,54 @@ kill -QUIT 11126
 jobs -l
 [2]- 11126 Quit                    (core dumped) sleep 20m
 ```
-The message ```'^\Quit (core dumped)'``` indicates that there is a file called 'core' which contains the image of the process to which you sent a signal. The name 'core' is a very old-fashioned name for computer's memory, and 'core dumps' are generated when the process receives certain signals (such as ```SIGQUIT```, ```SIGSEGV```, etc.), which the Linux kernel sends to the process when it accesses memory outside its address space. Typically that happens because of errors in how pointers are used.  
+The message ``` Quit (core dumped)``` indicates that there is a file called 'core' which contains the image of the process to which you sent a signal. The name 'core' is a very old-fashioned name for computer's memory, and 'core dumps' are generated when the process receives certain signals (such as ```QUIT```, ```SEGV```, etc.), which the **Linux** kernel sends to the process when it accesses memory outside its address space. 
 
-The signals ```INT```, ```TSTP``` and ```QUIT``` are the only three signals which can be used with control keys: ```Ctrl+C```, ```Ctrl+Z``` and ```Ctrl+\```, respectively. 
+Although it sounds trivial, it makes actually a big difference with which signal we kill the job. Recommended ordering of signals used to terminal the job is the following:   
 
-Although it sounds trivial, it makes actually a big difference with which signal we kill the job. Recommended ordering of killing is the following:  
+1. **kill** : the default signal is ```TERM``` (similar to ```INT```). If we kill the process this way, we still give a chance to the process to clean up (for instance, to delete all temporary files it was using while running) before terminating. May or may not terminate the running job.     
+2. **kill -QUIT** : this dumps the process' memory image in the file named 'core', which can be used for debugging. May or may not terminate the running job.   
+3. **kill -KILL** : 'last-ditch', we use this as the very last resort. If we send this signal to the process, the process is killed by operating system now and unconditionally. Process cannot clean up. The signal ```KILL``` always succeeds and terminates the running process, whatever are the consequences. If even this signal has failed, that means that the operating system has failed.  
 
-1. ```kill ``` : this sends signal ```TERM``` by default (similar to ```INT```). If you kill the process this way, you still give a chance the process to clean up before terminating   
-2. ```kill -QUIT``` : this dumps the 'core', can be used in debugging  
-3. ```kill -KILL``` : 'last-ditch', use this as the very last resort. If you send this signal to the process, it is killed by operating system now and unconditionally. Process cannot clean up. This always works (i.e. it always kills the running process whatever are the consequences), otherwise the operating system has failed. 
-
-Finally, we remark that we can resume programmatically the suspended job by sending it the signal ```CONT``` (number 18). Consider the following example:
+We remark that sending signals to the running job is not only about terminating its execution. For instance, we can resume programmatically the suspended job by sending it the signal ```CONT``` (number 18). That is illustrated with the following sequence:
 
 ```bash
 sleep 44m &
-# [1] 12254
+[1] 12254
 jobs -l 
-# [1]+ 12254 Running                 sleep 44m &
+[1]+ 12254 Running                 sleep 44m &
 kill -TSTP 12254
 jobs -l
-# [1]+  Stopped                 sleep 44m
+[1]+  Stopped                 sleep 44m
 kill -CONT 12254
-# [1]+ 12254 Running                 sleep 44m &
+[1]+ 12254 Running                 sleep 44m &
 ```
 
-Very important thing to note is that, since the command **kill** can accept PID as an argument which is system-wide available, we can send signals to the jobs running in one terminal, by executing **kill** command in another terminal. In practice that means that we can programatically from another terminal recover the frozen session in another terminal, but killing crashed processes. 
+In the next section we will see how we can further customize the signal catching.
+
+At the end of this section, we stress out that, since the command **kill** can accept PID as an argument which is system-wide available, we can send signals to the jobs running in one terminal, by executing **kill** command with the specified signal in another terminal. In practice, if the running process has crashed and frozen the current terminal, we can still try to recover it by using its PID and sending to it signals with **kill** command from another terminal.
 
 **Catching signals in your own code**
 
-We have already seen how we can send the signal to the process, assuming that process has an implementation to handle that signal. In this section we clarify what is happening behind the scene when process receives the signal, i.e. we discuss the commands which are used to handle programmatically the signal input. This can be achieved by using the **Bash** built-in command **trap**. In general, programs can be set up to trap specific signals, and process them in their own way. Command **trap** is used mostly for bullet-proofing, i.e. ensuring that your program behaves well under abnormal circumstances. Generic syntax of **trap** command is:
-```bash
-trap some-command signal1 signal2 ...
-```
-This syntax shall be interpreted as follows: When any of signals ```signal1 signal2 ...``` is received, execute command ```some-command```, then resume the execution. After the execution of ```some-command``` finishes, the script resumes execution just after the command that was interrupted. In this context, ```some-command``` can be also a script or a function. On the other hand,  ```signal1 signal2 ...``` can be specified either by signal name or by number. To get list of available signals, you can use either **kill -l** or **trap -l**, their output is exactly the same.
+We have already seen how we can send the signal to the process, taking for granted that the implementation of that process have the relevant lines in the source code which can handle that particular signal. In this section, we clarify what is happening behind the scene when a process receives a signal. 
 
-The usage of **trap** is best illustrated with examples. Please write the script named 'trapExample.sh' with the following content:
+We introduce and discuss first the commands which are used to handle programmatically the signal input. This can be achieved by using the **Bash** built-in command **trap**. In general, programs can be set up to trap specific signals, and interpret them in their own way. The command **trap** is used mostly for bullet-proofing, i.e. ensuring that your program behaves well under abnormal circumstances. Generic syntax of **trap** command is:
+
+```bash
+trap someCommand signal1 signal2 ...
+```
+The above generic syntax is interpreted as follows: When any of the signals ```signal1```, ```signal2```, ```...```, is received, the following sequence follows: 
+1. pause the program execution and execute command **someCommand**  
+2. resume the program execution  
+
+
+After the execution of **someCommand** has terminated, the program execution resumes just after the command that was interrupted. In this context, **someCommand** can be also a script or a function. The signals```signal1```, ```signal2```, ```...```, can be specified either by signal name or by signal number. 
+
+The usage of **trap** is best illustrated with examples. We use the script named ```trapExample.sh``` with the following content:
 ```bash
 #!/bin/bash
 
-trap "echo Hello A; echo How is life?" INT
-trap "echo Hello B" TERM
+trap "echo Hi there!; echo How is life?" USR1
+trap "pwd; ls" USR2
 
 while :; do
  date
@@ -765,37 +773,42 @@ done
 
 return 0
 ```
-This script does nothing expect that each 10 seconds prints the time stamp via **date** command. Now send this script to execute in the background via:
+This script does nothing except that each 10 seconds prints the time stamp via **date** command. It is not  possible to catch via **trap** the arbitrary user-defined signal, we have to use the standard 64 signals enlisted with **kill -l** (or **trap -l**). The closest we can get it to use ```USR1``` and ```USR2``` signals (numbers 10 and 12) as the standard supported signals reserved for the user's custom input. 
+
+We send this script to execute in the background via:
+
 ```
 source trapExample.sh &
 [1] 87
 ```
 
-Now, while the script is running, start sending the signals to it, e.g.
+Each 10 seconds on the screen we get the timestamp printed, and in this simple example, that's the proof that our script is running. Now, while the script is running in the background, we start to communicate with our script by sending the signals to it:
+
 ```
-kill -INT %1
+kill -USR1 %1
 ```
-The script responds to your signal and produces the following output:
+The script pauses its execution, and responds to the signal ```USR1``` to produce the following output:
 ```bash
-Hello A
+Hi there!
 How is life?
 ```
-After sending another signal:
+Our signal was literally trapped by **trap** command, and whatever we have defined to correspond to the signal ```USR1```, it will be executed. After that signal is processed, the script resumes normal execution, and we see each 10 seconds again on the screen the timestamp printed.
+
+After sending the signal ```ÙSR2```:
+
 ```bash
-kill -TERM %1
+kill -USR2 %1
 ```
-we get the second printout:
-```bash
-Hello B
-```
-Note that all the time your script is still happily running in the background:
+the script execution is paused again, this time two commands **pwd** and **ls** are executed, and the script resumes execution.
+
+After sending these two signals, the script is still running in the background:
 ```bash
 jobs -l 
 # [1]+  87 Running                 source trapExample.sh &
 ```
-Therefore, by using the **trap** command we can programmatically and on-the-fly modify the behaviour of running programme, without terminating its execution, then changing something in the code, and restarting.
+Therefore, by using the **trap** command we can programmatically and on-the-fly modify the behaviour of the running programme, without terminating its execution, changing something in the code, and restarting from scratch. Just like we have implemented traps for signals ```USR1``` and ```USR2```, we can implement our own version of traps for the more standard signals like ```ÌNT```, ```TERM```, etc.
 
-We conclude this section by remarking that traps can be reset, by using the following generic syntax:
+We conclude this section with a few additional remarks. The traps can be reset, by using the following generic syntax:
 ```bash
 trap - someSignal
 ```
@@ -803,13 +816,13 @@ Signals sent to your script can be ignored by using the following syntax:
 ```bash
 trap "" someSignal
 ```
-For instance, if you want to disable ```Ctrl+C``` (which is a shortcut for ```kill -INT```) to interrupt your script execution, at the beginning of your script you need to add:
+For instance, if we want to prevent ```Ctrl+C``` (which is a shortcut for **kill -INT**) to terminate the script execution, at the beginning of the script we need to add:
 ```bash
 trap "" INT
 ```
-Then, when signal ```INT``` is received, your script will literally do nothing. 
+With the above implementation, whenever signal ```INT``` is received, the script will literally do nothing about it. 
 
-The only signal which cannot be trapped, and therefore in particular ignored, is ```KILL```. That's why ```kill -KILL``` or ```kill -9``` will always and unconditionally terminate your running programme.
+The only signal which cannot be trapped, and therefore in particular which cannot be ignored, is ```KILL```. That explains why **kill -KILL** or **kill -9** will always and unconditionally terminate your running programme.
 
 
 
