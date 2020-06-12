@@ -804,7 +804,7 @@ the script execution is paused again, this time two commands **pwd** and **ls** 
 After sending these two signals, the script is still running in the background:
 ```bash
 jobs -l 
-# [1]+  87 Running                 source trapExample.sh &
+[1]+  87 Running                 source trapExample.sh &
 ```
 Therefore, by using the **trap** command we can programmatically and on-the-fly modify the behaviour of the running programme, without terminating its execution, changing something in the code, and restarting from scratch. Just like we have implemented traps for signals ```USR1``` and ```USR2```, we can implement our own version of traps for the more standard signals like ```ÌNT```, ```TERM```, etc.
 
