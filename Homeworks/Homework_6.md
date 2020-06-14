@@ -22,7 +22,7 @@ px 0.324 py -1.133
 px 0.355 py -2.134
 ```
 
-Copy and save the above printout in the file ```output.dat```, as the starting point for this exercise. By combining pipes, **grep**, **awk** and **sed**, write down a one-line code snippet which will filter out, reformat and update in-place the file ```output.dat``` with the following new format and content:
+Copy and save the above printout in the file ```output.dat```, as the starting point for this exercise. By combining pipes, **grep**, **awk** and **sed**, write down a one-line code snippet which will filter out, reformat and update in-place the file ```output.dat``` with the following new format and content (note the change 'Px' and 'Py' instead of 'px' and 'py', respectively):
 
 ```bash
 Px = 0.123 , Py = 0.333
@@ -35,14 +35,14 @@ Px = 0.324 , Py = -1.133
 Px = 0.355 , Py = -2.134
 ```
 
-**Hint #1:** First, execute the commands without modifying the starting file in-place, i.e. just inspect the output stream corresponding to the modified file. Once the output stream looks the way you want, re-execute the commands but now modify the starting file in-place, and make sure that the starting file was automatically stored in some backup file, just in case.
+**Hint #1:** First execute the commands without modifying the starting file in-place, i.e. just inspect the output stream on the screen corresponding to the modified file. Once the output stream looks the way you want, re-execute the commands but now modify the starting file in-place, and make sure that the starting file was ```output.dat``` automatically stored in some backup file with different name, just in case.
 
 **Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments only directories, and whose printout is:
 
 1. directory name
 2. list of subdirectories 
-3. files in that directory sorted with respect to size, largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size```
-4. ignores '.' and '..' in the printout, as well as all hidden files whose name starts with ''.' 
+3. files sorted with respect to size, largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size```
+4. ignores '.' and '..' in the printout, as well as all hidden files whose name starts with '.' 
 
 For instance, the output could look like:
 
@@ -60,7 +60,7 @@ Lecture_7_20200606_0b.md  Jun  06  15:25  1234
 
 **Hint #3:** To extract and order the relevant fields, pipe further to **awk** (for files), or store temporarily in some array (for subdirectories) 
 
-**Hint #4:** To ensure that all columns have the same width, pipe further to **column -t** 
+**Hint #4:** To ensure that all columns have the same width in the final printout, simply pipe to **column -t** 
 
 
 
