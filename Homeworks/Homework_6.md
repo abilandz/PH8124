@@ -2,7 +2,7 @@
 
 # Homework #6: Coding adventures with grep, sed and awk
 
-**Last update:** 20200606
+**Last update:** 20200614
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
@@ -56,9 +56,9 @@ Lecture_7_20200606_0b.md  Jun  06  15:25  1234
 
 **Hint #1:** Develop a function **Ls**, in its body execute the standard **ls** with carefully chosen options (check for instance **man ls** for the meaning of the flags '-l', '-S', '-r')
 
-**Hint #2:** To differentiate between files and subdirectories, pipe the **ls** executed with flag '-l' to **grep**, and then just use either **grep -v "^d"** or **grep "^d"** (file metadata begin with 'd' only for directories)   
+**Hint #2:** To differentiate between files and subdirectories, pipe the **ls** executed with the flag '-l' to **grep**, and then just use either **grep -v "^d"** or **grep "^d"** (file metadata begin with 'd' only for directories)   
 
-**Hint #3:** To extract and order the relevant fields, pipe further to **awk** (for files), or store trmporarily in some array (for subdirectories) 
+**Hint #3:** To extract and order the relevant fields, pipe further to **awk** (for files), or store temporarily in some array (for subdirectories) 
 
 **Hint #4:** To ensure that all columns have the same width, pipe further to **column -t** 
 

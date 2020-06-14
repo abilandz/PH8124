@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20200612
+**Last update**: 20200614
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
