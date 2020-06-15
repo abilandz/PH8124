@@ -1,10 +1,8 @@
 ![](bash_logo.png)
 
-[TBI]: <> "This is a comment"
-
 # Lecture 8: Bash fancy features
 
-**Last update**: 20190704
+**Last update:** 20200615
 
 ### Table of Contents
 1. [Subshells: ```( ... )```](#subshells)
@@ -20,58 +18,71 @@
 
 ### 1. Subshells: ```( ... )``` <a name="subshells"></a>
 
-We have already seen how one can use the code block ```{ ... }``` within the script to embed only the specific code snippet inside, and assign only to the execution of that code snippet separate I/O facilities from the rest of the code.  Another way of achieveing this is to use _subshell_```( ... )```. Any code block in the script can be embedd within the round braces ```( ... )```. This code block forms then the subshell. Generically, you can define subshell as:
+We have already seen how the code block ```{ ... }``` can be used in **Bash** to embed the specific code snippet inside, and allocate only to the execution of that code snippet separate I/O facilities from the rest of the code.  Another way of achieving this functionality is to use _subshell_ ```( ... )```. Any code block, when embedded within the round braces ```( ... )```, forms the subshell. Generically, a subshell is defined as:
 ```bash
 (
- command input 1
- command input 2
+ command-input-1
+ command-input-2
  ...
- command input n 
+ command-input-n 
 )
 ```
-or completely equivalently with one-liner
+or completely equivalently, with the one-liner:
 ```bash
-( command input 1; command input 2; ... ; command input n; )
+( command-input-1; command-input-2; ... ; command-input-n; )
 ```
 
-There are a lot of similarities between ```{ ... }``` and ```( ... )``` code blocks, however, there are some important differences as well. Two most important differences are:
+Just like it was done for the code block ```{ ... }``` in the previous sections, we now provide an executive summary of the most important features of subshell ```( ... )```:   
 
-1. when compared to the parent shell, ```( ... )``` launches a new process, while ```{ ... }``` does not;
-2. both ```( ... )``` and ```{ ... }```  inherit the environment from the parent shell,  ```{ ... }``` can modify it globally while ```( ... )``` cannot.
+1. it inherits the current environment and cannot modify it globally  
+2. has its own ```1>``` and ```2>``` streaming facilities  
+3. starts a separate process, its PID can be obtained programmatically from the built-in variable **BASHPID**  
+
+From the above list, it is clear that there are a lot of similarities between ```{ ... }``` and ```( ... )```. Basically,  there are only two important differences:  
+
+1. when compared to the parent shell, ```( ... )``` starts a new process, while ```{ ... }``` does not  
+2. both ```( ... )``` and ```{ ... }```  inherit the environment from the parent shell, but ```{ ... }``` can modify it globally while ```( ... )``` cannot  
    
-With respect to redirecting _stdout_ and _stderr_ streams, there is no difference between ```( ... )``` and```{ ... }```. The subshell ```( ... )``` is usually less efficient than code block ```{ ... }```, because it runs separate process.  However, since it cannot modify the environment in which it is run globally, ```( ... )``` is safer.  As a rule of thumb therefore,  ```( ... )``` shall be preferred over ```{ ... }``` unless efficiency is concern.
 
-Just like we did it for the code block ```{ ... }``` previously, we now provide an executive summary of the most importat features of subshell ```( ... )```:
+When it comes to _stdout_ and _stderr_ streams, there is no difference between ```( ... )``` and```{ ... }```. The subshell ```( ... )``` is usually less efficient than the code block ```{ ... }```, because it runs a separate process. However, since it cannot modify the environment in which it is run globally, ```( ... )``` is safer. As a rule of thumb,  ```( ... )``` shall be preferred over ```{ ... }``` unless the efficiency is concern.
 
-* it inherits the current environment and cannot modify it globally;
-* has its own 1> and 2> streaming facilities;
-* launches a separate process, you can fetch its PID from the built-in ```BASHPID``` variable in **Bash**.
-
-The last point is especially interesting, since if you send the execution of code in the subshell to the background, e.g. by using the following generic syntax
+Typically, the subshells are executed in the background, by using the following generic syntax:
 ```bash
-( command input 1; command input 2; ... ; command input n; ) &
+( command-input-1; command-input-2; ... ; command-input-n; ) &
 ```
-you can decide by using the **wait** command whether the rest of the code in your script will or will not wait the code execution in subshell to terminate (just like for any other command running in the background). This is very handy because you can use in that subshell automatically the already initialized environment in your script, execute the subshell, get back your result and environment unmodifed. 
+The advantage of running subshells in the background is that now by using the **wait** command we can decide whether the rest of the code in the script will or will not wait the subshell execution to terminate (just like for any other command running in the background). This is very handy because we can use in that subshell automatically the already initialized environment in the script, execute the subshell, get back the result and keep environment unmodified. 
 
-The typical use case of subshell is illustrated with the following simple example:
+The use case of subshell is illustrated with the following simple example:
 ```bash
 ( echo "Subshell PID: ${BASHPID}"; date; date -q; sleep 10m; ) 1>output.log 2>error.log &
 ```
-After executing this line, we can now see with **jobs -l** the following printout:
+Completely equivalently, the above code snippet could have been implemented across multiple lines:
+
+```bash
+( 
+ echo "Subshell PID: ${BASHPID}"
+ date 
+ date -q
+ sleep 10m
+) 1>output.log 2>error.log &
+```
+
+It's a matter of personal taste which of the two versions is used in practice, but from the **Bash** perspective, they are the same. After executing, we see now with **jobs -l** the following printout:
+
 ```bash
 [2]+  7941 Running                 ( echo "Subshell PID: ${BASHPID}"; date; date -q; sleep 10m ) > output.log 2> error.log &
 ```
-This means that the whole composite code inside the subshell now behaves like any other command running in the background. Any 'stdout' printout in the body of subshell of any command was redirected with ```1>``` in the file 'output.log', whose content is:
+This means that the whole composite code inside the subshell now behaves like any other command running in the background. Any _stdout_ printout in the body of subshell from any command is redirected with ```1>``` in the file 'output.log', whose content is:
 ```bash
 Subshell PID: 7941
 Do 4. Jul 07:37:55 CEST 2019
 ```
-On the other hand, any error stream within subshell body was redirected with ```2>``` in the file 'error.log':
+On the other hand, any _stderr_ stream within subshell body was redirected with ```2>``` in the separate file 'error.log':
 ```bash
 date: invalid option -- 'q'
 Try 'date --help' for more information.
 ```
-We can suspend the subshell execution just as we did it for commands:
+We can suspend the subshell execution just as we did it for individual commands:
 ```bash
 kill -TSTP 7941
 jobs -l
@@ -83,7 +94,17 @@ kill -CONT 7941
 jobs -l
 # [2]+  7941 Running                 ( echo "Subshell PID: ${BASHPID}"; date; date -q; sleep 10m ) > output.log 2> error.log &
 ```
-In the same fashion, we can terminate only the subshell execution, without affecting the script execution from which the subshell was launched. That is not possible for the code block ```{ ... }```, since that version does not launch a separate process.
+In the same fashion, we can terminate only the subshell execution, without affecting the script execution from which the subshell was launched. This is true whether or not subshell is executed in the background. For instance, if we have the following schematic situation:
+
+```bash
+some code
+( some massive computation in subshell )
+the remaining code waiting subshell to terminate
+```
+
+If the code execution got stuck because of some massive computation in the subshell, instead of terminating the whole script and restarting , we can terminate differentially only the subshell from a separate terminal, by sending some of the signals ```TSTP```, ```INT```, ```QUIT``` or ```KILL``` directly to the PID corresponding to the subshell. This is not possible for code block ```{ ... }``` because its PID is the same as the PID of the parent shell.
+
+
 
 
 
@@ -155,11 +176,11 @@ Without the process substitution operator, we would need to dump the printout of
 The generic syntax for the usage of 'here strings' can be represented in the following schematic way:
 ```bash
 command <<< "someString"
-``` 
+```
 In the above generic example, ```someString``` can stand for a hardwired string, but also for the referenced variable, e.g. 
 ```bash
 command <<< ${someString}
-``` 
+```
 Usage of quotes (either single or double) in the first example is mandatory if ```someString``` is a hardcoded string containing empty characters. Command substitution operator ```$( ... )``` and arithmetic expansion ```$(( ... ))``` can be used as well on the right hand side of ```<<<```. What **Bash** is doing when it encounteres ```<<<``` can be summarized as follows: Whatever is on the right hand side of ```<<<``` undergoes expansion (e.g. variable content is referenced with ```${someString}```, etc.), and then the resulting expression is fed to the 'stdin' of ```command```.  The result of expansion is supplied as a single string to ```command```, with a newline always appended. We now illustrate the usage of 'here strings' with a few common examples.
 
 In most use cases, you can simply replace:
@@ -192,7 +213,7 @@ Note that the content of the starting variable ```Var``` is still '20180524', we
 Var=$(sed "s/2018/2019/" <<< $Var)
 echo ${Var}
 # prints 20190524, content of 'Var' is changed
-``` 
+```
 
 Finally, we illustrate the typical usage of 'here strings' in combination with **bc** command, to perform floating point arithmetics. We start by recalling  the example from Lecture 6:
 
