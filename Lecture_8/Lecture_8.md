@@ -2,7 +2,7 @@
 
 # Lecture 8: **Bash** fancy features
 
-**Last update:** 20200616
+**Last update:** 20200617
 
 ### Table of Contents
 1. [Subshells: ```( ... )```](#subshells)
@@ -160,7 +160,7 @@ diff file1 file2 && echo same || echo different
 ```
 With the process substitution operator, we can extend the functionality of **diff** command to the comparison between the printout of different commands. The generic use case could look like:
 ```bash
-diff <(command1) <(command2) && echo SAME || echo DIFFERENT
+diff <(command1) <(command2) && echo same || echo different
 ```
 Without the process substitution operator, we would need to dump the printout of each command in some temporary file, and then compare the content of those temporary files with **diff** command. Clearly, process substitution operator saves also in this frequently encountered example a lot of additional and completely trivial coding.
 
