@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20200604
+**Last update**: 20200618
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -755,9 +755,9 @@ echo $Var | grep SomePattern(s)
 In cases where only the check for the pattern needs to be performed with **grep**, and there is no not need for the actual printout, we can use the flag '-q' (for quite), like in this example:
 
 ```bash
-if grep -q "11test" grepExample.txt; fi
+if grep -q "11test" grepExample.txt; then
  ... some code ...
-elif grep -q "test22" grepExample.txt; fi
+elif grep -q "test22" grepExample.txt; then
  ... some other code ...
 else
  ... yet other code ...
