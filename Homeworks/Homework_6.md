@@ -2,7 +2,7 @@
 
 # Homework #6: Coding adventures with grep, sed and awk
 
-**Last update:** 20200614
+**Last update:** 20200618
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
@@ -35,16 +35,15 @@ Px = 0.324 , Py = -1.133
 Px = 0.355 , Py = -2.134
 ```
 
-**Hint #1:** First execute the commands without modifying the starting file in-place, i.e. just inspect the output stream on the screen corresponding to the modified file. Once the output stream looks the way you want, re-execute the commands but now modify the starting file in-place, and make sure that the starting file was ```output.dat``` automatically stored in some backup file with different name, just in case.
+**Hint #1:** First execute the commands without modifying the starting file in-place, i.e. just inspect the output stream on the screen corresponding to the modified file. Once the output stream looks the way you want, re-execute the commands but now modify the starting file in-place, and make sure that the starting file ```output.dat``` was automatically stored in some backup file with different name, just in case.
 
 **Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments only directories, and whose printout is:
 
 1. directory name
 2. list of subdirectories 
-3. files sorted with respect to size, largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size```
-4. ignores '.' and '..' in the printout, as well as all hidden files whose name starts with '.' 
+3. files sorted with respect to size, largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size``` 
 
-For instance, the output could look like:
+The output of **Ls** is formatted like in this example:
 
 ```bash
 Directory "Lecture"
@@ -60,7 +59,7 @@ Lecture_7_20200606_0b.md  Jun  06  15:25  1234
 
 **Hint #3:** To extract and order the relevant fields, pipe further to **awk** (for files), or store temporarily in some array (for subdirectories) 
 
-**Hint #4:** To ensure that all columns have the same width in the final printout, simply pipe to **column -t** 
+**Hint #4:** To ensure that all columns have the same width in the final printout, simply pipe at the very end to the command **column -t** 
 
 
 
