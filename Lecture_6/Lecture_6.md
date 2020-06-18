@@ -884,7 +884,7 @@ CEST
 ```
 and so on. 
 
-But what if we want to parse the command output or file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:1be2' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator **FS** to some non-default value,  we use schematically the following syntax:
+But what if we want to parse the command output or file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator **FS** to some non-default value,  we use schematically the following syntax:
 
 ```bash
 awk 'BEGIN {FS="some-new-single-character-field-separator"} ... '
