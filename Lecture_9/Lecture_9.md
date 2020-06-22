@@ -1,10 +1,8 @@
 ![](bash_logo.png)
 
-[TBI]: <> "This is a comment"
-
 # Lecture 9: Real-life examples
 
-**Last update**: 20190712
+**Last update**: 20200622
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -17,33 +15,36 @@
 
 
 ### 1. Command history search <a name="command_history_search"></a>
-When working directly in the terminal clearly we want to speed up the command input as much as possible. In addition,  frequently we want to be able to re-use the certain command input again, without re-typing it from scratch. A lot of typing is saved by using ```TAB```, which autocompletes the command input to existing commands names (here commands are meant in the broader sense and include also **Bash** functions, aliases, etc.). In the case a command expects as argument an file or directory, ```TAB``` will also autocomplete file or directory name, after we have typed in first few characters and hit ```TAB```. Last but not least, ```TAB``` also autocompletes the **Bash** variable names when we are referencing their content. This is illustrated with the following three simple examples:
+When working directly in the terminal we want to speed up the command input as much as possible. Besides, frequently we want to be able to re-use the certain command input again, without re-typing it from scratch. A lot of typing is saved by using ```TAB```, which autocompletes the command input to existing commands names (here commands are meant in the broader sense and include also **Bash** functions, aliases, etc.). In the case command is expecting as argument a file or directory, ```TAB``` will also autocomplete file or directory name, after we have typed in the first few characters and hit ```TAB```. Last but not least, ```TAB``` also autocompletes the **Bash** variable names when we are referencing their content. This is illustrated with the following three simple examples:
 ```bash
-dirn + TAB # autocompletes to command 'dirname'
+dirn + TAB 
+# autocompletes to command 'dirname'
 
-cat file + TAB  # autocompletes to file named 'fileWithLengthyName.log'
+cat fileW + TAB  
+# autocompletes to file named 'fileWithLengthyName.log'
 
 LongNameVariable=44
-echo $Lo + TAB # autocompletes to command input 'echo $LongNameVariable'
+echo $Lo + TAB 
+# autocompletes to 'echo $LongNameVariable'
 ```
 In general, when there are multiple matches for the initial pattern, after pressing once the ```TAB``` nothing happens, however pressing two times ```TAB TAB``` lists all matches:
 ```bash
-ls Lecture_9_201907 + TAB + TAB 
-# prints all files and directories in the current working directory which begin with pattern 'Lecture_9_201907':
-# Lecture_9_20190706_0a.md  Lecture_9_20190706_0b.md  Lecture_9_20190708_0a.md
+ls Lecture_9 + TAB + TAB 
+# prints Lecture_9.md Lecture_9.html Lecture_9.pdf  
 ```
-Precedence of text completition via ```TAB``` can be summarized as follows: commands and functions first, then files and directores. If we want to alter these default precedence rules in some special cases of interest, we can use the following three special characters:
+The precedence of text completion via ```TAB``` can be summarized as follows: commands and functions first, then files and directories. If we want to alter these default precedence rules in some special cases of interest, we can use the following three special characters:  
 
-* if the text is preceded with $ => variable completition with ```TAB``` takes precedence
-* if the text is preceded with ~ => username completition with ```TAB``` takes precendence
+* if the text is preceded with ```$``` : variable completion with ```TAB``` takes precedence  
+* if the text is preceded with ```~``` : username completion with ```TAB``` takes precedence  
 
-Clearly, autocompletetion via ```TAB``` is a beautiful feature and speeds up a lot the typing, but it cannot really help us to re-use what we have already typed. 
+The autocompletion via ```TAB``` is a very neat feature and speeds up a lot the typing, but it cannot help us to re-use what we have already typed. 
 
-In order to achieve that, we need to use **Bash** built-in command **history**.  After you type in the terminal
+To achieve that, we need to use **Bash** built-in command **history**.  After we type in the terminal
 ```bash
 history
 ```
-**Bash** prints and enumerates all command input you have typed in recently (not necessarily only in the current terminal!), for instance you could get as printout something like: 
+all the command input which we have typed in the terminal recently (not necessarily only in the current terminal!) will be printed and enumerated by **Bash**. For instance, the output could be:
+
 ```bash
   525  ls
   526  nano readMe.txt
@@ -52,50 +53,65 @@ history
   529  ls
   530  cd ..
   531  ls
-  532  remarkable Homework_7.md &
+  532  typora Homework_7.md &
   533  cd ../Lecture_9
 ```
-From where **Bash** has re-trieved this detailed information of what you did in the past few days or so? All previosly typed commands are stored by default in the file to which the environment variable ```HISTFILE``` is pointing to:
+From where **Bash** has retrieved this detailed information of what we typed of late in the terminal? All previously typed commands are stored by default in the file to which the environment variable **HISTFILE** is pointing to:
 ```bash
 echo $HISTFILE
 ```
 The printout could look like:
 ```bash
 /home/abilandz/.bash_history
-``` 
-That means that by default, the history of all command input you have made is saved in the file  ```.bash_history``` placed in your home directory (by default, at maximum 1000 lines of command input are kept in that file, you can change that default number by modifying the **Bash** environment variable ```HISTSIZE```). If you now have a look at the content of **Bash** command history file:
+```
+That means that, by default, the history of all our command input is saved in the file ```.bash_history``` placed in the home directory. By default, at maximum 1000 lines of command input are kept in this file, but that can be changed by modifying the **Bash** environment variable **HISTSIZE**. If we now have a look at the content of the **Bash** command history file:
 ```bash
 cat /home/abilandz/.bash_history
 ```
-you get the similar printout as the one from the command **history** showed above. The printout is similar, but not the same, and we will now clarify their differences, which sometimes lead to big confusions. 
+we see that we get a similar printout like the one from the command **history** showed above. The printout is similar, but not the same, and we will now clarify this difference, which sometimes leads to big confusion. 
 
-Each time you start a new terminal, the file ```~/.bash_history``` is read. From that point onward, each terminal maintains its own history (list of command inputs). When you exit the shell, it updates the ```~/.bash_history``` file with its own history. Therefore, and very importantly, the current content of ```~/.bash_history``` (in particular its last lines) will correspond to the latest commands executed in the terminal you just exited. 
+Each time we start a new terminal, the file ```~/.bash_history``` is read. From that point onward, each terminal maintains its own history (i.e. its own list of all commands we have typed in the terminal). When we exit the terminal, **Bash** updates the ```~/.bash_history``` file with the history which corresponds to that terminal. Therefore, and very importantly, the current content of ```~/.bash_history``` will correspond to the last terminal we have closed. 
 
-Some frequently used flags for the command **history** and their meanings are summarized here:
+Some frequently used flags for the command **history** and their meanings are summarized here:  
 
-* ```-c``` : clears the history list (but it doesn't clean the content of ```~/.bash_history``` instantly, remember that that files get updated automatically only after you exit the terminal!) 
-* ```-d someNumber``` : clears the **history** entry only at the line 'someNumber' 
-* ```-a``` : append history lines from this session to the history file (if you do not want to exit the terminal in order to update the ```~/.bash_history``` file, then this is an option for you)
- 
-After understanding the **history** mechanism working behind the scene in shell, now we will see how we can directly extract the entry we want with few convenient shortcuts:
+* ```-c``` : clears the history list (but it doesn't clean the content of ```~/.bash_history``` instantly, remember that this file gets updated automatically only after we exit the terminal!)   
+* ```-d someNumber``` : clears the **history** entry only at the line 'someNumber'   
+* ```-a``` : forces appending history lines from the current terminal to the history file ```~/.bash_history```. With this option, we save permanently all commands we have typed in the history file, even without exiting the terminal
 
-* Use up and down arrow (or equivalently ```Ctrl+N``` and ```Ctrl+P```) in terminal to browse through: a) first through terminal's own history, and only then b) through the content of  ```~/.bash_history```
-* ```Ctrl+R``` : inverse history search. After you hit ```Ctrl+R```, type the command input pattern you are searching for, and then keep hitting ```Ctrl+R```, until the full command input holding that pattern pops up. 
+After understanding the **history** mechanism, we now demonstrate how we can directly extract only the entry we need with a few convenient shortcuts:  
 
-The latter one is extremely handy feature, and is best illustrated with the following example:
+* Use up and down arrow (or equivalently ```Ctrl+N``` and ```Ctrl+P```) in the terminal to browse through (in the specified order!): 
+
+  * terminal's own history
+  * the content of  ```~/.bash_history```   
+
+* ```Ctrl+R``` : inverse history search. After we press ```Ctrl+R```, the following prompt appears:
+
+  ```bash
+  (reverse-i-search)`':
+  ```
+
+  Now we can type the pattern which will be used to search for some previously used command input that contained that pattern. We can keep pressing ```Ctrl+R```, until the command input we are looking for appears. By pressing the right arrow, that command input is copied in the terminal, and we can now reuse it again. 
+
+**Example:** The inverse history search is an extremely handy feature, and we now illustrate it with the concrete example. Imagine a scenario in which we have typed in the terminal for** loop, followed by a lot of other commands:
+
 ```bash
 for i in {1..10}; do echo $i; done
-... one zillion of other commands ...
+... one zillion other commands ...
 ```
 
-Imagine that now you need again as command input the line ```for i in {1..10}; do echo $i; done```, it suffices only to do the following:
+Do we need to retype the whole **for** loop from scratch, in case we need that command input again? It suffices only to do the following:
+
 ```bash
-Ctrl+R # now you are promted for the pattern 
-(reverse-i-search)`': # type the pattern of the command input you want to re-use, e.g. 'fo'
-(reverse-i-search)`fo': for i in {1..10}; do echo $i; done # keep hitting Ctrl+R unti the desired command input with pattern 'fo'is found (there can be a few other commands inputs with that pattern). After that just hit 'Enter' and you execute that command input on the spot!
+Ctrl+R
+(reverse-i-search)`': # type the pattern'fo'
+(reverse-i-search)`fo': for i in {1..10}; do echo $i; done
 ```
 
-Finally, we indicate how you can directly execute any command from the history list. For instance, if
+Press the right arrow, and the offered result from the inverse history search is copied in the terminal, and can be reused. If the offered result from the inverse history search is not what we need, we can keep pressing ```Ctrl+R``` to browse through all results which match the specified pattern. 
+
+We indicate now how we can directly re-execute any command input from the history list. For instance, if the command
+
 ```bash
 history
 ```
@@ -107,10 +123,10 @@ has produced the following output
   191  ls
   192  pwd
 ```
-you can execute any command from the list just by typing ```!command-Number-In-The-List```. For instance, 
+we can execute any command from above just by typing ```!commandNumberInTheList```. Given the above output, the following input in the terminal: 
 ```bash
 !190
-``` 
+```
 gives immediately
 ```bash
 for i in {1..10}; do echo $i; done
@@ -126,6 +142,29 @@ for i in {1..10}; do echo $i; done
 10
 ```
 For more elaborate cases of retrieving and even editing the command input from **history**, please see the documentation of the command **fc** ('fix command').
+
+Finally, we remark that programmatically we can retrieve the last argument of the previously executed command. This functionality is achieved via the special Bash variable ```$_```. If the previously executed command has only one argument, then the content of ```$_``` is that argument. For instance:
+
+```bash
+mkdir Dir1 Dir2 Dir3
+echo $_ 
+# prints Dir3
+```
+
+A frequent use case is the following example:
+
+```bash
+ls file_{1..99}.log
+rm $_
+```
+
+If the first line has expanded in the list of files we want to delete, we can reuse the same brace expansion n the second line as the argument for **rm** command.
+
+**Example:** How to make a few directories, and automatically move into the last one created?
+
+```bash
+mkdir Dir1 Dir2 Dir3 && cd $_
+```
 
 
 
