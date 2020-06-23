@@ -8,6 +8,7 @@
 * [Lecture 6](./Lecture_6/Lecture_6.md)
 * [Lecture 7](./Lecture_7/Lecture_7.md)
 * [Lecture 8](./Lecture_8/Lecture_8.md)
+* [Lecture 9](./Lecture_9/Lecture_9.md)
 * [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1](./Homeworks/Homework_1.md)
     * [Homework 2](./Homeworks/Homework_2.md)
