@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20200623
+**Last update**: 20200624
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -272,7 +272,7 @@ find Examples/ -type f -name *.pdf # WRONG!!
 ```bash
 find pathToDirectory(-ies) -type f -name "*.pdf" -size +10k
 ```
-Here prefix ```+``` is not trivial, if we would omit it, the flag ```-size 10k``` would filter out instead the files whose size is exactly 10 KB. Unfortunately, syntax for KB in **find** is a small 'k', and not capital 'K' (like in **ls -lh**), which frequently leads to confusion.  Analogously, files which are smaller then 10 KB in size, we would filter out by using prefix ```-```, i.e. ```-size -10k```.
+Here prefix ```+``` is not trivial, if we would omit it, the flag ```-size 10k``` would filter out instead the files whose size is exactly 10 KB. Unfortunately, syntax for KB in **find** is a small 'k', and not capital 'K' (like in **ls -lh**), which frequently leads to confusion.  Analogously, files which are smaller than 10 KB in size, we would filter out by using prefix ```-```, i.e. ```-size -10k```.
 
 **Example 6:** Find all files with an extension '.tex' modified within last 10 days.
 
@@ -576,7 +576,7 @@ However, this saves the day:
 ```bash
 eval $DateSimple
 ```
-What happened above is the following: Upon expanding the content of variable **DateSimple**, **Bash** interpreted pipe ```|``` and ```awk``` as arguments to **date** command, and since the command **date** can handle only one argument (besides flags which are indicated with prepended ```-``` or ```--```), it bailed out when it hit at the second argument, which is string ```awk```. When interpreting the command input, one of the very first thing **Bash** is looking for are pipes ```|```, however, since in the literal command input **$DateSimple** there are no pipes (prior to expansion!), **Bash** stopped searching for them. Then after expanding **$DateSimple**, **Bash** continued with the other steps in the command input interpretation, none of which includes pipes. Therefore, the pipe ```|``` ended up being interpreted as a mere argument to **date** command. This sort of problems can be fixed with **eval**, because that commands literally forces the command input re-interpretation from scratch. After using **eval $DateSimple**, and after expanding **$DateSimple**, **Bash** goes from scratch through the command input interpretation, and interprets the pipe ```|``` in the correct way.
+What happened above is the following: Upon expanding the content of variable **DateSimple**, **Bash** interpreted pipe ```|``` and ```awk``` as arguments to **date** command, and since the command **date** can handle only one argument (besides flags which are indicated with prepended ```-``` or ```--```), it bailed out when it hit at the second argument, which is string ```awk```. When interpreting the command input, one of the very first thing **Bash** is looking for are pipes ```|```, however, since in the literal command input **$DateSimple** there are no pipes (before expansion!), **Bash** stopped searching for them. Then after expanding **$DateSimple**, **Bash** continued with the other steps in the command input interpretation, none of which includes pipes. Therefore, the pipe ```|``` ended up being interpreted as a mere argument to **date** command. This sort of problems can be fixed with **eval**, because that commands literally forces the command input re-interpretation from scratch. After using **eval $DateSimple**, and after expanding **$DateSimple**, **Bash** goes from scratch through the command input interpretation, and interprets the pipe ```|``` correctly.
 
 To a certain degree, echoing the command input into the file, and then sourcing that file, achieves the same functionality as **eval**, but it is much less efficient.
 

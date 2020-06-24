@@ -2,7 +2,7 @@
 
 # Lecture 8: **Bash** fancy features
 
-**Last update:** 20200617
+**Last update:** 20200624
 
 ### Table of Contents
 1. [Subshells: ```( ... )```](#subshells)
@@ -339,7 +339,7 @@ Sum is: $(bc <<< "scale=2; $1 + $2")
 ```
 This is perfectly valid **Bash** source code. Literally, what we type in the body of this version of 'here document' is what we get in the external file. 
 
-The above version of 'here documents' has an obvious and important use case: We can within one **Bash** script programmatically write (and execute immediately if necessary) another **Bash** script, with all special characters and **Bash** syntax in place. This feature in fact is more general, because with this version of 'here documents' we can preserve the special syntax of any other programming language, dump the code in external file, compile it and use executable immediately in the very same **Bash** script in which you have written the initial source code. 
+The above version of 'here documents' has an obvious and important use case: We can within one **Bash** script programmatically write (and execute immediately if necessary) another **Bash** script, with all special characters and **Bash** syntax in place. This feature is more general, because with this version of 'here documents' we can preserve the special syntax of any other programming language, dump the code in external file, compile it and use executable immediately in the very same **Bash** script in which you have written the initial source code. 
 
 Finally, 'here documents' can be used to comment out multiple lines of **Bash** source code in one go, instead of using ```#``` at the beginning of each line. This is illustrated with the following example:
 ```bash
