@@ -752,7 +752,8 @@ We introduce and discuss first the commands which are used to handle programmati
 ```bash
 trap someCommand signal1 signal2 ...
 ```
-The above generic syntax is interpreted as follows: When any of the signals ```signal1```, ```signal2```, ```...```, is received, the following sequence follows:   
+The above generic syntax is interpreted as follows: When any of the signals ```signal1```, ```signal2```, ```...```, is received, the following sequence follows:
+
 1. pause the program execution and execute command **someCommand**    
 2. resume the program execution    
 
