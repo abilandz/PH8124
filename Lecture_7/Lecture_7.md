@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20200614
+**Last update**: 20200625
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -329,7 +329,7 @@ sleep 10s &
 
 By using the special character ```&``` at the end of the command input, we have sent the execution of command **sleep** in the background. The main difference to the previous case is that now we can continue immediately to execute another command in the terminal, while the command **sleep** is running in parallel in the background.
 
-When in some **Bash** code a command is started in the background with ```&``` at the end of command input, that command essentially starts off another process in parallel (that processes _forks off_ from the current shell). Note, however, that the _stdout_ stream of the forked process is still attached to the shell from which the job was sent to the background, which means that any output of that job will still appear in your terminal, even if the job is running in the background. This sometimes leads to surprising printout ins the terminal, if the _stdout_ stream of background job was not redirected somewhere else (e.g. to some file or to ```/dev/null```). 
+When in some **Bash** code a command is started in the background with ```&``` at the end of command input, that command essentially starts off another process in parallel (that processes _forks off_ from the current shell). Note, however, that the _stdout_ stream of the forked process is still attached to the shell from which the job was sent to the background, which means that any output of that job will still appear in your terminal, even if the job is running in the background. This sometimes leads to surprising printout in the terminal, if the _stdout_ stream of background job was not redirected somewhere else (e.g. to some file or to ```/dev/null```). 
 
 It is also perfectly feasible to launch in the same command input multiple processes in separate background sessions:
 
@@ -752,9 +752,9 @@ We introduce and discuss first the commands which are used to handle programmati
 ```bash
 trap someCommand signal1 signal2 ...
 ```
-The above generic syntax is interpreted as follows: When any of the signals ```signal1```, ```signal2```, ```...```, is received, the following sequence follows: 
-1. pause the program execution and execute command **someCommand**  
-2. resume the program execution  
+The above generic syntax is interpreted as follows: When any of the signals ```signal1```, ```signal2```, ```...```, is received, the following sequence follows:   
+1. pause the program execution and execute command **someCommand**    
+2. resume the program execution    
 
 
 After the execution of **someCommand** has terminated, the program execution resumes just after the command that was interrupted. In this context, **someCommand** can be also a script or a function. The signals```signal1```, ```signal2```, ```...```, can be specified either by signal name or by signal number. 
