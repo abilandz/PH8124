@@ -4,7 +4,7 @@
 
 **Last update:** 20200624
 
-**Challenge #1:** Develop a **Bash** function called **Safeguard**, which does the following:  
+**Challenge:** Develop a **Bash** function called **Safeguard**, which does the following:  
 
 1. It takes one argument which must be an integer in the interval (0,100). If the argument is not supplied, it defaults to 80   
 
@@ -27,12 +27,6 @@ done < <(top -b -n 1 | grep -w $USER)
 ```
 
 Here the construct ```<( ... )``` is the _process substitution operator_, and it's basically the shortcut syntax for dumping the command output in a file, and then reading from that file.
-
-
-
-
-
-
 
 
 
