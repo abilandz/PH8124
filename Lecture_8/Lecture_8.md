@@ -14,8 +14,6 @@
 
 
 
-
-
 ### 1. Subshells: ```( ... )``` <a name="subshells"></a>
 
 We have already seen how the code block ```{ ... }``` can be used in **Bash** to embed the specific code snippet inside, and allocate only to the execution of that code snippet separate I/O facilities from the rest of the code.  Another way of achieving this functionality is to use _subshell_ ```( ... )```. Any code block, when embedded within the round braces ```( ... )```, forms the subshell. Generically, a subshell is defined as:
@@ -106,12 +104,6 @@ If the code execution got stuck because of some massive computation in the subsh
 
 
 
-
-
-
-
-
-
 ### 2. Process substitution operator: ```<( ... )``` <a name="process_substitution_operator"></a>
 
 Process substitution operator ```<( ... )``` is a feature which is not provided by all shells, therefore its usage typically leads to some portability problems across different shells. Nevertheless, since it is supported by **Bash** and since it comes very handy in some frequently encountered cases in practice,  we introduce it next.
@@ -163,12 +155,6 @@ With the process substitution operator, we can extend the functionality of **dif
 diff <(command1) <(command2) && echo same || echo different
 ```
 Without the process substitution operator, we would need to dump the printout of each command in some temporary file, and then compare the content of those temporary files with **diff** command. Clearly, process substitution operator saves also in this frequently encountered example a lot of additional and completely trivial coding.
-
-
-
-
-
-
 
 
 
@@ -239,12 +225,6 @@ The output in both cases is the same and it reads:
 1.428571428571428571428571428571
 ```
 There are the cases in which **echo** + ```|``` is more efficient, while there are also the cases in which the 'here strings' ```<<<``` run faster, so both versions are used frequently in practice. 
-
-
-
-
-
-
 
 
 
@@ -373,12 +353,6 @@ As this is the frequent source of painful debugging, we close this section by re
 
 
 
-
-
-
-
-
-
 ### 5. Menus <a name="menus"></a>
 
 Menus are built in **Bash** programmatically with the built-in command **select**, with the following generic syntax:
@@ -456,11 +430,3 @@ What is your choice?
 ```
 
 As a concluding remark, we indicate that if the key word **in** is omitted and the list is not specified, the list is defaulted to the positional parameters supplied to the script or function, and menu is built out of all supplied positional parameters.
-
-
-
-
-
-
-
-

@@ -16,10 +16,6 @@
 
 
 
-
-
-
-
 ### 1. Scripts vs. functions <a name="s_vs_f"></a>
 Now that we have seen how to implement in **Bash** both scripts and functions, we can discuss briefly their similarities, differences and typical use cases.
 
@@ -48,10 +44,6 @@ If a function **someFunction** and a script **someScript** with execute permissi
 Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body).  For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
 
 We summarize the above thorough comparison with the following final conclusion: Use **Bash** scripts only for the very simple cases and **Bash** functions for everything else.
-
-
-
-
 
 
 
@@ -133,12 +125,6 @@ In practice, the most frequent use case of the command chain is illustrated sche
 ...
 ```
 This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible by inspecting the content of that variable upon termination, to fix programmatically the particular reason of the failure, without intervening manually in the code. 
-
-
-
-
-
-
 
 
 
@@ -312,10 +298,6 @@ Later we will see that such a code branching can be optimized even further with 
 
 
 
-
-
-
-
 ### 4. Catching user input: **read** <a name="read"></a>
 We have seen already how variables can be initialized in a non-interactive way, by initializing them with some concrete values at declaration. We will see now how the user input from the keyboard can be on-the-fly stored directly in some variable. In essence, this feature enables **Bash** scripts and functions to be interactive, in a sense that during the code execution (i.e. at run time), with your input from the keyboard you can steer the code execution in one direction or another. This is achieved with a very powerful **Bash** built-in command **read**.
 
@@ -427,12 +409,6 @@ The command **read** can be used in some other contexts as well, e.g. to parse t
 
 
 
- 
-
-
-
-
-
 
 ### 5. Arithmetic in **Bash** <a name="arithmetic"></a>
 We have already seen that, whatever is typed first in the terminal and before the next empty character is encountered, **Bash** will try to interpreted as command, function, etc. For this reason, we cannot do directly arithmetic in **Bash**. For instance:
@@ -524,10 +500,6 @@ Besides supporting integer arithmetic operators within, ```(( ... ))``` we can a
 and so on. 
 
 The most frequent use case of ```(( ... ))``` operator is to increment the content of variable within loops, which we cover next.
-
-
-
-
 
 
 
@@ -695,12 +667,6 @@ In the next section, we discuss how we can combine some of these different funct
 
 
 
-
-
-
-
-
-
 ### 7. Parsing the file content: **while**+**read** <a name="parsing_files"></a>
 Very frequently, we need within a script or a function to parse through the content of an external file, and to perform some programmatic action line by line. This can be achieved very conveniently by combining the **while** loop and the **read** command. We remark, however, that this is not the most efficient way to parse the file content, its usage is recommended only for the short files.
 
@@ -741,8 +707,3 @@ I am reading now: 100 200
 I am reading now: abcd
 ```
 As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** --- if we do not specify any variable, then the built-in variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have at our disposal the content of a line from the external file in the variable, and then we can manipulate its content within the script programmatically.
-
-
-
-
-

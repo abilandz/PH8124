@@ -11,7 +11,10 @@
 3. [Your first **Linux/Bash** commands: **Bash** functions](#first_command)
 4. [Command precedence](#precedence)
 
+
+
 ### 1. **Linux** file system <a name="file_system"></a>
+
 We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common, widely accepted, structure. The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
 ```bash
 cd /
@@ -329,12 +332,6 @@ Before we start developing the new commands from scratch in **Linux**, we need t
 
 
 
-
-
-
-
-
-
 ### 2. Positional parameters <a name="positional_parameters"></a>
 
 In this section we discuss how some arguments to your script can be supplied at execution. This clearly will allow you much more freedom and power in the code development, because nothing needs to be hardcoded in the script body. The very same mechanism can be used also in the implementation of **Bash** functions, as we will see later. We introduce now the so-called _positional parameters_ (or _script arguments_).
@@ -422,12 +419,6 @@ By using this functionality, you can instruct your own script to behave differen
 
 
 
-
-
-
-
-
-
 ### 3. Your first **Linux/Bash** command: Bash functions <a name="first_command"></a>
 
 As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, has its own environment, etc., we can consider **Bash** functions. 
@@ -488,12 +479,6 @@ The rest is the same as for the scripts:
 source ${HOME}/functions.sh
 ```
 If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands --- in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
-
-
-
-
-
-
 
 
 
@@ -581,4 +566,3 @@ quote ()
 ```
 
 Finally, it can happen that accidentally you delete the file ```functions.sh```. If this file was sourced before you deleted it accidentally, you can still retrieve the implementations of your functions from the computer's memory with **type**, and then just redirect the output to some file.
-

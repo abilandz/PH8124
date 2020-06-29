@@ -169,12 +169,6 @@ mkdir Dir1 Dir2 Dir3 && cd $_
 
 
 
-
-
-
-
-
-
 ### 2. Searching for files and directories: **find** <a name="find"></a>
 
 We have already seen how we can list the content of the specified directory with known location in the filesystem with **ls** command. However, in case we need to search for specific files or directories at unknown location in the filesystem hierarchy, **ls** command cannot be used. Instead, we can use the **Linux** command  **find** is which was designed precisely for that sake. This powerful command can perform search by name, by creation, accession and modification date, by owner and permissions etc. In addition, **find** can immediately perform some action on the result of its search (for instance, it can immediately delete all files it has found, rename all directories, etc.).
@@ -339,10 +333,6 @@ The second solution is more readable, less error prone and easier to generalize 
 
 
 
-
-
-
-
 ### 3. Online monitoring: **tail -f**<a name="tail"></a>
 In general, we can view the whole content of the file with the **cat** command, or if we want paging to appear one screen at a time we can use commands like **more** or **less**. On the other hand, we can select and view only the select part of the file with commands like **sed**. For instance, if the starting file named 'example.txt' has the following content:
 ```bash
@@ -429,12 +419,6 @@ We now monitor online what the second subshell running in the background is doin
 
 
 
-
-
-
-
-
-
 ### 4. Timing: **timeout** and **time** <a name="timing"></a>
 Frequently in practice we are faced with the situation when the command execution gets stalled, without clear indication when its execution might resume. For instance, if we are copying files over the network, and if the network connection experiences a problem, the copying itself will hang until the network connection recovers. But for instance if are copying over network 1000 files containing our data, and if we managed to copy 90% of them, clearly we can reach the decent statistics and reliable results in our analysis, even if we did not analyse the whole dataset. 
 
@@ -491,14 +475,6 @@ This is clearly a great utility when the efficiency of code execution starts to 
 
 
 
-
-
-
-
-
-
-
-
 ### 5. Counting: **wc** <a name="counting"></a>
 The number of different elements (lines, words, characters) in the file content, or in the ```stdout``` of some  command, can be conveniently obtained with the command **wc** ('word count'). 
 
@@ -537,16 +513,6 @@ wc -l < wcExample.txt
 wc -l < wcExample.txt 
 # prints 12, total number of words
 ```
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -606,6 +572,3 @@ forces the re-interpretation of intermediate result ```{0..9}```, and produces t
 ```bash
 0 1 2 3 4 5 6 7 8 9
 ```
-
-
-

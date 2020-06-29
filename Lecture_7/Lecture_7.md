@@ -89,12 +89,6 @@ Alternatively, we can escape the meaning of special characters with strong (sing
 
 
 
-
-
-
-
-
-
 ### 2. Quotes: ```'...'``` and ```"..."``` <a name="quotes"></a>
 
 **Strong (single) quotes**
@@ -215,10 +209,6 @@ read -p $'Dear User,\ndo you want to continue [Y/n]? ' Answer
 
 In the next section, we clarify the meaning of weak (double) quotes ```"..."```. 
 
-
-
-
-
 **Weak (double) quotes**
 
 Unlike the strong quotes, the weak (double) quotes ```"..."``` preserve the special meaning of some special characters, while the special meaning of all others is stripped off. Just like within strong quotes, within double quotes the empty character does not retain its special meaning, i.e. it is not any longer the default field separator. The exact number of empty characters is preserved within weak quotes:
@@ -298,10 +288,6 @@ prints
 ```
 
 To memorize the rules easier, to leading order only the **Bash** constructs which begin with ```$``` or ```\``` keep their special meanings within double quotes.
-
-
-
-
 
 
 
@@ -824,11 +810,3 @@ trap "" INT
 With the above implementation, whenever signal ```INT``` is received, the script will literally do nothing about it. 
 
 The only signal which cannot be trapped, and therefore in particular which cannot be ignored, is ```KILL```. That explains why **kill -KILL** or **kill -9** will always and unconditionally terminate your running program.
-
-
-
-
-
-
-
-

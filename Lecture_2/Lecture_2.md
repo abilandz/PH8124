@@ -13,6 +13,8 @@
 4. [Your first **Bash** script](#first-script)
 5. [Special configuration files in **Bash**](#configuration-files)
 
+
+
 ### 1. Introduction <a name="introduction"></a>
 
 When it comes to the operating systems nowadays, in high-energy experimental physics we mostly rely on **Linux**. That being said, as an experimental physicist you are sooner or later faced with the following situation: You have turned on your computer and launched the terminal...
@@ -463,14 +465,6 @@ Now you are in the **nano** wonderland, not any longer in the **Bash** shell. Th
 
 
 
-
-
-
-
-
-
-
-
 ### 4. Your first **Bash** script <a name="first-script"></a>
 
 Now that we know a few basic commands and how to write and edit files, we can start writing our first **Bash** scripts. The script is a code snippet for interpreted or scripting language, that is typically executed line-by-line.  At the very least, this saves the effort of retyping that particular sequence of commands each time it is needed. Typically, scripts are used to automate the execution of tasks that could alternatively be executed one-by-one by a human operator. A scripting language is a programming language that supports scripts, so clearly **Bash** fits in this category.
@@ -546,12 +540,6 @@ echo $? # prints 1 , i.e. one possible exit status for error
 Typically in your code, after you have executed the command, you check its exit status. Then, depending on the value of its exit status, your subsequent code can branch in multiple directions. Remember that each **Linux** command has an exit status stored in the special variable **$?** upon its execution, so it shall also your  **Bash** script. As long as you are executing your script via **source** command, you can set the exit status with the keyword **return** (as in the last line in your above script ```first.sh```). 
 
 If you forgot to specify the exit status of your script with the keyword **return **, the special variable **$?** is nevertheless automatically set, but now to the exit status of lastly executed command in your script, which can lead to unexpected results.
-
-
-
-
-
-
 
 
 

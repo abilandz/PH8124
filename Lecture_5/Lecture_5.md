@@ -160,12 +160,6 @@ echo "Today is: `date` . Thanks for the info."
 
 
 
-
-
-
-
-
-
 ### 2. Input/Output (I/O) and redirections <a name="io"></a>
 In the previous section we have seen how we can embed the output of one command into the input of another command with the command substitution operator ```$( ... )```. Let us now make a further progress in this direction and clarify in more detail the input and output streams of **Linux** commands. By convention, each **Linux** command has three standard input/output (I/O) channels set. More concretely, each **Linux** command has a single way of:
 
@@ -292,10 +286,6 @@ cat 0< someFile
 ```
 
 When you are checking the content of some file with **cat**, you are essentially redirecting its content into _stdin_ (file descriptor 0) for the **cat** command. 
-
-
-
-
 
 
 
@@ -458,10 +448,6 @@ ls File_{111..222..4}.{log,inf} # always ls before deleting!
 rm File_{111..222..4}.{log,inf}
 ```
 Without brace expansion the solution would take much more work. It is also possible to nest brace expansion, but this is rarely used in practice.
-
-
-
-
 
 
 
@@ -658,6 +644,3 @@ done
 ```
 
 We can also use 'do-nothing' ```:``` command to write a multi-line comment in **Bash** in combination with the so-called _here-documents_---this will be covered later.
-
-
-
