@@ -21,7 +21,8 @@ Develop a **Bash** function named **ParallelWorlds**, which does the following:
    5. The main code waits for all subshells running in the background to finish, and then just trivially takes the final results for each chunk from temporary files in 4.) and sums them up to get the final result for the whole ```toyData.dat```   
    6. The final printout is: ```The sum is ...``` 
 
-**Hint #1**: To get programmatically number of CPUs, there is a command **nproc** 
+**Hint #1**: To get programmatically number of CPUs, there is a command **nproc**
+
 **Hint #2**: To split the dataset in chunks, the code-snippet like this can be used: 
 
 ```bash
