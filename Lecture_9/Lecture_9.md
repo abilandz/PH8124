@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20200624
+**Last update**: 20200709
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -93,7 +93,7 @@ After understanding the **history** mechanism, we now demonstrate how we can dir
 
   Now we can type the pattern which will be used to search for some previously used command input that contained that pattern. We can keep pressing ```Ctrl+R```, until the command input we are looking for appears. By pressing the right arrow, that command input is copied in the terminal, and we can now reuse it again. 
 
-**Example:** The inverse history search is an extremely handy feature, and we now illustrate it with the concrete example. Imagine a scenario in which we have typed in the terminal for** loop, followed by a lot of other commands:
+**Example:** The inverse history search is an extremely handy feature, and we now illustrate it with the concrete example. Imagine a scenario in which we have typed in the terminal **for** loop, followed by a lot of other commands:
 
 ```bash
 for i in {1..10}; do echo $i; done
@@ -158,7 +158,7 @@ ls file_{1..99}.log
 rm $_
 ```
 
-If the first line has expanded in the list of files we want to delete, we can reuse the same brace expansion n the second line as the argument for **rm** command.
+If the first line has expanded in the list of files we want to delete, we can reuse the same brace expansion in the second line as the argument for **rm** command.
 
 **Example:** How to make a few directories, and automatically move into the last one created?
 
@@ -510,7 +510,7 @@ then we can use the following syntax:
 ```bash
 wc -l < wcExample.txt 
 # prints 3, total number of lines
-wc -l < wcExample.txt 
+wc -w < wcExample.txt 
 # prints 12, total number of words
 ```
 
