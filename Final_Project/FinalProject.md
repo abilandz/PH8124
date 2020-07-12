@@ -4,7 +4,7 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20200711
+**Last update:** 20200712
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jets production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions and jet interaction in dense matter.
 
@@ -16,13 +16,14 @@ In this final project, you are challenged to use combined **Linux**, **Bash** an
 tar xf HIJING_LBF_test.tar.gz
 ```
 
-This dataset corresponds to the HIJING prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV (this was the collision energy of Run 1 operations, 2009-2013, at Large Hadron Collider).
+This dataset corresponds to the HIJING model prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV (this was the collision energy of Run 1 operations, 2009-2013, at Large Hadron Collider).
 
 Inside the directory ```HIJING_LBF_test``` there are 10 subdirectories named ```0, 1, ..., 9```, and in each subdirectory 5 files. Each subdirectory corresponds to the working directory of a separate process that was running an independent HIJING simulation. Besides the various config or log files in each subdirectory, the most important file is ASCII file ```HIJING_LBF_test_small.out```, in which the final output of HIJING is stored. Each file ```HIJING_LBF_test_small.out``` contains the detailed output for 10 heavy-ion collisions. Therefore, the total dataset for the analysis in the final project amounts to 10x10 = 100 heavy-ion collisions. 
 
 The file ```HIJING_LBF_test_small.out``` has the following example structure and content:
 ```bash
 ... some irrelevant header information ...
+
  BEGINNINGOFEVENT
            1       52443   780888.375             753         175         171   703661455
            1           221             0            11    0.147132292       -0.159234047        -4.90655518         4.94190931    
@@ -77,16 +78,16 @@ The file ```HIJING_LBF_test_small.out``` has the following example structure and
 The meaning of different entries above is as follows:  
 
   1. The beginning of data for each new event is marked with the tag **BEGINNINGOFEVENT**   
-  2. In the very next line is the event summary data (e.g. event number, the total number of particles, total energy, etc.)   
+  2. In the very next line after the tag **BEGINNINGOFEVENT** is the event summary data (e.g. event number, the total number of particles, total energy, etc.)   
   3. After that line, each line holds information about individual particles. For instance, the entries in the line
   ```bash
 3           211             0             1    0.105007850        -6.46358531E-04   -0.609461606        0.634002090    
   ```
 have the following meaning:
   * ```3``` : particle label within a particular event    
-  * ```211``` : PID, i.e. particle identity (211 = positively charged pion, -2212 = antiproton, etc.). To get the standardized PID code for all particles in high-energy physics,   consult http://pdg.lbl.gov/2007/reviews/montecarlorpp.pdf   
+  * ```211``` : PID, i.e. particle identity (211 = positively charged pion, -2212 = antiproton, etc.). To get the standardized PID code in high-energy physics for all particles,   consult http://pdg.lbl.gov/2007/reviews/montecarlorpp.pdf   
   * ```0``` : this is the primary particle, i.e. this particle is not a product of resonance decay. Otherwise, this column indicates the label of the parent particle    
-  * ```1``` : final or directly produced particle (alternatively, '11' in the 4th column indicates that this particle has decayed)  
+  * ```1``` : final or directly produced particle (alternatively, ```11``` in the 4th column indicates that this particle has decayed)  
   * ```0.105007850``` : _x_ component of momentum (in GeV/c)  
   * ```-6.46358531E-04``` : _y_ component of momentum (in GeV/c)  
   * ```-0.609461606``` : _z_ component of momentum (in GeV/c)  
@@ -98,7 +99,7 @@ have the following meaning:
 
 **Challenge #1: Splitting.** Develop the script **Splitter.sh** which takes one argument, the top directory to your local HIJING dataset. That script splits in each of the subdirectories ```0, 1, ..., 9``` the large HIJING output file ```HIJING_LBF_test_small.out``` in 10 separate files named ```event_0.dat, ..., event_9.dat ```. Each of these new files contains the data only for a particular event.
 
-At the end of this step, the situation in your local dataset is schematically as follows:
+At the end of this step, the situation in your local dataset needs to be schematically as follows:
 
 ```bash
 <top-directory>/0:
@@ -135,12 +136,12 @@ sed -n 123,123456p HIJING_LBF_test_small.out > event_0.dat
 
 **Challenge #2: Filtering.** Develop the script **Filter.sh** which takes one argument, the top directory to your local HIJING dataset. Then, it filters in each of the subdirectories ```0, 1, ..., 9``` out of each new file ```event_?.dat``` obtained in the previous step only the information for the primary particles (i.e. particles with the label ```0``` in the 3rd column).
 
-**Hint #1:** Collect all files ```event_?.dat``` with **find**, loop over them via **while+read**, something like:
+**Hint #1:** Collect all files ```event_?.dat``` with **find** and loop over them via **while+read**, something like:
 
 ```bash
 while read File; do
- cd $(dirname $File) # go to the directory where the current file sits
- ... filter out the current file, programmatically its name is $(basename $File) ...
+ cd $(dirname $File) # go to the directory where the current file in the loop sits
+ ... filter out the current file. Programmatically, its name is $(basename $File) ...
  cd - # go back
 done < <(find <top-dir> -type f -name "event_*.dat")
 ```
@@ -150,7 +151,7 @@ done < <(find <top-dir> -type f -name "event_*.dat")
 ```bash
 cp event_0.dat backup_0.dat 
 while read Line; do
- ... test with awk if the 3rd field in Line is 0, if so, simply echo that line ...
+ ... test with awk if the 3rd field in Line is 0 => if so echo that line ...
 done < backup_0.dat 1>event_0.dat
 ```
 
@@ -158,29 +159,37 @@ done < backup_0.dat 1>event_0.dat
 
 
 
-**Challenge #3: Transferring.** Develop the script **Transfer.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to process all files ```event_?.dat``` and store for each event for each particle its PID and kinematics (three components of momenta and energy) into **ROOT**'s famous container ```TTree```. Make one ```TTree``` container for each event, and then all ```TTree``` containers save in one common **ROOT** file named ```HIJING_LBF_test_small.root```, in each of the subdirectories ```0, 1, ..., 9```. 
+**Challenge #3: Transferring.** Develop the script **Transfer.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to process all files ```event_?.dat``` and store for each event for each particle its PID and kinematics (three components of momenta and energy) into **ROOT**'s container ```TTree```. Make one ```TTree``` container for each event, and then all ```TTree``` containers save in one common **ROOT** file named ```HIJING_LBF_test_small.root```, in each of the subdirectories ```0, 1, ..., 9```. After the transfer, clean up all files ```event_?.dat```.
 
+At the end of this step, the situation in your local dataset needs to be schematically as follows:
 
+```bash
+<top-directory>/0:
+HIJING_LBF_test_small.out
+HIJING_LBF_test_small.root
 
+<top-directory>/1:
+HIJING_LBF_test_small.out
+HIJING_LBF_test_small.root
 
+...
 
-# TBC
+<top-directory>/9:
+HIJING_LBF_test_small.out
+HIJING_LBF_test_small.root
+```
 
-
-
-
-
-**Hint:** As an example code snippet how to read external ASCII file directly into ```TTree```, and then save that container in the ROOT file, use the following prototype:
+**Hint:** As an example code snippet how to read external ASCII file directly into ```TTree```, and then save that container in the **ROOT** file, study the following toy example:
 
 ```c
-// Example content of external file 'basic_1.dat' is formatted as:
+// Example content of external file 'basic_1.dat' is formatted as "px py pz E", and it reads: 
 /*
 10 100 1000 10000
 20 200 2000 20000
 30 300 3000 30000
 */
 
-// Example content of external file 'basic_2.dat' is formatted as:
+// Example content of external file 'basic_2.dat' is formatted as "px py pz E", and it reads: 
 /*
 11 111 1111 11111
 22 222 2222 22222
@@ -189,7 +198,7 @@ done < backup_0.dat 1>event_0.dat
 55 555 5555 55555
 */
 
-// For a different format (number of columns!), you need to adapt: tree->ReadFile(filename,"px:py:pz:E"); used below
+// For a different format (i.e. number of columns!), you need to adapt: tree->ReadFile(filename,"px:py:pz:E"); used below (e.g. to add also PID entry)
 
 #include "TFile.h"
 #include "TTree.h"
@@ -199,40 +208,56 @@ void importASCIIfileIntoTTree(const char *filename)
  TFile *file = new TFile("output.root","update"); // open ROOT file named 'output.root', where TTree will be saved.
  TTree *tree = new TTree("chunk","data from ascii file"); // make new TTree
 
- Long64_t nlines = tree->ReadFile(filename,"px:py:pz:E"); // whatever you specify here, will be relevant when you start later reading the branches
+ Long64_t nlines = tree->ReadFile(filename,"px:py:pz:E"); // whatever you specify here, will be relevant when you start later reading the TTree branches
  tree->Write(); // save TTree to 'output.root' file
  file->Close();
 }
 ```
-Use then the above code snippet in the following way:
+Use then the above **ROOT** code snippet in the following way:
 ```c
 root -l -b -q importASCIIfileIntoTTree.C\(\"basic_1.dat\"\) // or abs-path to 'basic_1.dat', if macro and the file are not in the same directory
 root -l -b -q importASCIIfileIntoTTree.C\(\"basic_2.dat\"\) // or abs-path to 'basic_2.dat', if macro and the file are not in the same directory
 ```
 
-If you now inspect (e.g. with ```TBrowser```) the content of ```output.root``` file, you will see that in contains two ```TTree``` containers, one for each file.
+If you now inspect (e.g. with **ROOT**'s ```TBrowser```) the content of ```output.root``` file, you will see that in contains two ```TTree``` containers, one for the content of file ```basic_1.dat``` and another for ```basic_2.dat```.
 
-From this point onward, only the filtered dataset stored in ```TTree``` containers in the **ROOT**  files is used in the final analysis. Such optimization is relevant especially for instance when we want to re-run over the same dataset multiple times by varying the track selection criteria, in order to estimate systematical error.
+From this point onward, only the filtered dataset stored in ```TTree``` containers in the **ROOT** files is used in the final analysis.
 
 
-**Step #2: TRENDING.** Trending is an important part of dataset validation (a.k.a. quality assurance (QA)), where basically we check if some specific part of the dataset is systematically off from the rest. If so, only that specific part of the dataset is excluded from the final analysis. Please provide a trending plot 'average # of particles' vs. 'subdirectory number', and dump it as '.pdf', '.eps', '.png' and '.C' file.
 
-**Hint #1:** By using 'here-documents' in **Bash** make a template **ROOT** macro for plotting, which then you will just update by using **sed** with the concrete numbers for each subdirectory. After that, when you have entries from all sudirectories, just execute the macro and dump the figures.
 
-**Hint #2:** To read entries from ```TTree```, please have a look at the following code snippet (which corresponds to the above example!):
-​```c
-// Example macro to read TTree from the file, and then all particles from the current TTree
+
+**Challenge #4: Analysis.** Develop the script **Analysis.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to collect all **ROOT** files ```HIJING_LBF_test_small.root``` obtained in the previous step, and hand them over to dedicated **ROOT** macros for the final analysis. For the whole dataset, i.e. for all 100 heavy-ion collisions, this final scripts needs to provide:
+
+1. figure (in 4 standard formats .pdf,.eps, .png and .C) holding the 3 histograms plotted side-by-side, with distributions of transverse momentum for pions, kaons and protons, respectively (to increase statistics, take that particles and antiparticles are same). Transverse momentum is the Lorentz invariant quantity defined as: 
+   $$
+   p_T \equiv \sqrt{p_x^2 + p_y^2}
+   $$
+   
+2. printouts in the terminal with the following format and content:
+
+   ```bash  
+   Average pT for the whole dataset:
+   o pions   = ??? GeV/c
+   o kaons   = ??? GeV/c   
+   o protons = ??? GeV/c
+   ```
+
+
+**Hint:** To read entries from ```TTree```, have a look at the following code snippet (which is in sync with the formatting used in **Challenge #3**):
+
+```c
+// Example macro to read TTree from the ROOT file, and then all data from the TTree
 
 void readDataFromTTree(const char *filename)
 {
 
- TFile *file = new TFile("output.root","update"); // there multiple TTrees in this file, each corresponds to different event
+ TFile *file = new TFile("output.root","update"); // there are a few TTree's in this file, each corresponds to different event
 
- TList *lofk = file->GetListOfKeys();
+ TList *lofk = file->GetListOfKeys(); // standard ROOT stuff, to read all entries in the ROOT file
 
  for(Int_t i=0; i<lofk->GetEntries(); i++)
  {
-
   TTree *tree = (TTree*) file->Get(Form("%s;%d",lofk->At(i)->GetName(),i+1)); // works if TTrees in ROOT file are named e.g. 'chunk;1', 'chunk;2'. Otherwise, adapt for your case
 
   if(!tree || strcmp(tree->ClassName(),"TTree")) // make sure the pointer is valid, and it points to TTree
@@ -267,16 +292,12 @@ void readDataFromTTree(const char *filename)
  file->Close(); 
 
 }
-  ```
+```
 
 Use above macro for instance as:
-​```c
+```c
 root -l readDataFromTTree.C\(\"output.root\"\)
-  ```
-
-**Step #3: ANALYSIS.** For the whole dataset, please provide the figure (in 4 standard formats .pdf,.eps, .png and .C) with 3 histograms plotted together, holding the distributions of transverse momentum for pions, kaons and protons. Transverse momentum is the Lorentz invariant quantity defined as: $$p_T \equiv \sqrt{p_x^2 + p_y^2}$$
-
-
+```
 
 
 
