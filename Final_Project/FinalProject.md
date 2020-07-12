@@ -78,20 +78,25 @@ The file ```HIJING_LBF_test_small.out``` has the following example structure and
 The meaning of different entries above is as follows:  
 
   1. The beginning of data for each new event is marked with the tag **BEGINNINGOFEVENT**   
+
   2. In the very next line after the tag **BEGINNINGOFEVENT** is the event summary data (e.g. event number, the total number of particles, total energy, etc.)   
+
   3. After that line, each line holds information about individual particles. For instance, the entries in the line
-  ```bash
-3           211             0             1    0.105007850        -6.46358531E-04   -0.609461606        0.634002090    
-  ```
-have the following meaning:
-  * ```3``` : particle label within a particular event    
-  * ```211``` : PID, i.e. particle identity (211 = positively charged pion, -2212 = antiproton, etc.). To get the standardized PID code in high-energy physics for all particles,   consult http://pdg.lbl.gov/2007/reviews/montecarlorpp.pdf   
-  * ```0``` : this is the primary particle, i.e. this particle is not a product of resonance decay. Otherwise, this column indicates the label of the parent particle    
-  * ```1``` : final or directly produced particle (alternatively, ```11``` in the 4th column indicates that this particle has decayed)  
-  * ```0.105007850``` : _x_ component of momentum (in GeV/c)  
-  * ```-6.46358531E-04``` : _y_ component of momentum (in GeV/c)  
-  * ```-0.609461606``` : _z_ component of momentum (in GeV/c)  
-  * ```0.634002090``` : particle energy (in GeV) 
+
+     ```bash
+     3           211             0             1    0.105007850        -6.46358531E-04   -0.609461606        0.634002090   
+     ```
+
+     have the following meaning:
+
+     * ```3``` : particle label within a particular event      
+     * ```211``` : PID, i.e. particle identity (211 = positively charged pion, -2212 = antiproton, etc.). To get the standardized PID code in high-energy physics for all particles,   consult http://pdg.lbl.gov/2007/reviews/montecarlorpp.pdf      
+     * ```0``` : this is the primary particle, i.e. this particle is not a product of resonance decay. Otherwise, this column indicates the label of the parent particle      
+     * ```1``` : final or directly produced particle (alternatively, ```11``` in the 4th column indicates that this particle has decayed)    
+     * ```0.105007850``` : _x_ component of momentum (in GeV/c)    
+     * ```-6.46358531E-04``` : _y_ component of momentum (in GeV/c)  
+     * ```-0.609461606``` : _z_ component of momentum (in GeV/c)     
+     * ```0.634002090``` : particle energy (in GeV)   
 
 
 
@@ -151,7 +156,7 @@ done < <(find <top-dir> -type f -name "event_*.dat")
 ```bash
 cp event_0.dat backup_0.dat 
 while read Line; do
- ... test with awk if the 3rd field in Line is 0 => if so echo that line ...
+ ... test with awk if the 3rd field in Line is 0 => if so, echo that line ...
 done < backup_0.dat 1>event_0.dat
 ```
 
@@ -221,7 +226,7 @@ root -l -b -q importASCIIfileIntoTTree.C\(\"basic_1.dat\"\) // or abs-path to 'b
 root -l -b -q importASCIIfileIntoTTree.C\(\"basic_2.dat\"\) // or abs-path to 'basic_2.dat', if macro and the file are not in the same directory
 ```
 
-If you now inspect (e.g. with **ROOT**'s ```TBrowser```) the content of ```output.root``` file, you will see that in contains two ```TTree``` containers, one for the content of file ```basic_1.dat``` and another for ```basic_2.dat```. In reality, multiple events are stored in the same ```TTree``` container to optimize things further, but in this challenge that's not necessary.
+If you now inspect (e.g. with **ROOT**'s ```TBrowser```) the content of ```output.root``` file, you will see that it contains two ```TTree``` containers, one for the content of file ```basic_1.dat``` and another for ```basic_2.dat```. In reality, multiple events are stored in the same ```TTree``` container to optimize things further, but in this challenge that's not necessary.
 
 From this point onward, only the filtered dataset stored in ```TTree``` containers in the **ROOT** files is used in the final analysis.
 
@@ -231,7 +236,7 @@ From this point onward, only the filtered dataset stored in ```TTree``` containe
 
 **Challenge #4: Analysis.** Develop the script **Analysis.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to collect all **ROOT** files ```HIJING_LBF_test_small.root``` obtained in the previous step, and hand them over to dedicated **ROOT** macros for the final analysis. For the whole dataset, i.e. for all 100 heavy-ion collisions, this final script needs to produce:
 
-1. figure (in 4 standard formats .pdf,.eps, .png and .C) holding the 3 histograms plotted side-by-side, with distributions of transverse momentum for pions, kaons and protons, respectively (to increase statistics, take that particles and antiparticles are same). Transverse momentum is the Lorentz invariant quantity defined as: 
+1. figure (in 4 standard formats .pdf,.eps, .png and .C) holding the 3 histograms plotted side-by-side, with distributions of transverse momentum for pions, kaons and protons, respectively (to increase statistics, take that particles and antiparticles are the same). Transverse momentum is the Lorentz invariant quantity defined as: 
    $$
    p_T \equiv \sqrt{p_x^2 + p_y^2}
    $$
@@ -245,8 +250,7 @@ From this point onward, only the filtered dataset stored in ```TTree``` containe
    o protons = ??? GeV/c
    ```
 
-
-**Hint:** To read entries from ```TTree```, have a look at the following code snippet (which is in sync with the formatting used in **Challenge #3**):
+**Hint #1:** To read entries from ```TTree```, have a look at the following code snippet (which is in sync with the formatting used in **Challenge #3**):
 
 ```c
 // Example macro to read TTree from the ROOT file, and then all data from the TTree
@@ -297,12 +301,13 @@ int readDataFromTTree(const char *filename)
 }
 ```
 
-Use above macro for instance as:
+Use above macro for instance in the script **Analysis.sh** as:
 ```c
 root -l readDataFromTTree.C\(\"output.root\"\)
 ```
+Instead of trivially dumping on the screen the data via ```cout<<Form("%d: %f %f %f %f",p,px,py,pz,E)<<endl;``` expand this macro with the code which fills the histograms, and stores those histograms in the **ROOT** file ```ÀnalysisResults.root``` which contains the output results of your personal analysis. 
 
-
+**Hint #2:** For the final plotting and printout, develop a separate standalone **ROOT** macro which only processes the final **ROOT** file ```ÀnalysisResults.root``` which contains the histograms of your personal analysis, and execute that macro at the end of script **Analysis.sh**.
 
 
 
