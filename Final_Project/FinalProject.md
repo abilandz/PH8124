@@ -203,14 +203,16 @@ HIJING_LBF_test_small.root
 #include "TFile.h"
 #include "TTree.h"
 
-void importASCIIfileIntoTTree(const char *filename)
+int importASCIIfileIntoTTree(const char *filename)
 {
- TFile *file = new TFile("output.root","update"); // open ROOT file named 'output.root', where TTree will be saved.
- TTree *tree = new TTree("chunk","data from ascii file"); // make new TTree
+ TFile *file = new TFile("output.root","update"); // open ROOT file named 'output.root', where TTree will be saved
+ TTree *tree = new TTree("event","data from ascii file"); // make the new TTree for each event
 
  Long64_t nlines = tree->ReadFile(filename,"px:py:pz:E"); // whatever you specify here, will be relevant when you start later reading the TTree branches
  tree->Write(); // save TTree to 'output.root' file
  file->Close();
+    
+ return 0;   
 }
 ```
 Use then the above **ROOT** code snippet in the following way:
@@ -219,7 +221,7 @@ root -l -b -q importASCIIfileIntoTTree.C\(\"basic_1.dat\"\) // or abs-path to 'b
 root -l -b -q importASCIIfileIntoTTree.C\(\"basic_2.dat\"\) // or abs-path to 'basic_2.dat', if macro and the file are not in the same directory
 ```
 
-If you now inspect (e.g. with **ROOT**'s ```TBrowser```) the content of ```output.root``` file, you will see that in contains two ```TTree``` containers, one for the content of file ```basic_1.dat``` and another for ```basic_2.dat```.
+If you now inspect (e.g. with **ROOT**'s ```TBrowser```) the content of ```output.root``` file, you will see that in contains two ```TTree``` containers, one for the content of file ```basic_1.dat``` and another for ```basic_2.dat```. In reality, multiple events are stored in the same ```TTree``` container to optimize things further, but in this challenge that's not necessary.
 
 From this point onward, only the filtered dataset stored in ```TTree``` containers in the **ROOT** files is used in the final analysis.
 
@@ -227,7 +229,7 @@ From this point onward, only the filtered dataset stored in ```TTree``` containe
 
 
 
-**Challenge #4: Analysis.** Develop the script **Analysis.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to collect all **ROOT** files ```HIJING_LBF_test_small.root``` obtained in the previous step, and hand them over to dedicated **ROOT** macros for the final analysis. For the whole dataset, i.e. for all 100 heavy-ion collisions, this final scripts needs to provide:
+**Challenge #4: Analysis.** Develop the script **Analysis.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to collect all **ROOT** files ```HIJING_LBF_test_small.root``` obtained in the previous step, and hand them over to dedicated **ROOT** macros for the final analysis. For the whole dataset, i.e. for all 100 heavy-ion collisions, this final script needs to produce:
 
 1. figure (in 4 standard formats .pdf,.eps, .png and .C) holding the 3 histograms plotted side-by-side, with distributions of transverse momentum for pions, kaons and protons, respectively (to increase statistics, take that particles and antiparticles are same). Transverse momentum is the Lorentz invariant quantity defined as: 
    $$
@@ -249,7 +251,7 @@ From this point onward, only the filtered dataset stored in ```TTree``` containe
 ```c
 // Example macro to read TTree from the ROOT file, and then all data from the TTree
 
-void readDataFromTTree(const char *filename)
+int readDataFromTTree(const char *filename)
 {
 
  TFile *file = new TFile("output.root","update"); // there are a few TTree's in this file, each corresponds to different event
@@ -258,7 +260,7 @@ void readDataFromTTree(const char *filename)
 
  for(Int_t i=0; i<lofk->GetEntries(); i++)
  {
-  TTree *tree = (TTree*) file->Get(Form("%s;%d",lofk->At(i)->GetName(),i+1)); // works if TTrees in ROOT file are named e.g. 'chunk;1', 'chunk;2'. Otherwise, adapt for your case
+  TTree *tree = (TTree*) file->Get(Form("%s;%d",lofk->At(i)->GetName(),i+1)); // works if TTrees in ROOT file are named 'event;1', 'event;2'. Otherwise, adapt for your case
 
   if(!tree || strcmp(tree->ClassName(),"TTree")) // make sure the pointer is valid, and it points to TTree
   {
@@ -266,14 +268,14 @@ void readDataFromTTree(const char *filename)
    continue;
   }
 
-  //tree->Print();  //from this printout, you can for instance inspect the names of the branches
+  //tree->Print();  //from this printout, you can for instance inspect the names of the TTree's branches
 
   cout<<Form("Accessing TTree named: %s",tree->GetName())<<": "<<tree<<endl;
   Int_t nParticles = (Int_t)tree->GetEntries(); // number of particles
   cout<<Form("=> It has %d particles.",nParticles)<<endl;
 
   // Attach local variables to branches:
-  Float_t px = 0., py = 0., pz = 0. , E = 0.;
+  Float_t px = 0., py = 0., pz = 0., E = 0.;
   tree->SetBranchAddress("px",&px); // that the name of this branch is px, you can inspect from tree->Print() above, and so on
   tree->SetBranchAddress("py",&py);
   tree->SetBranchAddress("pz",&pz);
@@ -282,7 +284,7 @@ void readDataFromTTree(const char *filename)
   for(Int_t p = 0; p < nParticles; p++) // loop over all particles in a current TTree
   {
    tree->GetEntry(p);
-   cout<<Form("%d: %f %f %f %f",p,px,py,pz,E)<<endl; 
+   cout<<Form("%d: %f %f %f %f",p,px,py,pz,E)<<endl;
   }  
 
   cout<<"Done with this event, marching on...\n"<<endl;  
@@ -291,6 +293,7 @@ void readDataFromTTree(const char *filename)
 
  file->Close(); 
 
+ return 0;
 }
 ```
 
@@ -301,12 +304,29 @@ root -l readDataFromTTree.C\(\"output.root\"\)
 
 
 
-Please develop a script which will utilize combined Linux, Bash and ROOT utilities covered in the Lecture, and automate the 3 data analysis steps detailed below. 
 
-The user want to use your script in the following way:
-​```bash
-source yourScript.sh abs-path-do-top-directory-with-HIJING-data
-  ```
-and get automagically at the end of the day the plots explained in the steps below.
 
-  ```
+**Challenge #5: The final touch.** Automate the whole procedure, i.e. the user (or in this case the examiner!) would like to execute your code as:
+
+``` bash
+source TheFinalTouch.sh <top-directory-holding-HIJING-dataset>
+```
+
+where the content of the script ```TheFinalTouch.sh``` is:
+
+```bash
+#!/bin/bash
+
+[[ ! -d $1 ]] && echo "Not a valid directory!" || return 6
+
+source Splitter.sh $1 && echo "Done with Splitter.sh" || return 5
+source Filter.sh $1 && echo "Done with Filter.sh" || return 4
+source Transfer.sh && echo "Done with Transfer.sh" || return 3
+source Analysis.sh $1 && echo "Done with Analysis.sh" || return 2
+
+return 0
+```
+
+
+
+ 
