@@ -19,4 +19,4 @@
     * [Homework 7](./Homeworks/Homework_7.md)
     * [Homework 8](./Homeworks/Homework_8.md)
     * [Homework 9](./Homeworks/Homework_9.md)
-* [Final Project](./Final_Project.md)
+* [Final Project](./FinalProject.md)
