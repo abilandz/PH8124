@@ -4,7 +4,7 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20200712
+**Last update:** 20200714
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jets production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions and jet interaction in dense matter.
 
@@ -16,7 +16,7 @@ In this final project, you are challenged to use combined **Linux**, **Bash** an
 tar xf HIJING_LBF_test.tar.gz
 ```
 
-This dataset corresponds to the HIJING model prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV (this was the collision energy of Run 1 operations, 2009-2013, at Large Hadron Collider).
+This dataset corresponds to the HIJING model prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV. That was the colliding system and energy in Run 1 operations (2009-2013) at Large Hadron Collider.
 
 Inside the directory ```HIJING_LBF_test``` there are 10 subdirectories named ```0, 1, ..., 9```, and in each subdirectory 5 files. Each subdirectory corresponds to the working directory of a separate process that was running an independent HIJING simulation. Besides the various config or log files in each subdirectory, the most important file is ASCII file ```HIJING_LBF_test_small.out```, in which the final output of HIJING is stored. Each file ```HIJING_LBF_test_small.out``` contains the detailed output for 10 heavy-ion collisions. Therefore, the total dataset for the analysis in the final project amounts to 10x10 = 100 heavy-ion collisions. 
 
@@ -90,7 +90,7 @@ The meaning of different entries above is as follows:
      have the following meaning:
 
      * ```3``` : particle label within a particular event      
-     * ```211``` : PID, i.e. particle identity (211 = positively charged pion, -2212 = antiproton, etc.). To get the standardized PID code in high-energy physics for all particles,   consult http://pdg.lbl.gov/2007/reviews/montecarlorpp.pdf      
+     * ```211``` : PID, i.e. particle identity (211 = positively charged pion, -2212 = antiproton, etc.). To get the standardized PID code in high-energy physics for all particles, consult http://pdg.lbl.gov/2007/reviews/montecarlorpp.pdf      
      * ```0``` : this is the primary particle, i.e. this particle is not a product of resonance decay. Otherwise, this column indicates the label of the parent particle      
      * ```1``` : final or directly produced particle (alternatively, ```11``` in the 4th column indicates that this particle has decayed)    
      * ```0.105007850``` : _x_ component of momentum (in GeV/c)    
@@ -139,16 +139,16 @@ sed -n 123,123456p HIJING_LBF_test_small.out > event_0.dat
 
 
 
-**Challenge #2: Filtering.** Develop the script **Filter.sh** which takes one argument, the top directory to your local HIJING dataset. Then, it filters in each of the subdirectories ```0, 1, ..., 9``` out of each new file ```event_?.dat``` obtained in the previous step only the information for the primary particles (i.e. particles with the label ```0``` in the 3rd column).
+**Challenge #2: Filtering.** Develop the script **Filter.sh** which takes one argument, the top directory to your local HIJING dataset. Then, this script filters in each of the subdirectories ```0, 1, ..., 9``` out of each new file ```event_?.dat``` obtained in the previous step only the information for the primary particles (i.e. particles with the label ```0``` in the 3rd column).
 
-**Hint #1:** Collect all files ```event_?.dat``` with **find** and loop over them via **while+read**, something like:
+**Hint #1:** Collect all files ```event_?.dat``` with the command **find** and loop over them via **while+read**, something like:
 
 ```bash
 while read File; do
  cd $(dirname $File) # go to the directory where the current file in the loop sits
  ... filter out the current file. Programmatically, its name is $(basename $File) ...
  cd - # go back
-done < <(find <top-dir> -type f -name "event_*.dat")
+done < <(find <top-directory> -type f -name "event_*.dat")
 ```
 
 **Hint #2:** The following pseudo code can do the actual filtering:
@@ -160,11 +160,13 @@ while read Line; do
 done < backup_0.dat 1>event_0.dat
 ```
 
+If filtering went OK, clean up the temporary backup files.
 
 
 
 
-**Challenge #3: Transferring.** Develop the script **Transfer.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to process all files ```event_?.dat``` and store for each event for each particle its PID and kinematics (three components of momenta and energy) into **ROOT**'s container ```TTree```. Make one ```TTree``` container for each event, and then all ```TTree``` containers save in one common **ROOT** file named ```HIJING_LBF_test_small.root```, in each of the subdirectories ```0, 1, ..., 9```. After the transfer, clean up all files ```event_?.dat```.
+
+**Challenge #3: Transferring.** Develop the script **Transfer.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to process all filtered files ```event_?.dat``` and store for each event for each particle its PID and kinematics (three components of momenta and energy) into **ROOT**'s container ```TTree```. Make one ```TTree``` container for each event, and then all ```TTree``` containers save in one common **ROOT** file named ```HIJING_LBF_test_small.root```, in each of the subdirectories ```0, 1, ..., 9```. After the transfer, clean up all files ```event_?.dat```.
 
 At the end of this step, the situation in your local dataset needs to be schematically as follows:
 
@@ -220,7 +222,7 @@ int importASCIIfileIntoTTree(const char *filename)
  return 0;   
 }
 ```
-Use then the above **ROOT** code snippet in the following way:
+Use then the above **ROOT** code snippet in the script in the following way:
 ```c
 root -l -b -q importASCIIfileIntoTTree.C\(\"basic_1.dat\"\) // or abs-path to 'basic_1.dat', if macro and the file are not in the same directory
 root -l -b -q importASCIIfileIntoTTree.C\(\"basic_2.dat\"\) // or abs-path to 'basic_2.dat', if macro and the file are not in the same directory
@@ -228,7 +230,7 @@ root -l -b -q importASCIIfileIntoTTree.C\(\"basic_2.dat\"\) // or abs-path to 'b
 
 If you now inspect (e.g. with **ROOT**'s ```TBrowser```) the content of ```output.root``` file, you will see that it contains two ```TTree``` containers, one for the content of file ```basic_1.dat``` and another for ```basic_2.dat```. In reality, multiple events are stored in the same ```TTree``` container to optimize things further, but in this challenge that's not necessary.
 
-From this point onward, only the filtered dataset stored in ```TTree``` containers in the **ROOT** files is used in the final analysis.
+From this point onward, only the dataset stored in ```TTree``` containers in the **ROOT** files is used in the final analysis.
 
 
 
@@ -314,7 +316,7 @@ Instead of trivially dumping on the screen the data via ```cout<<Form("%d: %f %f
 **Challenge #5: The final touch.** Automate the whole procedure, i.e. the user (or in this case the examiner!) would like to execute your code as:
 
 ``` bash
-source TheFinalTouch.sh <top-directory-holding-HIJING-dataset>
+source TheFinalTouch.sh <top-directory>
 ```
 
 where the content of the script ```TheFinalTouch.sh``` is:
@@ -326,7 +328,7 @@ where the content of the script ```TheFinalTouch.sh``` is:
 
 source Splitter.sh $1 && echo "Done with Splitter.sh" || return 5
 source Filter.sh $1 && echo "Done with Filter.sh" || return 4
-source Transfer.sh && echo "Done with Transfer.sh" || return 3
+source Transfer.sh $1 && echo "Done with Transfer.sh" || return 3
 source Analysis.sh $1 && echo "Done with Analysis.sh" || return 2
 
 return 0
