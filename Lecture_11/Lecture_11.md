@@ -220,9 +220,9 @@ And you can compile and execute simply with:
 root -l f1_random_compiled.C++
 ```
 
-Let us now check the performance of interpreted vs. compiled mode.
+Let us now check the performance of interpreted vs. compiled mode.  
 
-* The following interpreted code is saved in the file ```f1_random_interpreted.C```:
+The following interpreted code is saved in the file ```f1_random_interpreted.C```:
 ```cpp
 {
  delete gRandom;
@@ -235,7 +235,8 @@ Let us now check the performance of interpreted vs. compiled mode.
  }
 }
 ```
-We time its execution with the **Bash** built-in command **time**:
+
+We time its execution with the **Bash** built-in command **time**:  
 ```bash
 time root -b -q f1_random_interpreted.C
 root [0] 
@@ -246,7 +247,8 @@ user    1m2.484s
 sys     0m0.438s
 ```
 
-* The following analogous compiled version is saved in the file ```f1_random_compiled.C```:
+The following analogous compiled version is saved in the file ```f1_random_compiled.C```:
+
 ```cpp
 #include<Riostream.h>
 #include<TF1.h>
