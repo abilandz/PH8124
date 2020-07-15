@@ -9,6 +9,9 @@
 * [Lecture 7](./Lecture_7/Lecture_7.md)
 * [Lecture 8](./Lecture_8/Lecture_8.md)
 * [Lecture 9](./Lecture_9/Lecture_9.md)
+* [Lecture 10](./Lecture_10/Lecture_10.md)
+* [Lecture 11](./Lecture_11/Lecture_11.md)
+* [Lecture 12](./Lecture_12/Lecture_12.md)
 * [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1](./Homeworks/Homework_1.md)
     * [Homework 2](./Homeworks/Homework_2.md)
@@ -20,3 +23,4 @@
     * [Homework 8](./Homeworks/Homework_8.md)
     * [Homework 9](./Homeworks/Homework_9.md)
 * [Final Project](./Final_Project/FinalProject.md)
+
