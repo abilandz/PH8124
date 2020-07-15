@@ -24,10 +24,8 @@ Here is a just a collection of code snippets used in the lecture, for the full d
 
 
 
-
-
 ### 1. Interpreted 'Hello World' example in ROOT <a name="hello_int"></a>
-Save in the file ```hello_Interpreted.C``` the following code snippet:
+Save in the file ```hello_interpreted.C``` the following code snippet:
 ```cpp
 {
  printf("Hello World!\n"); // C style
@@ -36,21 +34,37 @@ Save in the file ```hello_Interpreted.C``` the following code snippet:
 ```
 Execute then the above code simply via:
 ```bash
-root hello_Interpreted.C
+root hello_interpreted.C
+```
+
+The output on the screen is:
+
+```bash
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.19/01                        https://root.cern |
+  | (c) 1995-2019, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 12 2019, 14:50:38                 |
+  | From heads/master@v6-19-01-1991-g61b134c091                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+root [0]
+Processing hello_interpreted.C...
+Hello World!
+Hello World!
+root [1]
 ```
 
 
 
 
-
-
 ### 2. Compiled 'Hello World' example in ROOT <a name="hello_int"></a>
-Save in the file ```hello_Compiled.C``` the following code snippet:
+Save in the file ```hello_compiled.C``` the following code snippet:
 
 ```cpp
 #include "Riostream.h"
 
-Int_t helloCompiled()
+Int_t hello_compiled()
 {
  printf("Hello World!\n"); // C style
  cout<<"Hello World!"<<endl; // C++ style
@@ -60,27 +74,47 @@ Int_t helloCompiled()
 ```
 Compile by using **ACLiC** either in the following way
 ```bash
-root hello_Interpreted.C+
+root hello_compiled.C+
 ```
 or
 ```bash
-root hello_Interpreted.C++
+root hello_compiled.C++
 ```
 **ACliC** is an interface which ensures that a machine independent ```C++``` compiler is used. By default, the same compiler and the compiler options are used which were used to compile the **ROOT** executable. The difference between appending ```++``` or ```+``` when compiling is that in the former case always all shared libraries are rebuilt from scratch.
 
+When running in the compiled mode, the output on the screen is slightly different:
 
+```bash
+   ------------------------------------------------------------------
+  | Welcome to ROOT 6.19/01                        https://root.cern |
+  | (c) 1995-2019, The ROOT Team; conception: R. Brun, F. Rademakers |
+  | Built for linuxx8664gcc on Nov 12 2019, 14:50:38                 |
+  | From heads/master@v6-19-01-1991-g61b134c091                      |
+  | Try '.help', '.demo', '.license', '.credits', '.quit'/'.q'       |
+   ------------------------------------------------------------------
+
+root [0]
+Processing hello_compiled.C+...
+Info in <TUnixSystem::ACLiC>: creating shared library /home/abilandz/Lectures/ROOT/./hello_compiled_C.so
+Hello World!
+Hello World!
+(int) 0
+root [1]
+```
+
+In the next section with concrete code snippets we illustrate how some frequently used classes in **ROOT** can be used.
 
 
 
 ### 3. TGraphErrors <a name="TGraphErrors"></a>
 Imagine that you have ASCII file ```someData.dat``` with the following points:
 ```bash
-0.5    4.440    0.0    0.01
-1.5    3.123    0.0    0.02
-2.5    2.111    0.0    0.01
-3.5    1.211    0.0    0.03
-4.5    2.561    0.0    0.04
-5.5    3.432    0.0    0.05
+0.5    4.440    0.5    0.01
+1.5    3.123    0.5    0.02
+2.5    2.111    0.5    0.01
+3.5    1.211    0.5    0.03
+4.5    2.561    0.5    0.04
+5.5    3.432    0.5    0.05
 ```
 The columns are interpreted by class ```TGraphErrors``` in the following way: _x_-value, _y_-value, error on _x_, error on _y_. The file can be processed and plotted automatically with the following code snippet:
 ```cpp
@@ -89,14 +123,14 @@ The columns are interpreted by class ```TGraphErrors``` in the following way: _x
  ge->Draw("ap"); 
 }
 ```
-If you use only two field specifiers in the constructor, ```%lg %lg```, then the first column is defaulted to _x_-values and the second one to _y_-values.
+If you use only two field specifiers in the constructor, ```%lg %lg```, then the first column is defaulted to _x_-values and the second one to _y_-values (by default, markers are points, and not best visible).
 
 If on the other hand we have the data points stored in arrays within the code, then we need to use another constructor for ```TGraphErrors```, which can handle arrays as arguments:
 ```cpp
 {
  Float_t x[6] = {0.5,1.5,2.5,3.5,4.5,5.5};
  Float_t y[6] = {4.440,3.123,2.111,1.211,2.561,3.432};
- Float_t ex[6] = {0.0};
+ Float_t ex[6] = {0.5,0.5,0.5,0.5,0.5,0.5};
  Float_t ey[6] = {0.01,0.02,0.01,0.03,0.04,0.05};
 
  TGraphErrors *ge = new TGraphErrors(6,x,y,ex,ey); 
@@ -195,7 +229,7 @@ Let us now check the performance of interpreted vs. compiled mode.
  gRandom = new TRandom3(0);
 
  TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- for (Int_t i=0; i<1e8; i++)
+ for (Int_t i=0; i<1e9; i++)
  {
   f1->GetRandom();
  }
@@ -203,13 +237,13 @@ Let us now check the performance of interpreted vs. compiled mode.
 ```
 We time its execution with the **Bash** built-in command **time**:
 ```bash
-time root -l -b -q f1_random_interpreted.C
+time root -b -q f1_random_interpreted.C
 root [0] 
 Processing f1_random_interpreted.C...
 
-real	0m13.081s
-user	0m13.066s
-sys	0m0.011s
+real    1m3.079s
+user    1m2.484s
+sys     0m0.438s
 ```
 * The following analogous compiled version is saved in the file ```f1_random_compiled.C```:
 ```cpp
@@ -225,7 +259,7 @@ Int_t f1_random_compiled()
 
  // Do the sampling:
  TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- for (Int_t i=0; i<1e8; i++)
+ for (Int_t i=0; i<1e9; i++)
  {
   f1->GetRandom();
  }
@@ -233,7 +267,7 @@ Int_t f1_random_compiled()
  return 0;
 }
 ```
-We now time its execution in the same way:
+We now time its execution in the same way (in the timing also the overhead from compilation is accounted for!):
 
 ```bash
 time root -l -b -q f1_random_compiled.C++
@@ -242,17 +276,15 @@ Processing f1_random_compiled.C++...
 Info in <TUnixSystem::ACLiC>: creating shared library /home/abilandz/Lecture/SS2019/Lecture_11/Examples/./f1_random_compiled_C.so
 (Int_t)0
 
-real	0m6.130s
-user	0m6.004s
-sys	0m0.133s
+real    0m55.320s
+user    0m53.266s
+sys     0m1.906s
 ```
 In above examples, we have used 3 frequently used flags for **ROOT** with the following meaning:
 
 * -l : switch off the splash screen at the beginning
 * -b : run **ROOT** in the batch mode
 * -q : exit **ROOT** upon execution
-
-
 
 
 
@@ -281,9 +313,7 @@ In above examples, we have used 3 frequently used flags for **ROOT** with the fo
  }
 }
 ```
-The thing to note is that 2 variables need to be declared first, and then their values are being randomly updated with the call to member function ```f2->GetRandom2(var1,var2);```. Everything else is analogous to the 1D case.
-
-
+The thing to note is that the two variables need to be declared first, and then their values are being randomly updated with the call to member function ```f2->GetRandom2(var1,var2);```. Everything else is analogous to the 1D case.
 
 
 
@@ -301,8 +331,6 @@ The thing to note is that 2 variables need to be declared first, and then their 
  watch.Print();
 }
 ```
-
-
 
 
 
@@ -332,15 +360,13 @@ Histogramming is illustrated in the following example:
  c->cd(2); // move to the second pad after canvas subdivision resulting from call to Divide()
  hist->Draw();
  
- // Save the canvas:
+ // Save the canvas in 4 different formats:
  c->SaveAs("histExample.pdf"); 
  c->SaveAs("histExample.eps"); 
  c->SaveAs("histExample.png"); 
  c->SaveAs("histExample.C"); 
 }
 ```
-
-
 
 
 
@@ -394,15 +420,13 @@ Its usage is illustrated in the following example:
 
 
 
-
-
 ### 9. Cosmetics <a name="Cosmetics"></a>
 To change the style, colour, size, etc. of lines, markers, etc. ROOT provides the following example attribute classes:
 
-* TAttLine
-* TAttMarker
-* TAttFill
-* TColor
+* ```TAttLine```
+* ```TAttMarker```
+* ```TAttFill```
+* ```TColor```
 
 For instance, in the previous example, you could have changed the histogram plotting appearance with:
 ```cpp
@@ -469,8 +493,8 @@ For instance, used in a concrete example:
 
 Another direction where ROOT is very powerful is a wide support for drawing options, documented in the following example class:
 
-* TGraphPainter
-* THistPainter
+* ```TGraphPainter```
+* ```THistPainter```
 
 Its usage is illustrated in the following code snippet
 ```cpp
