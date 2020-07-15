@@ -2,7 +2,7 @@
 
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20200714
+**Last update**: 20200715
 
 ### Disclaimer
 Here is a just a collection of code snippets used in the lecture, for the full description of the functionalities of **ROOT** classes in question, consult the official manual:
@@ -245,6 +245,7 @@ real    1m3.079s
 user    1m2.484s
 sys     0m0.438s
 ```
+
 * The following analogous compiled version is saved in the file ```f1_random_compiled.C```:
 ```cpp
 #include<Riostream.h>
