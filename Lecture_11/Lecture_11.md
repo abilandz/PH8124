@@ -2,7 +2,7 @@
 
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20200715
+**Last update**: 20200723
 
 ### Disclaimer
 Here is a just a collection of code snippets used in the lecture, for the full description of the functionalities of **ROOT** classes in question, consult the official manual:
@@ -160,11 +160,13 @@ Thing to remember is that ```x``` has to be used to denote variable. In the case
 ```
 In order to use ```TF1``` object as a p.d.f., we can perform the sampling as follows (**ROOT** takes automatically care of normalization!). For instance, to sample 10 random numbers from ```TF1``` we can use:
 ```cpp
+{
  TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
  for (Int_t i=0; i<10; i++)
  {
   cout<<f1->GetRandom()<<endl;
  }
+}
 ```
 This produces the following random sequence:
 ```cpp
@@ -192,6 +194,7 @@ If we now re-execute the above code, we get exactly the same random sequence. We
  {
   cout<<f1->GetRandom()<<endl;
  }
+}    
 ```
 When doing a large scale Monte Carlo simulations, performance clearly matters, and it is preferred to do simulations in compiled mode. The version of above code snippet which can be saved in the file ```f1_random_compiled.C``` and compiled is:
 ```cpp
