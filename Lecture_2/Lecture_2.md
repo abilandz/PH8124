@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20210313
+**Last update**: 20210407
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -274,7 +274,7 @@ mkdir subdir_1 subdir_2 subdir_3
 ```
 will make 3 new subdirectories in your current working directory (check again by executing **ls -al**).
 
-We have been using so far only the already existing **Bash** or **Linux** commands. The simplest way to create your own command, with a rather limited functionality and flexibility but nevertheless quite convenient, is to use **Bash** built-in feature **alias**. For instance, if you are bored to type something lengthy again and again in the terminal, you can introduce shortcut for it, by using **alias**. For instance, you can abbreviate the lengthy input
+We have been using so far only the already existing **Bash** or **Linux** commands. The simplest way to create your own command, with a rather limited functionality and flexibility but nevertheless quite convenient, is to use **Bash** built-in feature **alias**. If you are bored to type something lengthy again and again in the terminal, you can introduce shortcut for it, by using **alias**. For instance, you can abbreviate this lengthy input
 
 ```bash
 echo "Hello, welcome to the lecture PH8124"
@@ -299,12 +299,12 @@ Quite frequently, aliases are used in the following context:  If you want to con
 ssh -Y abilandz@lxplus.cern.ch
 ```
 
-But do you really want to type that again and again each time you want to connect to _lxplus_ at CERN? You can save a lot of typing, by introducing the alias for it, e.g.:
+But do you really want to type that again and again each time you want to connect to _lxplus_ at CERN? You can save a lot of typing, by introducing the alias for it:
 
 ```bash
 alias lx='ssh -Y abilandz@lxplus.cern.ch'
 ```
-Here basically you have defined the abbreviation (or alias, or shortcut) for lengthy command input, and you have named it simply **lx**. Now it suffices only to type in the terminal 
+Here basically you have defined the abbreviation (or alias, or shortcut) for lengthy command input, and you have named it **lx**. Now it suffices only to type in the terminal 
 
 ```bash
 lx
@@ -344,9 +344,22 @@ where also for this command the option **-a** stands for 'all'.
 Aliases are definitely a nice feature, but do not overuse them, because:
 
 * By default, aliases are available only in the terminal in which you have defined them. But this can be easily circumvented by modifying the special configuration files ```.bashrc``` and/or ```.bash_aliases``` --- to be clarified later in this section;
+
 * When you move to another computer your personal aliases are clearly not available there by default;
-* Aliases can overwrite the name of the existing **Linux** or **Bash** command --- aliases will have the higher precedence in execution;
-* Aliases cannot process programatically options or arguments, like regular commands (or **Bash** functions, as we will see later). 
+
+* Aliases can overwrite the name of the existing **Linux** or **Bash** command --- aliases will have the higher precedence in execution. In this case, you can execute the overwritten command with ```\commandName```. For instance:
+
+  ```bash
+  alias ls="echo 44"
+  ls
+  44
+  \ls
+  ... list of files and directories ...
+  ```
+
+  In this context, we have _escaped_ the alias definition of 'ls' with the special symbol backslash ```\``` --- this mechanism is elaborated more in detail and in a wider context later;   
+
+* Aliases cannot process programatically options or arguments, like regular commands (or **Bash** functions, as we will see later). In fact, any alias implementation can be reimplemented as a **Bash** function in a more general and flexible way, however the latter requires more coding.
 
 Aliases are literally shortcuts for lengthy commands or any other lengthy terminal input. They are defined for convenience only to save typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute --- nothing more nor less than that! 
 
@@ -468,22 +481,22 @@ test 1
 test 2
 CTRL+d
 ```
-The operator ```>>``` appends the text at the end of an already existing file. If we would have used ```>``` to redirect the new content to the already existing file, that file would be overwritten with this new content --- use ```>``` in such a context with great care! This, however, also implies that the above **cat** construct is rather limited, as it can be used either to write a new file from scratch or to append new content at the very end of an already existing file. But what if we want to edit the already existing content in the file? 
+The operator ```>>``` appends the text at the end of an already existing file. If we would have used ```>``` to redirect the new content to the already existing file, that file would be overwritten with this new content --- use ```>``` in such a context with great care! This, however, also implies that the above **cat** construct is rather limited, as it can be used either to write a new file from scratch or to append new content at the very end of an already existing file. But what if we want to edit the already existing content of the file? 
 
 For that sake, we need to use some simple editor which can be run in the terminal (i.e. without graphics). One such, wide-spread, open-source, editor is **nano**, which includes only the bare minimum of functionality needed to edit documents, making it very simple to use. In addition,  syntax coloring is available for most of the programming languages. Now as an exercise, let us edit the content of already existing non-empty file ```someFile.txt``` from previous **cat** example.
 
 ```linux 
 nano someFile.txt
 ```
-Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor --- this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated --- it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled!). But for the lengthy file editing, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however they offer much more features.
+Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor --- this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated --- it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics!). For the editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however they offer much more features and are regularly used by professional programmers.
 
 
 
 ### 4. Your first **Bash** script <a name="first-script"></a>
 
-Now that we know a few basic commands and how to write and edit files, we can start writing our first **Bash** scripts. The script is a code snippet for interpreted or scripting language, that is typically executed line-by-line.  At the very least, this saves the effort of retyping that particular sequence of commands each time it is needed. Typically, scripts are used to automate the execution of tasks that could alternatively be executed one-by-one by a human operator. A scripting language is a programming language that supports scripts, so clearly **Bash** fits in this category.
+Now that we know a few basic commands and how to write and edit files, we can start writing our first **Bash** scripts. The script is a code snippet for interpreted or scripting language, that is typically executed line-by-line.  At the very basic level, this saves the effort of retyping that particular sequence of commands each time it is needed. Typically, scripts are used to automate the execution of tasks that could alternatively be executed one-by-one by a human operator. A scripting language is a programming language that supports scripts, so clearly **Bash** fits in this category.
 
-Let us now write your first **Bash** script! For instance, you can type in the terminal:
+Let us now write the first **Bash** script! For instance, you can type in the terminal:
 
 ```linux
 nano first.sh
@@ -507,7 +520,7 @@ Now let us have a closer look at the content of your first **Bash** script:
 * The first line is mandatory, namely: ```#!/bin/bash```
 * The first two characters in the first line are mandatory, namely: ```#!``` (the combination of these two characters is called shebang or hashbang)
 
-What is happening here is the following: ```#!```in the first line indicates to the operating system, that whatever follows next on the first line, must be interpreted as a path to the executable (e.g. executable is ```/bin/bash``` if you want to run **Bash**), which then must be used to interpret the code in all the remaining lines in the script. In this way, you can put up together any script, not necessarily only the one for **Bash** --- you just need to change ```/bin/bash``` in the first line, and point out to some other executable.
+What is happening here is the following: ```#!``` in the first line indicates to the operating system that whatever follows next on the first line, must be interpreted as a path to the executable (e.g. ```/bin/bash``` if you want to run **Bash**), which then must be used to interpret the code in all the remaining lines in the script. In this way, you can put up together any script, not necessarily the one for **Bash** --- you just need to change ```/bin/bash``` in the first line, and point out to some other executable.
 
 From the above example, you can see that whatever we have previously executed directly in the terminal (e.g. **echo** or **date** commands), we can also write in the script, and then execute all commands in one go, by executing the script. That being said, at the very basic level, scripting saves you the time needed to retype again and again any regular sequence of commands, after you open a new terminal --- for instance, the file ```first.sh``` you just made, is available in any new terminal you open!
 
@@ -551,7 +564,7 @@ date -q # option -q is NOT supported
 echo $? # prints 1 , i.e. one possible exit status for error
 ```
 
-Typically in your code, after you have executed the command, you check its exit status. Then, depending on the value of its exit status, your subsequent code can branch in multiple directions. Remember that each **Linux** command has an exit status stored in the special variable **$?** upon its execution, so it shall also your  **Bash** script. As long as you are executing your script via **source** command, you can set the exit status with the keyword **return** (as in the last line in your above script ```first.sh```). 
+Typically in your code, after you have executed the command, you check its exit status. Then, depending on the value of this exit status, your subsequent code can branch in multiple directions. Remember that each **Linux** command has an exit status stored in the special variable **$?** upon its execution, so it shall also your  **Bash** script. As long as you are executing your script via **source** command, you can set the exit status with the keyword **return** (as in the last line in your above script ```first.sh```). 
 
 If you forgot to specify the exit status of your script with the keyword **return **, the special variable **$?** is nevertheless automatically set, but now to the exit status of lastly executed command in your script, which can lead to unexpected results.
 
@@ -560,7 +573,7 @@ If you forgot to specify the exit status of your script with the keyword **retur
 
 ### 5. Special configuration files in **Bash** <a name="configuration-files"></a>
 
-In this section, we discuss a few important configurations files which have a special meaning to **Bash**. The configuration files, which a user can directly edit, acquire their special meaning only if they are placed in the user's home directory, otherwise **Bash** will not find and execute them. To stress this out, we have prepended ```~``` (or equivalently with ```$HOME```) to the name of the user's configuration files below. The special character ```~``` (tilde) is the shortcut for the absolute path to your home directory. As an example, execute:
+In this section, we discuss a few important configuration files which have a special meaning to **Bash**. The configuration files which a user can directly edit, acquire their special meaning only if they are placed in the user's home directory, otherwise **Bash** will not find and execute them. To stress this out, we have prepended ```~``` (or equivalently ```$HOME```) to the name of the user's configuration files below. The special character ```~``` (tilde) is the shortcut for the absolute path to your home directory. As an example, execute:
 
 ```bash
 echo ~
@@ -584,10 +597,10 @@ By convention, the name of all configuration files in the home directory begins 
 
 These are the personal configuration files in the user's home directory, which can be edited directly:
 
-- ```~/.bash_profile``` : this configuration file is only executed by **Bash** each time you log in on the computer. There are two synonyms for this file:  ```~/.bash_login``` and ```~/.profile``` . They are executed at login only if ```~/.bash_profile``` is not present in your home directory. The files ```~/.bash_profile``` and ```~/.bash_login``` can be read only by **Bash**, while ```~/.profile``` is read also by some other shells, e.g. **sh** and **ksh**
-- ```~/.bashrc``` : this configuration file is read with the highest priority when you open a new terminal, or when you start a new _subshell_ (covered later in the lecture). This file will be read also at login only if you add a line ```source ~/.bashrc```  in ```~/.bash_profile```  
+- ```~/.bash_profile``` : this configuration file is only executed by **Bash** each time you log in on the computer. There are two synonyms for this file:  ```~/.bash_login``` and ```~/.profile``` , and they are executed at login only if ```~/.bash_profile``` is not present in your home directory. The files ```~/.bash_profile``` and ```~/.bash_login``` can be read only by **Bash**, while ```~/.profile``` is read also by some other shells, e.g. **sh** and **ksh**
+- ```~/.bashrc``` : this configuration file is read with the highest priority when you open a new terminal, or when you start a new _subshell_ (covered later in the lecture). This file will be read also at login only if you add a line ```source ~/.bashrc``` in ```~/.bash_profile```  
 
-- ```~/.bash_logout```: Executed whenever you log out from the computer. This is rarely used, but by editing this file, you can for instance automatically delete all temporary files at exit
+- ```~/.bash_logout```: Executed whenever the shell exits (e.g. when you close the terminal, of when you log out from the computer). This configuration file is rarely used, but by editing this file, you can for instance automatically delete all temporary files at exit
 
 #### System-wide (default) configuration files
 
@@ -631,7 +644,7 @@ or, if the file got too lengthy and you need to scroll page-by-page, via
 more ~/.bash_aliases
 ```
 
-Since the content of ```~/.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions, for instance for aliases and variables, will be re-defined from scratch each time you start a new terminal, and you can re-use them again and again. 
+Since the content of ```~/.bashrc``` file is read and executed each time you start a new terminal, and before you can start typing anything in the terminal, your own personal definitions (e.g. for aliases and variables) will be re-defined from scratch each time you start a new terminal, and you can re-use them again and again. 
 
 Now add the following line at the very end of ```~/.bashrc``` (if this line is already not inside that file --- by default it is already inside on most **Linux** distributions):
 
@@ -639,6 +652,15 @@ Now add the following line at the very end of ```~/.bashrc``` (if this line is a
 source ~/.bash_aliases
 ```
 
-Each time you run a new terminal, the variable ```Var``` is set to 44, and you can use **sl** as the synonym for the **ls** command, i.e. you do not need to define them again in the new terminal sessions. In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` . 
+Each time you run a new terminal, the variable ```Var``` is set to 44, and you can use **sl** as the synonym for the **ls** command, i.e. you do not need to define them again in the new terminal sessions. In the case you need to add more aliases, simply edit again the file ```~/.bash_aliases``` .
 
-Finally, we remark that it is much safer to edit directly ```~/.bash_aliases``` than to edit directly the file ```~/.bashrc```, where also some other and more important settings can be defined as well. In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in ```~/.bashrc``` and ```~/.bash_profile``` the line ```source ~/.bash_aliases```. On the other hand, typically it's very difficult to port the whole ```~/.bashrc``` from one computer to another, especially if they are running different **Linux** distributions.
+We remark that it is much safer to edit directly ```~/.bash_aliases``` than to edit directly the file ```~/.bashrc```, where also some other and more important settings can be defined as well. In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in ```~/.bashrc``` and ```~/.bash_profile``` the line ```source ~/.bash_aliases```. On the other hand, typically it's very difficult to port the whole ```~/.bashrc``` from one computer to another, especially if they are running different **Linux** distributions.
+
+Finally, we can also edit the ```~/.bash_logout``` in the following example way:
+
+```bash
+# Set what will be executed when shell exits (e.g. when you close the terminal):
+echo "Hasta la vista, that was all for today."; sleep 1s
+```
+
+Now each time you close the terminal, you will see the specified printout, and after the hardwired timeout of 1s, the terminal will close. In the very same spirit, you can specify any other action, which will be automatically executed by **Bash** when you close the terminal.
