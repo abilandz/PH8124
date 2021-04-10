@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20200514
+**Last update**: 20200409
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -39,7 +39,7 @@ or by referencing the content of environment variable **PWD**, which is always s
 ```bash
 echo $PWD
 ```
-Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it's always much more efficient to get information directly from environment variable like **PWD**, than to retrieve and store in a variable the same information by executing the command, via the so-called _command substitution operator_ (more on this later).
+Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it is always much more efficient to get information directly from the environment variable like **PWD**, than to retrieve and store in a variable the same information by executing the command, via the so-called _command substitution operator_ (more on this later).
 
 The most important directories in the **Linux** file system structure are:
 
@@ -84,7 +84,7 @@ The output could look like this:
 ```bash
 /home/abilandz/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
-This output looks messy, but in fact it has a well-defined structure and is easy to interpret. In the above output, we can see absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable also matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
+This output looks messy, but in fact it has a well-defined structure and is easy to interpret. In the above output, we can see absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
 
 By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command --- just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in ```/home/abilandz/bin```). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like ```/bin```, ```/usr/bin```, etc.). This is achieved with the following standard code snippet:
 
@@ -126,48 +126,48 @@ We finalize the explanation of **PATH** variable with the following concluding r
        6    /bin/ls
     ```
     
-    Cleary, the hash mechanism adds it a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty, then each terminal  keeps its own hash table.
+    Cleary, the hash mechanism adds it a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty. Each new terminal keeps its own hash table.
 
 * The **PATH** search can be skipped by the user. In particular, when the command name contains the ```/``` (slash) character, not necessarily at the beginning of the name, **Bash** will not perform the search for the corresponding executable --- underlying assumption is that you have now yourself specified the path in the file system, either absolute or relative, to the corresponding executable. In this case, **Bash** tries to execute that command name on the spot. This explains the standard syntax to run the command whose executable is in your current directory: 
 
   ```bash
-  ./some-command
+  ./someCommand
   ```
 
-  In this context, the dot ```.``` is a shortcut syntax for the absolute path to the current working directory (the analogous shorthand notation for the parent directory is ```..```). With the above syntax, even if the command **some-command** with a different implementation exists in some directory stored in **PATH**, it will never be searched for and executed, because there is ```/``` in the above command input. 
+  In this context, the dot ```.``` is a shortcut syntax for the absolute path to the current working directory (the analogous shorthand notation for the parent directory is ```..```). With the above syntax, even if the command **someCommand** with a different implementation exists in some directory stored in **PATH**, it will never be searched for and executed, because there is ```/``` in the above command input. 
 
 Some frequently used **Linux** commands to work within the file system are:
 
 * **cp** : copy file(s)
 ```bash
-cp <file-1> <file-2> # copying and renaming a file
-cp <file-1> <file-2> ... <directory> # copying two or more files in the same directory  
-                                     # the names of original files are preserved
+cp file1 file2 # copying and renaming a file
+cp file1 file2 ... directory # copying two or more files in the same directory  
+                             # the names of original files are preserved
 ```
 Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
 * **cp -r** : copy directory and preserve its subdirectory structure
 ```bash
-cp -r <directory-1> <directory-2> # this will copy the whole first directory into  
-                                  # a new subdirectory of the second directory
+cp -r directory1 directory2 # this will copy the whole first directory into  
+                            # a new subdirectory of the second directory
 ```
 
 * **rm** : delete file(s)
 ```bash
-rm <file-1> <file-2> ... # delete the specifed files
+rm file1 file2 ... # delete the specifed files
 ```
 Use **rm** with great care, because after you deleted the file, there is no way back!
 
 * **rm -rf** : delete one or more directories
 ```bash
-rm -rf <dir-1> <dir-2> ... # delete the specified directories
+rm -rf dir1 dir2 ... # delete the specified directories
 ```
 Flag **-r** ('recursive') is needed to indicate that you want to delete all subdirectories recursively, **-f** ('force') is needed to avoid the prompt message which would ask you for the deleting confirmation of each file separately. Use **rm -rf** with the greatest possible care, because after you have deleted the directory, there is no way to get back any file that was in that directory!
 
 * **mv** : move or rename file(s)
 ```bash
-mv <file-1> <file-2> # moving, if two files are not in the same directory
-                     # renaming, if two files are in the same directory
+mv file1 file2 # moving, if two files are not in the same directory
+               # renaming, if two files are in the same directory
 ```
 The command **mv** uses the same syntax for directories (no additional flags are needed).
 
@@ -223,7 +223,7 @@ Next, each file or directory in **Linux** has three distinct levels of ownership
 * **Group (g)** : the wider group to which the person who created the file belongs to
 * **Other (o)** : anybody else   
 
-File ownership becomes extremely handy in combination with file permissions, when it's very simple to set common access rights for any group of other users. 
+File ownership becomes extremely handy in combination with file permissions, when it is very simple to set common access rights for any group of other users. 
 
 Finally, each file in **Linux** has three distinct levels of permissions (or access rights):
 
@@ -233,16 +233,16 @@ Finally, each file in **Linux** has three distinct levels of permissions (or acc
 
 For instance, when you execute
 ```bash 
-ls -al <some-file>
+ls -al someFile
 ```
 you can get the following example output: 
 ```bash
--rw-rw-rw- 1 abilandz alice 97805 Apr 28 12:23 <some-file>
+-rw-rw-rw- 1 abilandz alice 97805 Apr 28 12:23 someFile
 ```
 It is very important to understand all entries in this output, and how to modify or set some of them. Reading from left to right:
 
 * **Column #1:**  
-  * the very first character is the file type : ```-``` is an ordinary file, ```d``` is a directory, ```l``` is soft-link, etc.  
+  * the very first character is the file type : ```-``` is an ordinary file, ```d``` is a directory, ```l``` is soft link, etc.  
   * characters 2, 3 and 4 are fields for ```r```, ```w``` or ```x``` permissions for the user (i.e. for you)   
   * characters 5, 6 and 7 are fields for ```r```, ```w``` or ```x``` permissions for the group (i.e. wider group of people where your account belongs to)   
   * characters 8, 9 and 10 are fields for ```r```, ```w``` or ```x``` permissions for anybody else    
@@ -262,7 +262,7 @@ After the above command was executed, others (```o```) can (```+```) read (```r`
 ```bash
 chmod go-w someFile.txt
 ```
-In the above example, group members to which your account belongs to (```g```) and all others (```o```) can NOT (```-```) modify or write to (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
+In the above example, group members to which your account belongs to (```g```) and all others (```o```) can not (```-```) modify or write (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
 ```bash
 chmod u+x someFile.txt
 ```
