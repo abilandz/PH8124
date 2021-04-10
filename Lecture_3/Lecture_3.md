@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20200409
+**Last update**: 20200410
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -15,7 +15,7 @@
 
 ### 1. **Linux** file system <a name="file_system"></a>
 
-We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common, widely accepted, structure. The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
+We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common, widely accepted, structure named _Filesystem Hierarchy Standard (FHS)_. The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
 ```bash
 cd /
 ls
@@ -30,8 +30,10 @@ All files and directories on your computer are in one of these subdirectories. S
 
 ![](linux_file_system.png)
 
+The **Bash** built-in command **cd** ('change directory') is used to move from the current working directory to some other directory. It accepts only one argument, which is interpreted either as an _absolute path_ to the new directory (if the argument starts with ```/```), or as a _relative path_ to the new directory (relative to your current working directory). If you use **cd** without any argument, the argument is defaulted to the home directory. Due to their special meanings, the only characters that cannot be part of a directory name are ```/``` and the null byte ```\0```. 
 
-The **Bash** built-in command **cd** ('change directory') is used to move from the current working directory to some other directory. It accepts only one argument, which is interpreted either as an _absolute path_ to the new directory (if the argument starts with ```/```), or as a _relative path_ to the new directory (relative to your current working directory). If you get confused where you are at the moment in the **Linux** file system (i.e. where is your current working directory in the overall file system hierarchy), you can always get that information either from **Bash** built-in command **pwd** ('print working directory'):
+If you get confused where you are at the moment in the **Linux** file system (i.e. where is your current working directory in the overall file system hierarchy), you can always get that information either from **Bash** built-in command **pwd** ('print working directory'):
+
 ```bash
 pwd
 ```
@@ -141,8 +143,8 @@ Some frequently used **Linux** commands to work within the file system are:
 * **cp** : copy file(s)
 ```bash
 cp file1 file2 # copying and renaming a file
-cp file1 file2 ... directory # copying two or more files in the same directory  
-                             # the names of original files are preserved
+cp file1 file2 ... someDirectory # copying two or more files in someDirectory  
+                                 # the names of original files are preserved
 ```
 Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
@@ -175,8 +177,10 @@ The command **mv** uses the same syntax for directories (no additional flags are
 ```bash
 du -sh ${HOME} # prints how much disk space your home directory is taking
 967M
-du -h --max-depth=1 ${HOME} # the size of directory, and differentially of its subdirectories
-du -h --max-depth=2 ${HOME} # the size of directory, differentially of its subdirectories and all sub-subdirectories
+du -h --max-depth=1 ${HOME} # the size of directory, and differentially 
+                            # of its subdirectories
+du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
+                            # subdirectories and all sub-subdirectories
 ```
 
 * **df -h** : ('disk free') : get the used disk space of all disks
@@ -258,15 +262,22 @@ File permissions are changed with the **Linux** command **chmod** ('change mode'
 ```bash
 chmod o+r someFile.txt
 ```
-After the above command was executed, others (```o```) can (```+```) read (```r```) your file ```someFile.txt```.
+After the above command was executed, others (```o```) can (```+```) read (```r```) your file ```someFile.txt```. Whatever was set for ```w``` and ```x``` flags for others, it remains intact. A slightly different notation:
+
+```bash
+chmod o=r someFile.txt
+```
+
+would ensure that for others, only ```r``` is set, while ```w``` and ```x``` flags are forced to ```-```. In this example:
+
 ```bash
 chmod go-w someFile.txt
 ```
-In the above example, group members to which your account belongs to (```g```) and all others (```o```) can not (```-```) modify or write (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
+group members to which your account belongs to (```g```) and all others (```o```) can not (```-```) modify or write (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
 ```bash
 chmod u+x someFile.txt
 ```
-With the above syntax, the file ```someFile.txt``` is declared to be an executable and only you as a user (```u```) can (```+```) execute it (```x```). Remember that only the files which are executables are taken into account by **Bash** when searching through the content of directories in **PATH** variable. Therefore, when making your own **Linux** command, two formal aspects must be always met:
+With the above syntax, the file ```someFile.txt``` is declared to be an executable and only you as a user (```u```) can (```+```) execute (```x```) it. Remember that only the files which are executables are taken into account by **Bash** when searching through the content of directories in **PATH** variable. Therefore, when making your own **Linux** command, two formal aspects must be always met:
 
 1. the directory containing your executable must be included in **PATH**; 
 2. your executable must have ```x``` permission.
@@ -277,8 +288,10 @@ chmod ugo+rwx someFile.txt
 ```
 Now everybody (you as a user (```u```), group members (```g```)  and others (```o```)), can read (```r```), modify or write to (```w```), or execute your file (```x```). For directories, you can change permissions in one go for all files in all subdirectories, by specifying the flag ```-R``` ('recursive'), i.e. by using schematically:
 ```bash
-chmod -R <some-options-to-change-permissions> <some-directory>
+chmod -R some-options-to-change-permissions someDirectory
 ```
+
+Note that it makes a perfect sense to use ```x``` permission also for directories, because we can then add recursively in one go ```x``` permissions to all files in that directory.
 
 Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
@@ -336,13 +349,13 @@ Before we start developing the new commands from scratch in **Linux**, we need t
 
 In this section we discuss how some arguments to your script can be supplied at execution. This clearly will allow you much more freedom and power in the code development, because nothing needs to be hardcoded in the script body. The very same mechanism can be used also in the implementation of **Bash** functions, as we will see later. We introduce now the so-called _positional parameters_ (or _script arguments_).
 
-**Example:** We want to develop a script, let's say ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just print something like: 
+**Example:** We want to develop a script named ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just print something like: 
 
 ```bash
 My favorite collider is <some-collider>
 My favorite experiment at <some-collider> is <some-experiment>
 ```
-The solution goes as follows. In **nano** edit the file named ```favorite.sh``` with the following content:
+The solution goes as follows. In **nano** edit the file ```favorite.sh``` with the following content:
 ```bash
 #!/bin/bash
 
@@ -352,7 +365,7 @@ echo "My favorite experiment at ${1} is ${2}"
 return 0
 ```
 
-If you now execute this script for instance as:
+If you now execute this script as:
 
 ```bash
 source favorite.sh LHC ALICE
@@ -365,7 +378,7 @@ My favorite collider is LHC
 My favorite experiment at LHC is ALICE
 ```
 
-So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` , and before the next empty character is encountered in the command input, is declared as the 1st positional parameter (or 1st script argument). The value of 1st positional parameter is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on --- in this way you can pass to your script as many arguments as you wish!
+So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` , and before the next empty character is encountered in the command input, was declared as the 1st positional parameter (or the 1st script argument). The value of the 1st positional parameter is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on — in this way you can pass to your script as many arguments as you wish!
 
 Once you fetch programmatically in the body of your script the supplied arguments via variables ```${1}```, ```${2}```, etc. , you can do all sorts of manipulations on them, which can completely modify the behavior of your script. 
 
@@ -373,9 +386,9 @@ Few additional remarks on positional parameters:
 
 * You can programmatically fetch their total number via the  variable: ```$#```
 
-* You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@``` . In most cases of interest, these two variables hold the same result. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"```  or ```"$@"``` . But if you drop the double quotes, there is no difference between the content of special variables ```$*``` and ```$@```
+* You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@``` . In most cases of interest, these two variables are the same. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"``` or ```"$@"``` . But if you drop the double quotes, there is no difference between the content of special variables ```$*``` and ```$@```
 
-* It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator ```!``` — the syntax for the last positional parameter is ``` ${!#}``` . As a side remark, indirect reference ```!``` is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
+* It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator ```!``` — the syntax for the last positional parameter is ``` ${!#}```. As a side remark, indirect reference ```!``` is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
 
   ```bash
   Alice=44 
@@ -386,7 +399,7 @@ Few additional remarks on positional parameters:
 
 In combination with looping, you can programmatically parse over the all supplied arguments to your script (i.e. there is no need to hardwire in the script that you expect exactly a certain number of arguments, etc.). 
 
-**Example**: Proof of the principle. Below is the script ```arguments.sh``` , which uses the **for** loop in **Bash** (to be covered in detail later!), and just counts and prints all arguments supplied to it:
+**Example**: Proof of the principle. Below is the script ```arguments.sh```, which uses the **for** loop in **Bash** (to be covered in detail later!), and just counts and prints all arguments supplied to the script:
 
 ```bash
 #!/bin/bash
@@ -415,15 +428,15 @@ a
 bbb
 cc
 ```
-By using this functionality, you can instruct your own script to behave differently if certain options or arguments are passed to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command exists to ease the parsing and interpretation of positional parameters (see the documentation of advanced **getopts** ('get options') command).
+By using this functionality, you can instruct a script to behave differently if certain options or arguments are supplied to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command exists to ease the parsing and interpretation of positional parameters (see the documentation of advanced **getopts** ('get options') command).
 
 
 
 ### 3. Your first **Linux/Bash** command: Bash functions <a name="first_command"></a>
 
-As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, has its own environment, etc., we can consider **Bash** functions. 
+As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, has its own environment, etc., we can consider **Bash** function. 
 
-Functions in **Bash** are very similar to scripts, however, the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well-defined notion of _local environment_. This means basically that if you have the variable with the same name in your current terminal session, and in the script or in the function you are executing, it's much easier to prevent the clash of these variables if you use functions. In addition, usage of functions to great extent resembles the usage of **Linux** commands, and in this sense, your first function developed in **Bash** can be also treated as your first **Linux** command! 
+Functions in **Bash** are very similar to scripts, however, the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well-defined notion of _local environment_. This means basically that if you have the variable with the same name in your current terminal session, and in the script or in the function you are executing, it's much easier to prevent the clash of these variables if you use functions. In addition, usage of functions to great extent resembles the usage of **Linux** commands, and it is in this sense, that your first function developed in **Bash** can be also treated as your first **Linux** command! 
 
 Example implementation of **Bash** function could look like:
 
@@ -435,7 +448,7 @@ function Hello
  # This function prints the welcome message 
  # Usage: Hello <some-name>
 
- echo "Hello today!"
+ echo "Hello"
  local Name="${1}"
  echo "Your name is: ${Name}"
 
@@ -458,15 +471,15 @@ Hello Alice
 The output is:
 
 ```bash
-Hello today!
+Hello
 Your name is: Alice
 ```
 
 When compared to the script implementation, there are few differences:
 
-* Usage of keyword **function** (an alternative syntax exists, ```<some-name>()```, but it's really a matter of taste which one you prefer)
+* Usage of keyword **function** (an alternative syntax exists, ```someName()```, but it is really a matter of taste which one you prefer)
 * Body of the function must be embedded within ```{ ... }```
-* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you call the function. If a variable is defined in the function without the keyword **local**, call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
+* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
 
 The rest is the same as for the scripts:
 
@@ -486,12 +499,12 @@ If you have added the definitions of your personal functions in ```${HOME}/.bash
 
 We have seen that your very first input in the terminal, before the empty character is encountered, will be interpreted by **Bash** as the command name, where the command name can stand for an alias, built-in **Bash** command (e.g. **echo**), **Linux** command (e.g. **date**), **Bash** functions (e.g. **Hello** from the previous example), etc. But what happens if we have for instance alias and **Linux** command named in the same way? For instance:
 ```bash
-alias date='echo "Hi!"'
+alias date='echo "Hi"'
 ```
 If after this definition we type in the terminal **date**, we get:
 ```bash
 date
-Hi!
+Hi
 ```
 What now? Have we just accidentally overwritten and lost permanently the command **date**? Not quite, what happened here is that the alias execution got precedence over the **Linux** command named in the same way. But both the alias **date** and the command **date** now exist simultaneously on your computer.
 
@@ -508,16 +521,22 @@ Given the above ordering of command precedence, some care is definitely needed w
 Additional profiling of command precedence can be achieved with **Bash** built-in commands **builtin**, **command**, and **enable** (check their 'help' pages in **Bash**). For instance, we can force that always the **Bash** built-in command **echo** is executed, even if the alias or function named **echo** exists, with the following syntax:
 
 ```bash
-builtin echo <some-text>
+builtin echo some-text
 ```
 
-If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back:
+**Reminder:** If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back permanently:
 
 ```bash
-unalias <some-name>
+unalias someAliasName
 ```
 
-In the case you are not sure to which one of the five cases above the command you intend to use in the terminal corresponds to, use the **Bash** built-in command **type**:
+or temporarily with
+
+```bash
+\someAliasName
+```
+
+In the case you are not sure to which one of the five cases above the command you intend to use corresponds to, use the **Bash** built-in command **type**:
 
 ```bash
 type date
@@ -544,7 +563,7 @@ type Hello
 Hello is a function
 Hello ()
 {
-    echo "Hello!";
+    echo "Hello";
     local Name="${1}";
     echo "Your name is: ${Name}";
     return 0
@@ -553,7 +572,7 @@ Hello ()
 
 This is quite handy, because if you have forgotten the details of the implementation of this particular function, you do not need to dig into the file ```functions.sh``` where a lot of your additional functions can be implemented in the meanwhile. 
 
-Another argument is that this way you can see immediately the implementation of some **Bash** functions which were not developed by you (therefore, you have no idea where in the file system is the file with their source code), but are nevertheless available in your terminal session:
+Note also that this way you can see immediately the implementation of some **Bash** functions which were not developed by you (therefore, you have no idea where in the file system is the file with their source code), but are nevertheless available in your terminal session:
 
 ```bash
 type quote
