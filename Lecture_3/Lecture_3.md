@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20200411
+**Last update**: 20210411
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -408,7 +408,7 @@ echo "Total number of arguments is: $#"
 echo "The second argument is: ${2}"
 echo "The very last argument is: ${!#}"
 
-for Arg in $*; do
+for Arg in "$@"; do
  echo "${Arg}"
 done
 

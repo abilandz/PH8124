@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20200602
+**Last update**: 20210411
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -24,11 +24,17 @@ First, let us start with the execution details of scripts. In general, we run an
 ```bash 
 source someScript.sh # sourcing the script
 ```
-When executed this way, all lines in the script are read and executed by **Bash** one-by-one, just as if they were typed separately in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the keyword **return**. Script does not run in a separate process (more on this later).
+When executed this way, all lines in the script are read and executed by **Bash** one-by-one, just as if they were typed separately line by line in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the keyword **return**. Script does not run in a separate process (more on this later).
 ```bash 
 someScript # executing the script 
 ```
-This way, you are running your script as any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file has also the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal, and cannot modify it globally. Therefore, it is much safer to run scripts this way, if you want to keep your current shell environment clean. The exit status of the executed script is specified with the keyword **exit**. When executed this way, the script runs in a separate process (more on this later).
+This way, you are running your script as any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file has also the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal, and cannot modify it globally. Therefore, it is much safer to run scripts this way, if you want to keep your current shell environment clean. The exit status of the executed script is specified with the keyword **exit**. When executed this way, the script runs in a separate process (more on this later). 
+
+If you do not want to make the script executable by adding it (```x```) permission, you can always run the shell explicitly and tell it to process the file like it was an executable, with the following syntax:
+
+```bash
+bash someScript.sh # executing the non-executable script
+```
 
 On the other hand, functions behave differently. After you source the file where a function is implemented, **Bash** stores that function in the computer's memory, and from that point onwards you can use that function as any other **Linux** or **Bash** command. For functions, there is no need to bother with using keyword **source**, setting the execute permission, modifying **PATH**, etc. That means that if you have added to your ```~/.bashrc``` the following line:
 
@@ -41,7 +47,7 @@ Functions are much more suitable for making long scripts modular. In terms of en
 
 If a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation, then executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process.
 
-Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body).  For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it's easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
+Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body).  For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
 
 We summarize the above thorough comparison with the following final conclusion: Use **Bash** scripts only for the very simple cases and **Bash** functions for everything else.
 
@@ -49,7 +55,7 @@ We summarize the above thorough comparison with the following final conclusion: 
 
 
 ### 2. Command chain: **&&** and **||** <a name="chain"></a>
-Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1.. 255). For instance, we would like multiple commands to execute one after another, but only if all of them execute successfully. As soon as one command has failed, we would like immediately to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
+Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1.. 255). For instance, we would like multiple commands to execute one after another, but only if all of them executed successfully. As soon as one command has failed, we would like immediately to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
 
 The command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second command will be executed only if the first one executed successfully. For instance:
 
@@ -66,7 +72,7 @@ mkdirrr: command not found
 
 In this case, **echo** is not executed because the failure of **mkdirrr** has broken the command chain ```&&```.
 
-On the other hand, if two commands are chained by ```||``` operator, the second command in the chain will be executed only if the first command has failed:
+If two commands are chained by ```||``` operator, the second command in the chain will be executed only if the first command has failed:
 
 ```bash
 mkdirrr someDirectory || echo "Cannot make directory. Sorry."
@@ -78,12 +84,12 @@ The frequent use case of the command chain is to combine both ```&&``` and ```||
 
 1. start a command chain by grouping multiple commands with the ```&&``` operator;   
 
-2. append at the end of command chain the very last command with the  ```||``` operator.     
+2. append at the end of command chain the very last command with the ```||``` operator.     
 
 Schematically:
 
 ```bash
-<command1> && <command2> && <command3> ... || <lastCommand>
+command1 && command2 && command3 ... || lastCommand
 ```
 
 The main point behind this construct is the following: **lastCommand** is executed if and only if any of the commands **command1**, **command2**, ..., has failed. The command **lastCommand** is not executed only if all of the commands **command1**, **command2**, ..., have executed successfully. Typically, the last command in the above chain would be some error printout accompanied by the code termination, either with **exit** or **return**. Therefore, the **lastCommand** is a sort of safeguard for the execution of all previous commands in the chain. 
@@ -120,11 +126,11 @@ The first command in the ```&&``` chain executed successfully, and the execution
 
 In practice, the most frequent use case of the command chain is illustrated schematically:
 ```bash
-<someCommand> || return 1 
-<someOtherCommand> || return 2
+someCommand || return 1 
+someOtherCommand || return 2
 ...
 ```
-This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible by inspecting the content of that variable upon termination, to fix programmatically the particular reason of the failure, without intervening manually in the code. 
+This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible by inspecting its content upon termination, to fix programmatically the particular reason of the failure, without intervening manually in the code. 
 
 
 
