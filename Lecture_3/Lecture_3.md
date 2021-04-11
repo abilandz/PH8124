@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20200410
+**Last update**: 20200411
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -15,7 +15,7 @@
 
 ### 1. **Linux** file system <a name="file_system"></a>
 
-We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common, widely accepted, structure named _Filesystem Hierarchy Standard (FHS)_. The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
+We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common, widely accepted, structure named _Filesystem Hierarchy Standard (FHS)_ (https://refspecs.linuxfoundation.org/fhs.shtml) . The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
 ```bash
 cd /
 ls
@@ -492,6 +492,23 @@ The rest is the same as for the scripts:
 source ${HOME}/functions.sh
 ```
 If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands --- in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
+
+Finally, we remark that functions are superior to aliases: anything that can be done with an alias can be done better with a function. For instance, the classical alias definition:
+
+```bash
+alias ll='ls -alF'
+```
+
+can be reimplemented as a **Bash** function in the following way:
+
+```bash
+function ll 
+{ 
+ ls -alF "$@"; 
+}
+```
+
+Note that only the above implementation of function can easily be generalized --- within the function body we can programatically manipulate the arguments and, for instance, use different formatting options for the printout depending upon which directory we are in.
 
 
 
