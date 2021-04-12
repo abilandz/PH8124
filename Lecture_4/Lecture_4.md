@@ -325,7 +325,7 @@ Later we will see that such a code branching can be optimized even further with 
 
 
 ### 4. Catching user input: **read** <a name="read"></a>
-We have seen already how variables can be initialized in a non-interactive way, by initializing them with some concrete values at declaration. We will see now how the user input from the keyboard can be on-the-fly stored directly in some variable. In essence, this feature enables **Bash** scripts and functions to be interactive, in a sense that during the code execution (i.e. at run time), with your input from the keyboard you can steer the code execution in one direction or another. This is achieved with a very powerful **Bash** built-in command **read**.
+We have seen already how variables can be initialized in a non-interactive way, by initializing them with some concrete values at declaration. We will see now how the user's input from the keyboard can be on-the-fly stored directly in some variable. In essence, this feature enables **Bash** scripts and functions to be interactive, in a sense that during the code execution (i.e. at runtime), with your input from the keyboard you can steer the code execution in one direction or another. This is achieved with a very powerful **Bash** built-in command **read**.
 
 By default, the command **read** saves input from the keyboard into its built-in variable **REPLY**. Alternatively,  you can specify yourself directly the name of the variable(s) which will store the input from the keyboard. This is best illustrated with examples.
 
@@ -335,11 +335,11 @@ By default, the command **read** saves input from the keyboard into its built-in
 read
 ```
 
-After you have executed **read** in the terminal, this command is waiting for your input from the keyboard. Just type some example input, e.g. ```1 22 333```, and press 'Enter'. Now you can programmatically retrieve the input from the keyboard:  
+After you have executed **read** in the terminal, this command is waiting for your input from the keyboard. Just type some example input, e.g. ```1 22 abc```, and press 'Enter'. Now you can programmatically retrieve the input from the keyboard:  
 
 ```bash
 echo ${REPLY} 
-1 22 333
+1 22 abc
 ```
 
 Instead of relying on built-in variable **REPLY**, another generic usage of **read** is to specify one or more arguments explicitly, in the following schematic way:
@@ -387,15 +387,15 @@ Var1 is 1
 Var2 is 22 a bb
 ```
 
-The branching of the code execution at run-time, depending on the user's input from the keyboard, can be achieved in the following simplified and schematic way:
+The branching of the code execution at runtime, depending on the user's input from the keyboard, can be achieved in the following simplified and schematic way:
 ```bash
 read Answer
 [[ ${Answer} == yes ]] && do-something-if-yes
 [[ ${Answer} == no ]] && do-something-if-no
 ```
-In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers to the user a lot of flexibility on how to handle and modify the code execution at run-time.
+In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers to the user a lot of flexibility on how to handle and modify the code execution at runtime.
 
-The default behavior of **read** can be modified with a bunch of options (execute in the terminal **help read** for the full list). Here we summarize only the most frequently used ones:
+The default behavior of **read** can be modified with a bunch of options (checkout **help read** for the full list). Here we summarize only the most frequently used ones:
 
 ```bash
 -p : specify prompt
@@ -431,7 +431,7 @@ read -t 5
 ```
 the user is given 5 seconds to provide some input from a keyboard. If the user within the specified time interval does not provide any input, the **read** command reaches the timeout and terminates. The code execution proceeds like nothing happened. Therefore, within the specified time interval we are given the chance to type something and to modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and your scripts both interactive and flexible during execution.
 
-The command **read** can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with loops---this is covered at the end of today's lecture.
+The command **read** can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with the **while** loop --- this is covered at the end of today's lecture.
 
 
 
@@ -440,15 +440,15 @@ The command **read** can be used in some other contexts as well, e.g. to parse t
 We have already seen that, whatever is typed first in the terminal and before the next empty character is encountered, **Bash** will try to interpreted as command, function, etc. For this reason, we cannot do directly arithmetic in **Bash**. For instance:
 
 ```bash
-1+1
+$ 1+1
 1+1: command not found
 ```
 is producing an error, because a command named **1+1** doesn't exist. Other trials produce slightly different error messages, but the reason for the failure is aways the same:
 
 ```bash
-1+ 1
+$ 1+ 1
 1+: command not found
-1 + 1
+$ 1 + 1
 1: command not found
 ```
 
@@ -471,7 +471,7 @@ Counter=1
 echo ${Counter} # prints 11
 ```
 
-Within ```(( ... ))``` we can use all standard operators to perform integer arithmetic: ```+, -, /, *, %, ++, --, **, +=, -=, /=, *=``` , with self-explanatory meanings. 
+Within ```(( ... ))``` we can use all standard operators to perform integer arithmetic: ```+, -, /, *, %, ++, --, **, +=, -=, /=, *=``` , with the self-explanatory meanings. 
 
 **Example:** How to calculate powers of integers in **Bash**? We can raise an integer to some exponent in the following way:
 
@@ -487,17 +487,17 @@ echo $(($Int**$Exp)) # prints 25
 echo $((${Int}**${Exp})) # prints 25
 ```
 
-but clearly it's not as clear and elegant as the very first version. 
+but clearly it is not as clear and elegant as the very first version. 
 
 Operator ```(( ... ))``` can handle only integers, both in terms of input and output. An attempt to use floating point numbers leads to an error:
 
 ```bash
-echo $((1+2.4))
+$ echo $((1+2.4))
 bash: 1+2.4: syntax error: invalid arithmetic operator (error token is ".4")
 ```
-Floating point arithmetic cannot be done directly in **Bash**, but this is not a severe limitation, because we can always invoke some **Linux** command to perform it, like **bc** ('basic calculator'), which is always available---more on this later!
+Floating point arithmetic cannot be done directly in **Bash**, but this is not a severe limitation, because we can always invoke some **Linux** command to perform it, like **bc** ('basic calculator'), which is always available ---more on this later!
 
-When it comes to division which doesn't yield as the final result an integer, **Bash** doesn't report the error, instead it reports as the result the integer after the fractional part (remainder) is discarded:
+When it comes to division which does not yield as the final result an integer, **Bash** does not report the error, instead it reports as the result the integer after the fractional part (remainder) is discarded:
 
 ```bash
 echo $((7/3)) # prints 2 
@@ -525,12 +525,34 @@ Besides supporting integer arithmetic operators within, ```(( ... ))``` we can a
 
 and so on. 
 
+We also comment on the following common mistake: The meaning of operator ```+=``` within and outside of ```(( ... ))``` is different. That is illustrated with the following examples:
+
+```bash
+NumberOfWords=0
+echo $NumberOfWords # prints 0
+NumberOfWords+=1   
+echo $NumberOfWords # prints 01  
+NumberOfWords+=1   
+echo $NumberOfWords # prints 011  
+```
+
+When used outside of ```(( ... ))```, the operator ```+=``` is just a shorthand operator to combine strings. On the other hand:
+
+```bash
+NumberOfWords=0
+echo $NumberOfWords # prints 0
+((NumberOfWords+=1))   
+echo $NumberOfWords # prints 1  
+((NumberOfWords+=1))   
+echo $NumberOfWords # prints 2
+```
+
 The most frequent use case of ```(( ... ))``` operator is to increment the content of variable within loops, which we cover next.
 
 
 
 ### 6. Loops: **for**, **while** and **until** <a name="loops"></a>
-Just like any other programming language **Bash** also supports loops. The most frequently used loops are **for** and **while** loops, and only they will be discussed in this section in detail. The third possibility, the loop **until**, differs only marginally from the **while** loop, and therefore it won't be addressed separately. In particular, the **while** loop runs the loop _while_ the condition is ```true```, where the **until** loop runs the loop _until_ the condition is ```true``` (i.e. while the condition is ```false```).  Besides that, there is no much of a difference between these two versions, and it's a matter of taste which one is preferred to be used. On the other hand, there are a few non-trivial differences between **for** and **while** loops, both in terms of syntax and use cases.
+Just like any other programming language **Bash** also supports loops. The most frequently used loops are **for** and **while** loops, and only they will be discussed in this section in detail. The third possibility, the loop **until**, differs only marginally from the **while** loop, and therefore it will not be addressed separately. In particular, the **while** loop runs the loop _while_ the condition is ```true```, where the **until** loop runs the loop _until_ the condition is ```true``` (i.e. while the condition is ```false```).  Besides that, there is no much of a difference between these two versions, and it is a matter of personal taste which one is preferred in practice. On the other hand, there are a few non-trivial differences between **for** and **while** loops, both in terms of syntax and use cases.
 
 The syntax of **for** and **while** loops is fairly straightforward, and can be grasped easily from a few concrete examples. We start first with the examples for the **for** loop.
 
@@ -548,7 +570,7 @@ The output is:
 3
 4
 ```
-This version of **for** loop iterates over all elements of a list. These elements are specified between keyword **in** and delimiter ```;```. If you omit ```;``` the list needs to be terminated with the new line. Therefore, a completely equivalent implementation is: 
+This version of **for** loop iterates over all elements of a list. These elements are specified between the keyword **in** and delimiter ```;```. If you omit ```;``` the list needs to be terminated with the new line. Therefore, a completely equivalent implementation is: 
 
 ```bash
 for Var in 1 2 3 4
@@ -575,7 +597,7 @@ Later we will see that we can even loop directly over the output of some command
 
 We have already seen that we can loop over all arguments supplied to a script or a function in the following way:
 ```bash
-for Arg in $*; do
+for Arg in "$@"; do
  echo "Arg is: ${Arg}"
 done
 ```
@@ -625,12 +647,12 @@ Another frequently used case is illustrated in the following example:
 
 ```bash
 while [[ -f someFile ]]; do # check if the file exists
- ...  some work involving the file someFile ...
+ ... some work involving the file someFile ...
  sleep 1m # pause code execution for 1 minute
 done
 ```
 
-This loop will keep repeating as long as the file ```someFile``` is available. When the file is deleted ```[[ -f someFile ]]``` evaluates to ```false```, and the loop terminates.
+This loop will keep repeating as long as the file ```someFile``` is available. When the file is deleted, ```[[ -f someFile ]]``` evaluates to ```false```, and the loop terminates.
 
 As a side remark, in the above example we have used the trivial, nevertheless sometimes very handy, **Linux** command **sleep**. This command does nothing, except that it delays the code execution for the time interval specified via the argument. The argument can be interpreted as the time interval either in seconds (s), minutes (m), hours (h) or days (d):
 
@@ -639,7 +661,7 @@ sleep 10m # pause the code execution for 10 minutes
 sleep 2h  # pause the code execution for 2 hours
 ```
 
-This command can be used in the simplest cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of infinite loops.
+This command can be used in some simple cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of infinite loops.
 
 **Example 3:** Infinite loops with the specified periodicity.
 
@@ -654,7 +676,7 @@ done
 
 In the above code snippet, we have used the **Bash** built-in command **true**, which does nothing except it returns the success exit status 0 each time it is called. There is also **Bash** built-in command **false**, which does nothing except it returns the error exit status 1. 
 
-A more sophisticated way to set up the scheduled execution of your code can be achieved with the command **crontab** (check out its man page). 
+A more sophisticated way to set up the scheduled execution of your code can be achieved with the command **crontab** (check its man page). 
 
 With the keywords **continue** and **break** you can either continue or bail out from **for**, **while** and **until** loops. Outside of these three loops these commands are meaningless, and will produce an error. Their usage is illustrated with the following code snippet:
 
@@ -694,7 +716,7 @@ In the next section, we discuss how we can combine some of these different funct
 
 
 ### 7. Parsing the file content: **while**+**read** <a name="parsing_files"></a>
-Very frequently, we need within a script or a function to parse through the content of an external file, and to perform some programmatic action line by line. This can be achieved very conveniently by combining the **while** loop and the **read** command. We remark, however, that this is not the most efficient way to parse the file content, its usage is recommended only for the short files.
+Very frequently, we need within a script or a function to parse through the content of an external file, and to perform some programmatic action line-by-line. This can be achieved very conveniently by combining the **while** loop and the **read** command. We remark, however, that this is not the most efficient way to parse the file content, its usage is recommended only for the short files.
 
 As a concrete example, let us have a look at the following script, named ```parseFile.sh```. This script takes one argument and that argument must be a file:
 
