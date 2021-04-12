@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20210411
+**Last update**: 20210412
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -135,7 +135,18 @@ This way, it is possible to add easily an additional layer of protection for the
 
 
 ### 3. Test construct: **[[ ... ]]** <a name="test"></a>
-For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not work with some older **Bash** versions. Test constructs also return the exit status --- if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
+For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not work with some older **Bash** versions. There are corner cases where their behaviour differs, since their implementation is different:
+
+```bash
+$ type [[
+[[ is a shell keyword
+$ type [
+[ is a shell builtin
+```
+
+For instance, the quotes can be omitted inside ```[[``` but not inside ```[```. But in most cases of practical interest,   ```[[ ... ]]``` and ```[ ... ]``` behave in the same way and yield the same results.
+
+Test constructs also return the exit status --- if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
 
 * General case: ```-z, -n, ==, != , =~```
 * Integers: ```-gt, -ge, -lt, -le, -eq```
@@ -225,7 +236,12 @@ Quite frequently, if your script or function demands that a user must provide ex
 ```bash
 [[ $# -eq 2 ]] || return 1
 ```
-In the above example, if a user did not provide exactly two arguments, the code execution terminates.
+In the above example, if a user did not provide exactly two arguments, the code execution terminates. It is always safer to compare two integers with ```-eq``` than to treat them as strings with ```==```, due to corner cases like this one:
+
+```bash
+[[ 1 == 01 ]] && echo Yes || echo No # prints No
+[[ 1 -eq 01 ]] && echo Yes || echo No # prints Yes
+```
 
 Since the meaning of integer operators is rather obvious, we just provide the executive summary of their usage with the following table:
 
@@ -236,8 +252,6 @@ Since the meaning of integer operators is rather obvious, we just provide the ex
 | [[ ${Var1} -lt ${Var2} ]] | true (0) if Var1 is smaller than Var2 |
 | [[ ${Var1} -le ${Var2} ]] | true (0) if Var1 is smaller than or equal to Var2 |
 | [[ ${Var1} -eq ${Var2} ]] | true (0) if Var1 is equal to Var2 |
-
-We can of course check if the two integers are the same by using the more general string comparison operator ```==``` (all variables are strings in **Bash**), but whenever you are sure that variables must contain integer content, ```-eq``` is clearly preferred over ```==```.
 
 
 #### Files and directories
@@ -281,12 +295,18 @@ The executive summary of the most important test operators in this last category
 | [[ -f ${Var} ]] | true (0) if Var is the existing file |
 | [[ -d ${Var} ]] | true (0) if Var is the existing directory |
 | [[ -e ${Var} ]] | true (0) if Var is existing file or directory |
-| [[ -s ${Var} ]] | true (0) if Var is a file, and that file is not empty |
+| [[ -s ${Var} ]] | true (0) if Var is a file, and is not empty |
 | [[ ${Var1} -nt ${Var2} ]] | true (0) if a file Var1 is newer than a file Var2 |
 | [[ ${Var1} -ot ${Var2} ]] | true (0) if a file Var1 is older than a file Var2 |
 
+When it makes sense and it is convenient, it is possible to refine further the above examples with the negation operator ```!```, for instance:
+
+```bash
+[[ ! -f ${Var} ]] # true (0) if Var is NOT the existing file
+```
 
 In this section we have summarized the most important options --- for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
+
 ```bash
 help test
 ```
@@ -294,7 +314,7 @@ In the end, we indicate that the test construct ```[[ ... ]]``` can be used to b
 
 ```bash
 someCommand # variable $? gets updated with the exit status of this command
-ExitStatus=$? # store permanently the exit status of previous command
+ExitStatus=$? # store permanently the exit status of previous command in this variable
 [[ ${ExitStatus} -eq 0 ]] && some-code-if-command-worked
 [[ ${ExitStatus} -eq 1 ]] && some-other-code-to-handle-this-particular-error-state
 [[ ${ExitStatus} -eq 2 ]] && some-other-code-to-handle-this-particular-error-state
