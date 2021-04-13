@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20200528
+**Last update**: 20210413
 
 
 ### Table of Contents
@@ -16,14 +16,14 @@
 
 
 ### 1. Command substitution: $( ... ) <a name="command_substitution"></a>
-We have already seen that a value can be stored in a variable by explicit assignment (using the operator ```=```),  or of the user supplies variables as command line arguments (positional parameters) to a script or a function. In practice, however, one frequently wants to store the output of some command directly into the variable, or even the content of an external file. This can be achieved with the so-called _command substitution operator_ ```$( ... )```.  For instance, we have already seen that the file size in bytes can be printed with the following:
+We have already seen that a value can be stored in a variable by explicit assignment (using the operator ```=```),  or if the user supplies variables as command line arguments (positional parameters) to a script or a function. In practice, however, one frequently wants to store the output of some command directly into the variable, or even the content of an external file. This can be achieved with the so-called _command substitution operator_ ```$( ... )```.  For instance, we have already seen that the file size in bytes can be printed with the following:
 
 ```bash
-stat -c %s someFile.log
+stat -c %s someFile
 ```
 But how can we fetch the above printout programmatically, and do some manipulation with it later in our code? This is precisely the case when we need to use the command substitution operator:
 ```bash
-FileSize=$(stat -c %s someFile.log)
+FileSize=$(stat -c %s someFile)
 ```
 Now the size of file ```someFile.log``` is stored directly in the variable **FileSize** and from this point onwards we can reference content of that variable in the same way as the content of any other variable:
 ```bash
@@ -43,9 +43,9 @@ echo "Today is $(date) . What a nice day..."
 ```
 The command substitution operator literally in-lined the output of **date** command at the place where it was used. This way, we can very elegantly achieve the desired more complex functionality by combining in the very same command input multiple commands, which otherwise we would need to execute one-by-one. 
 
-Command substitution operator ``` $( ... ) ``` is a very neat construct, and it is used frequently. One classical use case is to avoid hardwiring any specific information in your code, since it can change from one computer to another.
+Command substitution operator ``` $( ... ) ``` is a very neat construct, and it is used frequently. One classical use case is to avoid hardwiring any specific information in your code, since that specification can change from one computer to another. In this way, we can improve a lot the portability of code. 
 
-**Example 2**: You are working in parallel on two computers, which do not have the same version of the command that you use in your code. You would like to use if possible all the latest functionalities of that command, but if that's not available, you would still like to run your code with the older version of that command. Can you make the code transparent to such a difference? You can do it schematically as follows:
+**Example 2**: You are working in parallel on two computers, which do not have the same version of the command that you use in your code. You would like to use if possible all the latest functionalities of that command, but if that is not available, you would still like to run your code with the older version of that command. Can you make the code transparent to such a difference? You can do it schematically as follows:
 
 ```bash
 Version=$(commandName -v) # flag '-v' typically prints the version
@@ -60,26 +60,26 @@ You can fearlessly nest the command substitution operators, like in the followin
 
 To solve this problem, we need first to introduce two widely used **Linux** commands in this context: **basename** and **dirname**. The command **basename** is typically used in the following way: It takes as an argument the absolute path to some directory or file, and drops the part which corresponds to an absolute path. This is illustrated with the following code snippets:
 ```bash
-DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
-basename ${DirectoryPath}
+$ DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
+$ basename ${DirectoryPath}
 Lecture_5 # only the directory name is printed
 ```
 On the other hand, the command **dirname** does the opposite: It prints only the absolute path to the specified directory or file. If we reuse the above example: 
 ```bash
-DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
-dirname ${DirectoryPath} 
+$ DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
+$ dirname ${DirectoryPath} 
 /home/abilandz/Lecture/PH8124 # only the abs. path is printed
 ```
 The commands **basename** and **dirname** can be used in exactly the same way for files.
 
 Therefore, the solution to our initial problem can be fairly elegant and concise, if we use these two commands in combination with command substitution operator:
 ```bash
-DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
-ParentDirectoryName=$(basename $(dirname $DirectoryPath))
-echo $ParentDirectoryName
+$ DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
+$ ParentDirectoryName=$(basename $(dirname $DirectoryPath))
+$ echo $ParentDirectoryName
 PH8124 # only the parent directory name is printed
 ```
-We can use multiple commands within the same command substitution operator, they just need to be separated with delimiter ```;```, as in the following example:
+We can use multiple commands within the same command substitution operator, they just need to be separated with delimiter ```;``` as in the following example:
 ```bash
 Var=$(date;pwd)
 echo "$Var"
@@ -91,7 +91,7 @@ Thu May 14 11:58:28 CEST 2020
 /home/abilandz/Lecture
 ```
 
-It is perfectly fine to inline the output of your function with this operator:
+It is perfectly fine to inline the output of your function with this operator as well:
 
 ```bash
 echo "Output of my function is: $(someFunction) . Very nice!" 
@@ -120,9 +120,9 @@ This great functionality circumvents the necessity of dealing with too many temp
 cat someFile # reads the content of a physical file
 echo "${FileContent}" # references the content of variable
 ```
-However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file: if we store that information in the variable, we have removed completely the dependency of our code on that external file.
+However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file --- if we store that information in the variable, we have removed completely the dependency of our code on that external file.
 
-The command substitution operator is frequently used in combination with the **for** loop, when we want to iterate over all elements in the output of some command. Also in this context distinct elements of the list are separated with one or more empty characters. This is best illustrated with the following example:
+The command substitution operator is frequently used in combination with the **for** loop, when we want to iterate over all elements in the output of some command. Also in this context the distinct elements of the list are separated with one or more empty characters. This is best illustrated with the following example:
 
 **Example 4**: How can we loop over all files in the current directory and print the size of each file?
 
@@ -137,26 +137,26 @@ Note that if you would have used the lengthy output of **ls** by specifying the 
 
 ```bash
 for Var in $(date); do
- echo $Var
+ echo "Var = $Var"
 done
 ```
 The output is:
 ```bash
-Thu
-May
-14
-13:13:50
-CEST
-2020
+Var = Thu
+Var = May
+Var = 14
+Var = 13:13:50
+Var = CEST
+Var = 2020
 ```
-This is another example to illustrate the importance of empty character as being the default field separator in **Linux/Bash**.
+This was yet another example to illustrate the importance of empty character as being the default field separator in **Linux/Bash**.
 
 In the end, we would like to remark that the backticks ``` ` ... ` ``` do the same thing as command substitution operator ``` $( ... ) ```:
 ```bash
 echo "Today is: $(date) . Thanks for the info."
 echo "Today is: `date` . Thanks for the info."
 ```
-**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` doesn't work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferably used in **Bash** instead of backticks ``` ` ... ` ```.
+**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` doesn't work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferably used in **Bash** scripts instead of backticks ``` ` ... ` ```.
 
 
 
@@ -174,7 +174,7 @@ Each command that you execute has these three standard I/O channels set to some 
 
 For instance, when the command **date** executes successfully, it produces the following:
 ```bash
-date
+$ date
 Sun May 17 11:53:03 CEST 2020
 ```
 The above printout is an example _stdout_ stream of command **date**.  On the other hand, when the command **date** fails, for instance when it is called with the flag which is not supported:
@@ -211,12 +211,12 @@ Sun May 17 11:53:03 CEST 2020
 
 In this sense, by using ```1>``` redirection, the printout of some command during execution is stored permanently in the physical file on a local disk.
 
-Analogously, we can also programmatically redirect the error message of command, just need to change the file descriptor:
+Analogously, we can also programmatically redirect the error message of command, we just need to change the file descriptor:
 
 ```bash
 date -q 2> error.log
 ```
-It's perfectly feasible to combine both examples on the same line:
+It is perfectly feasible to combine both examples on the same line:
 ```bash
 someCommand 1> output.log 2> error.log
 ```
@@ -231,11 +231,11 @@ If we re-execute the above examples, the previous content of specified files wil
 
 If the file descriptor number is not specified, it is defaulted to 1, i.e. ```>``` is exactly the same as ```1>```, and ```>>``` is exactly the same as ```1>>```.
 
-Especially in the older **Bash** scripts you will see also ```2>&1``` redirection, but it has exactly the same meaning as ```&>```, which was added only in more recent versions of **Bash**. The redirector ```2>&1``` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) has been sent. When ```2>&1``` is used, the order matters --- first we need to indicate where ```1>``` is redirected, and only then ```2>&1``` makes sense to use. Because of this limitation, in practice it's much easier to use ```&>``` in such a context.
+Especially in the older **Bash** scripts you will see also ```2>&1``` redirection, but it has exactly the same meaning as ```&>```, which was added only in more recent versions of **Bash**. The redirector ```2>&1``` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) has been sent. When ```2>&1``` is used, the order matters --- first we need to indicate where ```1>``` is redirected, and only then it makes sense to use ```2>&1```. Because of this limitation, in practice it is much easier to use ```&>``` in such a context.
 
  ![](blackHole.jpg)
 
-There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the useless printout of some verbose command in the terminal, and you do not want to waste the disk space either to redirect it to some file. Quite frequently, some commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
+There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, some commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
 
 **Example 1:** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? 
 
@@ -245,11 +245,11 @@ This problem is solved with the following code snippet:
 someCommand 1>someFile 2>/dev/null
 ```
 
-With the above construct, the file ```someFile``` will contain only the successful output of ```someCommand```. On the other hand, all error messages are permanently lost, because they were redirected to the ```/dev/null```.
+With the above construct, the file ```someFile``` will contain only the successful output of ```someCommand```. On the other hand, all error messages are permanently lost, because they were redirected to ```/dev/null```.
 
 **Example 2:** How to set programmatically separate _stdout_ and _stderr_ streams in your own code? 
 
-This question is answered with the following concrete example, in which a function expects some arguments from the user. If the user supplied arguments, the functions prints successfull _stdout_ stream, and if the user failed to provide arguments, it prints the error message via _stderr_ stream:
+This question is answered with the following concrete example, in which a function expects some arguments from the user. If the user supplied arguments, the functions prints successful _stdout_ stream, and if the user failed to provide arguments, it prints the error message via _stderr_ stream:
 
 ```bash
 function myFunction
@@ -273,7 +273,7 @@ myFunction 1>output.log 2>error.log
 
 In the above example, no arguments were supplied. This is treated as an error within the function and it triggers its _stderr_ stream, which is the message defined as 'Error: No arguments' in the function body.
 
-Finally, let us also say a few words about the last file descriptor 0, _stdin_ ('standard input'). In general, _stdin_ comes from the keyboard, but we can also feed a command with the content of some file. Schematically, we would use:
+Let us also say a few words about the last file descriptor 0, _stdin_ ('standard input'). In general, _stdin_ comes from the keyboard, but we can also feed a command with the content of some file. Schematically, we would use:
 
 ```bash
 someCommand < someFile
