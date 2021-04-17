@@ -3,14 +3,16 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20210413
+**Last update**: 20210417
 
 
 ### Table of Contents
 1. [Command substitution: **$( ... )**](#command_substitution)
 2. [Input/Output (I/O) and redirections](#io)
 3. [Code blocks and brace expansion: **{ ... }**](#code_blocks_and_brace_expansion)
-4. [Conditional statements](#conditional_statements)
+4. [Conditional statements](#conditional_statements)  
+	  A) [if-elif-else-fi](#if)   
+	 B) [case-in-esac](#case)      
 
 
 
@@ -293,7 +295,7 @@ When you are checking the content of some file with **cat**, you are essentially
 
 Clearly, the file descriptors are an extremely nice feature, but they would be even nicer if we would be able to use them to handle the output streams of multiple commands in one go, instead of redirecting the output stream of each command separately. This is possible in **Bash** by using the _code blocks_.
 
-**Bash** code block is basically any sequence of commands within curly braces ```{ ... }```. 
+The code block in **Bash** is basically any sequence of commands within curly braces ```{ ... }```. 
 
 Before presenting the concrete use cases, we first summarize the general facts about the code block:
 
@@ -324,11 +326,11 @@ On the other hand, on the screen the only printout is:
 ```bash
 before code block
 ```
-because we didn't redirect the first **echo** command anywhere.
+because we did not redirect the first **echo** command anywhere.
 
-Another piece of code in the same script or function can be embedded into another code block, and then redirected to some other files. This way we can easily profile the code with redirectors, and decide what goes on the screen and what is archived in files. Typically, code blocks ```{ ... }``` are used when it's not beneficial to break down some large monolithic script into functions.
+Some other piece of code in the same script or function can be embedded into another code block, and then redirected to some other files. This way we can easily profile the code with redirectors, and decide what goes on the screen and what is dumped in files. Typically, code blocks ```{ ... }``` are used when it is not beneficial to break down some large monolithic script into functions.
 
-When it comes to redirections, it is possible to treat loops analogously as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, you can disentangle what is happening in a particular loop, from what is happening in the rest of the code. Schematically, we would use for **for** loop:
+When it comes to redirections, it is possible to treat loops analogously as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, we can easily disentangle what is happening in a particular loop, from what is happening in the rest of the code. Schematically, we would use for **for** loop:
 
 ```bash
 for Var in someList; do
@@ -344,7 +346,7 @@ while read Line; do
 done <someFile.log 1>output.log 2>error.log
 ```
 
-This way, for instance, we can parse and modify programmatically the example file ```someFile.log``` line-by-line, save the modified new content immediately in the file ```output.log```, and all errors which might occur during the editing in a separate file ```error.log```.
+This way we can elegantly parse and modify programmatically the example file ```someFile.log``` line-by-line, save the modified new content immediately in the file ```output.log```, and all errors which might occur during the editing we save in a separate file ```error.log```.
 
 To check the influence of code block on the environment in your terminal, you can execute the following code snippet:
 ```bash
@@ -362,7 +364,7 @@ Before : 44
 Inside : 44
 After  : 55
 ```
-From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. some variables might get a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_---this will be covered later.
+From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_---this will be covered later.
 
 Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the next example illustrates.  
 
@@ -371,17 +373,16 @@ Very conveniently, the code block ```{ ... }``` can be combined with the command
 ```bash
 someCommand
 ExitStatus=$?
-[[ $ExitStatus -eq 0 ]] && command1 && command2 && ... 
-[[ $ExitStatus -ne 0 ]] && commandA && commandB && ... 
+[[ $ExitStatus -eq 0 ]] && command1 && command2 && ...  
 ```
 
-By using the code blocks, this can be rewritten much more elegantly and efficiently as:
+By using the code blocks, this can be rewritten as:
 
 ```bash
-someCommand && { command1 && command2 && ... ; } || { commandA && commandB && ... ; } 
+someCommand && { command1 && command2 && ... ; } 
 ```
 
-Note the mandatory trailing semicolon ```;``` within each code block in this context. This is important, because you need to indicate that ```}``` is not an argument to the last command within the code block---the last command input is terminated with semicolon ```;```.
+Note the mandatory trailing semicolon ```;``` within code block in this context. This is important, because you need to indicate that ```}``` is not an argument to the last command within the code block---the last command input is terminated with semicolon ```;```.
 
 **Brace expansion**
 
@@ -452,11 +453,11 @@ Without brace expansion the solution would take much more work. It is also possi
 
 
 ### 4. Conditional statements <a name="conditional_statements"></a>
-We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similar to other programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
+We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similar like in most programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
 
-**if-elif-else-fi**
+#### A) **if-elif-else-fi** <a name="if"></a>
 
-The typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on the outcome of test construct ```[[ ... ]]```. Schematically:
+The typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on the outcome of the test construct ```[[ ... ]]```. Schematically:
 
 ```bash
 if [[ someExpression ]]; then
@@ -468,7 +469,7 @@ else
   some code when all tests above failed
 fi
 ```
-You can have as many different **elif**'s branches as you wish, but the very last branch must start with the keyword **else**, and be closed with the keyword **fi**. The keyword **then** doesn't need to be placed on the same line with keywords **if** and **elif**, a completely equivalent syntax is:
+You can have as many different **elif**'s branches as you wish, but the very last branch must start with the keyword **else**, and it has to be closed with the keyword **fi**. The keyword **then** does not need to be placed on the same line with keywords **if** and **elif**, a completely equivalent syntax is:
 
 ```bash
 if [[ someExpression ]]
@@ -483,7 +484,7 @@ else
 fi
 ```
 
-However, if the keyword **then** is placed on the same line with keywords **if** and **elif**, it has to be separated with semicolon ```;```. The first syntax is more suitable for writing directly in the terminal.  
+However, if the keyword **then** is placed on the same line with keywords **if** and **elif**, it has to be separated with semicolon ```;```.  
 
 Another typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on whether a command or a function execution succeeded (exit status 0) or failed (exist status 1 to 255).  Schematically:
 ```bash
@@ -515,11 +516,14 @@ Finally, it is also possible to execute sequentially different commands within t
 if command1; someFunction; command2; then
 ```
 
-In this example, the corresponding branch will be executed only if the exit status of the very last command **command2** is 0, the exit status of previous commands play no role with this version. 
+In this example, the corresponding branch will be executed only if the exit status of the very last command **command2** is 0, the exit status of previous commands play no role in this version. 
 
-**case-in-esac**
 
-On the other hand, the syntax of **case-in-esac** conditional statement is more elaborate, but also more elegant and powerful. The generic syntax looks like:
+
+
+#### B) **case-in-esac** <a name="case"></a>
+
+On the other hand, the syntax of **case-in-esac** conditional statement is more elaborate, but also more powerful. The generic syntax looks like:
 
 ```bash
 case someValue in 
@@ -543,10 +547,12 @@ case $Flag in
  -a) 
      echo "The option -a has been specified!"
      echo "For the option -a we do the following..." 
+     ... some code ...  
   ;;
  -b) 
      echo "The option -b has been specified!"
      echo "For the option -b we do the following..."   
+     ... some code ...  
   ;; 
   *) 
      echo "The specified flag is not supported"
@@ -602,7 +608,7 @@ The error message is:
 line 4: syntax error near unexpected token `fi'
 line 4: `fi '
 ```
-For this sake, we need to use the so-called 'do-nothing' command as a placeholder. The syntax of  'do-nothing' command is simple a colon ```:```.
+For this sake, we need to use the so-called 'do-nothing' command as a placeholder. The syntax of  'do-nothing' command is simply a colon ```:```.
 
 The correct solution to the above problem is:
 ```bash

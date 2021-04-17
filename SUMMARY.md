@@ -4,7 +4,7 @@
 * [Lecture 2](./Lecture_2/Lecture_2.md)
 * [Lecture 3](./Lecture_3/Lecture_3.md)
 * [Lecture 4](./Lecture_4/Lecture_4.md)
-* [Lecture 5](./Lecture_5/_TBI_Lecture_5.md)
+* [Lecture 5](./Lecture_5/Lecture_5.md)
 * [Lecture 6](./Lecture_6/_TBI_Lecture_6.md)
 * [Lecture 7](./Lecture_7/_TBI_Lecture_7.md)
 * [Lecture 8](./Lecture_8/_TBI_Lecture_8.md)
