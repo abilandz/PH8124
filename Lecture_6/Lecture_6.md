@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20200618
+**Last update**: 20210418
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -15,7 +15,7 @@
 ### 1. String manipulation <a name="string_manipulation"></a>
 **Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to a certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**. 
 
-String operators in **Bash** can be used only in combination with curly brace syntax, ```${Var}```, when the content of a variable is referenced. String operators are used to manipulate the content of variables, typically in one of the following ways:     
+String operators in **Bash** can be used only in combination with curly brace syntax, ```${Var}```, when the content of a variable is retrieved. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
 1. Remove, replace or modify a portion of variable's content that matches some patterns   
 2. Ensure that variable exists (i.e. that it is defined and has a non-zero value)   
@@ -29,7 +29,7 @@ or
 ```bash
 ${Var//OldPattern/NewPattern}
 ```
-The first version will replace only the first occurrence of the pattern 'old-pattern' with 'new-pattern' within the string which is stored in the variable 'Var', while the second version will replace all occurrences. This is illustrated with the following code snippet:
+The first version will replace only the first occurrence of the pattern 'OldPattern' with 'NewPattern' within the string which is stored in the variable 'Var', while the second version will replace all occurrences. This is illustrated with the following code snippet:
 ```bash
 Var=aaBBaa
 echo ${Var/aa/CCC}
@@ -64,22 +64,22 @@ echo ${#Var} # prints 8
 
 ```bash
 Var=aBcDeF 
-echo ${Var,,} # prints 'abcdef' 
-echo ${Var^^} # prints 'ABCDF' 
+echo ${Var,,} # prints abcdef 
+echo ${Var^^} # prints ABCDF 
 ```
 
-It is also possible with the curly brace syntax to select substring from variable content, with the following generic syntax is:
+It is also possible with the curly brace syntax to select substring from variable content, with the following generic syntax:
 ```bash
 ${Var:offset:length} 
 ```
 The above construct returns substring, starting at 'offset', and up to 'length' characters. The first character in the content of variable 'Var' is at the offset 0. If 'length' is omitted, it goes all the way until the end of 'Var'. If 'offset' is less than 0, then it counts from the end of 'Var'. This is illustrated with the following examples:
 ```bash
 Var=0123456789
-echo ${Var:0:4} # prints '0123'
-echo ${Var:5:2} # prints '56'
-echo ${Var:5} # prints '56789'
-echo ${Var:(-2)} # prints '89'
-echo ${Var:(-3):2} # prints '78'
+echo ${Var:0:4} # prints 0123
+echo ${Var:5:2} # prints 56
+echo ${Var:5} # prints 56789
+echo ${Var:(-2)} # prints 89
+echo ${Var:(-3):2} # prints 78
 ```
 It is mandatory to embed negative offset within round braces ```( ... )``` in the above example, since otherwise **Bash** interprets negative integers after colon ```:``` in such a context in a very special way---this is clarified next.
 
@@ -129,7 +129,7 @@ However:
    ```
    will produce the following error message:
    ```bash
-   -bash: someVariable: parameter null or not set
+   bash: someVariable: parameter null or not set
    ```
    
 
@@ -149,34 +149,34 @@ When replacing old patterns with the new ones, **Bash** can handle a few wildcar
 Their usage is best illustrated with a few concrete examples:
 ```bash
 Var=1234a5678
-echo ${Var/a*/TEST} # prints '1234TEST'
+echo ${Var/a*/TEST} # prints 1234TEST
 ```
-Here the pattern with the wildcard, 'a*', matches any string starting with 'a' and followed by 0 or more other characters.
+Here the pattern with the wildcard 'a*' matches any string starting with 'a' and followed by 0 or more other characters.
 ```bash
 Var=a1234a5678
-echo ${Var//a?/TEST} # prints 'TEST234TEST678'
+echo ${Var//a?/TEST} # prints TEST234TEST678
 ```
 The pattern with the wildcard 'a?' matches a string starting with the character 'a' and followed by exactly one other character (in the above example, it matched both 'a1' and 'a5', which were both replaced, due to ```//``` specification within curly braces, into a new pattern 'TEST').
 ```bash
 Var=abcde12345
-echo ${Var//[b24]/TEST} # prints 'aTESTcde1TEST3TEST5'
+echo ${Var//[b24]/TEST} # prints aTESTcde1TEST3TEST5
 ```
 The pattern '[b24]' matches any single character specified within ```[ ... ]``` (in the above example, 'b', '2' and '4' were all replaced with 'TEST').
 ```bash
 Var=abcde12345
-echo ${Var//[b-e]/TEST} # prints 'aTESTTESTTESTTEST12345'
+echo ${Var//[b-e]/TEST} # prints aTESTTESTTESTTEST12345
 ```
 The pattern '[b-e]' matches all single characters in the specified range within ```[ ... ]``` (in the above example, 'b', 'c', 'd' and 'e', i.e. all characters in the range 'b-e' were all replaced with the new pattern 'TEST').
 
 The real power of wildcards is manifested when they are combined:
 ```bash
 Var=a1b2c3d4e5
-echo ${Var//[b-d]?/TEST} # prints 'a1TESTTESTTESTe5'
+echo ${Var//[b-d]?/TEST} # prints a1TESTTESTTESTe5
 ```
 The pattern '[b-d]?' matches all single characters in the specified range 'b-d' followed up by exactly one other character (in the above example, 'b2', 'c3' and 'd4' were all replaced with 'TEST').
 ```bash
 Var=acebfd11g
-echo ${Var^^[c-f]} # prints 'aCEbFD11g'
+echo ${Var^^[c-f]} # prints aCEbFD11g
 ```
 The pattern '^^[c-f]' will capitalize all single characters, but only in the specified range 'c-f', therefore only 'c', 'd', 'e' and 'f' in the above example get capitalized. 
 
