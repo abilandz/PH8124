@@ -2,7 +2,7 @@
 
 # Using **Bash** aliases as your simplest commands
 
-**Last update:** 20200430
+**Last update:** 20210420
 
 **Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as 
 
@@ -26,25 +26,32 @@ Mon Apr 27 01:46:27 JST 2020
 TZ=Asia/Tokyo date
 ```
 
-This prints the current time in Tokyo, and switches back immediately to your default time zone. In general, if you define variable and execute the command in the same line like in this example (and without ```;``` separating them!), the value of variable is visible only within the execution of that particular command:
+This prints the current time in Tokyo, and switches back immediately to your default time zone. In general, if you define variable and execute the command in the same line like in this example (and without ```;``` separating them!), the value of variable is visible only during the execution of that particular command:
 
 ```bash
 Var=value command # value of 'Var' is seen only in 'command' during its execution
 ```
 
-In this case, the command **date** has an internal variable called ```TZ``` , which then we can set temporarily like in this example --- see the _man pages_ of **date**. 
+In this case, the command **date** has an internal variable called ```TZ``` , which we can set temporarily like in this example --- see the _man pages_ of **date**. 
 
-The following would not work in this particular example:
+The following would not work:
 
 ```bash
-TZZ=Asia/Tokyo date # wrong, since 'date' doesn't know what to do with variable TZZ
+TZZ=Asia/Tokyo date # wrong, since 'date' doesn't know what to do with variable TZZ  
+```
+
+Also this is wrong in this context:
+
+```bash
 TZ=Asia/Tokyo; date # now variable 'TZ' is set and interpreted in your local
-                    # environment and not within the execution of 'date'  
+                    # environment and not within the execution of 'date'
 ```
 
 The supported time zones are typically sorted out in the directory ```/usr/share/zoneinfo/```, just inspect its content with **ls** command, and figure out the analogous syntax for the time zone you need!
 
-**Challenge #2**: How you would define an alias **tz**, which upon execution produces the same output as the above script? Remark: A user wants to execute **tz** from any directory, not necessarily from the directory in which the script ```timeZones.sh``` sits. To get the absolute path of a directory in **Linux** filesystem hierarchy, execute the command **pwd** ('print working directory') in that directory.  
+**Challenge #2**: How you would define an alias **tz**, which upon execution produces the same output as the above script? 
+
+**Remark:** A user wants to execute **tz** from any directory, not necessarily from the directory in which the script ```timeZones.sh``` sits. To get the absolute path of a directory in **Linux** filesystem hierarchy, use the environment variable **PWD** ('print working directory') or execute the command **pwd** in that directory.  
 
 **Challenge #3**: What do you need to do to make alias **tz** available each time you login on computer?
 

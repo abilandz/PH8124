@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20210418
+**Last update**: 20210420
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -189,16 +189,16 @@ The pattern '^^[c-f]' will capitalize all single characters, but only in the spe
 ```bash
 SomeArray=( 5 a ccc 44 )
 ```
-Array elements are separated with one or more empty characters. To reference the content of a particular array element, we use again the curly brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
+Array elements are separated with one or more empty characters. To obtain the content of a particular array element, we use again the curly brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
 ```bash
-echo ${SomeArray[0]} # prints '5'
-echo ${SomeArray[2]} # prints 'ccc' 
+echo ${SomeArray[0]} # prints 5
+echo ${SomeArray[2]} # prints ccc 
 ```
 To get programmatically all array entries, we can use ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax, for instance:
 ```bash
-echo ${SomeArray[*]} # prints '5 a ccc 44'
+echo ${SomeArray[*]} # prints 5 a ccc 44
 ```
-The difference between ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax matters only when used within double quotes, and the explanation is the same as for a difference between ```"$*"``` and "$@" when referring to the list of positional parameters (see Lecture #2).
+The difference between ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax matters only when used within double quotes, and the explanation is the same as for a difference between ```"$*"``` and ```"$@"``` when referring to the list of positional parameters (see Lecture #2). 
 
 This means that we can very conveniently loop over all array entries with:
 
@@ -216,10 +216,12 @@ ccc
 44
 ```
 
+If an array element itself has an empty character, it will be correctly obtained in the above code snippet only if ```${SomeArray[*]}``` is replaced with ```"${SomeArray[@]}"```, but such cases rarely occur in practice.  
+
 The total number of elements in an array is given by the syntax ```${#ArrayName[*]}```:
 
 ```bash
-echo ${#SomeArray[*]} # prints '4'
+echo ${#SomeArray[*]} # prints 4
 ```
 We can set the value of a particular array element directly:
 ```bash
@@ -227,13 +229,13 @@ SomeArray[2]=ddd
 ```
 Now if we print all elements, the initial 3rd element 'ccc' was replaced with the new value 'ddd', and we get:
 ```bash
-echo ${SomeArray[*]} # prints '5 a ddd 44'
+echo ${SomeArray[*]} # prints 5 a ddd 44
 ```
 In order to remove a particular element of an array, we need to explicitly use the keyword **unset**. This way, the length of an array and all indices are automatically recalculated:
 ```bash
 unset SomeArray[2]
-echo ${SomeArray[*]} # prints '5 a 44'
-echo ${#SomeArray[*]} # prints '3', the array was resized
+echo ${SomeArray[*]} # prints 5 a 44
+echo ${#SomeArray[*]} # prints 3, the array was resized
 ```
 On the other hand, unsetting the array element with:
 ```bash
@@ -267,7 +269,7 @@ and so on. To append directly to the already existing array a new element, we ca
 SomeArray[${#SomeArray[*]}]=SomeValue
 ```
 
-The above syntax works, because array indexing starts from 0 and ends with N-1, where N is the total number of array elements. Since ```${#SomeArray[*]}``` gives the total number of array elements N, the above syntax just appends the new N-th entry.
+The above syntax works, because array indexing starts from 0 and ends with N-1, where N is the total number of array elements. Since ```${#SomeArray[*]}``` gives the total number of array elements N, the above syntax just appends the new N-th element.
 
 Quite frequently, we need to prepend or append the same string to all array elements. This can be achieved  elegantly with the following syntax:
 
@@ -301,7 +303,7 @@ The solution to the second question is:
 ```bash
 Files=( ${Files[*]/#/some_} )
 ```
-In the above code snippet, we have first prepended (by specifying ```#```) to all array elements the same string 'some_' , and we have then redefined the array to the new content, so the array elements are now :
+In the above code snippet, we have first prepended (by specifying ```#```) to all array elements the same string 'some_' , and we have then redefined the array to the new content, so the array elements are now:
 
 ```bash
 echo ${Files[*]}
@@ -321,7 +323,7 @@ SomeArray=( ${FileContent} )
 echo "Number of words: ${#SomeArray[*]}"
 ```
 
-In the first line we have stored the content of an external file ```SomeFile``` into variable **FileContent**, and then just defined the array elements by referencing its content. The empty characters which separate the words in the file, now separate the array elements in the definition. 
+In the first line we have stored the content of an external file ```SomeFile``` into variable **FileContent**, and then just defined the array elements by obtaining its content. The empty characters which separate the words in the file, now separate the array elements in the definition. 
 
 At the expense of becoming a bit cryptic, the above solution can be condensed even further:
 
@@ -330,17 +332,17 @@ SomeArray=( $(< SomeFile) )
 echo "Number of words: ${#SomeArray[*]}"
 ```
 
-**Example 3:** How to append entries of one array to another, without using loops?
+**Example 3:** How to merge entries of two arrays into one array, without using loops?
 
 The solution is:
 ```bash
 Array_1=( 1 2 3 )
 Array_2=( a b c d )
 NewArray=( ${Array_1[*]} ${Array_2[*]} )
-echo ${NewArray[*]} # prints '1 2 3 a b c d'
+echo ${NewArray[*]} # prints 1 2 3 a b c d
 ```
 
-**Example 4:** Using brace expansion at array declaration.
+**Example 4:** Usage of brace expansion at array declaration.
 
 ```bash
 SomeArray=( file_{0..3}.{pdf,eps} )
@@ -370,11 +372,11 @@ echo "Current time: ${SomeArray[3]}"
 
 **Example 6:** How can we catch the user's input directly into an array?
 
-We have already seen that by using **read** command we can catch the user's input, but if we want to store the input in a few different variables, that quickly becomes inconvenient. And quite frequently, we cannot foresee the length of the user's input. For instance, how to handle the user's reply to the question: "Which countries you visited?" That can be solved elegantly with arrays:
+We have already seen that by using **read** command we can catch the user's input, but if we want to store the input in a few different variables, that quickly becomes inconvenient. And quite frequently, we cannot foresee the length of the user's input. For instance, how to handle the user's reply to the question: "Which countries have you visited ?" That can be solved elegantly with arrays:
 ```bash
-read -p "Which countries you visited? " -a Countries
+read -p "Which countries have you visited? " -a Countries
 ```
-By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be split according to the empty character, i.e. the default input field separator into words, and then each word is stored as a separate element in an array (in the above example, that arrayed is named 'Countries'). 
+By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be split according to the empty character (i.e. the default input field separator) into words, and then each word is stored as a separate element in an array (in the above example, that arrayed is named 'Countries'). 
 
 Then we can immediately write for instance:
 
@@ -383,7 +385,7 @@ echo "Number of countries is: ${#Countries[*]}"
 echo "The first country is: ${Countries[0]}"
 echo "The last country is: ${Countries[-1]}"
 ```
-But what if the user visited New Zealand or Northern Ireland? Since these countries contain an empty character in their names, the code above clearly cannot correctly handle these cases. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and a lot of **Linux** commands rely on its content. We can proceed in the following schematic way:
+But what if the user visited New Zealand or Northern Ireland? Since these two countries contain an empty character in their names, the code above clearly cannot correctly handle these cases. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and a lot of **Linux** commands rely on its content. We can proceed in the following schematic way:
 
 ``` bash
 DefaultIFS="$IFS" # save default
@@ -392,7 +394,9 @@ IFS=somethingNew
 IFS="$DefaultIFS" # revert back
 ```
 
-This is the frequently encountered case in practice, when a certain variable needs to be set only during the command execution. There exists a specialized syntax applicable to cover such uses cases:
+This is the frequently encountered case in practice, when a certain variable needs to be set only during the command execution. 
+
+As we already saw, there exists a specialized syntax applicable to cover such uses cases:
 
 ```bash
 SomeVariable=someValue SomeCommand
@@ -403,7 +407,7 @@ Note that there is no semicolon ```;``` between variable definition and command 
 The final solution for our example is therefore:
 
 ```bash
-IFS=',' read -p "List (comma separated) countries you visited: " -a Countries
+IFS=',' read -p "List (comma separated) countries you have visited: " -a Countries
 ```
 
 This way, the input field separator will be comma ```,``` but only during the execution of **read**.
@@ -429,8 +433,8 @@ SomeArray[2,3,1]=bb
 ```
 To reference the content of elements in multidimensional arrays, we use:
 ```bash
-echo ${SomeArray[1,2,3]} # prints 'a' 
-echo ${SomeArray[2,3,1]} # prints 'bb'
+echo ${SomeArray[1,2,3]} # prints a 
+echo ${SomeArray[2,3,1]} # prints bb
 ```
 
 The indices do not have to be hardwired --- index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer. 
