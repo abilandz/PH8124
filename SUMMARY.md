@@ -13,7 +13,7 @@
 * [Lecture 11](./Lecture_11/_TBI_Lecture_11.md)
 * [Lecture 12](./Lecture_12/_TBI_Lecture_12.md)
 * [Homeworks](./Homeworks/_TBI_Trivia.md)
-    * [Homework 1](./Homeworks/_TBI_Homework_1.md)
+    * [Homework 1](./Homeworks/Homework_1.md)
     * [Homework 2](./Homeworks/_TBI_Homework_2.md)
     * [Homework 3](./Homeworks/_TBI_Homework_3.md)
     * [Homework 4](./Homeworks/_TBI_Homework_4.md)
