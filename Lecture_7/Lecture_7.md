@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20200625
+**Last update**: 20210427
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -22,9 +22,9 @@ Some characters in **Bash** have a special meaning. As an elementary example:
 echo $Var
 ```
 
-would reference the content of variable named ```Var``` since the variable is preceded with the special character ```$```, but ```$``` itself would not appear in the printout. To see also the special character ```$``` in the printout, we need to _escape_ (or kill) its special meaning with the backslash character ```\```. 
+would print the content of variable named ```Var``` since the variable is preceded with the special character ```$```, but ```$``` itself would not appear in the printout. To see also the special character ```$``` in the printout, we need to _escape_ (or kill) its special meaning with the backslash character ```\```. 
 
-The escaping mechanism in **Bash** is illustrated  in the following example:
+The escaping mechanism in **Bash** is illustrated in the following example:
 ```bash
 Var=44
 echo $Var
@@ -42,7 +42,7 @@ As another example, we consider the double quotes ```"..."```, which also have a
 echo "Hi "there""
 Hi there # no quotes in the printout
 ```
-However, we can escape the special meaning of two inner-most quotes, and they will show up in the printout:
+However, we can escape the special meaning of two inner-most quotes, and then they will show up in the printout:
 ```bash
 echo "Hi \"there\""
 Hi "there"
@@ -93,7 +93,7 @@ Alternatively, we can escape the meaning of special characters with strong (sing
 
 **Strong (single) quotes**
 
-In complex expressions, containing a huge number of special characters, it becomes quickly impractical to escape the special meaning of each character separately with ```\```. Instead, they can be escaped all in one go by embedding the whole expression within strong (single) quotes ```'...'``` . This is the primary use case of strong quotes, and their meaning can be literally understood with the following phrase: _what you see is what you get_. 
+In complex expressions, that contain a huge number of special characters, it becomes quickly impractical to escape the special meaning of every special character separately with ```\```. Instead, they can be escaped all in one go by embedding the whole expression within strong (single) quotes ```'...'``` . This is the primary use case of strong quotes, and their meaning can be literally understood with the following phrase: _what you see is what you get_. 
 
 For instance:
 
@@ -109,9 +109,9 @@ The printout is literally:
 $Var1   $Var2
 ```
 
-Neither variable was referenced, because the special meaning of both ```$```'s was killed with strong quotes, and the exact number of empty characters was also preserved in the printout. 
+Neither variable was replaced in the printout with its content, because the special meaning of both ```$```'s was killed with strong quotes, and the exact number of empty characters was also preserved in the printout. 
 
-Strong quotes are used frequently to pass the file or directory whose name contains empty characters:
+Strong quotes are used frequently for the file or directory whose name contains empty characters:
 
 ```bash
 ls 'crazy name'
@@ -125,7 +125,7 @@ To illustrate the importance of strong quotes, consider the following example:
 echo 100 > 10 # WRONG!!
 ```
 
-We wanted to print a literal inequality, ```100 > 10```, on the screen but the above code snippet didn't produce any printout on the screen. Instead, something completely different has happened: **echo** printed only ```100``` but that was redirected immediately into the file named ```10```. We can circumvent this problem with:
+We wanted to print a literal inequality ```100 > 10``` on the screen but the above code snippet did not produce any printout on the screen. Instead, something completely different has happened: **echo** printed only ```100``` but that was redirected immediately into the file named ```10```. We can circumvent this problem with:
 
 ```bash
 echo '100 > 10'
@@ -152,7 +152,7 @@ We need to instruct **echo** to interpret backslash-escaped characters by supply
 echo -e "Hi\nthere"
 ```
 
-The printout it now:
+The printout is now:
 
 ```bash
 Hi
@@ -165,7 +165,7 @@ Similarly:
 echo -e "Hi\tthere"
 ```
 
-prints the tab space: 
+prints the horizontal tab space: 
 
 ```bash
 Hi      there
@@ -218,7 +218,7 @@ echo "a b    c"
 echo  a b    c
 ```
 
-The output is:
+The output of the above two lines is:
 
 ```bash
 a b    c
@@ -253,7 +253,7 @@ Var2=440
   44   440
   ```
 
-In each case, we got a different result. Within double quotes, the content of variables is referenced with the special character ```$``` , and the exact number of empty characters is preserved. 
+In each case, we got a different result. Within double quotes, the content of variables is obtained with the special character ```$```, and the exact number of empty characters is preserved. 
 
 The special meaning of the following special characters or constructs are preserved within weak quotes ```"..."```:
 
@@ -289,15 +289,37 @@ prints
 
 To memorize the rules easier, to leading order only the **Bash** constructs which begin with ```$``` or ```\``` keep their special meanings within double quotes.
 
+Finally, we consider the example when we initialize variable with the content of some file:
+
+```bash
+Var=$(< someFile)
+```
+
+Only the following syntax will recover correctly the content of original file:
+
+```bash
+echo "$Var"
+```
+
+On the other hand, if we drop weak quotes,
+
+```bash
+echo $Var
+```
+
+will strip off from each line the trailing hidden new line character '\n', and the printout is scrambled. 
+
+To quote or not to quote: As a rule of thumb and whenever in doubt, it is always safer to use weak quotes than not to quote. 
+
 
 
 ### 3. Handling processes and jobs <a name="handling_processes_and_jobs"></a>
 
-In **Linux** world, an executable stored on disk is called a _program_. Loosely speaking, the program loaded into the computer's memory and running is called a _process_. On the other hand, _job_ is more specifically a process that is started by a shell. A group of processes launched from a shell can be also considered as a job. Therefore, a job is a shell-only concept, while a process is a more general, system-wide, concept. There are specific **Bash** and **Linux** commands which keep track only of jobs launched from the current shell, but there are also commands which keep track of all processes running on the computer. Therefore, it is important to understand the difference between processes and jobs, and in which context which commands for their handling need to be used.
+In the **Linux** world, an executable stored on disk is called a _program_. Loosely speaking, the program loaded into the computer's memory and running is called a _process_. On the other hand, _job_ is more specifically a process that is started by a shell. A group of processes launched from a shell can be also considered as a job. Therefore, a job is a shell-only concept, while a process is a more general, system-wide, concept. There are specific **Bash** and **Linux** commands which keep track only of jobs launched from the current shell, but there are also commands which keep track of all processes running on the computer. It is very important to understand the difference between processes and jobs, and in which context which commands for their handling can be used.
 
-Jobs launched from the shell can be divided into two important groups:  _foreground_ and _background_ jobs. Foreground jobs are jobs that have control over the terminal, i.e. while they are running nothing else can be done in the current terminal session by the user. The control over the terminal is regained only when the foreground job has finished its execution. Background jobs are jobs that do not have control over the terminal during their execution. They are typically started on multicore machines, when the parallelization of jobs makes perfect sense and reduces a lot the overall execution time. While jobs launched from the current terminal session are running in the background, in that terminal session we have full control over the terminal and can do whatever we want.
+Jobs launched from the shell can be divided into two important groups:  _foreground_ and _background_ jobs. Foreground jobs are jobs that have control over the terminal, i.e. while they are running nothing else can be done in the current terminal session by the user. The control over the terminal is regained only when the foreground job has finished its execution. Background jobs are jobs that do not have control over the terminal during their execution. They are typically started on multicore machines, when the parallelization of jobs makes perfect sense and reduces a lot the overall execution time. While jobs launched from the current terminal session are running in the background, in that terminal session we have full control over the terminal and can do additionally whatever we want.
 
-By default, any job which is started from the terminal is executed in the foreground. If we want to submit a job execution to the background, we need to end the command line input with the special character ```&``` . For testing purposes, in this section we use the dummy command **sleep**, which runs a perfectly valid process even though it does nothing besides blocking the execution of subsequent commands for the specified time interval. Whatever is demonstrated in this section for the **sleep** command applies also to any other command, we use **sleep** command merely because of its simplicity. In addition, a word command is used in this section in the broader sense, and it encapsulates also functions, scripts, code blocks, etc. 
+By default, any job which is started from the terminal is executed in the foreground. If we want to submit a job execution to the background, we need to end the command line input with the special character ```&``` . For testing purposes, in this section we use the dummy command **sleep**, which runs a perfectly valid process even though it does nothing besides blocking the execution of subsequent commands for the specified time interval. Whatever is demonstrated in this section for the **sleep** command applies also to any other command --- we use **sleep** command merely because of its simplicity. In addition, a word command is used in this section in the broader sense, and it encapsulates also functions, scripts, code blocks, etc. 
 
 To illustrate the difference between foreground and background job execution, we first execute a job in the foreground:
 
@@ -315,7 +337,7 @@ sleep 10s &
 
 By using the special character ```&``` at the end of the command input, we have sent the execution of command **sleep** in the background. The main difference to the previous case is that now we can continue immediately to execute another command in the terminal, while the command **sleep** is running in parallel in the background.
 
-When in some **Bash** code a command is started in the background with ```&``` at the end of command input, that command essentially starts off another process in parallel (that processes _forks off_ from the current shell). Note, however, that the _stdout_ stream of the forked process is still attached to the shell from which the job was sent to the background, which means that any output of that job will still appear in your terminal, even if the job is running in the background. This sometimes leads to surprising printout in the terminal, if the _stdout_ stream of background job was not redirected somewhere else (e.g. to some file or to ```/dev/null```). 
+When in **Bash** code a command is started in the background with ```&``` at the end of command input, that command essentially starts off another process in parallel (that processes _forks off_ from the current shell). Note, however, that the _stdout_ stream of the forked process is still attached to the shell from which the job was sent to the background, which means that any output of that job will still appear in your terminal, even if the job is running in the background. This sometimes leads to surprising printouts in the terminal, if the _stdout_ stream of background job was not redirected somewhere else (e.g. to some file or to ```/dev/null```). 
 
 It is also perfectly feasible to launch in the same command input multiple processes in separate background sessions:
 
@@ -323,7 +345,7 @@ It is also perfectly feasible to launch in the same command input multiple proce
 sleep 10s & sleep 20s & sleep 30s &
 ```
 
-With the above syntax, we have three instances of **sleep** command running in parallel in the background. Analogously, we can start off any other three commands to run in parallel in the background.
+With the above syntax, we have three instances of **sleep** command running in parallel in the background, started one after another. Note that when we use ```&``` to send some command input to the background, it is not necessary to terminate that command input with ```;```.  Analogously, we can start off any other three commands to run in parallel in the background.
 
 Next, we will see how a process can be handled programmatically either via its _Process ID (PID)_ or its _Job Number_.
 
@@ -342,7 +364,7 @@ In the above example, the number ```15``` is a system-wide PID, given by **Linux
 
 On the other hand, ```[1]``` is the job number given by **Bash** (not by the operating system!), to the command **sleep 10m** sent to the background. This information is visible only to the terminal in which this command was executed. In particular, ```[1]``` in this example indicates that this is the first job sent to the background in the current terminal session, and which is still running. If we have another open terminal, in that terminal ```[1]``` indicates a completely different job. When job execution of all jobs running in the background terminates, the job counter is reset, and ```[1]``` can be given later to some other job sent to the background, in the same terminal.
 
-The two most frequently used commands to handle running jobs and processes programmatically are **jobs** and **top**. In order to get the list of running jobs which were submitted only from the current terminal, we can use:
+The two frequently used commands to monitor running jobs and processes programmatically are **jobs** and **top**. In order to get the list of running jobs which were submitted only from the current terminal, we can use:
 
 ```bash
 jobs -l
@@ -357,11 +379,9 @@ The output of this command might look for instance:
 The above output literally means that in the current terminal session there is one job, which:  
 
 *  was started with the command input **sleep 10m &** 
-
-* at the moment is in the state 'Running'
-
-* its job number is ```[1]``` 
-
+*  at the moment is in the state 'Running'
+*  its job number is ```[1]``` 
+*  it is the last job sent to the background ```+``` 
 * its PID is ```15``` 
 
 Other possible job states include 'Done', 'Terminated', 'Hangup', 'Stopped', 'Aborted', 'Quit', 'Interrupt', etc., and some of them are discussed in detail later.
@@ -431,7 +451,35 @@ The above code snippet filters out only the information relevant for your own pr
 
 The command **top** can be run from any terminal on the computer, and its printout to a large extent will be the same in each terminal. On the other hand, the output of the command **jobs** will be completely different from one terminal to another. 
 
-Closely related to **top** command is **ps** command (see the corresponding 'man' pages), which gives only the current snapshot of currently active processes, while **top** is being continuously updated and can be used interactively. 
+Closely related to **top** command is **ps** command (see the corresponding 'man' pages), which gives only the current snapshot of currently active processes, while **top** is being continuously updated and can be used interactively. Unfortunately, the flags supported by **ps** command differ across different distributions, and to overcome this problem the GNU version of **ps** command support three different styles for options:
+
+1. Unix-style parameters: preceded by dash (-) 
+2. BSD-style parameters: not preceded by dash (-)
+3. GNU long parameters: preceded by double dash (--)
+
+For instance, to see all processes running on the system, we can use:
+
+```bash
+$ ps -Aflc
+F S UID        PID  PPID CLS PRI ADDR SZ WCHAN  STIME TTY          TIME CMD
+0 S abilandz 13787 13777 TS   19 -  5861 wait   06:24 pts/0    00:00:00 bash
+0 S abilandz 13820 13787 TS   19 -  7940 pause  06:24 pts/0    00:00:00 screen -rd ruidoso
+...
+```
+
+Note some additional fields, for instance PPID is the PID of parent process, i.e. the process from which the current process was started, TTY is the terminal number from which the process was started. The parent-child relation among the running processes can be very conveniently inspected with the following:
+
+```bash
+$ ps --forest
+  PID TTY          TIME CMD
+22208 pts/4    00:00:00 bash
+22667 pts/4    00:00:00  \_ bash
+22679 pts/4    00:00:00      \_ sleep
+22680 pts/4    00:00:00      \_ bash
+22691 pts/4    00:00:00          \_ ps
+```
+
+For further details of this complex command, see its 'man' pages. 
 
 In the case you are interested only in the PID of the running process, there is also a command **pidof**, which takes as an argument only the process name:
 
