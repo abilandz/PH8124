@@ -14,7 +14,7 @@
 * [Lecture 12](./Lecture_12/_TBI_Lecture_12.md)
 * [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1](./Homeworks/Homework_1.md)
-    * [Homework 2](./Homeworks/_TBI_Homework_2.md)
+    * [Homework 2](./Homeworks/Homework_2.md)
     * [Homework 3](./Homeworks/_TBI_Homework_3.md)
     * [Homework 4](./Homeworks/_TBI_Homework_4.md)
     * [Homework 5](./Homeworks/_TBI_Homework_5.md)
