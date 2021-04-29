@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20210427
+**Last update**: 20210429
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -529,7 +529,7 @@ This is best illustrated with the concrete example. Imagine that we have started
 sleep 10m
 ```
 
-Now the terminal is blocked for 10 minutes because the command **sleep** is running in the foreground. We can, however, suspend the execution of the command **sleep** by pressing ```Ctrl+Z``` and regain control of the terminal. After we have regained the control over the terminal, we can start executing other commands. In the meanwhile, the suspended command doesn't do anything:
+Now the terminal is blocked for 10 minutes because the command **sleep** is running in the foreground. We can, however, suspend the execution of the command **sleep** by pressing ```Ctrl+Z``` and regain control of the terminal. After we have regained the control over the terminal, we can start executing other commands. In the meanwhile, the suspended command does not do anything:
 
 ```bash
 jobs -l
@@ -559,6 +559,17 @@ If we have only one instance of a given command running and suspended, it suffic
 bg %'sleep 10m'
 ```
 
+**Reminder:** If you have forgotten with which options and arguments you have started the command, you can retrieve that information from any terminal with:
+
+```bash
+$ ps -f
+UID        PID  PPID  C STIME TTY          TIME CMD
+abilandz 21469 20045  0 09:31 pts/4    00:00:00 sleep 10m
+...
+```
+
+while within the same terminal in addition you can also use **jobs -l** command.
+
 If we have multiple instances of the same command running with exactly the same options and arguments, clearly the 2nd version becomes ambiguous. However, we can in that case still use the first syntax and restart the suspended job in the background via its job number, which is always unique. 
 
 After restarting the suspended job in the background, we see the following:
@@ -572,7 +583,10 @@ This is precisely what we wanted to achieve: We have suspended with ```Ctrl+Z```
 
 A closely related command is the **Bash** built-in command **fg**. This command moves the jobs running in the background to the foreground. Before discussing its syntax, we first stress out the following important fact: It is impossible solely by using **Bash** built-in features to bring to the foreground a process running in the background in the current shell instance if it was not started in the background from the current shell instance. Basically, this means that you cannot in the current terminal take over a process that was started in a different terminal. To achieve that level of flexibility, there are specialized programs available that allow us to move other programs around from one shell instance to another, for instance **screen**.
 
+Looking at this from another angle, this makes perfect sense, but only after we realize the following subtle difference between job and process: a job can be a group of processes, but not vice versa. When we suspend a job via its job number, we suspend all processes in that job. When we suspend a process via its PID, we suspend only that particular process. 
+
 After using command **fg**, the background job is continuing to run in the foreground and is, therefore, taking over the control over the terminal. Generically, the syntax of **fg** command is:
+
 ```bash
 fg %jobNumber
 ```
@@ -618,7 +632,9 @@ The second special variable, ```$!```, has a very neat use case in combination w
 ```bash
 wait $!
 ```
-However, it can happen that the last job sent to the background has terminated before than some other jobs sent to the background earlier. This problem is fixed with the even simpler syntax:
+We can also specify as arguments to **wait** the IDs of specific jobs running in the background. 
+
+However, it can happen that the last job sent to the background has terminated before some other jobs that were sent to the background earlier. This problem is fixed with the even simpler syntax:
 
 ```bash
 wait
@@ -647,7 +663,7 @@ The main script waits all jobs running in parallel in the background to terminat
 
 **Sending signals to the running processes**
 
-We have already seen that we can suspend the running job by hitting ```Ctrl+Z```, and that we can terminate the running job by executing the command input **kill -9 processPID** in the terminal. Conceptually, there is no much of a difference in what is happening in these two cases, and these two examples are just a small subset of _signals_ that we can send to the process. In this section we cover in detail from the user's perspective how the signals can be sent programmatically to the running processes, and modify their running conditions on the fly. In the next section, we will cover this topic from the developer's side, i.e. we will discuss the code implementation which is needed to enable the process to receive and handle the signals while running. 
+We have already seen that we can suspend the running job by hitting ```Ctrl+Z```, and that we can terminate the running job by executing the command **kill -9 processPID** in the terminal. Conceptually, there is no much of a difference in what is happening in these two cases, and these two examples are just a small subset of _signals_ that we can send to the process. In this section we cover in detail from the user's perspective how the signals can be sent programmatically to the running processes, and modify their running conditions on the fly. In the next section, we will cover this topic from the developer's side, i.e. we will discuss the code implementation which is needed to enable the process to receive and handle the signals while running. 
 
 Loosely speaking, a signal is a message that a user sends programmatically to the running process. One running process can also send a signal to another running process. A signal is typically sent when some abnormal event takes place or when we want another process to do something per explicit request. As we already saw, two processes can communicate with pipes ```|```. Signals are another way for running processes to communicate with each other.
 
@@ -808,7 +824,7 @@ done
 
 return 0
 ```
-This script does nothing except that every 10 seconds prints the time stamp via **date** command. It is not possible to catch via **trap** the arbitrary user-defined signal, we have to use the standard 64 signals enlisted with **kill -l** (or **trap -l**). The closest we can get it to use ```USR1``` and ```USR2``` signals (numbers 10 and 12) as the standard supported signals reserved for the user's custom input. 
+This script does nothing except that every 10 seconds prints the time stamp via **date** command. We remark that it is not possible to catch via **trap** the arbitrary user-defined signal, we have to use the standard 64 signals enlisted with **kill -l** (or **trap -l**). The closest we can get it to use ```USR1``` and ```USR2``` signals (numbers 10 and 12) as the standard supported signals reserved for the user's custom input. 
 
 We send this script to execute in the background via:
 
