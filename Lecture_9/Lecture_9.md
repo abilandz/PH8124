@@ -240,7 +240,7 @@ For instance, if we have the following content in the file 'sortExample.txt':
 we can sort it with respect to the 2nd field as follows:
 
 ```bash
-$ sort -k2 < sortExample.txt
+$ sort -k2 sortExample.txt
 100 A 2  
 10000 B 3
 1000 C 1
@@ -249,7 +249,7 @@ $ sort -k2 < sortExample.txt
 Note that alphabetic sorting is different when compared to sorting numerically, for instance for the first field we have:
 
 ```bash
-$ sort -k1 < sortExample.txt
+$ sort -k1 sortExample.txt
 10000 B 3
 1000 C 1  
 100 A 2
@@ -258,7 +258,7 @@ $ sort -k1 < sortExample.txt
 and
 
 ```bash
-$ sort -n -k1 < sortExample.txt
+$ sort -n -k1 sortExample.txt
 100 A 2  
 1000 C 1  
 10000 B 3
@@ -275,11 +275,11 @@ As another example, if we want to sort the following content of 'sortExample.txt
 with respect to its fields, we need to specify the non-default field separator with ```-t``` flag:
 
 ```bash
-$ sort -t/ -k2 < sortExample.txt
+$ sort -t/ -k2 sortExample.txt
 /1/SS2021/PH8124
 /2/SS2018/PH8124
 /3/SS2024/PH8124
-$ sort -t/ -k3 < sortExample.txt
+$ sort -t/ -k3 sortExample.txt
 /2/SS2018/PH8124
 /1/SS2021/PH8124
 /3/SS2024/PH8124
