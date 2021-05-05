@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20200709
+**Last update**: 20210505
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -15,7 +15,7 @@
 
 
 ### 1. Command history search <a name="command_history_search"></a>
-When working directly in the terminal we want to speed up the command input as much as possible. Besides, frequently we want to be able to re-use the certain command input again, without re-typing it from scratch. A lot of typing is saved by using ```TAB```, which autocompletes the command input to existing commands names (here commands are meant in the broader sense and include also **Bash** functions, aliases, etc.). In the case command is expecting as argument a file or directory, ```TAB``` will also autocomplete file or directory name, after we have typed in the first few characters and hit ```TAB```. Last but not least, ```TAB``` also autocompletes the **Bash** variable names when we are referencing their content. This is illustrated with the following three simple examples:
+When working directly in the terminal we want to speed up the command input as much as possible. Besides, frequently we want to be able to re-use the certain command input again, without re-typing it from scratch. A lot of typing is saved by using ```TAB```, which autocompletes the command input to existing commands names (here commands are meant in the broader sense and include also **Bash** functions, aliases, etc.). In the case command is expecting as argument a file or directory, ```TAB``` will also autocomplete file or directory name, after we have typed in the first few characters and hit ```TAB```. Last but not least, ```TAB``` also autocompletes the **Bash** variable names when we are getting their content with ```$```. This is illustrated with the following three simple examples:
 ```bash
 dirn + TAB 
 # autocompletes to command 'dirname'
@@ -56,7 +56,7 @@ all the command input which we have typed in the terminal recently (not necessar
   532  typora Homework_7.md &
   533  cd ../Lecture_9
 ```
-From where **Bash** has retrieved this detailed information of what we typed of late in the terminal? All previously typed commands are stored by default in the file to which the environment variable **HISTFILE** is pointing to:
+From where **Bash** has retrieved this detailed information of what we typed recently in the terminal? All previously typed commands are stored by default in the file to which the environment variable **HISTFILE** is pointing to:
 ```bash
 echo $HISTFILE
 ```
@@ -72,9 +72,9 @@ we see that we get a similar printout like the one from the command **history** 
 
 Each time we start a new terminal, the file ```~/.bash_history``` is read. From that point onward, each terminal maintains its own history (i.e. its own list of all commands we have typed in the terminal). When we exit the terminal, **Bash** updates the ```~/.bash_history``` file with the history which corresponds to that terminal. Therefore, and very importantly, the current content of ```~/.bash_history``` will correspond to the last terminal we have closed. 
 
-Some frequently used flags for the command **history** and their meanings are summarized here:  
+Some frequently used flags for the command **history** and their meanings are summarized below:  
 
-* ```-c``` : clears the history list (but it doesn't clean the content of ```~/.bash_history``` instantly, remember that this file gets updated automatically only after we exit the terminal!)   
+* ```-c``` : clears the history list (but it does not clean the content of ```~/.bash_history``` instantly, remember that this file gets updated automatically only after we exit the terminal!)   
 * ```-d someNumber``` : clears the **history** entry only at the line 'someNumber'   
 * ```-a``` : forces appending history lines from the current terminal to the history file ```~/.bash_history```. With this option, we save permanently all commands we have typed in the history file, even without exiting the terminal
 
@@ -141,7 +141,13 @@ for i in {1..10}; do echo $i; done
 9
 10
 ```
-For more elaborate cases of retrieving and even editing the command input from **history**, please see the documentation of the command **fc** ('fix command').
+To rerun the very last command, we can use the shortcut:
+
+```bash
+!!
+```
+
+The above syntax has the same effect as pressing up arrow followed by 'Enter'. For more elaborate cases of retrieving and even editing the command input from **history**, please see the documentation of the command **fc** ('fix command').
 
 Finally, we remark that programmatically we can retrieve the last argument of the previously executed command. This functionality is achieved via the special Bash variable ```$_```. If the previously executed command has only one argument, then the content of ```$_``` is that argument. For instance:
 
@@ -171,13 +177,13 @@ mkdir Dir1 Dir2 Dir3 && cd $_
 
 ### 2. Searching for files and directories: **find** <a name="find"></a>
 
-We have already seen how we can list the content of the specified directory with known location in the filesystem with **ls** command. However, in case we need to search for specific files or directories at unknown location in the filesystem hierarchy, **ls** command cannot be used. Instead, we can use the **Linux** command  **find** is which was designed precisely for that sake. This powerful command can perform search by name, by creation, accession and modification date, by owner and permissions etc. In addition, **find** can immediately perform some action on the result of its search (for instance, it can immediately delete all files it has found, rename all directories, etc.).
+We have already seen how we can list the content of the specified directory with the known location in the filesystem with **ls** command. However, in case we need to search for specific files or directories at unknown location in the filesystem hierarchy, **ls** command cannot be used. Instead, we can use the **Linux** command  **find** which was designed precisely for that sake. This powerful command can perform search by name, by creation, accession and modification date, by owner and permissions etc. In addition, **find** can immediately perform some action on the result of its search (for instance, it can immediately delete all files it has found, rename all directories, etc.).
 
 The generic usage of command **find** can be described as follows:
 ```bash
 find Where What Action
 ```
-When interpreting its arguments, **find** defaults the first arguments without ```-``` or ```--``` as a list of directories in which the search will be performed. Therefore, in the above generic syntax 'Where' stands for one or more directories. After that, **find** expects one or more options starting with ```-``` or ```--``` , which will typically nail down what it needs to search for ('What' in the above syntax). Finally, there exists a special option **-exec** after which we can optionally set the commands which **find** will execute immediately on the results it has found ('Action').
+When interpreting its arguments, **find** defaults the first arguments which are not preceded by ```-``` or ```--``` as a list of directories in which the search will be performed. Therefore, in the above generic syntax 'Where' stands for one or more directories. After that, **find** expects one or more options starting with ```-``` or ```--``` , which will typically nail down what it needs to search for ('What' in the above syntax). Finally, there exists a special option **-exec** after which we can optionally set the commands which **find** will execute immediately on the results it has found ('Action').
 
 The usage of **find** is best illustrated on concrete examples. Let us start with a directory named 'Examples' in which we have the following situation:
 ```bash
@@ -198,7 +204,6 @@ Examples/file_1.pdf
 Examples/file_1.png
 Examples/file_0.dat
 Examples/file_0.pdf
-
 ```
 By default, the result of **find** is not sorted, but you can trivially, and in general, sort the output of some command by piping to the command named **sort**:
 ```bash
@@ -213,6 +218,74 @@ Examples/file_1.dat
 Examples/file_1.pdf
 Examples/file_1.png
 ```
+
+Now that we have mentioned it, let us say a few more handy things about the **sort** command, by looking at its frequently used flags: 
+
+```bash
+-n : sort numerically (by default it sorts alphabetically)
+-t someDelimiter : specify the field delimiter
+-k fieldNumber : sort with respect to the specified field number
+-r : reverse the output
+-u : print only the unique entries
+```
+
+For instance, if we have the following content in the file 'sortExample.txt':
+
+```bash
+100 A 2
+1000 C 1
+10000 B 3
+```
+
+we can sort it with respect to the 2nd field as follows:
+
+```bash
+$ sort -k2 < sortExample.txt
+100 A 2  
+10000 B 3
+1000 C 1
+```
+
+Note that alphabetic sorting is different when compared to sorting numerically, for instance for the first field we have:
+
+```bash
+$ sort -k1 < sortExample.txt
+10000 B 3
+1000 C 1  
+100 A 2
+```
+
+and
+
+```bash
+$ sort -n -k1 < sortExample.txt
+100 A 2  
+1000 C 1  
+10000 B 3
+```
+
+As another example, if we want to sort the following content of 'sortExample.txt' 
+
+```bash
+/3/SS2024/PH8124
+/1/SS2021/PH8124
+/2/SS2018/PH8124
+```
+
+with respect to its fields, we need to specify the non-default field separator with ```-t``` flag:
+
+```bash
+$ sort -t/ -k2 < sortExample.txt
+/1/SS2021/PH8124
+/2/SS2018/PH8124
+/3/SS2024/PH8124
+$ sort -t/ -k3 < sortExample.txt
+/2/SS2018/PH8124
+/1/SS2021/PH8124
+/3/SS2024/PH8124
+```
+
+This is frequently used when sorting out the output of **find** command, which is formatted in the fields separated with slash '/'. Now back to the **find** command! 
 
 **Example 2:** Find all subdirectories in the specified directory.
 
@@ -254,7 +327,7 @@ Since the flag ```-name``` is very frequently used, it deserves some additional 
 ```bash
 find Examples/ -type f -name *.pdf # WRONG!!
 ```
-The above syntax is wrong, because **Bash** now will first expand the pattern ```*.pdf``` to match all files in the current working directory (not in the directory ```Examples``` !) that end with ```.pdf```, and only then those fully expanded file names will be supplied to the command **find**. Clearly, this will work only by accident if in the current working directory where we have executed the command **find** there was no a single file which ends in ```.pdf```, and therefore ```*.pdf``` remained unexpanded. Alternatively, the special symbols can be supplied to **find** with the escaping mechanism ```\```. Summarizing everything:
+The above syntax is wrong, because **Bash** now will first expand the pattern ```*.pdf``` to match all files in the current working directory (not in the directory 'Examples' !) that end with ```.pdf```, and only then those fully expanded file names will be supplied to the command **find**. Clearly, this will work only by accident if in the current working directory where we have executed the command **find** there was no a single file which ends in ```.pdf```, and therefore ```*.pdf``` remained unexpanded. Alternatively, the special symbols can be supplied to **find** with the escaping mechanism ```\```. Summarizing everything:
 ```bash
 find Examples/ -type f -name "*.pdf" # CORRECT
 find Examples/ -type f -name '*.pdf' # CORRECT
@@ -314,7 +387,15 @@ From this example it is self-evident when and how we use the placeholder ```{}``
 find pathToDirectory(-ies) -type f -size 0 -exec rm {} \;
 ```
 
-It is also possible to execute multiple commands on the files or directories which **find** has found, we just need to use separate ```-exec``` flag for each command input:
+Alternatively, we can use ```-delete``` flag:
+
+```bash
+find pathToDirectory(-ies) -type f -size 0 -delete
+```
+
+To delete the non-empty directories recursively found by **find**, only the first version will work, but only after we replace **rm** with **rm -rf** (use with great care!).
+
+It is also possible to execute multiple commands on the files or directories which **find** has found, we just need to use separate ```-exec``` flag for each command input.
 
 **Example 12:** Find all files in the specified directory, and for each of them: a) print the full metadata with **ls -al**; and b) print the size with **stat -c %s**. 
 
@@ -334,7 +415,7 @@ The second solution is more readable, less error prone and easier to generalize 
 
 
 ### 3. Online monitoring: **tail -f**<a name="tail"></a>
-In general, we can view the whole content of the file with the **cat** command, or if we want paging to appear one screen at a time we can use commands like **more** or **less**. On the other hand, we can select and view only the select part of the file with commands like **sed**. For instance, if the starting file named 'example.txt' has the following content:
+In general, we can view the whole content of the file with the **cat** command, or if we want paging to appear one screen at a time we can use commands like **more** or **less** (for larger files **less** is faster than **more** because it does not wait to read the whole file before it starts displaying its content). On the other hand, we can select and view only the part of the file with commands like **sed**. For instance, if the file named 'example.txt' has the following content:
 ```bash
 line 1
 line 2
@@ -519,9 +600,9 @@ wc -w < wcExample.txt
 
 ### 6. Building programmatically command input: **eval** <a name="eval"></a>
 
-We have already seen how we can programmatically provide the arguments to the commands by referencing the content of some variables with the general syntax ```${Var}```. Now we generalize this idea and illustrate how we can build the whole command input programmatically, including even the pipes. This can be achieved by using the **Bash** built-in command **eval**. Some experts warn against its usage due to potential security holes and argue that this command shall be instead renamed into 'evil'. Typically, the command **eval** can be used to force additional re-evaluation of command input, if its interpretation ended up in some intermediate state.
+We have already seen how we can programmatically provide the arguments to the commands by obtaining the content of some variable with the general syntax ```${Var}```. Now we generalize this idea and illustrate how we can build the whole command input programmatically, including even the pipes. This can be achieved by using the **Bash** built-in command **eval**. Some experts warn against its usage due to potential security holes and argue that this command shall be instead renamed into 'evil'. Typically, the command **eval** can be used to force additional re-evaluation of command input, if its interpretation ended up in some intermediate state.
 
-In essence, the command **eval** enforces the command-line processing once again. It's a very powerful feature, which enables to write scripts that create command string on-the-fly and then pass it to **Bash** for execution. By using this mechanism, the **Bash** scripts can for instance modify their behaviour when they are already running.
+In essence, the command **eval** enforces the command-line processing once again. It is a very powerful feature, which enables to write scripts that create command string on-the-fly and then pass it to **Bash** for execution. By using this mechanism, the **Bash** scripts can for instance modify their behaviour when they are already running.
 
 We start with the following example, where from the **date** command we extract only the hour, minutes and seconds:
 ```bash
