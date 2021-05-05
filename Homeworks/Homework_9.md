@@ -2,7 +2,7 @@
 
 # Homework #9: Real-life examples
 
-**Last update:** 20200709
+**Last update:** 20210505
 
 **Challenge #1:** Write down one-line code snippet in **Bash** which will return 0 if the first 20 lines (let's say) in two files are the same, and return 1 otherwise. 
 
@@ -14,3 +14,6 @@
 
 **Hint:** To convert a single '.eps' file into '.pdf' file, use the command: **epstopdf someFile.eps**
 
+**Challenge #4:** Develop a **Bash** function named **CleanUp** which takes as a mandatory argument a directory. The second argument **N** is a positive integer, and it is optional - if it is not specified, it is defaulted to **N = 10**. The script then searches for all files of the specified directory (also recursively in all its subdirectories), and prints **N** largest files, sorted in such a way that largest file is printed first. The script then deletes these files, but the user is prompted to confirm by pressing 'Y' for each file which needs to be deleted. If user types whatever else, the file is not deleted.   
+
+**Hint:** Use **find** in combination with **wc -c**, pipes, **sort -nr** and **head**.
