@@ -2,9 +2,9 @@
 
 # **Bash** functions
 
-**Last update:** 20210421
+**Last update:** 20210506
 
-**Challenge #1**: Develop the **Bash** function named ```OldestFile``` which takes as arguments a list of files. The function does the following:  
+**Challenge #1**: Develop a **Bash** function named ```OldestFile``` which takes as arguments a list of files. The function does the following:  
 
 1. terminates with the error exit status 1 if the user called the function without supplying any arguments  
 2. terminates with the error exit status 2 if some file which the user has supplied does not exist (and it prints then the warning and the name of that problematic file)   
@@ -30,6 +30,8 @@ for File in "$@"; do
 done
 ```
 
-**Challenge #2**: What do you need to do to be able to use the function ```OldestFile``` just like any other **Bash** or **Linux** command (i.e. to be able to call it only by its name from any place in the file system, each time you log in on the computer, or open a new terminal)?
+**Challenge #2**: Develop a **Bash** function named ```Mkdir``` which makes a directory and immediately goes into it. Directory names are specified as arguments, either via relative or absolute paths. If more than one directory name is supplied, it goes immediately into the last one.
+
+**Challenge #3**: What do you need to do to be able to use the functions ```OldestFile``` and ```Mkdir``` just like any other **Bash** or **Linux** command (i.e. to be able to call them only by their name from any place in the file system, each time you log in on the computer, or open a new terminal)?
 
  
