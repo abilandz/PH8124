@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20210412
+**Last update**: 20210520
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -177,7 +177,7 @@ The very frequent use case is to check at the very beginning of the body of a sc
 ```
 If the user didn't provide value for the first argument, the above code snippet will terminate the subsequent execution.
 
-The operator ```-n``` accepts only one argument and checks whether it is set to the same value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
+The operator ```-n``` accepts only one argument and checks whether it is set to some value, the opposite is achieved with ```-z``` which exits with 0 if its argument is not set. 
 
 If you forgot to specify an operator within the test construct, it is defaulted to ```-n```, i.e. 
 
@@ -329,13 +329,13 @@ We have seen already how variables can be initialized in a non-interactive way, 
 
 By default, the command **read** saves input from the keyboard into its built-in variable **REPLY**. Alternatively,  you can specify yourself directly the name of the variable(s) which will store the input from the keyboard. This is best illustrated with examples.
 
-**Example 1**: If we use **read** without arguments, the entire line of user input is stored in the built-in variable **REPLY**, as this code snippets demonstrate:
+**Example 1**: If we use **read** without arguments, the entire line of user input is stored in the built-in variable **REPLY**, as this code snippet demonstrates:
 
 ```bash
 read
 ```
 
-After you have executed **read** in the terminal, this command is waiting for your input from the keyboard. Just type some example input, e.g. ```1 22 abc```, and press 'Enter'. Now you can programmatically retrieve the input from the keyboard:  
+After you have executed **read** in the terminal, this command is waiting for your input from the keyboard. Just type some example input, e.g. ```1 22 abc```, and press 'Enter'. Now you can programmatically retrieve that input:  
 
 ```bash
 echo ${REPLY} 
@@ -395,7 +395,7 @@ read Answer
 ```
 In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers to the user a lot of flexibility on how to handle and modify the code execution at runtime.
 
-The default behavior of **read** can be modified with a bunch of options (checkout **help read** for the full list). Here we summarize only the most frequently used ones:
+The default behavior of **read** can be modified with a bunch of options (check **help read** for the full list). Here we summarize only the ones which are used most frequently:
 
 ```bash
 -p : specify prompt
@@ -408,7 +408,7 @@ For instance:
 read -p "Waiting for the answer: "
 echo ${REPLY}
 ```
-The specified message in the prompt of **read** can hint to the user what to type:
+The specified message in the prompt of **read** can hint to the user what to type as an answer:
 
 ```bash
 read -p "Please choose either 1, 2 or 3: "
@@ -422,7 +422,7 @@ The flag ```-s``` ('silent') hides in the terminal the user input:
 ```bash
 read -s Password
 ```
-Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. This is a very simple-minded mechanism for how you can handle passwords, etc. 
+Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. If you remove the read permission on that file in which you are doing those checks, you have obtained a very simple-minded mechanism for how you can handle passwords, etc. 
 
 Finally, with the following example:
 
@@ -495,7 +495,7 @@ Operator ```(( ... ))``` can handle only integers, both in terms of input and ou
 $ echo $((1+2.4))
 bash: 1+2.4: syntax error: invalid arithmetic operator (error token is ".4")
 ```
-Floating point arithmetic cannot be done directly in **Bash**, but this is not a severe limitation, because we can always invoke some **Linux** command to perform it, like **bc** ('basic calculator'), which is always available ---more on this later!
+Floating point arithmetic cannot be done directly in **Bash**, but this is not a severe limitation, because we can always invoke some **Linux** command to perform it, like **bc** ('basic calculator'), which is always available --- more on this later!
 
 When it comes to division which does not yield as the final result an integer, **Bash** does not report the error, instead it reports as the result the integer after the fractional part (remainder) is discarded:
 
