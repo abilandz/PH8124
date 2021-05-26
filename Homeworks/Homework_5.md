@@ -2,7 +2,7 @@
 
 # Homework #5: Playing with **Bash** arrays.
 
-**Last update:** 20200604
+**Last update:** 20210526
 
 **Challenge #1**: Write your own version of **date** command, named **Date**, which has the following example printout:
 
@@ -21,8 +21,10 @@ Everything is the same as in the standard **date** command, except that:
 **Hint**: Implement **Date** as a **Bash** function, in its body execute the standard **date** command, and store the output in an array, something like:
 
 ```bash
-myArray=( $(date) )
+myArray=( $(date -R) )
 ```
+
+The flag '-R' produces a more uniform output across different implementations of **date** command on different operating systems.
 
 Then manipulate all array elements separately, and in combination with **echo** achieve the desired reformatting. 
 
