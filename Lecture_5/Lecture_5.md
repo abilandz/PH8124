@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20210417
+**Last update**: 20210527
 
 
 ### Table of Contents
@@ -27,7 +27,7 @@ But how can we fetch the above printout programmatically, and do some manipulati
 ```bash
 FileSize=$(stat -c %s someFile)
 ```
-Now the size of file ```someFile.log``` is stored directly in the variable **FileSize** and from this point onwards we can reference content of that variable in the same way as the content of any other variable:
+Now the size of file 'someFile' is stored directly in the variable **FileSize** and from this point onwards we can obtain content of that variable in the same way as the content of any other variable:
 ```bash
 echo ${FileSize}
 ```
@@ -120,7 +120,7 @@ This great functionality circumvents the necessity of dealing with too many temp
 
 ```bash
 cat someFile # reads the content of a physical file
-echo "${FileContent}" # references the content of variable
+echo "${FileContent}" # obtain the same content from variable
 ```
 However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file --- if we store that information in the variable, we have removed completely the dependency of our code on that external file.
 
@@ -158,7 +158,7 @@ In the end, we would like to remark that the backticks ``` ` ... ` ``` do the sa
 echo "Today is: $(date) . Thanks for the info."
 echo "Today is: `date` . Thanks for the info."
 ```
-**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` doesn't work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferably used in **Bash** scripts instead of backticks ``` ` ... ` ```.
+**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` does not work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferably used in **Bash** scripts instead of backticks ``` ` ... ` ```.
 
 
 
@@ -199,7 +199,7 @@ For instance, if we want to redirect the _stdout_ stream of **date** command int
 ```bash
 date 1> output.log
 ```
-Whatever the command **date** was printing on the terminal, now is re-directed to the physical file named ```output.log```. If that file doesn't exist, it will be automatically created at this point. The file's location in the file system can be specified also in this context both with an absolute and a relative path. If you now execute:
+Whatever the command **date** was printing on the terminal, now is re-directed to the physical file named ```output.log```. If that file does not exist, it will be automatically created at this point. The file's location in the file system can be specified also in this context both with an absolute and a relative path. If you now execute:
 
 ```bash
 cat output.log
@@ -237,7 +237,7 @@ Especially in the older **Bash** scripts you will see also ```2>&1``` redirectio
 
  ![](blackHole.jpg)
 
-There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, some commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
+There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
 
 **Example 1:** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? 
 
