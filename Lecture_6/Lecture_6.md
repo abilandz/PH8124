@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20210424
+**Last update**: 20210617
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -899,8 +899,8 @@ Very conveniently, with **awk** we can also calculate directly the length of the
 
 ```bash
 echo "a:12345:b34d" | awk 'BEGIN {FS=":"}{print length($1)}' # prints 1
-echo "a:12454:b34d" | awk 'BEGIN {FS=":"}{print length($1)}' # prints 5
-echo "a:12345:b34d" | awk 'BEGIN {FS=":"}{print length($1)}' # prints 4
+echo "a:12454:b34d" | awk 'BEGIN {FS=":"}{print length($2)}' # prints 5
+echo "a:12345:b34d" | awk 'BEGIN {FS=":"}{print length($3)}' # prints 4
 ```
 
 On the other hand, different single characters can be treated as field separators simultaneously, they just all need to be embedded within ```[ ... ]```. For instance, we can treat during the same **awk** execution all three characters colon ```:```, semi-colon ```;``` and comma ```,``` as equivalent field separators in the following code snippet:
