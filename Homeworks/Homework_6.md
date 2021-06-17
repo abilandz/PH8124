@@ -2,7 +2,7 @@
 
 # Homework #6: Coding adventures with grep, sed and awk
 
-**Last update:** 20200618
+**Last update:** 20210617
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
@@ -22,7 +22,7 @@ px 0.324 py -1.133
 px 0.355 py -2.134
 ```
 
-Copy and save the above printout in the file ```output.dat```, as the starting point for this exercise. By combining pipes, **grep**, **awk** and **sed**, write down a one-line code snippet which will filter out, reformat and update in-place the file ```output.dat``` with the following new format and content (note the change 'Px' and 'Py' instead of 'px' and 'py', respectively):
+Copy and save the above printout in the file ```output.dat```, as the starting point for this exercise. By combining pipes, command chains ```&&``` and ```||```, **grep**, **awk** and **sed**, write down a one-line code snippet which will filter out, reformat and update in-place the file ```output.dat``` with the following new format and content (note the change 'Px' and 'Py' instead of 'px' and 'py', respectively):
 
 ```bash
 Px = 0.123 , Py = 0.333
@@ -35,12 +35,12 @@ Px = 0.324 , Py = -1.133
 Px = 0.355 , Py = -2.134
 ```
 
-**Hint #1:** First execute the commands without modifying the starting file in-place, i.e. just inspect the output stream on the screen corresponding to the modified file. Once the output stream looks the way you want, re-execute the commands but now modify the starting file in-place, and make sure that the starting file ```output.dat``` was automatically stored in some backup file with different name, just in case.
+**Hint #1:**  For security reason, within the same pipe chain ```... | ... | ...``` you cannot read and modify on-the-fly the very same file, but it is possible if you combine command chain operators (```&&``` and ```||```) and pipes in the same line. It's perfectly fine to introduce some intermediate temporary file. 
 
-**Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments only directories, and whose printout is:
+**Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments only one or more directories, and whose printout is:
 
-1. directory name
-2. list of subdirectories 
+1. directory name. If no arguments were supplied, default to one argument, which is the current working directory (i.e. the directory from which **Ls** was executed)
+2. list of subdirectories in that directory
 3. files sorted with respect to size, largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size``` 
 
 The output of **Ls** is formatted like in this example:
@@ -52,6 +52,8 @@ test.html                 Jun  02  14:44  23
 bash_logo.png             Mar  11  10:22  444
 Lecture_7_20200606_0b.md  Jun  06  15:25  1234
 ```
+
+If more than one directory was supplied to **Ls**, the above formatting repeats for each directory, separated with an empty line.
 
 **Hint #1:** Develop a function **Ls**, in its body execute the standard **ls** with carefully chosen options (check for instance **man ls** for the meaning of the flags '-l', '-S', '-r')
 
