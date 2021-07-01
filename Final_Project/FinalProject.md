@@ -1,17 +1,24 @@
 
-![](LinuxBashROOT_logos.png)  
+![](LinuxBashROOT_logos.jpg) 
+
 
 
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20200714
+**Last update:** 20210701
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jets production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions and jet interaction in dense matter.
 
 In this final project, you are challenged to use combined **Linux**, **Bash** and **ROOT** functionalities covered in the lecture, in order to fully automate the data analysis over one typical HIJING dataset, generated in 10 separate jobs on a local batch farm.
 
-**Challenge #0: The dataset.** Download the compressed HIJING dataset (the compressed size is around 170 MB) from the following direct link: https://cernbox.cern.ch/index.php/s/BJern5Ky7ajoULd . After downloading, extract the dataset (the size will be around 680 MB after this step!) by executing
+**Challenge #0: The dataset.** Download the compressed HIJING dataset (the compressed size is around 170 MB) from the following direct link: https://cernbox.cern.ch/index.php/s/BJern5Ky7ajoULd . From the terminal, you can download by using the command **wget**:
+
+```bash
+wget https://cernbox.cern.ch/index.php/s/BJern5Ky7ajoULd/download -O HIJING_LBF_test.tar.gz
+```
+
+After downloading, extract the dataset (the size will be around 680 MB after this step!) by executing
 
 ```bash
 tar xf HIJING_LBF_test.tar.gz
@@ -152,13 +159,11 @@ while read File; do
 done < <(find <top-directory> -type f -name "event_*.dat")
 ```
 
-**Hint #2:** The following pseudo code can do the actual filtering:
+**Hint #2:** The following example code snippet can do the actual filtering:
 
 ```bash
 cp event_0.dat backup_0.dat 
-while read Line; do
- ... test with awk if the 3rd field in Line is 0 => if so, echo that line ...
-done < backup_0.dat 1>event_0.dat
+awk '{if ($3 == 0) print $0}' < backup_0.dat 1>event_0.dat
 ```
 
 If filtering went OK, clean up the temporary backup files.
@@ -261,7 +266,7 @@ From this point onward, only the dataset stored in ```TTree``` containers in the
 int readDataFromTTree(const char *filename)
 {
 
- TFile *file = new TFile("output.root","update"); // there are a few TTree's in this file, each corresponds to different event
+ TFile *file = new TFile(filename,"update"); // there are a few TTree's in this file, each corresponds to different event
 
  TList *lofk = file->GetListOfKeys(); // standard ROOT stuff, to read all entries in the ROOT file
 
@@ -310,7 +315,34 @@ root -l readDataFromTTree.C\(\"output.root\"\)
 ```
 Instead of trivially dumping on the screen the data via ```cout<<Form("%d: %f %f %f %f",p,px,py,pz,E)<<endl;``` expand this macro with the code which fills the histograms, and stores those histograms in the **ROOT** file ```ÀnalysisResults.root``` which contains the output results of your personal analysis. 
 
-**Hint #2:** For the final plotting and printout, develop a separate standalone **ROOT** macro which only processes the final **ROOT** file ```ÀnalysisResults.root``` which contains the histograms of your personal analysis, and execute that macro at the end of script **Analysis.sh**.
+**Hint #2:** The 3 histograms (for pion, kaon and proton) need to be generated to hold the entries for the whole dataset of 100 events, not per event! So here you need to demonstrate that you can access histograms from the **ROOT** file, fill histograms with the new entries, and save them back updated to the **ROOT** file. This is a real-life example. At any point, in the **ROOT** file you need to have only 3 histograms, which you just access, fill and save updated for each event. To achieve that, please consider using the following standard strategy:
+
+* open **ROOT** file (the global **ROOT** variable **gFile** points now to that particular file):
+
+  ```c
+  TFile *file = TFile::Open("path-to-ROOT-file","UPDATE");
+  if(!file){return 1;}
+  ```
+
+* obtain the pointer to the histogram you need to update, something like:
+
+  ```c
+  TH1F *hist = dynamic_cast<TH1F*>(file->Get("hist-name"));
+  ```
+
+* fill the histogram the new entries from particular event
+
+* save the updated histogram in the same **ROOT** file with
+
+  ```c
+  hist->Write(hist->GetName(),TObject::kSingleKey+TObject::kWriteDelete);
+  ```
+
+  This will write the updated histogram in the **ROOT** file to which the global **ROOT** variable **gFile** points to. Each time you open a new **ROOT** file, **gFile** is updated. The previous instance of that histogram is overwritten (see more details in the ROOT documentation at: https://root.cern.ch/doc/master/classTObject.html#a211e8b1ab4ef54a5f2ecbe809945fee8).
+
+  Note that ownership is not affected, histogram is still owned by the very same **ROOT** file. On the other hand, you cannot access histogram from one file, update it and save it into another **ROOT** file in the same code straightforwardly, as here you have first to deal with the histogram ownership, which is always a bit tricky...
+
+**Hint #3:** For the final plotting and printout, develop a separate standalone **ROOT** macro which only processes the final **ROOT** file ```ÀnalysisResults.root``` which contains the histograms of your personal analysis, and execute that macro at the end of script **Analysis.sh**.
 
 
 
