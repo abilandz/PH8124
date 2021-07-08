@@ -1,8 +1,8 @@
-![](LinuxBashROOT_logos.png)
+![](LinuxBashROOT_logos.jpg)
 
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20200723
+**Last update**: 20210708
 
 ### Disclaimer
 Here is a just a collection of code snippets used in the lecture, for the full description of the functionalities of **ROOT** classes in question, consult the official manual:
@@ -80,7 +80,7 @@ or
 ```bash
 root hello_compiled.C++
 ```
-**ACliC** is an interface which ensures that a machine independent ```C++``` compiler is used. By default, the same compiler and the compiler options are used which were used to compile the **ROOT** executable. The difference between appending ```++``` or ```+``` when compiling is that in the former case always all shared libraries are rebuilt from scratch.
+**ACliC** is an interface which ensures that a machine independent ```C++``` compiler is used. By default, the same compiler and the compiler options are used which were used to compile the **ROOT** executable. The difference between appending ```++``` or ```+``` when compiling is that in the former case all shared libraries are always rebuilt from scratch.
 
 When running in the compiled mode, the output on the screen is slightly different:
 
@@ -220,7 +220,7 @@ Int_t f1_random_compiled()
 ```
 And you can compile and execute simply with:
 ```bash
-root -l f1_random_compiled.C++
+root f1_random_compiled.C++
 ```
 
 Let us now check the performance of interpreted vs. compiled mode.  
@@ -241,7 +241,7 @@ The following interpreted code is saved in the file ```f1_random_interpreted.C``
 
 We time its execution with the **Bash** built-in command **time**:  
 ```bash
-time root -b -q f1_random_interpreted.C
+time root -l -b -q f1_random_interpreted.C
 root [0] 
 Processing f1_random_interpreted.C...
 
@@ -342,7 +342,7 @@ The thing to note is that the two variables need to be declared first, and then 
 
 
 ### 7. TH1F <a name="TH1F"></a>
-To illustrate histogramming in ROOT, we use 1 dimensional histogram class with the floating point precision, ```TH1F```.  Other supported classes are for instance ```TH1I``` (for integers), ```TH1D``` (for doubles), etc. Corresponding classes exist for 2D and 3D, e.g. ```TH2F``` and ```TH3F```. For even higher number of dimensions, there exists a fancy class ```THnSparse```. 
+To illustrate histogramming in ROOT, we use 1 dimensional histogram class with the floating point precision, ```TH1F```.  Other supported classes are for instance ```TH1I``` (for integers), ```TH1D``` (for doubles), etc. Corresponding classes exist for 2D and 3D, e.g. ```TH2F``` and ```TH3F```. For even higher number of dimensions, there exists a class ```THnSparse```. 
 
 Histogramming is illustrated in the following example:
 ```cpp
@@ -353,7 +353,7 @@ Histogramming is illustrated in the following example:
  // Define some histogram to store the results of sampling:
  TH1F *hist = new TH1F("hist","hist title",100,-2.,2.);
 
- // Fill the histogram with 10000 sampled points from pre-define p.d.f:
+ // Fill the histogram with 10000 sampled points from pre-defined p.d.f:
  hist->FillRandom("funct",10000);
 
  // Plot both the starting p.d.f. and resulting histogram:

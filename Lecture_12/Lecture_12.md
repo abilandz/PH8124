@@ -1,8 +1,8 @@
-![](LinuxBashROOT_logos.png)
+![](LinuxBashROOT_logos.jpg)
 
 # Lecture 12: ROOT - basic classes (Part 2/2)
 
-**Last update**: 20200714
+**Last update**: 20210708
 
 ### Disclaimer
 
@@ -85,13 +85,13 @@ then first histogram 'hist2' is plotted, and then 'hist1' is drawn on top of it.
 
 
 ### 2. Playing with ROOT files <a name="root_files"></a>
-ROOT files are made in a very straightfoward way by using class ```TFile```:
+ROOT files are made in a very straightforward way by using class ```TFile```:
 ```cpp
 {
  TFile *file = new TFile("someFileName.root","NEW");
 }
 ```
-This simple one-line code snippet created a new physical file on the hard disk, in the current working directory (otherwise in the first argument specify absolute path!), named ```someFileName.root```. If the file with that name already exists in the current working directory, that file will NOT be overwritten, beause we have made a new flie with the option 'NEW'. The meaning of 4 most important options in ```TFile``` constructor is summarized here: 
+This simple one-line code snippet created a new physical file on the hard disk, in the current working directory (otherwise in the first argument specify absolute path!), named ```someFileName.root```. If the file with that name already exists in the current working directory, that file will NOT be overwritten, because we have made a new flie with the option 'NEW'. The meaning of 4 most important options in ```TFile``` constructor is summarized here: 
 
 * **NEW** or **CREATE** : Create a new file and open it for writing, if the file already exists the file is not opened.
 * **RECREATE**	: Create a new file, if the file already exists it will be overwritten.
@@ -113,7 +113,7 @@ But there is much more happening here behind the scene, when new ROOT file is be
  cout<<"3: "<<gFile<<endl;
 }
 ```
-That being said, in order to save for instance histogram in the ROOT file, by using histrogram's member functions, we need to know to which ROOT file the global variable ```gFile``` is initialized. This is illustrated with the following code snippet:
+That being said, in order to save for instance histogram in the ROOT file, by using histogram's member functions, we need to know to which ROOT file the global variable ```gFile``` is initialized. This is illustrated with the following code snippet:
 ```cpp
 {
  TFile *file = new TFile("someFileName.root","RECREATE");
@@ -144,7 +144,7 @@ TFile**		myFile.root
   KEY: TH1F	hist;1	title
   KEY: TF1	fun;1	cos(x)
 ```
-We see clearly our two objects in this printout, let us now fetch their pointers programatically, modify them, and saved modified in the new file, by using the following code snippet:
+We see clearly our two objects in this printout, let us now fetch their pointers programmatically, modify them, and saved modified in the new file, by using the following code snippet:
 ```cpp
 {
  TFile *file = new TFile("myFile.root","READ");
@@ -181,9 +181,9 @@ We see clearly our two objects in this printout, let us now fetch their pointers
 
 
 ### 3. TFileMerger <a name="tfilemerger"></a>
-When part of the data is analyzed with one process, and another part with another process, the output ROOT files have exactly the same internal structure (e.g. number of histograms), only the histogram content is different. In situations like this, and in order to achieve the total statistics in the analysis, one is interested in merging (i.e. summing up) all histogram together. This can be achieved very conventiently with the ```TFileMerger``` class, which will merge automatically the content of all mergeable objects within the ROOT files (typically histograms and profiles).
+When part of the data is analyzed with one process, and another part with another process, the output ROOT files have exactly the same internal structure (e.g. number of histograms), only the histogram content is different. In situations like this, and in order to achieve the total statistics in the analysis, one is interested in merging (i.e. summing up) all histogram together. This can be achieved very conveniently with the ```TFileMerger``` class, which will merge automatically the content of all mergeable objects within the ROOT files (typically histograms and profiles).
 
-As an important remark, we stress it out again that the ROOT files we want to merge must have exactly the same intrnal strucure, otherwise weird things can happen, as ROOT cannot easily determine the internal structure of final merged file.
+As an important remark, we stress it out again that the ROOT files we want to merge must have exactly the same internal structure, otherwise weird things can happen, as ROOT cannot easily determine the internal structure of final merged file.
 
 If in two subdirectories of your current working directory, named 10 and 11 let's say, you have file named 'mergeMe.root'
 ```linux
