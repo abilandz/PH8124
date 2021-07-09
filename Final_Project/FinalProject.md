@@ -6,7 +6,7 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20210701
+**Last update:** 20210709
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jets production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions and jet interaction in dense matter.
 
@@ -357,7 +357,7 @@ where the content of the script ```TheFinalTouch.sh``` is:
 ```bash
 #!/bin/bash
 
-[[ ! -d $1 ]] && echo "Not a valid directory!" || return 6
+[[ ! -d $1 ]] && echo "Not a valid directory!" && return 6
 
 source Splitter.sh $1 && echo "Done with Splitter.sh" || return 5
 source Filter.sh $1 && echo "Done with Filter.sh" || return 4
