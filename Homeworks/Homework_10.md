@@ -2,7 +2,7 @@
 
 # Homework #10: Plotting and histogramming with ROOT
 
-**Last update:** 20200723
+**Last update:** 20210715
 
 **Challenge:** Implement a piece of code in the vanilla **ROOT** macro (just open the blank file, its content surround within ```{ ... }```, and save it as ```myFile.C```) which will treat the function $$f(x) = ax e^{-bx}$$ as a probability density function (p.d.f.) on the interval $$0 \leq x < 1$$ where $$x$$ is variable and $$a$$ and $$b$$ are parameters (see examples in http://root.cern.ch/root/html/TF1.html).
 
