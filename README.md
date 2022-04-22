@@ -8,6 +8,6 @@ The formal course description can be found at the TUM website at the following l
 
 For **ROOT**, the official tutorial is used:
 
-*  https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html
-*  https://cernbox.cern.ch/index.php/s/UPTygtTacSQVtOj (pdf)
+*  [https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html](https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html)
+*  [or pdf version](https://cernbox.cern.ch/index.php/s/UPTygtTacSQVtOj)
 
