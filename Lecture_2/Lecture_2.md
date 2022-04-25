@@ -1,8 +1,8 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20210407
+**Last update**: 20220425
 
 ### Table of Contents
 1. [Introduction](#introduction)
