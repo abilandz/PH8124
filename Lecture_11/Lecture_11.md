@@ -1,8 +1,8 @@
-![](LinuxBashROOT_logos.jpg)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20210708
+**Last update**: 20220425
 
 ### Disclaimer
 Here is a just a collection of code snippets used in the lecture, for the full description of the functionalities of **ROOT** classes in question, consult the official manual:

@@ -1,9 +1,9 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20210527
+**Last update**: 20220425
 
 
 ### Table of Contents

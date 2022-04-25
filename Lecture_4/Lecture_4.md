@@ -1,9 +1,9 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20210520
+**Last update**: 20220425
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)

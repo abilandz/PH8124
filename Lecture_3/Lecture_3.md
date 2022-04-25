@@ -1,8 +1,8 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20210411
+**Last update**: 20220425
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  

@@ -1,8 +1,8 @@
-![](LinuxBashROOT_logos.jpg) 
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Lecture 10: ROOT - getting started
 
-**Last update**: 20210708
+**Last update**: 20220425
 
 **ROOT** is covered from the official tutorial, supplemented with illustrative code snippets:
 

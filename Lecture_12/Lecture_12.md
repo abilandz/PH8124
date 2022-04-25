@@ -1,8 +1,8 @@
-![](LinuxBashROOT_logos.jpg)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Lecture 12: ROOT - basic classes (Part 2/2)
 
-**Last update**: 20210708
+**Last update**: 20220425
 
 ### Disclaimer
 

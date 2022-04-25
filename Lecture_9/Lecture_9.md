@@ -1,8 +1,8 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20210505
+**Last update**: 20220425
 
 ### Table of Contents
 1. [Command history search](#command_history_search)

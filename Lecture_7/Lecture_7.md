@@ -1,10 +1,10 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20210429
+**Last update**: 20220425
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
