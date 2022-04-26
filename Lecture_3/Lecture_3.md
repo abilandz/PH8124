@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20220425
+**Last update**: 20220426
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -15,7 +15,7 @@
 
 ### 1. **Linux** file system <a name="file_system"></a>
 
-We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common, widely accepted, structure named _Filesystem Hierarchy Standard (FHS)_ (https://refspecs.linuxfoundation.org/fhs.shtml) . The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
+We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common and widely accepted structure named _Filesystem Hierarchy Standard (FHS)_ (https://refspecs.linuxfoundation.org/fhs.shtml). The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
 ```bash
 cd /
 ls
@@ -41,7 +41,7 @@ or by referencing the content of environment variable **PWD**, which is always s
 ```bash
 echo $PWD
 ```
-Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it is always much more efficient to get information directly from the environment variable like **PWD**, than to retrieve and store in a variable the same information by executing the command, via the so-called _command substitution operator_ (more on this later).
+Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it is always much more efficient to get information directly from the environment variable like **PWD**, than to retrieve and store in a variable the same information by executing the command, via the so-called _command substitution operator $( ... )_ (more on this later).
 
 The most important directories in the **Linux** file system structure are:
 
@@ -49,7 +49,7 @@ The most important directories in the **Linux** file system structure are:
 * ```/usr/bin``` : binaries used by all locally logged in users
 * ```/usr/sbin``` : binaries used only with superuser (root) privileges
 * ```/dev``` : location of special or device files
-* ```/etc ``` : system-wide configuration files 
+* ```/etc``` : system-wide configuration files 
 * ```/home``` : holds user-specific accounts, personal area for each user 
 * ```/proc``` : kernel and process information
 * ```/tmp``` : temporary files
@@ -65,7 +65,7 @@ which date
 which touch
 /usr/bin/touch
 ```
-It is completely equivalent to execute in the terminal the command name, e.g. **date**, or the full absolute path to the corresponding executable:
+It is completely equivalent to execute in the terminal the command name, e.g. **date**, or the full absolute path to the corresponding executable. Therefore, 
 ```bash
 date
 Mon Apr 27 16:12:06 CEST 2020
@@ -75,7 +75,7 @@ is the same as:
 /bin/date
 Mon Apr 27 16:12:06 CEST 2020
 ```
-It would be very tedious and impractical if each time we would like to use some command, we would need to type in the terminal the absolute path to its executable sitting somewhere in the **Linux** file system, both in terms of typing and in terms of memorizing the exact locations. This is precisely where **Bash** (or any other **shell**) is extremely helpful --- **shell** finds the correct executable in the file system for us, after we have typed only the short command name in the terminal, and executes it. Clearly, something is happening here behind the scene: How does **shell** know which physical executable in the file system is linked with the short command name you have typed in the terminal? Hypothetically, we could also have another version of **date** command sitting somewhere else in the file system, e.g. in the directory ```/usr/bin/date```. Then there is an ambiguity, since after we have typed in the terminal **date**, it is not clear whether we want ```/bin/date``` or ```/usr/bin/date``` to be executed. 
+It would be very tedious and impractical if each time we would like to use some command, it would be necessary to type in the terminal the absolute path to its executable sitting somewhere in the **Linux** file system, both in terms of typing and in terms of memorizing the exact locations. This is precisely where **Bash** (or any other **shell**) is extremely helpful &mdash; **shell** finds the correct executable in the file system for us, after we have typed only the short command name in the terminal, and executes it. Clearly, something is happening here behind the scene: How does **shell** know which physical executable in the file system is linked with the short command name you have typed in the terminal? Hypothetically, we could also have another version of **date** command sitting somewhere else in the file system, e.g. in the directory ```/usr/bin/date```. Then there is an ambiguity, since after we have typed in the terminal **date**, it is not clear whether we want ```/bin/date``` or ```/usr/bin/date``` to be executed. 
 
 This is resolved with a very important environment variable **PATH**. To see its current content, simply type:
 
@@ -88,7 +88,7 @@ The output could look like this:
 ```
 This output looks messy, but in fact it has a well-defined structure and is easy to interpret. In the above output, we can see absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
 
-By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command --- just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in ```/home/abilandz/bin```). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like ```/bin```, ```/usr/bin```, etc.). This is achieved with the following standard code snippet:
+By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command &mdash; just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in ```/home/abilandz/bin```). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like ```/bin```, ```/usr/bin```, etc.). This is achieved with the following standard code snippet:
 
 ```bash
 PATH="/home/abilandz/bin:${PATH}"
@@ -101,7 +101,7 @@ For the lower priority of your executables, use an alternative standard code sni
 PATH="${PATH}:/home/abilandz/bin"
 ```
 
-In this example, you have appended your executables to what is already set in **PATH** --- this way you indicate that you want to use your own version of some standard, system-wide, **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in your terminal, add the above redefinitions of **PATH** into ```~/.bashrc``` file.
+In this example, you have appended your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard, system-wide, **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new  terminal you open, add the above redefinitions of **PATH** into ```~/.bashrc``` file. In case you want the redefinition of **PATH** to be persistent in all new processes, use in addition the command **export** at declaration. 
 
 From the above explanation, it is clear that if you unset the **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
 
@@ -109,9 +109,9 @@ We finalize the explanation of **PATH** variable with the following concluding r
 
 * The search for the corresponding executable, after you have typed the short command name in the terminal, is optimized in the following ways: 
 
-  * Not all the files in the specified directories in **PATH** are considered during the search --- only the files which have _execute permission_ (```x```) are taken into account by **Bash** (more on this in a moment!);
+  * Not all the files in the specified directories in **PATH** are considered during the search &mdash; only the files which have _execute permission_ (```x```) are taken into account by **Bash** (more on this in a moment!);
 
-  * The recently used commands are _hashed_ in the table --- this table is then looked up first by **Bash** after you type the command name in the terminal. To see the current content of the hash table, just type **Bash** built-in command **hash** in the terminal:
+  * The recently used commands are _hashed_ in the table &mdash; this table is then looked up first by **Bash** after you type the command name in the terminal. To see the current content of the hash table, just type **Bash** built-in command **hash** in the terminal:
 
     ```bash
     hash
@@ -128,9 +128,9 @@ We finalize the explanation of **PATH** variable with the following concluding r
        6    /bin/ls
     ```
     
-    Cleary, the hash mechanism adds it a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty. Each new terminal keeps its own hash table.
+    Clearly, the hash mechanism adds it a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty. Each terminal session keeps its own hash table.
 
-* The **PATH** search can be skipped by the user. In particular, when the command name contains the ```/``` (slash) character, not necessarily at the beginning of the name, **Bash** will not perform the search for the corresponding executable --- underlying assumption is that you have now yourself specified the path in the file system, either absolute or relative, to the corresponding executable. In this case, **Bash** tries to execute that command name on the spot. This explains the standard syntax to run the command whose executable is in your current directory: 
+* The **PATH** search can be skipped by the user. In particular, when the command name contains the ```/``` (slash) character, not necessarily at the beginning of the name, **Bash** will not perform the search for the corresponding executable &mdash; underlying assumption is that you have now yourself specified the path in the file system, either absolute or relative, to the corresponding executable. In this case, **Bash** tries to execute that command name on the spot. This explains the standard syntax to run the command whose executable is in your current directory: 
 
   ```bash
   ./someCommand
@@ -219,7 +219,7 @@ The meaning of three timestamps is as follows:
 * **Modify (m)** : last time a file was modified (i.e. its content has been edited)
 * **Change (c)** : last time a file's metadata was changed (e.g. permissions)  
 
-These three timestamps are not an overkill, in fact, they enable a lot of very powerful features when searching for specific files or directories in the file system. For instance, by using them, it is possible to list names of all files modified within the last day, to delete all files which were not accessed for more than 1 year, etc. (more on this later).
+These three timestamps are not an overkill, in fact, they enable a lot of very powerful features when searching for specific files or directories in the file system. For instance, by using them, it is possible to list names of all files modified within the last day, to delete all files which were not accessed for more than 1 year, etc.
 
 Next, each file or directory in **Linux** has three distinct levels of ownership:  
 
