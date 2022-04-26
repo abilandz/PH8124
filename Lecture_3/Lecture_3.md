@@ -302,8 +302,24 @@ Finally, we clarify that each permission setting can be represented alternativel
 |:--:|:--:|:--:|:--:|:--:|
 |**value**| 4 | 2 | 1 | 0 |
 
-
 When these values are added together, the sum is used to set specific permissions. 
+
+
+
+
+
+|#|Methodology                                |Notes                  |
+|-|-------------------------------------------|-----------------------|
+|1| Using `cut`                               |                       |
+|2| Using `grep -o`                           | +5 XP for regex       |
+|3| Using `sed -r`                            | +5 XP for regex       |
+|4| Bash var expansion                        | +10 XP for complexity |
+|5| Bash `read` w/ multiple vars              |                       |
+|6| `set --` and positional parameters        | +5 XP for complexity  |
+|7| Bash `read -d:` and `tr`                  | +10 XP for complexity |
+|8| Bash `read -d:` and `sed 'y/set/replace/'`| +15 XP for complexity |
+
+
 
 For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6. If you want to remove all  'read', 'write' and 'execute' permissions, you need to specify 0. 
 
