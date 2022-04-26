@@ -295,11 +295,11 @@ Note that it makes a perfect sense to use ```x``` permission also for directorie
 
 Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
-44
+444
 
 
 |permission| r | w | x | - |
-|:--:|:--:|:--:|:--:|:--:|
+|:-:|:-:|:-:|:-:|:-:|
 |**value**| 4 | 2 | 1 | 0 |
 
 When these values are added together, the sum is used to set specific permissions. 
