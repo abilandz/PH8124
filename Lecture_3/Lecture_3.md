@@ -295,15 +295,20 @@ Note that it makes a perfect sense to use ```x``` permission also for directorie
 
 Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
-|permission| r  | w  | x  | -  |
+44
+
+
+|permission| r | w | x | - |
 |:--:|:--:|:--:|:--:|:--:|
-|**value**| 4  | 2  | 1  | 0  |
+|**value**| 4 | 2 | 1 | 0 |
+
 
 When these values are added together, the sum is used to set specific permissions. 
 
 For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6. If you want to remove all  'read', 'write' and 'execute' permissions, you need to specify 0. 
 
 For convenience, all possibilities are documented in the table:
+
 
 | value | permission             | standard syntax |
 | :--:  | :--:                   | :--:            |
@@ -315,6 +320,7 @@ For convenience, all possibilities are documented in the table:
 |  2    | write only             | -w- |
 |  1    | execute only           | --x |
 |  0    | none                   | --- |
+
 
 **Example:** Make a new file with default permissions, then remove all permissions, and set the permission pattern to ```-rwx--xr--``` , by using both syntaxes described above. With the first syntax, we would have:
 
