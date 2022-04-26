@@ -296,7 +296,7 @@ Note that it makes a perfect sense to use ```x``` permission also for directorie
 Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
 | permission | r    | w    | x    | -    |
-| ---------- | ---- | ---- | ---- | ---- |
+| :--------- | :--- | :--- | :--- | :--- |
 | **value**  | 4    | 2    | 1    | 0    |
 
 When these values are added together, the sum is used to set specific permissions. 
@@ -306,7 +306,7 @@ For example, if you want to set only 'read' and 'write' permissions, you need to
 For convenience, all possibilities are documented in the table:
 
 | value | permission              | standard syntax |
-| ----- | ----------------------- | --------------- |
+| :---- | :---------------------- | :-------------- |
 | 7     | read, write and execute | rwx             |
 | 6     | read and write          | rw-             |
 | 5     | read and execute        | r-x             |
