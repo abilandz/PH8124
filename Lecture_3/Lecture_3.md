@@ -295,48 +295,26 @@ Note that it makes a perfect sense to use ```x``` permission also for directorie
 
 Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
-444444
-
-
-| permission |  r   |  w   |  x   |  -   |
-| --------: | :--: | :--: | :--: | :--: |
-| **value**  |  4   |  2   |  1   |  0   |
+| permission | r    | w    | x    | -    |
+| ---------- | ---- | ---- | ---- | ---- |
+| **value**  | 4    | 2    | 1    | 0    |
 
 When these values are added together, the sum is used to set specific permissions. 
-
-
-
-
-
-|#|Methodology                                |Notes                  |
-|-|-------------------------------------------|-----------------------|
-|1| Using `cut`                               |                       |
-|2| Using `grep -o`                           | +5 XP for regex       |
-|3| Using `sed -r`                            | +5 XP for regex       |
-|4| Bash var expansion                        | +10 XP for complexity |
-|5| Bash `read` w/ multiple vars              |                       |
-|6| `set --` and positional parameters        | +5 XP for complexity  |
-|7| Bash `read -d:` and `tr`                  | +10 XP for complexity |
-|8| Bash `read -d:` and `sed 'y/set/replace/'`| +15 XP for complexity |
-
-
 
 For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6. If you want to remove all  'read', 'write' and 'execute' permissions, you need to specify 0. 
 
 For convenience, all possibilities are documented in the table:
 
-
-| value | permission             | standard syntax |
-| :--:  | :--:                   | :--:            |
-|  7    | read, write and execute| rwx |
-|  6    | read and write         | rw- |
-|  5    | read and execute       | r-x |
-|  4    | read only              | r-- |
-|  3    | write and execute      | -wx |
-|  2    | write only             | -w- |
-|  1    | execute only           | --x |
-|  0    | none                   | --- |
-
+| value | permission              | standard syntax |
+| ----- | ----------------------- | --------------- |
+| 7     | read, write and execute | rwx             |
+| 6     | read and write          | rw-             |
+| 5     | read and execute        | r-x             |
+| 4     | read only               | r--             |
+| 3     | write and execute       | -wx             |
+| 2     | write only              | -w-             |
+| 1     | execute only            | --x             |
+| 0     | none                    | ---             |
 
 **Example:** Make a new file with default permissions, then remove all permissions, and set the permission pattern to ```-rwx--xr--``` , by using both syntaxes described above. With the first syntax, we would have:
 
