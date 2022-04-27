@@ -301,7 +301,7 @@ When these values are added together, the sum is used to set specific permission
 
 For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6. If you want to remove all  'read', 'write' and 'execute' permissions, you need to specify 0. 
 
-For convenience, all possibilities are documented in the table:
+For convenience, all possibilities are documented in the tables:
 
  <img src="permissionsAll.png" style="zoom:75%;" />
 
