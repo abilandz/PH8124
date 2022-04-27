@@ -2,11 +2,11 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20220426
+**Last update**: 20220427
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
-	A) [File metadata](#file_metadata)     
+	A) [File metadata](#file_metadata)  
 2. [Positional parameters](#positional_parameters)
 3. [Your first **Linux/Bash** commands: **Bash** functions](#first_command)
 4. [Command precedence](#precedence)
@@ -209,7 +209,7 @@ stat -c %s Lecture_2.md
 ```
 For the size of a directory, use instead **du -sh** as explained above. As you can see from the output of **stat**, the example file ```Lecture_2.md``` is characterized by three timestamps: **Access**, **Modify** and **Change**. These three timestamps are an important part of file metadata, which we cover next.
 
-#### A)  File metadata <a name="file_metadata"></a>
+#### A) File metadata <a name="file_metadata"></a>
 
 File metadata is any file-related information besides its content. From the user's perspective, the most important file metadata are _timestamps_, _ownership_ and _permissions_.  
 
@@ -295,9 +295,9 @@ Note that it makes a perfect sense to use ```x``` permission also for directorie
 
 Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
-| permission | r    | w    | x    | -    |
-| :--------- | :--- | :--- | :--- | :--- |
-| **value**  | 4    | 2    | 1    | 0    |
+| permission |  r   |  w   |  x   |  -   |
+| :--------- | :--: | :--: | :--: | :--: |
+| **value**  |  4   |  2   |  1   |  0   |
 
 When these values are added together, the sum is used to set specific permissions. 
 
@@ -305,16 +305,16 @@ For example, if you want to set only 'read' and 'write' permissions, you need to
 
 For convenience, all possibilities are documented in the table:
 
-| value | permission              | standard syntax |
-| :---- | :---------------------- | :-------------- |
-| 7     | read, write and execute | rwx             |
-| 6     | read and write          | rw-             |
-| 5     | read and execute        | r-x             |
-| 4     | read only               | r--             |
-| 3     | write and execute       | -wx             |
-| 2     | write only              | -w-             |
-| 1     | execute only            | --x             |
-| 0     | none                    | ---             |
+| value |       permission        | standard syntax |
+| :---: | :---------------------: | :-------------: |
+|   7   | read, write and execute |       rwx       |
+|   6   |     read and write      |       rw-       |
+|   5   |    read and execute     |       r-x       |
+|   4   |        read only        |       r--       |
+|   3   |    write and execute    |       -wx       |
+|   2   |       write only        |       -w-       |
+|   1   |      execute only       |       --x       |
+|   0   |          none           |       ---       |
 
 **Example:** Make a new file with default permissions, then remove all permissions, and set the permission pattern to ```-rwx--xr--``` , by using both syntaxes described above. With the first syntax, we would have:
 
