@@ -303,7 +303,7 @@ For example, if you want to set only 'read' and 'write' permissions, you need to
 
 For convenience, all possibilities are documented in the table:
 
- <img src="permissionsAll.png" style="zoom:50%;" />
+ <img src="permissionsAll.png" style="zoom:75%;" />
 
 **Example:** Make a new file with default permissions, then remove all permissions, and set the permission pattern to ```-rwx--xr--``` , by using both syntaxes described above. With the first syntax, we would have:
 
