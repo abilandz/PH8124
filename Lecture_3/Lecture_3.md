@@ -293,7 +293,7 @@ chmod -R some-options-to-change-permissions someDirectory
 
 Note that it makes a perfect sense to use ```x``` permission also for directories, because we can then add recursively in one go ```x``` permissions to all files in that directory.
 
-Finally, we clarify that each permission setting can be represented alternatively by a numerical value. The rule is established with the following simple table:
+Finally, we clarify that the setting for each permission can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
  <img src="permissions.png" style="zoom:50%;" />
 
@@ -327,7 +327,7 @@ chmod 714 file.log
 # pattern is: -rwx--xr--
 ```
 
-It practice, it is not needed to remove old permissions and only then to set the new ones --- it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
+It practice, it is not needed to remove old permissions and only then to set the new ones &mdash; it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
 
 Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_ (or _script arguments_).
 
@@ -336,9 +336,9 @@ Before we start developing the new commands from scratch in **Linux**, we need t
 
 ### 2. Positional parameters <a name="positional_parameters"></a>
 
-In this section we discuss how some arguments to your script can be supplied at execution. This clearly will allow you much more freedom and power in the code development, because nothing needs to be hardcoded in the script body. The very same mechanism can be used also in the implementation of **Bash** functions, as we will see later. We introduce now the so-called _positional parameters_ (or _script arguments_).
+In this section we discuss how some arguments can be supplied to your script at execution. This clearly will allow you much more freedom and power in the code development, because nothing needs to be hardcoded in the script body. The very same mechanism can be used also in the implementation of **Bash** functions, as we will see later. We introduce now the so-called _positional parameters_ (or _script arguments_).
 
-**Example:** We want to develop a script named ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just print something like: 
+**Example:** We want to develop a script named ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just prints something like: 
 
 ```bash
 My favorite collider is <some-collider>
@@ -388,7 +388,7 @@ Few additional remarks on positional parameters:
 
 In combination with looping, you can programmatically parse over the all supplied arguments to your script (i.e. there is no need to hardwire in the script that you expect exactly a certain number of arguments, etc.). 
 
-**Example**: Proof of the principle. Below is the script ```arguments.sh```, which uses the **for** loop in **Bash** (to be covered in detail later!), and just counts and prints all arguments supplied to the script:
+**Example**: Proof of the principle. Below is the script ```arguments.sh```, which uses the **for** loop in **Bash** (loops are covered in detail later!), and just counts and prints all arguments supplied to the script:
 
 ```bash
 #!/bin/bash
@@ -425,7 +425,7 @@ By using this functionality, you can instruct a script to behave differently if 
 
 As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, has its own environment, etc., we can consider **Bash** function. 
 
-Functions in **Bash** are very similar to scripts, however, the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well-defined notion of _local environment_. This means basically that if you have the variable with the same name in your current terminal session, and in the script or in the function you are executing, it's much easier to prevent the clash of these variables if you use functions. In addition, usage of functions to great extent resembles the usage of **Linux** commands, and it is in this sense, that your first function developed in **Bash** can be also treated as your first **Linux** command! 
+Functions in **Bash** are very similar to scripts, however, the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well-defined notion of _local environment_. This basically means that if you have the variable with the same name in your current terminal session, as well as in the script or in the function you are executing, it's much easier to prevent the clash of these variables if you use functions. In addition, usage of functions to great extent resembles the usage of **Linux** commands, and it is in this sense, that your first function developed in **Bash** can be also treated as your first **Linux** command! 
 
 Example implementation of **Bash** function could look like:
 
@@ -468,19 +468,19 @@ When compared to the script implementation, there are few differences:
 
 * Usage of keyword **function** (an alternative syntax exists, ```someName()```, but it is really a matter of taste which one you prefer)
 * Body of the function must be embedded within ```{ ... }```
-* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
+* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, a call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
 
 The rest is the same as for the scripts:
 
-* Functions accept arguments in exactly the same way as scripts, via special ```${1}```, ```${2}```, ... variables
-* You can call a function within another function, but only if it was defined first --- order of implementation matters in scripting languages!
+* Functions handle arguments in exactly the same way as scripts, via special ```${1}```, ```${2}```, ... variables
+* You can call a function within another function, but only if it was defined first &mdash; order of implementation matters in scripting languages!
 * Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time functions are executed equivalently as commands, and then their exit status clearly matters
 * Typically, you implement all your functions in some file, let's say ```functions.sh```, and save it in your home directory (or anywhere else). Then, at the end of ```${HOME}/.bash_profile``` and ```${HOME}/.bashrc``` you insert the line:
 
 ```bash 
 source ${HOME}/functions.sh
 ```
-If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands --- in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
+If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands &mdash; in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
 
 Finally, we remark that functions are superior to aliases: anything that can be done with an alias can be done better with a function. For instance, the classical alias definition:
 
@@ -497,7 +497,7 @@ function ll
 }
 ```
 
-Note that only the above implementation of function can easily be generalized --- within the function body we can programatically manipulate the arguments and, for instance, use different formatting options for the printout depending upon which directory we are in.
+Note that only the above implementation of function can easily be generalized &mdash; within the function body we can programmatically manipulate the arguments and, for instance, use different formatting options for the printout depending upon which directory we are in.
 
 
 
@@ -563,7 +563,16 @@ type ll
 ll is aliased to `ls -alF'
 ```
 
+For some commands, multiple independent implementations and executables can simultaneously exist on your computer, you can retrieve 'em all with **type -a**, for instance:
+
+```bash
+$ type -a printf
+printf is a shell builtin
+printf is /usr/bin/printf
+```
+
 For the **Bash** functions, the command **type** also prints the source code of that function. For instance, for the function **Hello** discussed previously you would get:   
+
 ```bash
 type Hello
 Hello is a function
