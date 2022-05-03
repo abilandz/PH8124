@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20220427
+**Last update**: 20220503
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -336,7 +336,7 @@ Before we start developing the new commands from scratch in **Linux**, we need t
 
 ### 2. Positional parameters <a name="positional_parameters"></a>
 
-In this section we discuss how some arguments can be supplied to your script at execution. This clearly will allow you much more freedom and power in the code development, because nothing needs to be hardcoded in the script body. The very same mechanism can be used also in the implementation of **Bash** functions, as we will see later. We introduce now the so-called _positional parameters_ (or _script arguments_).
+In this section we discuss how some arguments can be supplied to your script at execution. This clearly will allow you much more freedom and power in the code development, because nothing needs to be hardcoded in the script's body. The very same mechanism can be used also in the implementation of **Bash** functions, as we will see later. We introduce now the so-called _positional parameters_ (or _script arguments_).
 
 **Example:** We want to develop a script named ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just prints something like: 
 
@@ -369,13 +369,13 @@ My favorite experiment at LHC is ALICE
 
 So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after ```source favorite.sh``` , and before the next empty character is encountered in the command input, was declared as the 1st positional parameter (or the 1st script argument). The value of the 1st positional parameter is stored in the internal variable ```${1}``` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable ```${2}``` ('ALICE' in the above example). And so on — in this way you can pass to your script as many arguments as you wish!
 
-Once you fetch programmatically in the body of your script the supplied arguments via variables ```${1}```, ```${2}```, etc. , you can do all sorts of manipulations on them, which can completely modify the behavior of your script. 
+Once you fetch programmatically in the body of your script the supplied arguments via variables ```${1}```, ```${2}```, etc., you can do all sorts of manipulations on them, which can completely modify the behavior of your script. 
 
 Few additional remarks on positional parameters: 
 
 * You can programmatically fetch their total number via the  variable: ```$#```
 
-* You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@``` . In most cases of interest, these two variables are the same. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"``` or ```"$@"``` . But if you drop the double quotes, there is no difference between the content of special variables ```$*``` and ```$@```
+* You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@```. In most cases of interest, these two variables are the same. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"``` or ```"$@"``` . But if you drop the double quotes, there is no difference between the content of special variables ```$*``` and ```$@```
 
 * It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator ```!``` — the syntax for the last positional parameter is ``` ${!#}```. As a side remark, indirect reference ```!``` is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
 
@@ -423,7 +423,7 @@ By using this functionality, you can instruct a script to behave differently if 
 
 ### 3. Your first **Linux/Bash** command: Bash functions <a name="first_command"></a>
 
-As the very first respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, has its own environment, etc., we can consider **Bash** function. 
+As the very first and respectable version of your own command in **Linux/Bash**, which can take and interpret arguments, provide exit status, has its own environment, etc., we can consider **Bash** function. 
 
 Functions in **Bash** are very similar to scripts, however, the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well-defined notion of _local environment_. This basically means that if you have the variable with the same name in your current terminal session, as well as in the script or in the function you are executing, it's much easier to prevent the clash of these variables if you use functions. In addition, usage of functions to great extent resembles the usage of **Linux** commands, and it is in this sense, that your first function developed in **Bash** can be also treated as your first **Linux** command! 
 
@@ -446,7 +446,7 @@ function Hello
 }
 ```
 
-Save the above code snippet in the file ```functions.sh```. Then, in order to call your function **Hello**, just source that file:
+Save the above code snippet in the file ```functions.sh```. Then, in order to execute your function **Hello**, just source that file:
 
 ```bash
 source functions.sh
@@ -468,7 +468,7 @@ When compared to the script implementation, there are few differences:
 
 * Usage of keyword **function** (an alternative syntax exists, ```someName()```, but it is really a matter of taste which one you prefer)
 * Body of the function must be embedded within ```{ ... }```
-* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of the function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, a call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
+* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of that function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, a call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
 
 The rest is the same as for the scripts:
 
@@ -503,7 +503,7 @@ Note that only the above implementation of function can easily be generalized &m
 
 ### 4. Command precedence <a name="precedence"></a>
 
-We have seen that your very first input in the terminal, before the empty character is encountered, will be interpreted by **Bash** as the command name, where the command name can stand for an alias, built-in **Bash** command (e.g. **echo**), **Linux** command (e.g. **date**), **Bash** functions (e.g. **Hello** from the previous example), etc. But what happens if we have for instance alias and **Linux** command named in the same way? For instance:
+We have seen that your very first input in the terminal, before the empty character is encountered, will be interpreted by **Bash** as the command name, where the command name can stand for an alias, built-in **Bash** command (e.g. **echo**), **Linux** command (e.g. **date**), **Bash** functions (e.g. **Hello** from the previous example), etc. But what happens if we have, for instance, alias and **Linux** command named in the same way, like in this example:
 ```bash
 alias date='echo "Hi"'
 ```
@@ -524,10 +524,10 @@ The command precedence rules in **Bash** are well defined and strictly enforced 
 
 Given the above ordering of command precedence, some care is definitely needed when introducing new aliases or developing new functions in **Bash**, to avoid the name clashes with the existing **Linux** commands. 
 
-Additional profiling of command precedence can be achieved with **Bash** built-in commands **builtin**, **command**, and **enable** (check their 'help' pages in **Bash**). For instance, we can force that always the **Bash** built-in command **echo** is executed, even if the alias or function named **echo** exists, with the following syntax:
+Additional profiling of command precedence can be achieved in **Bash** with built-in commands **builtin**, **command**, and **enable** (check their 'help' pages in **Bash**). For instance, we can force that always the **Bash** built-in command **echo** is executed, even if the alias or function named **echo** exists, with the following syntax:
 
 ```bash
-builtin echo some-text
+builtin echo someText
 ```
 
 **Reminder:** If you have overwritten accidentally **Linux** command with some alias definition (like in the above example for **date**), use the command **unalias** to revert back permanently:
