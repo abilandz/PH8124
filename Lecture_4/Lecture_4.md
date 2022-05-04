@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20220425
+**Last update**: 20220504
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -28,9 +28,9 @@ When executed this way, all lines in the script are read and executed by **Bash*
 ```bash 
 someScript # executing the script 
 ```
-This way, you are running your script as any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file has also the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal, and cannot modify it globally. Therefore, it is much safer to run scripts this way, if you want to keep your current shell environment clean. The exit status of the executed script is specified with the keyword **exit**. When executed this way, the script runs in a separate process (more on this later). 
+This way, you are running your script as any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file has also the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal (only variables, functions, etc., which were defined with **export** are inherited), and cannot modify it globally. Therefore, it is much safer to run scripts this way, if you want to keep your current shell environment clean. The exit status of the executed script is specified with the keyword **exit**. When executed this way, the script runs in a separate process (more on this later). 
 
-If you do not want to make the script executable by adding it (```x```) permission, you can always run the shell explicitly and tell it to process the file like it was an executable, with the following syntax:
+If you do not want to make the script executable by adding to it (```x```) permission, you can always run the shell explicitly and tell it to process the file like it was an executable, with the following syntax:
 
 ```bash
 bash someScript.sh # executing the non-executable script
@@ -124,18 +124,26 @@ Failed
 
 The first command in the ```&&``` chain executed successfully, and the execution continued with the next command in the ```&&```  chain. However, the second command **pwddd** has failed, and therefore has broken the ```&&``` chain. From that point onwards, only the command after ```||``` will be executed, and all the remaining commands in ```&&``` chain are ignored (the command **date** in this case). 
 
-In practice, the most frequent use case of the command chain is illustrated schematically:
+In practice, the most frequent use case of the command chain in sourced scripts or in functions is illustrated schematically:
 ```bash
 someCommand || return 1 
 someOtherCommand || return 2
 ...
 ```
+or in executables as 
+
+```bash
+someCommand || exit 1 
+someOtherCommand || exit 2
+...
+```
+
 This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible by inspecting its content upon termination, to fix programmatically the particular reason of the failure, without intervening manually in the code. 
 
 
 
 ### 3. Test construct: **[[ ... ]]** <a name="test"></a>
-For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not work with some older **Bash** versions. There are corner cases where their behaviour differs, since their implementation is different:
+For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not work with some older **Bash** versions. There are corner cases where their behavior differs, since their implementation is conceptually different:
 
 ```bash
 $ type [[
@@ -146,17 +154,17 @@ $ type [
 
 For instance, the quotes can be omitted inside ```[[``` but not inside ```[```. But in most cases of practical interest,   ```[[ ... ]]``` and ```[ ... ]``` behave in the same way and yield the same results.
 
-Test constructs also return the exit status --- if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
+Test constructs also return the exit status &mdash; if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
 
 * General case: ```-z, -n, ==, != , =~```
 * Integers: ```-gt, -ge, -lt, -le, -eq```
 * Files and directories:  ```-f, -d, -e, -s, -nt, -ot```
 
-These 3 distinct categories of the usage of ```[[ ... ]]``` are best explained with a few concrete examples --- we start with the general case. 
+These 3 distinct categories of the usage of ```[[ ... ]]``` are best explained with a few concrete examples &mdash; we start with the general case. 
 
 #### General case
 
-**Example 1**: How to check if some variable **Var** has been initialized?
+**Example 1**: How to check if variable **Var** has been initialized?
 
 ```bash
 [[ -n ${Var} ]] && echo Yes || echo No
@@ -243,6 +251,14 @@ In the above example, if a user did not provide exactly two arguments, the code 
 [[ 1 -eq 01 ]] && echo Yes || echo No # prints Yes
 ```
 
+As a side remark, we indicate that prepending '0' to a number is not trivial, and in fact, that is a widely accepted convention in a lot of programming languages to change the representation of a number from decimal (default) into an octal base. Therefore, this doesn't work:
+
+```bash
+[[ 8 -eq 08 ]] && echo Yes || echo No
+bash: [[: 08: value too great for base (error token is "08")
+No
+```
+
 Since the meaning of integer operators is rather obvious, we just provide the executive summary of their usage with the following table:
 
 | Operator | Outcome (exit status) |
@@ -279,7 +295,7 @@ For instance, if your script or function is expected to extract some data from t
 ```bash
 [[ -s ${1} ]] || return 1
 ```
-Finally, it is possible to compare directly some file attributes, for instance the modification time. 
+Finally, it is possible to compare directly some specific attributes of file metadata, for instance the modification time. 
 
 **Example 6**: How to check if the file ```${HOME}/test1.txt``` is newer (i.e. modified more recently) than the file ```${HOME}/test2.txt```? 
 
@@ -305,7 +321,7 @@ When it makes sense and it is convenient, it is possible to refine further the a
 [[ ! -f ${Var} ]] # true (0) if Var is NOT the existing file
 ```
 
-In this section we have summarized the most important options --- for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
+In this section we have summarized the most important options &mdash; for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
 
 ```bash
 help test
@@ -431,7 +447,7 @@ read -t 5
 ```
 the user is given 5 seconds to provide some input from a keyboard. If the user within the specified time interval does not provide any input, the **read** command reaches the timeout and terminates. The code execution proceeds like nothing happened. Therefore, within the specified time interval we are given the chance to type something and to modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and your scripts both interactive and flexible during execution.
 
-The command **read** can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with the **while** loop --- this is covered at the end of today's lecture.
+The command **read** can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with the **while** loop &mdash; this is covered at the end of today's lecture.
 
 
 
@@ -495,7 +511,7 @@ Operator ```(( ... ))``` can handle only integers, both in terms of input and ou
 $ echo $((1+2.4))
 bash: 1+2.4: syntax error: invalid arithmetic operator (error token is ".4")
 ```
-Floating point arithmetic cannot be done directly in **Bash**, but this is not a severe limitation, because we can always invoke some **Linux** command to perform it, like **bc** ('basic calculator'), which is always available --- more on this later!
+Floating point arithmetic cannot be done directly in **Bash**, but this is not a severe limitation, because we can always invoke some **Linux** command to perform it, like **bc** ('basic calculator'), which is always available &mdash; more on this later!
 
 When it comes to division which does not yield as the final result an integer, **Bash** does not report the error, instead it reports as the result the integer after the fractional part (remainder) is discarded:
 
@@ -754,4 +770,4 @@ I am reading now: 10 20 30
 I am reading now: 100 200
 I am reading now: abcd
 ```
-As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** --- if we do not specify any variable, then the built-in variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have at our disposal the content of a line from the external file in the variable, and then we can manipulate its content within the script programmatically.
+As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** &mdash; if we do not specify any variable, then the built-in variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have at our disposal the content of a line from the external file in the variable, and then we can manipulate its content within the script programmatically.
