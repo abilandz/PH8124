@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20220504
+**Last update**: 20220505
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -60,13 +60,13 @@ Since every command in **Linux** and **Bash** has the exit status, it is possibl
 The command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second command will be executed only if the first one executed successfully. For instance:
 
 ```bash
-mkdir someDirectory && echo "New directory was made."
+$ mkdir someDirectory && echo "New directory was made."
 New directory was made.
 ```
 You will see the printout from **echo** only if the directory was successfully made with the command **mkdir**. On the other hand, if **mkdir** has failed, the command chain has broken, and **echo** is not executed. For instance, we can intentionally mistype **mkdir** just to simulate the failure of the first command in the chain:
 
 ```bash
-mkdirrr someDirectory && echo "New directory was made."
+$ mkdirrr someDirectory && echo "New directory was made."
 mkdirrr: command not found
 ```
 
@@ -75,7 +75,7 @@ In this case, **echo** is not executed because the failure of **mkdirrr** has br
 If two commands are chained by ```||``` operator, the second command in the chain will be executed only if the first command has failed:
 
 ```bash
-mkdirrr someDirectory || echo "Cannot make directory. Sorry."
+$ mkdirrr someDirectory || echo "Cannot make directory. Sorry."
 mkdirrr: command not found
 Cannot make directory. Sorry.
 ```
@@ -254,7 +254,7 @@ In the above example, if a user did not provide exactly two arguments, the code 
 As a side remark, we indicate that prepending '0' to a number is not trivial, and in fact, that is a widely accepted convention in a lot of programming languages to change the representation of a number from decimal (default) into an octal base. Therefore, this doesn't work:
 
 ```bash
-[[ 8 -eq 08 ]] && echo Yes || echo No
+$ [[ 8 -eq 08 ]] && echo Yes || echo No
 bash: [[: 08: value too great for base (error token is "08")
 No
 ```
@@ -341,11 +341,11 @@ Later we will see that such a code branching can be optimized even further with 
 
 
 ### 4. Catching user input: **read** <a name="read"></a>
-We have seen already how variables can be initialized in a non-interactive way, by initializing them with some concrete values at declaration. We will see now how the user's input from the keyboard can be on-the-fly stored directly in some variable. In essence, this feature enables **Bash** scripts and functions to be interactive, in a sense that during the code execution (i.e. at runtime), with your input from the keyboard you can steer the code execution in one direction or another. This is achieved with a very powerful **Bash** built-in command **read**.
+We have seen already how variables can be initialized in a non-interactive way, by initializing them with some concrete values at declaration. Now we discuss how the user's input from the keyboard can be on-the-fly stored directly in some variable. In essence, this feature enables **Bash** scripts and functions to be interactive, in a sense that during the code execution (i.e. at _runtime_), with your input from the keyboard you can steer the code execution in one direction or another. This is achieved with a very powerful **Bash** built-in command **read**.
 
-By default, the command **read** saves input from the keyboard into its built-in variable **REPLY**. Alternatively,  you can specify yourself directly the name of the variable(s) which will store the input from the keyboard. This is best illustrated with examples.
+By default, the command **read** saves input from the keyboard into its own variable **REPLY**. Alternatively,  you can specify yourself directly the name of the variable(s) which will store the input from the keyboard. This is best illustrated with examples.
 
-**Example 1**: If we use **read** without arguments, the entire line of user input is stored in the built-in variable **REPLY**, as this code snippet demonstrates:
+**Example 1**: If we use **read** without arguments, the entire line of user input is stored in the variable **REPLY**, as this code snippet demonstrates:
 
 ```bash
 read
@@ -354,11 +354,11 @@ read
 After you have executed **read** in the terminal, this command is waiting for your input from the keyboard. Just type some example input, e.g. ```1 22 abc```, and press 'Enter'. Now you can programmatically retrieve that input:  
 
 ```bash
-echo ${REPLY} 
+$ echo ${REPLY} 
 1 22 abc
 ```
 
-Instead of relying on built-in variable **REPLY**, another generic usage of **read** is to specify one or more arguments explicitly, in the following schematic way:
+Instead of relying on variable **REPLY**, another generic usage of **read** is to specify one or more arguments explicitly, in the following schematic way:
 
 ```bash
 read Var1 Var2 ...
@@ -374,15 +374,15 @@ read Name Surname
 After typing that in the terminal, **read** is waiting for your feedback. Type something back, e.g. ```James Hetfield```, and press 'Enter'. Now type in the terminal:
 
 ```bash
-echo "Your name is ${Name}."
+$ echo "Your name is ${Name}."
 Your name is James.
-echo "Your surname is ${Surname}."
+$ echo "Your surname is ${Surname}."
 Your surname is Hetfield.
 ```
 
 The user-supplied arguments to the **read** command, **Name** and **Surname**, have become variables **Name** and **Surname**, initialized with the user's input from the keyboard, ```James``` and ```Hetfield```, respectively. 
 
-If there are more words in the user's input from the keyboard than the variables supplied as arguments to **read**, all excess words are stored to the last variable. 
+If there are more words in the user's input from the keyboard than the variables supplied as arguments to **read**, all excess words are stored in the last variable. 
 
 **Example 3**: The previous example re-re-visited,  but now using **read** with fewer arguments that there are words in the user's input.
 
@@ -409,7 +409,7 @@ read Answer
 [[ ${Answer} == yes ]] && do-something-if-yes
 [[ ${Answer} == no ]] && do-something-if-no
 ```
-In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers to the user a lot of flexibility on how to handle and modify the code execution at runtime.
+In combination with ```if-elif-else-fi``` and ```case-in-esac``` statements (to be covered later!) the **read** command offers a lot of flexibility on how to handle and modify the code execution at runtime.
 
 The default behavior of **read** can be modified with a bunch of options (check **help read** for the full list). Here we summarize only the ones which are used most frequently:
 
@@ -431,21 +431,21 @@ read -p "Please choose either 1, 2 or 3: "
 echo ${REPLY}
 ```
 
-For the more complicated menus, **Bash** offers built-in command **select** which is covered later in the lecture.
+For more complicated menus, **Bash** offers built-in command **select** which is covered later in the lecture.
 
 The flag ```-s``` ('silent') hides in the terminal the user input:
 
 ```bash
 read -s Password
 ```
-Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. If you remove the read permission on that file in which you are doing those checks, you have obtained a very simple-minded mechanism for how you can handle passwords, etc. 
+Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. If you remove the read permission on that file in which you are doing those checks, you have obtained a very simple-minded mechanism to handle passwords, etc. 
 
 Finally, with the following example:
 
 ```bash
 read -t 5
 ```
-the user is given 5 seconds to provide some input from a keyboard. If the user within the specified time interval does not provide any input, the **read** command reaches the timeout and terminates. The code execution proceeds like nothing happened. Therefore, within the specified time interval we are given the chance to type something and to modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and your scripts both interactive and flexible during execution.
+the user is given 5 seconds to provide some input from a keyboard. If the user within the specified time interval does not provide any input, the **read** command reaches the timeout and terminates. The code execution proceeds like nothing happened. Therefore, within the specified time interval we are given the chance to type something and to modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and scripts both interactive and flexible during execution.
 
 The command **read** can be used in some other contexts as well, e.g. to parse the file content line-by-line in combination with the **while** loop &mdash; this is covered at the end of today's lecture.
 
@@ -496,7 +496,7 @@ Int=5
 Exp=2
 echo $((Int**Exp)) # prints 25
 ```
-As you can see from the above example, it is not necessary within ```(( ... ))``` to reference the content of variable explicitly with **$**, the operator itself takes care of that. The following lengthier code is also correct
+As you can see from the above example, it is not necessary within ```(( ... ))``` to reference the content of variable explicitly with **$**, the operator itself takes care of that. The following alternatives with lengthier code are also correct:
 
 ```bash
 echo $(($Int**$Exp)) # prints 25
@@ -541,7 +541,7 @@ Besides supporting integer arithmetic operators within, ```(( ... ))``` we can a
 
 and so on. 
 
-We also comment on the following common mistake: The meaning of operator ```+=``` within and outside of ```(( ... ))``` is different. That is illustrated with the following examples:
+We now highlight the following common mistake: The meaning of operator ```+=``` within and outside of ```(( ... ))``` is different. That is illustrated with the following examples:
 
 ```bash
 NumberOfWords=0
@@ -609,12 +609,12 @@ abc
 ```
 Later we will see that we can even loop directly over the output of some command (e.g. over all files in a certain directory which match some naming convention, etc.).
 
-**Example 2**:  Looping over all arguments supplied to a script or a function.
+**Example 2**: Looping over all arguments supplied to a script or a function.
 
 We have already seen that we can loop over all arguments supplied to a script or a function in the following way:
 ```bash
 for Arg in "$@"; do
- echo "Arg is: ${Arg}"
+ echo "Argument is: ${Arg}"
 done
 ```
 Since this is a frequently used feature, there exists a shorthand version when you need to loop over the arguments. Consider the following script named ```forLoop.sh```, in which we have dropped completely the list of elements in the first line of **for** loop:
@@ -623,7 +623,7 @@ Since this is a frequently used feature, there exists a shorthand version when y
 #!/bin/bash
 
 for Arg; do
- echo "Arg is: $Arg"
+ echo "Argument is: $Arg"
 done
 
 return 0
@@ -634,11 +634,11 @@ source forLoop.sh a bb ccc
 ```
 you get the following printout:
 ```bash
-Arg is: a
-Arg is: bb
-Arg is: ccc
+Argument is: a
+Argument is: bb
+Argument is: ccc
 ```
-Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list has defaulted to all arguments supplied to that script or function.
+Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list of elements has been defaulted to all arguments supplied to that script or function.
 
 There exists also the C-style version of **for** loop in **Bash**, which can handle explicitly the increment of a variable. The C-style version looks schematically as:
 
@@ -649,7 +649,7 @@ for ((Counter=0; Counter<$MaxValue; Counter++)); do
 done
 ```
 
-When it comes to the **while** loop, it is used very frequently and conveniently in the combination with the test construct ```[[ ... ]]```. The following code snippets illustrate its most typical use cases. For the C-style while loop, we would use the following example syntax:
+When it comes to the **while** loop, it is used very frequently and conveniently in combination with the test construct ```[[ ... ]]```. The following code snippets illustrate its most typical use cases. For the C-style **while** loop, we would use the following example syntax:
 
 ```bash
 Counter=1
@@ -677,7 +677,7 @@ sleep 10m # pause the code execution for 10 minutes
 sleep 2h  # pause the code execution for 2 hours
 ```
 
-This command can be used in some simple cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of infinite loops.
+This command can be used in some simple-minded cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of infinite loops.
 
 **Example 3:** Infinite loops with the specified periodicity.
 
@@ -727,7 +727,7 @@ or
 continue someInteger
 ```
 
-In the next section, we discuss how we can combine some of these different functionalities covered by now, and establish another frequently used feature, which is especially handy when we need to parse through the file content line-by-line.
+In the next section, we discuss how we can combine some of these different functionalities, and establish another frequently used feature, which is especially handy when we need to parse through the file content line-by-line.
 
 
 
@@ -770,4 +770,4 @@ I am reading now: 10 20 30
 I am reading now: 100 200
 I am reading now: abcd
 ```
-As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** &mdash; if we do not specify any variable, then the built-in variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have at our disposal the content of a line from the external file in the variable, and then we can manipulate its content within the script programmatically.
+As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** &mdash; if we do not specify any variable, then the variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have at our disposal the content of a line from the external file in the variable, and then we can manipulate its content within the script programmatically.
