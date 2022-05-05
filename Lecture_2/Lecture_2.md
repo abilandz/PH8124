@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20220426
+**Last update**: 20220505
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -93,7 +93,7 @@ We have already seen how one built-in **Bash** command works, namely **echo**. I
 
 **Example:** What is the current time? Just type in the terminal **date** and press 'Enter'
 
-```linux
+```bash
 date
 ```
 
@@ -104,7 +104,7 @@ Mon Apr 20 14:49:10 CEST 2020
 
 This is the default formatting of **date** command. Now use the command **date** with flag (or option) **-u**, in order to modify its default behavior:
 
-```linux
+``` bash
 date -u
 ```
 
@@ -117,7 +117,7 @@ After passing a certain flag, we have instructed command **date** to change its 
 
 As another example, we have already seen how we can use **cat** command to view the content of file when inquiring which **shells** are available on the computer. We can pass to command **cat** as arguments more files to read in one go, i.e. we can execute the same command in one go on multiple arguments:
 
-```linux
+```bash
 cat /etc/shells /etc/hostname
 ```
 
@@ -138,8 +138,8 @@ Note the new entry in the last line, which is the content of file ```/etc/hostna
 
 We can, of course, combine options and arguments when invoking a command: 
 
-```linux
-cat -n /etc/shells 
+```bash
+$ cat -n /etc/shells 
      1	# /etc/shells: valid login shells
      2	/bin/sh
      3	/bin/dash
@@ -195,10 +195,10 @@ Let us now scrutinize the above generic syntax for command execution term by ter
 
 For instance, the frequently used flags **-a** and **-\-all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the second one is easier to memorize. Example for **date** command:
 
-```linux
-date -u
+```bash
+$ date -u
 Mon Apr 20 12:49:12 UTC 2020
-date --utc
+$ date --utc
 Mon Apr 20 12:49:12 UTC 2020
 ```
 
@@ -229,7 +229,7 @@ The command **help** gives a complete description of the built-in **Bash** comma
 
 **Example:** To see which options are available for **Linux** command **date**, use:
 
-```linux
+```bash
 man date
 ```
 
@@ -245,33 +245,33 @@ After we have covered command names and options, we close this section with the 
 
 * ```<argument(s)>``` : This is simple, sometimes you want your command to be executed on the specified argument, or in one go on multiple arguments. For instance, we can make an empty file in the current working directory by using the **touch** command:
 
-```linux
+```bash
 touch file_1.log
 ```
 
 But we could create plenty of empty files with **touch** command in one go, not one-by-one, e.g.
 
-```linux
+```bash
 touch file_1.log file_2.log file_3.log file_4.log
 ```
 
 Important remark: Since the empty character is an input field separator, never use it as a part of a file or directory name! In such a context, always replace it with underscore "_" or any other character which does not have special meaning. For instance:
 
-```linux
+```bash
 touch file 1.log
 ```
 would literally create two empty files, the first one named ```file```, and the second one named ```1.log``` . If you apply **touch** command on an already existing file, only the time-stamp of that file will be updated to the current time, its content remains exactly the same. 
 
 In order to see or list all files and subdirectories in the current working directory, use **ls** command, i.e. 
 
-```linux
+```bash
 ls -al
 ```
 For the meaning of options **-a** and **-l** check the _man pages_ of **ls** command. As a side remark, we indicate that options may or may not themselves require specific arguments. Options which do not require specific arguments, can be grouped together, i.e. **ls -a -l** is exactly the same as a shorthand **ls -al**. 
 
 In the same spirit, we can create multiple directories in one go, with **mkdir** command, e.g. 
 
-```linux
+```bash
 mkdir subdir_1 subdir_2 subdir_3
 ```
 will make 3 new subdirectories in your current working directory (check again by executing **ls -al**).
@@ -283,7 +283,7 @@ echo "Hello, welcome to the lecture PH8124"
 ```
 into the simple new command **Welcome** by creating an alias for it:
 
-```
+```bash
 alias Welcome='echo "Hello, welcome to the lecture PH8124"'
 ```
 Now the following new command in the terminal works as well:
@@ -297,7 +297,7 @@ Hello, welcome to the lecture PH8124
 ```
 Quite frequently, aliases are used in the following context:  If you want to connect from your desktop machine to some other computer, e.g.  _lxplus_ at CERN, you need to type in the terminal something like:
 
-```linux
+```bash
 ssh -Y abilandz@lxplus.cern.ch
 ```
 
@@ -397,7 +397,7 @@ As a side remark, from the above three lines, we can also see how to make a comm
 **Example:** Writing a comment in **Bash** .
 
 ```bash
-echo "Hi there" # this is some comment which Bash ignores
+$ echo "Hi there" # this is some comment which Bash ignores
 Hi there
 ```
 
@@ -463,7 +463,7 @@ Now that we have covered the very basics of commands and variables, let us see h
 
 We have already seen how with **touch** command we can make an empty file. Now we will see how we can write a file or edit an already existing file in the terminal. The simplest way to write a new file, solely in the terminal (i.e. without using any graphics-based editor like **gedit**, **emacs**, **vim**, etc.), is to use the command **cat**, in the following construct:
 
-```linux
+```bash
 cat > someFile.txt
  This text is the content 
   of my 
@@ -473,13 +473,13 @@ CTRL+d
 ```
 In the above construct, command **cat** takes the input directly from the standard input (keyboard by default), and redirects everything via operator ```>``` into the physical file named ```someFile.txt``` in your current working directory. You terminate the input, i.e. you mark the end of the file, by first moving to the new line with pressing 'Enter', and then finally by pressing ```CTRL+d``` on an empty line (if you press ```CTRL+d``` when the line is not empty, the input to the file is not terminated!). Now you can see the content of your newly created file with:
 
-```linux
+```bash
 cat someFile.txt
 ```
 Note that **cat** preserves all empty characters, line breaks, etc. In the case you want to append something to the already existing file, we can use a slightly modified construct:
 
-```linux
-cat >> someFile.txt
+```bash
+$ cat >> someFile.txt
 test 1
 test 2
 CTRL+d
@@ -488,7 +488,7 @@ The operator ```>>``` appends the text at the end of an already existing file. I
 
 For that sake, we need to use some simple editor which can be run in the terminal (i.e. without graphics). One such, wide-spread, open-source, editor is **nano**, which includes only the bare minimum of functionality needed to edit documents, making it very simple to use. In addition, syntax coloring is available for most of the programming languages. Now as an exercise, let us edit the content of already existing non-empty file ```someFile.txt``` from previous **cat** example.
 
-```linux 
+```bash 
 nano someFile.txt
 ```
 Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor &mdash; this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated &mdash; it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics!). For the editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however they offer much more features and are regularly used by professional programmers.
@@ -501,7 +501,7 @@ Now that we know a few basic commands and how to write and edit files, we can st
 
 Let us now write the first **Bash** script! For instance, you can type in the terminal:
 
-```linux
+```bash
 nano first.sh
 ```
 
