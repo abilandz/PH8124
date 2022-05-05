@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20220503
+**Last update**: 20220505
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -417,7 +417,7 @@ a
 bbb
 cc
 ```
-By using this functionality, you can instruct a script to behave differently if certain options or arguments are supplied to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command exists to ease the parsing and interpretation of positional parameters (see the documentation of advanced **getopts** ('get options') command).
+By using this functionality, you can instruct a script to behave differently if certain options or arguments are supplied to it. Since this is clearly a frequently used feature, the specialized built-in **Bash** command exists to ease the parsing and interpretation of positional parameters (see the documentation of advanced **getopts** ('get options') command, but do not confuse it with **Linux** utility with similar name **getopt**, which has flaws in its design).
 
 
 
