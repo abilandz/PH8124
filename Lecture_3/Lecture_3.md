@@ -56,23 +56,23 @@ The most important directories in the **Linux** file system structure are:
 
 We have already used **Linux** commands **date** and **touch**. But to which physical executables (binaries), stored somewhere in the file system, these two commands correspond to? You can figure that out by using the command **which**:
 ```bash
-which date
+$ which date
 /bin/date
 ```
 
 
 ```bash
-which touch
+$ which touch
 /usr/bin/touch
 ```
 It is completely equivalent to execute in the terminal the command name, e.g. **date**, or the full absolute path to the corresponding executable. Therefore, 
 ```bash
-date
+$ date
 Mon Apr 27 16:12:06 CEST 2020
 ```
 is the same as:
 ```bash
-/bin/date
+$ /bin/date
 Mon Apr 27 16:12:06 CEST 2020
 ```
 It would be very tedious and impractical if each time we would like to use some command, it would be necessary to type in the terminal the absolute path to its executable sitting somewhere in the **Linux** file system, both in terms of typing and in terms of memorizing the exact locations. This is precisely where **Bash** (or any other **shell**) is extremely helpful &mdash; **shell** finds the correct executable in the file system for us, after we have typed only the short command name in the terminal, and executes it. Clearly, something is happening here behind the scene: How does **shell** know which physical executable in the file system is linked with the short command name you have typed in the terminal? Hypothetically, we could also have another version of **date** command sitting somewhere else in the file system, e.g. in the directory ```/usr/bin/date```. Then there is an ambiguity, since after we have typed in the terminal **date**, it is not clear whether we want ```/bin/date``` or ```/usr/bin/date``` to be executed. 
@@ -175,24 +175,24 @@ The command **mv** uses the same syntax for directories (no additional flags are
 
 * **du -sh** : ('disk usage') : summary (flag **-s**) for the size of directory in the human-readable (flag **-h**) format 
 ```bash
-du -sh ${HOME} # prints how much disk space your home directory is taking
+$ du -sh ${HOME} # prints how much disk space your home directory is taking
 967M
-du -h --max-depth=1 ${HOME} # the size of directory, and differentially 
-                            # of its subdirectories
-du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
-                            # subdirectories and all sub-subdirectories
+$ du -h --max-depth=1 ${HOME} # the size of directory, and differentially 
+                              # of its subdirectories
+$ du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
+                              # subdirectories and all sub-subdirectories
 ```
 
 * **df -h** : ('disk free') : get the used disk space of all disks
 ```bash
-df -h # get the status of all disks on your computer 
+$ df -h # get the status of all disks on your computer 
 file system      Size  Used Avail Use% Mounted on
 /dev/sda1        1.8T  1.6T  132G  93% /
 ```
 
 * **stat** : display the detailed metadata of file or directory
 ```bash
-stat Lecture_2.md # just specify the abs. or rel. path to file as an argument
+$ stat Lecture_2.md # just specify the abs. or rel. path to file as an argument
   File: Lecture_2.md
   Size: 97805           Blocks: 384        IO Block: 4096   regular file
 Device: 2h/2d   Inode: 12947848928707821  Links: 1
@@ -204,7 +204,7 @@ Change: 2020-04-28 11:45:14.515681300 +0200
 ```
 Later we will learn how to parse through and extract programmatically from any command output (or from any physical file) only the information we need. For the time being, if you want to get only the size of the file in bytes, use:
 ```bash
-stat -c %s Lecture_2.md
+$ stat -c %s Lecture_2.md
 97805
 ```
 For the size of a directory, use instead **du -sh** as explained above. As you can see from the output of **stat**, the example file ```Lecture_2.md``` is characterized by three timestamps: **Access**, **Modify** and **Change**. These three timestamps are an important part of file metadata, which we cover next.
@@ -509,7 +509,7 @@ alias date='echo "Hi"'
 ```
 If after this definition we type in the terminal **date**, we get:
 ```bash
-date
+$ date
 Hi
 ```
 What now? Have we just accidentally overwritten and lost permanently the command **date**? Not quite, what happened here is that the alias execution got precedence over the **Linux** command named in the same way. But both the alias **date** and the command **date** now exist simultaneously on your computer.
@@ -545,7 +545,7 @@ or temporarily with
 In the case you are not sure to which one of the five cases above the command you intend to use corresponds to, use the **Bash** built-in command **type**:
 
 ```bash
-type date
+$ type date
 date is /bin/date
 ```
 
@@ -554,12 +554,12 @@ The above line tells that **date** is **Linux** command whose executable is ```/
 Two other examples in this context:
 
 ```bash
-type echo
+$ type echo
 echo is a shell builtin
 ```
 
 ```bash
-type ll
+$ type ll
 ll is aliased to `ls -alF'
 ```
 
@@ -574,7 +574,7 @@ printf is /usr/bin/printf
 For the **Bash** functions, the command **type** also prints the source code of that function. For instance, for the function **Hello** discussed previously you would get:   
 
 ```bash
-type Hello
+$ type Hello
 Hello is a function
 Hello ()
 {
@@ -590,7 +590,7 @@ This is quite handy, because if you have forgotten the details of the implementa
 Note also that this way you can see immediately the implementation of some **Bash** functions which were not developed by you (therefore, you have no idea where in the file system is the file with their source code), but are nevertheless available in your terminal session:
 
 ```bash
-type quote
+$ type quote
 quote is a function
 quote ()
 {
