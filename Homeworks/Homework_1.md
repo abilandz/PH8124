@@ -1,8 +1,8 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Using **Bash** aliases as your simplest commands
 
-**Last update:** 20210420
+**Last update:** 20220512
 
 **Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as 
 
@@ -32,7 +32,7 @@ This prints the current time in Tokyo, and switches back immediately to your def
 Var=value command # value of 'Var' is seen only in 'command' during its execution
 ```
 
-In this case, the command **date** has an internal variable called ```TZ``` , which we can set temporarily like in this example --- see the _man pages_ of **date**. 
+In this case, the command **date** has an internal variable called ```TZ``` , which we can set temporarily like in this example &mdash; see the _man pages_ of **date**. 
 
 The following would not work:
 
