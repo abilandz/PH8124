@@ -3,7 +3,7 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 
 ## Homework score sheet:
 
-**Last update**: 20220517
+**Last update**: 20220519
 
 | Student ID | #1 | #2 | #3 | #4 | #5 | #6 | #7 | #8 | #9 |#10 |Sum  |
 | ---------- |:-- |:-- |:-- |:-- |:-- |:-- |:-- |:-- |:-- |:-- |:--  |
@@ -14,3 +14,4 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 | 03749899   |1.0 |    |    |    |    |    |    |    |    |    |1.0  |
 | 03692775   |1.0 |    |    |    |    |    |    |    |    |    |1.0  |
 | 03719919   |1.0 |    |    |    |    |    |    |    |    |    |1.0  |
+| 03686188   |1.0 |    |    |    |    |    |    |    |    |    |1.0  |
