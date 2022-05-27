@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20220425
+**Last update**: 20220527
 
 
 ### Table of Contents
@@ -23,7 +23,7 @@ We have already seen that a value can be stored in a variable by explicit assign
 ```bash
 stat -c %s someFile
 ```
-But how can we fetch the above printout programmatically, and do some manipulation with it later in our code? This is precisely the case when we need to use the command substitution operator:
+But how can we fetch the printout of above command programmatically, and do some manipulation with it later in our code? This is precisely the case when we need to use the command substitution operator:
 ```bash
 FileSize=$(stat -c %s someFile)
 ```
@@ -32,7 +32,7 @@ Now the size of file 'someFile' is stored directly in the variable **FileSize** 
 echo ${FileSize}
 ```
 
-The operator ```$( ... )``` can do much more than that. For instance, it can literally in-line the output of any command at the place where this operator was used. 
+The operator ```$( ... )``` can do much more than that. For instance, it can literally in-line the output of any command at the place where this operator is used. 
 
 **Example 1**: How to produce the following single-line output, with the current timestamp embedded:
 
@@ -50,11 +50,11 @@ Command substitution operator ``` $( ... ) ``` is a very neat construct, and it 
 **Example 2**: You are working in parallel on two computers, which do not have the same version of the command that you use in your code. You would like to use if possible all the latest functionalities of that command, but if that is not available, you would still like to run your code with the older version of that command. Can you make the code transparent to such a difference? You can do it schematically as follows:
 
 ```bash
-Version=$(commandName -v) # flag '-v' typically prints the version
+Version=$(commandName -v) # flag '-v' typically prints the command version
 [[ $Version -lt someTreshold ]] && use-older-functionalities
 [[ $Version -ge someTreshold ]] && use-newer-functionalities
 ```
-This is just a schematic solution --- most likely the output of **commandName -v** will have some additional information that you need to filter out,  but all that can be still done within the command substitution operator.
+This is just a schematic solution &mdash; most likely the output of **commandName -v** will have some additional information that you need to filter out,  but all that can be still done within the command substitution operator.
 
 You can fearlessly nest the command substitution operators, like in the following example. 
 
@@ -122,7 +122,7 @@ This great functionality circumvents the necessity of dealing with too many temp
 cat someFile # reads the content of a physical file
 echo "${FileContent}" # obtain the same content from variable
 ```
-However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file --- if we store that information in the variable, we have removed completely the dependency of our code on that external file.
+However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file &mdash; if we store that information in the variable, we have removed completely the dependency of our code on that external file.
 
 The command substitution operator is frequently used in combination with the **for** loop, when we want to iterate over all elements in the output of some command. Also in this context the distinct elements of the list are separated with one or more empty characters. This is best illustrated with the following example:
 
@@ -135,7 +135,7 @@ for File in $(ls $PWD); do
  echo "The size of ${File} is: ${Size}" 
 done
 ```
-Note that if you would have used the lengthy output of **ls** by specifying the flag **-l**, then the loop variable **File** would loop over all entries in the command output separated with one or more empty characters, therefore also over the permission field, user name, etc. This is illustrated in the following example:
+Note that if you would have used the lengthy output of **ls** by specifying the flag **-l**, then the loop variable **File** would loop over all entries in the command output separated with one or more empty characters, therefore also over the permissions field, user name, etc. This is illustrated in the following example:
 
 ```bash
 for Var in $(date); do
@@ -158,7 +158,7 @@ In the end, we would like to remark that the backticks ``` ` ... ` ``` do the sa
 echo "Today is: $(date) . Thanks for the info."
 echo "Today is: `date` . Thanks for the info."
 ```
-**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` does not work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferably used in **Bash** scripts instead of backticks ``` ` ... ` ```.
+**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` does not work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferred in **Bash** scripts over backticks ``` ` ... ` ```.
 
 
 
@@ -189,10 +189,10 @@ date: invalid option -- 'q'
 ```
 The above printout is an example _stderr_ stream of command **date**. This behavior is true for basically all **Linux** commands.
 
-Since these two streams, _stdout_ and _stderr_, are always set for a command, we will now see how to handle them programmatically. In practice, one can programmatically fetch the _stdout_ of some command, parse through it, and depending on its content, issue some specific action. In a similar fashion, one can fetch programmatically _stderr_ (i.e. error message) of some  command, and depending on its content, issue some specific action to fix that particular problem. For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
+Since the two streams, _stdout_ and _stderr_, are always set for a command, we will now see how to handle them programmatically. In practice, one can programmatically fetch the _stdout_ of some command, parse through it, and depending on its content, issue some specific action. In a similar fashion, one can fetch programmatically _stderr_ (i.e. error message) of some  command, and depending on its content, issue some specific action to fix that particular problem. For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
 
-* ```1>``` : captures and redirects to file only the successful output of command (_stdout_)
-* ```2>``` : captures and redirects to file only the error message if command failed (_stderr_)
+* ```1>``` : captures and redirects to a file only the successful output of command (_stdout_)
+* ```2>``` : captures and redirects to a file only the error message if command failed (_stderr_)
 * ```&>``` : captures and redirects to the same file both the successful output (_stdout_) and the error message (_stderr_)
 
 For instance, if we want to redirect the _stdout_ stream of **date** command into a file, we would use:
@@ -233,11 +233,11 @@ If we re-execute the above examples, the previous content of specified files wil
 
 If the file descriptor number is not specified, it is defaulted to 1, i.e. ```>``` is exactly the same as ```1>```, and ```>>``` is exactly the same as ```1>>```.
 
-Especially in the older **Bash** scripts you will see also ```2>&1``` redirection, but it has exactly the same meaning as ```&>```, which was added only in more recent versions of **Bash**. The redirector ```2>&1``` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) has been sent. When ```2>&1``` is used, the order matters --- first we need to indicate where ```1>``` is redirected, and only then it makes sense to use ```2>&1```. Because of this limitation, in practice it is much easier to use ```&>``` in such a context.
+Especially in the older **Bash** scripts you will see also ```2>&1``` redirection, but it has exactly the same meaning as ```&>```, which was added only in more recent versions of **Bash**. The redirector ```2>&1``` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) was sent. When ```2>&1``` is used, the order matters &mdash; first we need to indicate where ```1>``` is redirected, and only then it makes sense to use ```2>&1```. Because of this limitation, in practice it is much easier to use ```&>``` in such a context.
 
  ![](blackHole.jpg)
 
-There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, commands can print some warnings on the screen, after you have acknowledged them and concluded these warnings are harmless, you do not want to see those warnings again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
+There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, commands can print some warnings on the screen. After you have acknowledged them and concluded that those warnings are harmless, you clearly do not want to see them again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
 
 **Example 1:** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? 
 
@@ -249,7 +249,7 @@ someCommand 1>someFile 2>/dev/null
 
 With the above construct, the file ```someFile``` will contain only the successful output of ```someCommand```. On the other hand, all error messages are permanently lost, because they were redirected to ```/dev/null```.
 
-**Example 2:** How to set programmatically separate _stdout_ and _stderr_ streams in your own code? 
+**Example 2:** How to set programmatically the separate _stdout_ and _stderr_ streams in your own code? 
 
 This question is answered with the following concrete example, in which a function expects some arguments from the user. If the user supplied arguments, the functions prints successful _stdout_ stream, and if the user failed to provide arguments, it prints the error message via _stderr_ stream:
 
@@ -297,11 +297,11 @@ Clearly, the file descriptors are an extremely nice feature, but they would be e
 
 The code block in **Bash** is basically any sequence of commands within curly braces ```{ ... }```. 
 
-Before presenting the concrete use cases, we first summarize the general facts about the code block:
+Before presenting the concrete use cases, we first summarize the general facts about code blocks:
 
-1. ```{ ... }``` inherits the environment and can modify it globally  
-2. ```{ ... }``` has its own ```1>``` and ```2>``` streaming facilities  
-3. ```{ ... }``` does not launch a separate process. Therefore, the rest of a script or a function needs to wait for all commands in the code block to finish
+1. ```{ ... }``` inherits the environment and can modify it globally;  
+2. ```{ ... }``` has its own ```1>``` and ```2>``` streaming facilities;
+3. ```{ ... }``` does not launch a separate process. Therefore, the rest of a script or a function needs to wait for all commands in the code block to finish.
 
 Consider the following code snippet:
 ```bash
@@ -364,7 +364,7 @@ Before : 44
 Inside : 44
 After  : 55
 ```
-From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_---this will be covered later.
+From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_ &mdash; this will be covered later.
 
 Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the next example illustrates.  
 
@@ -382,7 +382,7 @@ By using the code blocks, this can be rewritten as:
 someCommand && { command1 && command2 && ... ; } 
 ```
 
-Note the mandatory trailing semicolon ```;``` within code block in this context. This is important, because you need to indicate that ```}``` is not an argument to the last command within the code block---the last command input is terminated with semicolon ```;```.
+Note the mandatory trailing semicolon ```;``` within code block in this context. This is important, because you need to indicate that ```}``` is not an argument to the last command within the code block &mdash; the last command input is terminated with semicolon ```;```.
 
 **Brace expansion**
 
@@ -445,7 +445,7 @@ File_0.dat File_1.dat ... File_999.dat
 ```
 How to delete each 4th file within the interval 111 to 222, whose extension is ```.log``` or ```.inf```, but not ```.dat```? If you use the brace expansion, the solution is very simple and elegant:
 ```bash
-ls File_{111..222..4}.{log,inf} # always ls before deleting!
+ls File_{111..222..4}.{log,inf} # always do 'ls' before deleting!
 rm File_{111..222..4}.{log,inf}
 ```
 Without brace expansion the solution would take much more work. It is also possible to nest brace expansion, but this is rarely used in practice.
@@ -533,7 +533,7 @@ case someValue in
  *) some code when all specified options are not met ;;
 esac 
 ```
-The thing to remember is that in **case-in-esac** conditional statement a specific branch of code execution is embedded within round brace ```)``` and double semicolon ```;;``` (yes, double semicolon, no empty character is allowed here!). This peculiar syntax, the unbalanced round brace ```)``` and the double semicolon ```;;``` are special to **case-in-esac** conditional statement, and therefore easy to remember.
+The thing to remember is that in **case-in-esac** conditional statement a specific branch of code execution is embedded within round brace ```)``` and double semicolon ```;;``` (yes, double semicolon, no empty character is allowed between semicolons here!). This peculiar syntax, the unbalanced round brace ```)``` and the double semicolon ```;;``` are special to **case-in-esac** conditional statement, and therefore easy to remember.
 
 The usage of **case-in-esac** conditional statement is best illustrated with a few concrete examples.
 
@@ -566,10 +566,10 @@ Multiple options can be grouped with ```|``` (OR) under the same statement, sche
 ```bash
 case someValue in 
  firstOption | secondOption | ... ) 
-      ... some code when one option of this group is met ... 
+      ... some code when one option from this group is met ... 
     ;;
  someOtherOption | yetAnotherOption | ... ) 
-      ... some code when one option of this group is met ... 
+      ... some code when one option from this group is met ... 
     ;;
     ... even more options ... 
 *) some code when all specified options are not met ;;
@@ -649,4 +649,14 @@ while :; do
 done
 ```
 
-We can also use 'do-nothing' ```:``` command to write a multi-line comment in **Bash** in combination with the so-called _here-documents_---this will be covered later.
+**Example**: Ignore the exit status of command. 
+
+This is the common idiom:
+
+```bash
+someCommand || :
+```
+
+The above construct always evaluates to true, irrespectively of what was the exit status of 'someCommand'.
+
+We can also use 'do-nothing' ```:``` command to write a multi-line comment in **Bash** in combination with the so-called _here-documents_ &mdash; this will be covered later.
