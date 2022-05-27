@@ -2,7 +2,7 @@
 
 # **Bash** functions
 
-**Last update:** 20210506
+**Last update:** 20220527
 
 **Challenge #1**: Develop a **Bash** function named ```OldestFile``` which takes as arguments a list of files. The function does the following:  
 
@@ -30,7 +30,7 @@ for File in "$@"; do
 done
 ```
 
-**Challenge #2**: Develop a **Bash** function named ```Mkdir``` which makes a directory and immediately goes into it. Directory names are specified as arguments, either via relative or absolute paths. If more than one directory name is supplied, it goes immediately into the last one.
+**Challenge #2**: Develop a **Bash** function named ```Mkdir``` which makes a directory and immediately goes into it. Directory names are specified as arguments, either via relative or absolute paths. If more than one directory name is supplied, it goes immediately into the last directory.
 
 **Challenge #3**: What do you need to do to be able to use the functions ```OldestFile``` and ```Mkdir``` just like any other **Bash** or **Linux** command (i.e. to be able to call them only by their name from any place in the file system, each time you log in on the computer, or open a new terminal)?
 
