@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20220425
+**Last update**: 20220530
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -15,7 +15,7 @@
 ### 1. String manipulation <a name="string_manipulation"></a>
 **Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to a certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**. 
 
-String operators in **Bash** can be used only in combination with curly brace syntax, ```${Var}```, when the content of a variable is retrieved. String operators are used to manipulate the content of variables, typically in one of the following ways:     
+String operators in **Bash** can be used only in combination with curly-brace syntax, ```${Var}```, when the content of a variable is retrieved. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
 1. Remove, replace or modify a portion of variable's content that matches some patterns   
 2. Ensure that variable exists (i.e. that it is defined and has a non-zero value)   
@@ -65,14 +65,17 @@ echo ${#Var} # prints 8
 ```bash
 Var=aBcDeF 
 echo ${Var,,} # prints abcdef 
-echo ${Var^^} # prints ABCDF 
+echo ${Var^^} # prints ABCDEF 
 ```
 
-It is also possible with the curly brace syntax to select substring from variable content, with the following generic syntax:
+If in the above example only a single ```,``` or ```^``` is used, then only the first character is printed in lower or upper case, respectively.
+
+It is also possible with the curly-brace syntax to select substring from variable content, with the following generic syntax:
+
 ```bash
 ${Var:offset:length} 
 ```
-The above construct returns substring, starting at 'offset', and up to 'length' characters. The first character in the content of variable 'Var' is at the offset 0. If 'length' is omitted, it goes all the way until the end of 'Var'. If 'offset' is less than 0, then it counts from the end of 'Var'. This is illustrated with the following examples:
+The above construct returns substring, starting at 'offset', and continuing up to 'length' characters. By convention, the first character in the content of variable 'Var' is at the offset 0. If 'length' is omitted, it goes all the way until the end of 'Var'. If 'offset' is less than 0, then it counts from the end of 'Var'. All this is illustrated with the following examples:
 ```bash
 Var=0123456789
 echo ${Var:0:4} # prints 0123
@@ -81,11 +84,11 @@ echo ${Var:5} # prints 56789
 echo ${Var:(-2)} # prints 89
 echo ${Var:(-3):2} # prints 78
 ```
-It is mandatory to embed negative offset within round braces ```( ... )``` in the above example, since otherwise **Bash** interprets negative integers after colon ```:``` in such a context in a very special way---this is clarified next.
+It is mandatory to embed negative offset within round braces ```( ... )``` in the above example, since otherwise **Bash** interprets negative integers after colon ```:``` in this context in a very special way &mdash; this is clarified next.
 
 By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:  
 
-1. ```${Var:-defaultValue}``` : if 'Var' exists and it is not null, return its value. Otherwise, return the hardwired 'defaultValue'. This is basically protection that variable always has some content. For instance:
+1. ```${Var:-defaultValue}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, return the hardwired 'defaultValue'. This is basically protection that variable always has some content. For instance:
 
    ```bash
     Var=44
@@ -106,7 +109,7 @@ However:
 
    This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'.   
 
-2. ```${Var:?someMessage}``` : if 'Var' exists and it is not null, return its value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
+2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
 
    ```bash
    function myFunction
@@ -116,7 +119,7 @@ However:
    } 
    ```
 
-   In case the user has forgotten to provide the first argument, your function will terminate automatically with the error message: 
+   In case a user has forgotten to provide the first argument, your function will terminate automatically with the error message: 
    ```bash
    myFunction
    bash: 1: first argument is missing
@@ -184,12 +187,12 @@ The pattern '^^[c-f]' will capitalize all single characters, but only in the spe
 
 ### 2. Arrays <a name="arrays"></a>
 
-**Bash** also supports arrays, i.e. variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. Array index in **Bash** starts with zero, and there is no limit to the size of an array. There are a few ways in which an array can be initialized with its elements --- the quickest one is to use the round braces ```( ... )```. This syntax is illustrated with the following code snippet:
+**Bash** also supports arrays, i.e. variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. Array index in **Bash** starts with zero, and there is no limit to the size of an array. There are a few ways in which an array can be initialized with its elements &mdash; the quickest one is to use the round braces ```( ... )```. This syntax is illustrated with the following code snippet:
 
 ```bash
 SomeArray=( 5 a ccc 44 )
 ```
-Array elements are separated with one or more empty characters. To obtain the content of a particular array element, we use again the curly brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
+Array elements are separated with one or more empty characters. To obtain the content of a particular array element, we use again the curly-brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
 ```bash
 echo ${SomeArray[0]} # prints 5
 echo ${SomeArray[2]} # prints ccc 
@@ -295,7 +298,7 @@ Files=( ${Files[*]/%/.dat} )
 In the above code snippet, we have first appended (by specifying ```%```) to all array elements the same extension '.dat', and immediately redefined the array to the new content. The array elements are now:
 
 ```bash
-echo ${Files[*]}
+$ echo ${Files[*]}
 file_0.dat file_1.dat file_2.dat
 ```
 
@@ -306,11 +309,9 @@ Files=( ${Files[*]/#/some_} )
 In the above code snippet, we have first prepended (by specifying ```#```) to all array elements the same string 'some_' , and we have then redefined the array to the new content, so the array elements are now:
 
 ```bash
-echo ${Files[*]}
+$ echo ${Files[*]}
 some_file_0.dat some_file_1.dat some_file_2.dat some_file_3.dat
 ```
-
-By using this functionality, we can prepend programmatically to all file names in a given directory the absolute path to that directory --- we just need to prepend the pattern **${PWD}/**. 
 
 The power and flexibility of arrays come from the fact that at array declaration within ```( ... )``` a lot of other **Bash** functionalities are supported, for instance, the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That in particular means that we can effortlessly store the entire output of a command into an array, and then do some manipulation element-by-element. 
 
@@ -376,9 +377,9 @@ We have already seen that by using **read** command we can catch the user's inpu
 ```bash
 read -p "Which countries have you visited? " -a Countries
 ```
-By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be split according to the empty character (i.e. the default input field separator) into words, and then each word is stored as a separate element in an array (in the above example, that arrayed is named 'Countries'). 
+By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be split according to the empty character (i.e. the default input field separator) into words, and then each word is stored as a separate element in an array (in the above example, that array is named 'Countries'). 
 
-Then we can immediately write for instance:
+We can then immediately write for instance:
 
 ```bash
 echo "Number of countries is: ${#Countries[*]}"
@@ -388,21 +389,19 @@ echo "The last country is: ${Countries[-1]}"
 But what if the user visited New Zealand or Northern Ireland? Since these two countries contain an empty character in their names, the code above clearly cannot correctly handle these cases. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and a lot of **Linux** commands rely on its content. We can proceed in the following schematic way:
 
 ``` bash
-DefaultIFS="$IFS" # save default
+DefaultIFS="$IFS" # save default setting
 IFS=somethingNew
 ... some code with new IFS ...
-IFS="$DefaultIFS" # revert back
+IFS="$DefaultIFS" # revert back to default setting
 ```
 
-This is the frequently encountered case in practice, when a certain variable needs to be set only during the command execution. 
-
-As we already saw, there exists a specialized syntax applicable to cover such uses cases:
+Since this is the frequently encountered case in practice, when a certain variable needs to be set only during the command execution, as we already saw before, there exists a specialized syntax applicable to cover such uses cases:
 
 ```bash
 SomeVariable=someValue SomeCommand
 ```
 
-Note that there is no semicolon ```;``` between variable definition and command execution, this way the new definition of variable **SomeVariable** is visible only during the execution of **SomeCommand**. As soon as command terminates, **SomeVariable** gets automatically reset to its default value (if any).
+Remember that there is no semicolon ```;``` between variable definition and command execution, this way the new definition of variable **SomeVariable** is visible only during the execution of **SomeCommand**. As soon as command terminates, **SomeVariable** gets automatically reset to its default value (if any).
 
 The final solution for our example is therefore:
 
@@ -412,7 +411,7 @@ IFS=',' read -p "List (comma separated) countries you have visited: " -a Countri
 
 This way, the input field separator will be comma ```,``` but only during the execution of **read**.
 
-Now if the User replied 'New Zealand,Northern Ireland' we have that:
+Now if a user replied 'New Zealand,Northern Ireland' we have that:
 
 ```bash
 echo ${Countries[0]}
@@ -437,7 +436,7 @@ echo ${SomeArray[1,2,3]} # prints a
 echo ${SomeArray[2,3,1]} # prints bb
 ```
 
-The indices do not have to be hardwired --- index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer. 
+The indices do not have to be hardwired &mdash; index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer. 
 
 
 
