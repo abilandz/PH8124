@@ -15,7 +15,7 @@
 * [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1](./Homeworks/Homework_1.md)
     * [Homework 2](./Homeworks/Homework_2.md)
-    * [Homework 3](./Homeworks/TBI_Homework_3.md)
+    * [Homework 3](./Homeworks/Homework_3.md)
     * [Homework 4](./Homeworks/TBI_Homework_4.md)
     * [Homework 5](./Homeworks/TBI_Homework_5.md)
     * [Homework 6](./Homeworks/TBI_Homework_6.md)
