@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20220530
+**Last update**: 20220606
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -481,7 +481,7 @@ The output is:
 ```
 The keyword **scale** sets the precision in **bc** program. Instead of using **bc** interactively and providing via keyboard _stdin_ for its execution, we have just piped the _stdout_ of **echo** as an input to **bc**.
 
-For more sophisticated use cases, for instance when you want to use special mathematical functions, etc, use **bc -l**. The flag '-l' (ell) loads additionally in the memory the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it is defaulted to 1 when **bc** is called, and to 20 when **bc -l** is called.
+For more sophisticated use cases, for instance when you want to use special mathematical functions, etc., use **bc -l**. The flag '-l' (ell) loads additionally in the memory the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it is defaulted to 1 when **bc** is called, and to 20 when **bc -l** is called.
 
 The math library of **bc** defines the following example functions:
 ```bash
@@ -512,7 +512,7 @@ date | tee date.log
 ```
 will print the current time on the screen, but it will also simultaneously dump it in the file named ```date.log``` (check its content with **cat date.log**). In the very same spirit, it is possible to keep the full execution log of any script, function, code block ```{ ... }```, loops, etc.
 
-The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default, **tee** overwrites the content of a file---if we want to append instead to the already existing non-empty file, use the following version:
+The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default, **tee** overwrites the content of a file &mdash; if we want to append instead to the already existing non-empty file, use the following version:
 ```bash
 someCommand | tee -a someFile.log 
 ```
@@ -526,9 +526,9 @@ echo "scale=5000; e(2)" | bc -l | more
 echo ${PIPESTATUS[*]} # prints 0 0 0
 ```
 
-In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully, therefore the array **PIPESTATUS** holds three zeros. If only the single command has been executed, that is a trivial pipeline, and **PIPESTATUS** array has only one entry, the very same information which is stored in **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute command, even the trivial ones like **echo**.  
+In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully, therefore the array **PIPESTATUS** holds three zeros. If only the single command has been executed, that is a trivial pipeline, and **PIPESTATUS** array has only one entry, the very same information which is stored in the special **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute command, even the trivial ones like **echo**.  
 
-The power of piping is best illustrated in the combination with the three powerful commands **sed**, **awk** and **grep**, which are the core **Linux** utilities for text parsing and manipulation, which we cover in the next section.
+The power of piping is best illustrated in the combination with the three powerful commands **sed**, **awk** and **grep**, the three core **Linux** utilities for text parsing and manipulation, which we cover in the next section.
 
 
 
