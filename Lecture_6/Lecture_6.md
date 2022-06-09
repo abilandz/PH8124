@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20220606
+**Last update**: 20220609
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -76,7 +76,7 @@ It is also possible with the curly-brace syntax to select substring from variabl
 ${Var:offset:length} 
 ```
 The above construct returns substring, starting at 'offset', and continuing up to 'length' characters. By convention, the first character in the content of variable 'Var' is at the offset 0. If 'length' is omitted, it goes all the way until the end of 'Var'. If 'offset' is less than 0, then it counts from the end of 'Var'. All this is illustrated with the following examples:
-```bash
+```bash?line_numbers=false
 Var=0123456789
 echo ${Var:0:4} # prints 0123
 echo ${Var:5:2} # prints 56
