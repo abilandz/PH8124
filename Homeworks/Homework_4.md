@@ -2,7 +2,7 @@
 
 # Filtering and reformatting the file content programmatically
 
-**Last update:** 20200528
+**Last update:** 20220609
 
 As a starting point to this homework, dump the following lines (including the empty lines!) in the file named ```scrambled.txt```:
 
@@ -40,7 +40,7 @@ Number of lines is 5, sorted on Wed May 27 16:08:00 CEST 2020
 
 The first number in each line is the number of words on that line.
 
-**Hint #1:** To parse line-by-line programmatically through the file content, use **while+read**.
+**Hint #1:** To parse line-by-line programmatically through the file content, use **while+read** construct.
 
 **Hint #2:** To parse through all words in a single line, use schematically:
 
@@ -59,6 +59,8 @@ while read Line; do
  ... some code ...
 done < scrambled.txt 1>sorted.txt 
 ```
+
+Operator ```1>``` redirects only the successful output of command into some file.
 
 
 
