@@ -637,7 +637,7 @@ grep "^test" grepExample.txt
 
 This results in:
 
-```bash
+```
 test TEST Test 11test test22
 test TEST Test 11test test
 ```
@@ -650,7 +650,7 @@ grep "t22$" grepExample.txt
 
 The result is the following two lines:
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 ```
@@ -665,7 +665,7 @@ grep "\<TeST" grepExample.txt
 
 Now both 'TeST1' and 'TeST2' will match, since they begin with the specified pattern 'TeST', and the result is:
 
-```bash
+```
 TeST1 TEST1 TESt1 TEST1 TEST1
 TeST2 TEST2 TEsT2 TEST2 tEST2
 ```
@@ -678,7 +678,7 @@ grep "ST\>" grepExample.txt
 
 Now only 'TEST' will match, since this is the only word in the file which ends up with the specified pattern 'ST', and in the printout we get only the three lines which contain word 'TEST':
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 test TEST Test 11test test
@@ -692,7 +692,7 @@ grep -w "Test" grepExample.txt
 
 This yields to the following printout:
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 test TEST Test 11test test
@@ -708,7 +708,7 @@ grep "11test\|test22" grepExample.txt
 
 This prints all lines containing either the pattern '11test' or 'test22' (this is the logical OR operation):
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 test TEST Test 11test test
@@ -722,7 +722,7 @@ grep "11test" grepExample.txt | grep "test22"
 
 This will print all lines which contain both specified patterns:
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 ```
@@ -732,10 +732,10 @@ In this example, this first **grep** in the pipeline acted on a physical file, w
 For instance, you can check if the variable contains some pattern schematically with:
 
 ```bash
-echo $Var | grep SomePattern(s)
+echo "$Var" | grep SomePattern(s)
 ```
 
-In cases where only the check for the pattern needs to be performed with **grep**, and there is no not need for the actual printout, we can use the flag '-q' (for quite), like in this example:
+In cases where only the check for the pattern needs to be performed with **grep**, and there is no need for the actual printout, we can use the flag '-q' (for quite), like in this example:
 
 ```bash
 if grep -q "11test" grepExample.txt; then
@@ -749,7 +749,7 @@ fi
 
 **Example 2:** How to select in the current working directory only the files whose names begin with the example pattern 'ce' and end up with the pattern '.dat'? The content of the directory is:
 
-```bash
+```
 array.sh   be3.dat  be8.dat  ce1.log  ce4.dat  ce6.log  ce9.dat
 array.sh~  be4.dat  be9.dat  ce2.dat  ce4.log  ce7.dat  ce9.log
 be0.dat    be5.dat  ce0.dat  ce2.log  ce5.dat  ce7.log  grepExample.txt
@@ -773,6 +773,25 @@ ce6.dat
 ce7.dat
 ce8.dat
 ce9.dat
+```
+
+Finally, we mention the flag '-r', which will force **grep** to search for specified patterns recursively in all specified directories, their subdirectories, etc. Generic syntax is: 
+
+```bash
+grep -r somePattern dir1 dir2 ...
+```
+
+If directories are not specified, the top-level search directory is defaulted to the current working directory, and then the search is performed in all files in all its subdirectories. 
+
+**Example 3:** Print all lines in all files in the documentation for this lecture which contain word "Bash". 
+
+```bash
+$ grep -r "Bash" ~/Lectures/PH8124
+/home/abilandz/Lectures/PH8124/Homeworks/Homework_1.md:# Using **Bash** aliases as your simplest commands
+/home/abilandz/Lectures/PH8124/Homeworks/Homework_1.md:**Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as
+/home/abilandz/Lectures/PH8124/Homeworks/Homework_2.md:# Using external executable as Linux/Bash command
+
+... many, many, more lines ...
 ```
 
 **awk**
