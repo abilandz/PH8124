@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20220425
+**Last update**: 20220612
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -39,30 +39,30 @@ It is possible in the same way to escape the special meaning of any other specia
 
 As another example, we consider the double quotes ```"..."```, which also have a special meaning in **Bash** (clarified in the next section!) and are not printed by default:
 ```bash
-echo "Hi "there""
+$ echo "Hi "there""
 Hi there # no quotes in the printout
 ```
 However, we can escape the special meaning of two inner-most quotes, and then they will show up in the printout:
 ```bash
-echo "Hi \"there\""
+$ echo "Hi \"there\""
 Hi "there"
 ```
 Finally, we can also escape the special meaning of two outer-most quotes:
 
 ```bash
-echo \"Hi \"there\"\"
+$ echo \"Hi \"there\"\"
 "Hi "there""
 ```
 
 As another example, we compare: 
 
 ```bash
-echo "Today is: $(date)"
+$ echo "Today is: $(date)"
 Sat Jun  6 19:24:20 CEST 2020
 ```
 with 
 ```bash
-echo "Today is: \$(date)" 
+$ echo "Today is: \$(date)" 
 Today is: $(date) 
 ```
 
@@ -109,7 +109,7 @@ The printout is literally:
 $Var1   $Var2
 ```
 
-Neither variable was replaced in the printout with its content, because the special meaning of both ```$```'s was killed with strong quotes, and the exact number of empty characters was also preserved in the printout. 
+Neither variable was replaced in the printout with its content, because the special meaning of both ```$``` was killed with strong quotes, and the exact number of empty characters was also preserved in the printout. 
 
 Strong quotes are used frequently for the file or directory whose name contains empty characters:
 
@@ -128,7 +128,7 @@ echo 100 > 10 # WRONG!!
 We wanted to print a literal inequality ```100 > 10``` on the screen but the above code snippet did not produce any printout on the screen. Instead, something completely different has happened: **echo** printed only ```100``` but that was redirected immediately into the file named ```10```. We can circumvent this problem with:
 
 ```bash
-echo '100 > 10'
+$ echo '100 > 10'
 100 > 10
 ```
 
@@ -211,7 +211,7 @@ In the next section, we clarify the meaning of weak (double) quotes ```"..."```.
 
 **Weak (double) quotes**
 
-Unlike the strong quotes, the weak (double) quotes ```"..."``` preserve the special meaning of some special characters, while the special meaning of all others is stripped off. Just like within strong quotes, within double quotes the empty character does not retain its special meaning, i.e. it is not any longer the default field separator. The exact number of empty characters is preserved within weak quotes:
+Unlike the strong quotes, the weak (double) quotes ```"..."``` preserve the special meaning of some special characters, while the special meaning of all others is stripped off. Just like within single quotes, within double quotes the empty character does not retain its special meaning, i.e. it is not any longer the default field separator. The exact number of empty characters is preserved within weak quotes:
 
 ```bash
 echo "a b    c"
@@ -235,21 +235,21 @@ Var2=440
 * no quotes:   
 
   ```bash
-  echo $Var1   $Var2
+  $ echo $Var1   $Var2
   44 440
   ```
   
 * strong quotes:   
 
   ```bash
-  echo '$Var1   $Var2'
+  $ echo '$Var1   $Var2'
   $Var1   $Var2
   ```
   
 * weak quotes:   
 
   ```bash
-  echo "$Var1   $Var2"
+  $ echo "$Var1   $Var2"
   44   440
   ```
 
@@ -257,7 +257,7 @@ In each case, we got a different result. Within double quotes, the content of va
 
 The special meaning of the following special characters or constructs are preserved within weak quotes ```"..."```:
 
-* ```$``` : referencing content of variable   
+* ```$``` : referencing content of a variable   
 * ```$( ... )``` : command substitution operator
 * ```$(( ... ))``` : arithmetic expression evaluation
 * ```\``` : backslash preserves its special meaning within double quotes only in some cases, for instance, when it is followed by ```$```, ```"```, `\`, or newline.
@@ -315,11 +315,11 @@ To quote or not to quote: As a rule of thumb and whenever in doubt, it is always
 
 ### 3. Handling processes and jobs <a name="handling_processes_and_jobs"></a>
 
-In the **Linux** world, an executable stored on disk is called a _program_. Loosely speaking, the program loaded into the computer's memory and running is called a _process_. On the other hand, _job_ is more specifically a process that is started by a shell. A group of processes launched from a shell can be also considered as a job. Therefore, a job is a shell-only concept, while a process is a more general, system-wide, concept. There are specific **Bash** and **Linux** commands which keep track only of jobs launched from the current shell, but there are also commands which keep track of all processes running on the computer. It is very important to understand the difference between processes and jobs, and in which context which commands for their handling can be used.
+In the **Linux** world, an executable stored on a disk is called a _program_. Loosely speaking, the program loaded into the computer's memory and running is called a _process_. On the other hand, _job_ is more specifically a process that is started by a shell. A group of processes launched from a shell can be also considered as a job. Therefore, a job is a shell-only concept, while a process is a more general, system-wide, concept. There are specific **Bash** and **Linux** commands which keep track only of jobs launched from the current shell, but there are also commands which keep track of all processes running on the computer. It is very important to understand the difference between processes and jobs, and in which context which commands can be used for their handling.
 
 Jobs launched from the shell can be divided into two important groups:  _foreground_ and _background_ jobs. Foreground jobs are jobs that have control over the terminal, i.e. while they are running nothing else can be done in the current terminal session by the user. The control over the terminal is regained only when the foreground job has finished its execution. Background jobs are jobs that do not have control over the terminal during their execution. They are typically started on multicore machines, when the parallelization of jobs makes perfect sense and reduces a lot the overall execution time. While jobs launched from the current terminal session are running in the background, in that terminal session we have full control over the terminal and can do additionally whatever we want.
 
-By default, any job which is started from the terminal is executed in the foreground. If we want to submit a job execution to the background, we need to end the command line input with the special character ```&``` . For testing purposes, in this section we use the dummy command **sleep**, which runs a perfectly valid process even though it does nothing besides blocking the execution of subsequent commands for the specified time interval. Whatever is demonstrated in this section for the **sleep** command applies also to any other command --- we use **sleep** command merely because of its simplicity. In addition, a word command is used in this section in the broader sense, and it encapsulates also functions, scripts, code blocks, etc. 
+By default, any job which is started from the terminal is executed in the foreground. If we want to submit a job execution to the background, we need to end the command line input with the special character ```&``` . For testing purposes, in this section we use the dummy command **sleep**, which runs a perfectly valid process even though it does nothing besides blocking the execution of subsequent commands for the specified time interval. Whatever is demonstrated in this section for the **sleep** command applies also to any other command &mdash; we use **sleep** command merely because of its simplicity. In addition, a word command is used in this section in the broader sense, and it encapsulates also functions, scripts, code blocks, etc. 
 
 To illustrate the difference between foreground and background job execution, we first execute a job in the foreground:
 
@@ -337,7 +337,7 @@ sleep 10s &
 
 By using the special character ```&``` at the end of the command input, we have sent the execution of command **sleep** in the background. The main difference to the previous case is that now we can continue immediately to execute another command in the terminal, while the command **sleep** is running in parallel in the background.
 
-When in **Bash** code a command is started in the background with ```&``` at the end of command input, that command essentially starts off another process in parallel (that processes _forks off_ from the current shell). Note, however, that the _stdout_ stream of the forked process is still attached to the shell from which the job was sent to the background, which means that any output of that job will still appear in your terminal, even if the job is running in the background. This sometimes leads to surprising printouts in the terminal, if the _stdout_ stream of background job was not redirected somewhere else (e.g. to some file or to ```/dev/null```). 
+When in **Bash** code snippet a command is started in the background with ```&``` at the end of command input, that command essentially starts off another process in parallel (that processes _forks off_ from the current shell). Note, however, that the _stdout_ stream of the forked process is still attached to the shell from which the job was sent to the background, which means that any output of that job will still appear in your terminal, even if the job is running in the background. This sometimes leads to surprising printouts in the terminal, if the _stdout_ stream of background job was not redirected somewhere else (e.g. to some file or to ```/dev/null```). 
 
 It is also perfectly feasible to launch in the same command input multiple processes in separate background sessions:
 
@@ -351,12 +351,12 @@ Next, we will see how a process can be handled programmatically either via its _
 
 **Process IDs and Job Numbers**
 
-**Linux** gives to each process the unique number, called _Process ID (PID)_, when the process was created. On the other hand, **Bash** gives to each job also the number, called _Job Number_, when some process was started in the current shell. Therefore, each process has a unique system-wide PID, while job numbers are unique only within the current terminal. Each terminal keeps track of its own job numbers. The PID of the running process is the same in all terminals. In general, we can handle programmatically in any terminal a running process via its PID, and in the specific terminal both with its PID and with a job number corresponding only to that specific terminal. 
+**Linux** gives to each process the unique number, called _Process ID (PID)_, when the process was created. On the other hand, **Bash** gives to each job also the number, called _Job Number_, when some process was started in the current shell. Therefore, each process has a unique system-wide PID, while job numbers are unique only within the current terminal. Each terminal keeps track of its own job numbers, because each terminal runs its own shell instance. The PID of the running process is the same in all terminals. In general, we can handle programmatically in any terminal a running process via its PID, and in the specific terminal both with its PID and with a job number corresponding only to that specific terminal. 
 
 The difference between PID and job number is illustrated with the following code snippet:
 
 ```bash 
-sleep 10m &
+$ sleep 10m &
 [1] 15
 ```
 
@@ -389,7 +389,7 @@ Other possible job states include 'Done', 'Terminated', 'Hangup', 'Stopped', 'Ab
 If we execute another command, for instance:
 
 ```bash
-sleep 20m &
+$ sleep 20m &
 jobs -l
 ```
 
@@ -402,7 +402,7 @@ we now see that both commands are running in parallel in the background (remembe
 
 In the above output, symbol ```+``` next to the job number indicates the most recent job sent to the background in the current terminal, while symbol ```-``` indicates the one before the most recent job sent to the background. Only these two jobs get the special treatment and notation in the output of **jobs** command.
 
-We now demonstrate how the running job or process can be terminated programmatically. To terminate the particular job, we need to use the **Bash** built-in command **kill**, either by specifying job number or PID as an argument. The syntax is a bit different, to kill a job by job number we use:
+We now demonstrate how the running job or process can be terminated programmatically. To terminate the particular job, we need to use the **Bash** built-in command **kill**, either by specifying job number or PID as an argument. The syntax is a bit different &mdash; to kill a job by job number we use:
 
 ```bash
 kill %2
@@ -414,9 +414,9 @@ kill %2
 kill 17
 ```
 
-Note the usage of percentage symbol ```%``` in the first case---without it, **Bash** would attempt to kill the process with system-wide PID 2. Only after the percentage symbol ```%``` is used, **Bash** will interpret the following number as the job number, which is specific and known only to the current terminal. Note also that only the second version can be used from any terminal, as the PID of any job or process is the same in all terminals. Later we will see that the command **kill**, despite its terse name, can do much more than mere termination of running jobs.
+Note the usage of percentage symbol ```%``` in the first case &mdash; without it, **Bash** would attempt to kill the process with system-wide PID 2. Only after the percentage symbol ```%``` is used, **Bash** will interpret the following number as the job number, which is specific and known only to the current terminal. Note also that only the second version can be used from any terminal, as the PID of any job or process is the same in all terminals. Later we will see that the command **kill**, despite its terse name, can do much more than mere termination of running jobs.
 
-We have seen already how we can get the list of all background jobs started from the current terminal with **jobs -l** command. With the more general command named **top** we can get the list of all running processes on the computer, from all users, running both in foreground and background.
+We have seen already how we can get the list of all background jobs started from the current terminal with **jobs** command. With the more general command named **top** we can get the list of all running processes on the computer, from all users, running both in foreground and background.
 
 After executing in the terminal:
 
@@ -428,7 +428,7 @@ the output could look like this:
 
 ![](top_0a.png)
 
-The command **top** continuously updates the terminal display with the summary of the current status of system resources followed by the list of most CPU-intensive processes (default ordering). The first column contains the PID of each running process, followed by the user name, priority of the process, 'nice' value of the process, memory and CPU consumption, total running time, etc. In order to parse the output of **top** programmatically, or to redirect it to some file, we need to run command **top** in the batch (text) mode via:
+The command **top** continuously updates the terminal display with the summary of the current status of system resources followed by the list of most CPU-intensive processes (default ordering). The first column contains the PID of each running process, followed by user's name, priority of the process, 'nice' value of the process, memory and CPU consumption, total running time, etc. In order to parse the output of **top** programmatically, or to redirect it to some file, we need to run command **top** in the batch (text) mode via:
 
 ```bash
 top -b
@@ -484,16 +484,16 @@ For further details of this complex command, see its 'man' pages.
 In the case you are interested only in the PID of the running process, there is also a command **pidof**, which takes as an argument only the process name:
 
 ```bash
-sleep 10s &
+$ sleep 10s &
 [1] 433
-pidof sleep 
+$ pidof sleep 
 433
 ```
 
 This command becomes very handy if there are multiple instances of the same command running in parallel, and we need to get PIDs of all of them.  For instance:
 
 ```bash
-sleep 10s & sleep 20s & sleep 30s &
+$ sleep 10s & sleep 20s & sleep 30s &
 [1] 587
 [2] 588
 [3] 589
@@ -501,14 +501,23 @@ sleep 10s & sleep 20s & sleep 30s &
 We now have 3 instances of the same command **sleep** running in parallel. We can get the list of all PIDs corresponding to different instances of the same command with:
 
 ```bash
-pidof sleep 
+$ pidof sleep 
 587 588 589
+```
+
+Closely related and more powerful command is **pgrep**, which can also interpret regular expressions in the command names. For the above example, we can use:
+
+```bash
+$ pgrep -a "sle*"
+587 sleep 10s
+588 sleep 20s
+589 sleep 30s
 ```
 
 There is also a related command **pkill**, which can terminate on the spot all running instances of the same command, just by its name. For the above example, we can terminate all 3 instances of the command **sleep** running in parallel as follows:
 
 ```bash
-pkill sleep
+$ pkill sleep
 [1]   Done                    sleep 10s
 [2]   Done                    sleep 20s
 [3]-  Done                    sleep 30s
@@ -523,7 +532,7 @@ We have already seen how the job execution can be sent to the background by appe
 1. Suspend the foreground job with ```Ctrl+Z```   
 2. Resume (not restart!) the suspended job in the background with **bg** command   
 
-This is best illustrated with the concrete example. Imagine that we have started in the foreground the following command (we stress it out again that the following discussion applies to any other command, **sleep** is used only because of its simplicity!):
+This is best illustrated with the concrete example. Imagine that we have started in the foreground the following command (we stress out again that the following discussion applies to any other command, **sleep** is used only because of its simplicity!):
 
 ```bash
 sleep 10m
@@ -532,7 +541,7 @@ sleep 10m
 Now the terminal is blocked for 10 minutes because the command **sleep** is running in the foreground. We can, however, suspend the execution of the command **sleep** by pressing ```Ctrl+Z``` and regain control of the terminal. After we have regained the control over the terminal, we can start executing other commands. In the meanwhile, the suspended command does not do anything:
 
 ```bash
-jobs -l
+$ jobs -l
 [2]+    15 Stopped                 sleep 10m
 ```
 
@@ -543,12 +552,12 @@ To restart the suspended job in the background, we can use the following generic
 ```bash
 bg %jobNumber
 ```
-To re-start in the background the above **sleep** command, whose job number is ```2```, we need to use:
+To restart in the background the above **sleep** command, whose job number is ```2```, we need to use:
 
 ```bash
 bg %2
 ```
-There is an alternative syntax, which is more limited in scope but sometimes can be nevertheless handier---to restart the suspended job in the background we can also use:
+There is an alternative syntax, which is more limited in scope but sometimes can be nevertheless more convenient &mdash; to restart the suspended job in the background we can also use:
 
 ```bash
 bg %commandName
@@ -575,7 +584,7 @@ If we have multiple instances of the same command running with exactly the same 
 After restarting the suspended job in the background, we see the following:
 
 ```bash
-jobs -l
+$ jobs -l
 [2]+    15 Running                 sleep 10m &
 ```
 
@@ -583,7 +592,7 @@ This is precisely what we wanted to achieve: We have suspended with ```Ctrl+Z```
 
 A closely related command is the **Bash** built-in command **fg**. This command moves the jobs running in the background to the foreground. Before discussing its syntax, we first stress out the following important fact: It is impossible solely by using **Bash** built-in features to bring to the foreground a process running in the background in the current shell instance if it was not started in the background from the current shell instance. Basically, this means that you cannot in the current terminal take over a process that was started in a different terminal. To achieve that level of flexibility, there are specialized programs available that allow us to move other programs around from one shell instance to another, for instance **screen**.
 
-Looking at this from another angle, this makes perfect sense, but only after we realize the following subtle difference between job and process: a job can be a group of processes, but not vice versa. When we suspend a job via its job number, we suspend all processes in that job. When we suspend a process via its PID, we suspend only that particular process. 
+Looking at this from another angle, it makes perfect sense, but only after we realize the following subtle difference between job and process: a job can be a group of processes, but not vice versa. When we suspend a job via its job number, we suspend all processes in that job. When we suspend a process via its PID, we suspend only that particular process. 
 
 After using command **fg**, the background job is continuing to run in the foreground and is, therefore, taking over the control over the terminal. Generically, the syntax of **fg** command is:
 
@@ -639,7 +648,7 @@ However, it can happen that the last job sent to the background has terminated b
 ```bash
 wait
 ```
-With the above syntax, the execution of the main script will wait until all jobs running in the background are terminated. This feature is extremely neat on multicore machines: Whenever your script is facing some CPU intensive task, that task can be split across multiple processes, and then each process can be sent independently to the background:
+With the above syntax, the execution of the main script will wait until all jobs running in the background are terminated. This feature is extremely important on multicore machines: Whenever your script is facing some CPU intensive task, that task can be split across multiple processes, and then each process can be sent independently to the background:
 
 ```bash
 commandInput1 &
@@ -648,7 +657,7 @@ commandInput2 &
 wait
 ```
 
-With the above syntax, while processes **commandInput1**, **commandInput2**, ...,  are all running in parallel in the background, the main script waits with further execution. Only when all background processes have terminated, the main script will proceed with further execution. 
+With the above generic syntax, while processes **commandInput1**, **commandInput2**, ...,  are all running in parallel in the background, the main script waits with further execution. Only when all background processes have terminated, the main script will proceed with further execution. 
 
 The classical example when the above functionality can be used is the case when we need to process large datasets. The starting large dataset can be split into subsamples, and then each subsample can be analyzed in parallel, schematically:
 
@@ -701,7 +710,7 @@ kill -9 somePID
 we are essentially sending the signal number ```9```, i.e. the signal with the name ```SIGKILL```, to the running process whose PID is ```somePID``` . For instance, if we start a process in the background:
 
 ```bash
-sleep 10m &
+$ sleep 10m &
 [1] 9485
 ```
 we can terminate it either with
@@ -714,7 +723,7 @@ kill -SIGKILL 9485
 ```
 In both cases, we get the same result:
 ```bash
-jobs -l 
+$ jobs -l 
 [1]+  9485 Killed                  sleep 10m
 ```
 For the most frequently used signals, there are also the case-insensitive shortcut versions, e.g.:
@@ -722,7 +731,7 @@ For the most frequently used signals, there are also the case-insensitive shortc
 kill -KILL 9485
 kill -kill 9485
 ```
-From the table above, we see there are 64 different signals we can send to the running process. Note, however, that some signals are typically used only by the operating system, to tell the process that something went wrong (e.g. division by zero was encountered). As another remark, we indicate that it is somewhat more portable to use signal by its name instead of by its number across different platforms: It is unlikely that the name of the signal like ```KILL``` will be interpreted in any other way, however number ```9``` can be.
+From the table above, we see there are 64 different signals we can send to the running process. Note, however, that some signals are typically used only by the operating system, to tell the process that something went wrong (e.g. division by zero was encountered). As another remark, we indicate that it is somewhat more portable to use signal by its name instead of by its number across different platforms &mdash; it is unlikely that the name of the signal like ```KILL``` will be interpreted in any other way, however, number ```9``` can be.
 
 After we have illustrated the simple use case of **Bash** built-in command **kill**, let us now elaborate on it more in detail. The command **kill** is used to send signals to the already running job, or to any new job. If used without arguments, it will send the default signal to the running process. That default signal is ```TERM``` ('terminate', number 15), which usually has the same effect as the signal ```INT``` ('interrupt', number 2). Whenever we execute the following command in a shell:
 ```bash
@@ -736,13 +745,13 @@ On the other hand, when we hit ```Ctrl+Z``` to suspend a running process, we are
 ```bash
 kill -TSTP somePID
 ```
-The signal ```TSTP``` ('suspend') has a signal number ```20```, so pressing ```Ctrl+Z``` is also equivalent to the following:
+The signal ```TSTP``` ('suspend') has a signal number ```20```, so pressing ```Ctrl+Z``` is equivalent to the following:
 
 ```bash
 kill -20 somePID
 ```
 
-When we hit ```Ctrl+C``` to interrupt the running process, we are using a shortcut for sending the ```INT``` signal. Pressing ```Ctrl+C``` is therefore completely equivalent to: 
+When we hit ```Ctrl+C``` to interrupt the running process, we are using a shortcut for sending the ```INT``` signal. Pressing ```Ctrl+C``` is therefore equivalent to: 
 
 ```bash
 kill -INT somePID
@@ -761,10 +770,10 @@ kill -QUIT somePID
 ```
 This case typically produces the message 'core dumped', for instance:
 ```bash
-sleep 20m &
+$ sleep 20m &
 [2] 11126
-kill -QUIT 11126
-jobs -l
+$ kill -QUIT 11126
+$ jobs -l
 [2]- 11126 Quit                    (core dumped) sleep 20m
 ```
 The message ``` Quit (core dumped)``` indicates that there is a file called 'core' which contains the image of the process to which you sent a signal. The name 'core' is a very old-fashioned name for computer's memory, and 'core dumps' are generated when the process receives certain signals (such as ```QUIT```, ```SEGV```, etc.), which the **Linux** kernel sends to the process when it accesses memory outside its address space. 
@@ -778,14 +787,14 @@ Although it sounds trivial, it makes actually a big difference with which signal
 We remark that sending signals to the running job is not only about terminating its execution. For instance, we can resume programmatically the suspended job by sending it the signal ```CONT``` (number 18). That is illustrated with the following sequence:
 
 ```bash
-sleep 44m &
+$ sleep 44m &
 [1] 12254
-jobs -l 
+$ jobs -l 
 [1]+ 12254 Running                 sleep 44m &
-kill -TSTP 12254
-jobs -l
+$ kill -TSTP 12254
+$ jobs -l
 [1]+  Stopped                 sleep 44m
-kill -CONT 12254
+$ kill -CONT 12254
 [1]+ 12254 Running                 sleep 44m &
 ```
 
@@ -795,20 +804,20 @@ At the end of this section, we stress out that, since the command **kill** can a
 
 **Catching signals in your own code**
 
-We have already seen how we can send the signal to the process, taking for granted that the implementation of that process has the relevant lines in the source code which can handle that particular signal. In this section, we clarify what is happening behind the scene when a process receives a signal. 
+We have already seen how we can send signals to the process, taking for granted that the implementation of that process has the relevant lines in the source code which can handle particular signals. In this section, we clarify what is happening behind the scene when a process receives a signal. 
 
 We introduce and discuss first the commands which are used to handle programmatically the signal input. This can be achieved by using the **Bash** built-in command **trap**. In general, programs can be set up to trap specific signals, and interpret them in their own way. The command **trap** is used mostly for bullet-proofing, i.e. ensuring that your program behaves well under abnormal circumstances. The generic syntax of **trap** command is:
 
 ```bash
-trap someCommand signal1 signal2 ...
+trap someCommand signal_1 signal_2 ...
 ```
-The above generic syntax is interpreted as follows: When any of the signals ```signal1```, ```signal2```, ```...```, is received, the following sequence follows:
+The above generic syntax is interpreted as follows: When any of the signals ```signal_1```, ```signal_2```, ```...```, is received, the following sequence follows:
 
 1. pause the program execution and execute command **someCommand**    
 2. resume the program execution    
 
 
-After the execution of **someCommand** has terminated, the program execution resumes just after the command that was interrupted. In this context, **someCommand** can be also a script or a function. The signals```signal1```, ```signal2```, ```...```, can be specified either by signal name or by signal number. 
+After the execution of **someCommand** has terminated, the program execution resumes just after the command that was interrupted. In this context, **someCommand** can be also a script or a function. The signals```signal_1```, ```signal_2```, ```...```, can be specified either by signal name or by signal number. 
 
 The usage of **trap** is best illustrated with examples. We use the script named ```trapExample.sh``` with the following content:
 ```bash
@@ -828,12 +837,12 @@ This script does nothing except that every 10 seconds prints the time stamp via 
 
 We send this script to execute in the background via:
 
-```
-source trapExample.sh &
+```bash
+$ source trapExample.sh &
 [1] 87
 ```
 
-Every 10 seconds on the screen we get the timestamp printed, and in this simple example, that's the proof that our script is running. Now, while the script is running in the background, we start to communicate with our script by sending the signals to it:
+Every 10 seconds on the screen we get the timestamp printed, and in this simple example, that is the proof that our script is running. Now, while the script is running in the background, we start to communicate with our script by sending the signals to it:
 
 ```
 kill -USR1 %1
@@ -854,10 +863,10 @@ the script execution is paused again, this time two commands **pwd** and **ls** 
 
 After sending these two signals, the script is still running in the background:
 ```bash
-jobs -l 
+$ jobs -l 
 [1]+  87 Running                 source trapExample.sh &
 ```
-Therefore, by using the **trap** command we can programmatically and on-the-fly modify the behaviour of the running program, without terminating its execution, changing something in the code, and restarting from scratch. Just like we have implemented traps for signals ```USR1``` and ```USR2```, we can implement our own version of traps for the more standard signals like ```ÌNT```, ```TERM```, etc.
+Therefore, by using the **trap** mechanism we can programmatically and on-the-fly modify the behaviour of the running program, without terminating its execution, changing something in the code, and restarting from scratch. Just like we have implemented traps for signals ```USR1``` and ```USR2```, we can implement our own version of traps for the more standard signals like ```ÌNT```, ```TERM```, etc.
 
 We conclude this section with a few additional remarks. The traps can be reset, by using the following generic syntax:
 ```bash
