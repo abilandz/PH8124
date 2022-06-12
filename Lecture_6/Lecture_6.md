@@ -962,7 +962,7 @@ Change: 2020-05-29 08:32:38.081673700 +0200
  Birth: -
 ```
 
-If we are interested only to print on the screen only a particular line, we need to use **sed** with the flag '-n' and the specifier 'p' ('print'). Flag '-n' is needed to suppress the default printout of the original file. To print only the 2nd line, we can use the following syntax:
+If we are interested to print on the screen only a particular line, we need to use **sed** with the flag '-n' and the specifier 'p' ('print'). Flag '-n' is needed to suppress the default printout of the original file. To print only the 2nd line, we can use the following syntax:
 
 ```bash
 stat test.sh | sed -n 2p
@@ -974,7 +974,7 @@ The output is now only the 2nd line:
 Size: 177             Blocks: 0          IO Block: 4096   regular file
 ```
 
-With the slightly modified specifier 'p' we can indicate the line ranges. For instance, the syntax
+With the slightly modified specifier, we can indicate the line ranges. For instance, the syntax
 
 ```bash
 stat test.sh | sed -n 2,5p
@@ -984,7 +984,7 @@ will print lines 2, 3, 4 and 5, and so on.
 
 **Example 2:** How to insert a new 2nd line of text in the already existing file ```sedTest.dat```, which has the following content:
 
-```bash
+```
 line 1
 line 2
 line 3
@@ -1002,6 +1002,24 @@ line 2
 line 3
 line 4
 ```
+We remark that number of empty characters between specified 'i' and the following text is irrelevant &mdash; the very same results as above is achieved for instance with:
+
+```bash
+sed "2iSome text" sedTest.dat
+sed "2i    Some text" sedTest.dat
+```
+
+In case we want to start a new text with literal empty character, we have to escape it:
+
+````bash
+$ sed "2i\ Some text" sedTest.dat
+line 1
+ Some text
+line 2
+line 3
+line 4
+````
+
 The above modified output stream can be redirected to a new file with ```1> someFile```, but we can also modify in-place the original file. To achieve this, we need to use the flag ```-i``` ('in-place edit') for **sed** :
 
 ```bash
@@ -1017,9 +1035,31 @@ Clearly, it can be potentially dangerous to modify directly the original file in
 ```bash
 sed -i.backup "2i Some text" sedTest.dat
 ```
-This will in the second line of the file ```sedTest.dat``` insert the new text 'Some text'. The original file is modified, however now also the backup of the original file was created automatically, and is saved in new file named ```sedTest.dat.backup```.
+This will in the second line of the file ```sedTest.dat``` insert the new text 'Some text'. The original file is modified, but now also the backup of the original file was created automatically, and is saved in new file named ```sedTest.dat.backup```. 
 
-**Example 3:** How to delete the 4th line from the above file ```sedTest.dat```?
+Analogously, we can instert new line on-the-fly in the output stream of some command:
+
+```bash
+stat test.sh | sed "4i => File permissions, and other thingies:"
+```
+
+The output is:
+
+```bash
+  File: test.sh
+  Size: 62              Blocks: 0          IO Block: 4096   regular file
+Device: 2h/2d   Inode: 26740122787573808  Links: 1
+=> File permissions, and other thingies:
+Access: (0666/-rw-rw-rw-)  Uid: ( 1000/abilandz)   Gid: ( 1000/abilandz)
+Access: 2020-05-11 12:38:23.820690300 +0200
+Modify: 2020-05-14 13:13:46.970442600 +0200
+Change: 2020-05-14 13:13:46.970442600 +0200
+ Birth: -
+```
+
+Using this functionality, we can easily personalize the printout of any command.
+
+**Example 3a:** How to delete the 4th line from the above file ```sedTest.dat```?
 
 To delete lines in the file's or in the command's output stream, we need to use the specifier 'd' ('delete') in **sed**. For instance, if we want to delete the 4th line, we can use the following syntax: 
 
@@ -1030,14 +1070,49 @@ This will delete the 4th ('4d' specifier) line in the file ```sedTest.dat```. We
 ```bash
 sed "2,4d" sedTest.dat
 ```
-This will delete the 2nd, 3rd and 4th lines in the file ```sedTest.dat```. The previous comments about in-place modification and backup of the original file apply also in this context.
+This will delete the 2nd, 3rd and 4th lines in the file ```sedTest.dat```. The previous comments about in-place modification and how to make a backup of the original file apply also in this context.
+
+**Example 3b:** How to delete the lines holding only specific text pattern?
+
+This is another frequently used case of **sed** command, and the generic solution is:
+
+```bash
+sed "/somePattern/d" someFile
+```
+
+or equivalently:
+
+```bash
+someCommand | sed "/somePattern/d"
+```
+
+For instance:
+
+```bash
+$ stat test.sh | sed "/Access/d"
+ File: test.sh
+  Size: 177             Blocks: 0          IO Block: 4096   regular file
+Device: 2h/2d   Inode: 21673573207029672  Links: 1
+Modify: 2020-05-29 08:32:38.081673700 +0200
+Change: 2020-05-29 08:32:38.081673700 +0200
+ Birth: -
+```
+
+In the above output, the lines holding the string "Access", namely:
+
+```bash
+Access: (0666/-rw-rw-rw-)  Uid: ( 1000/abilandz)   Gid: ( 1000/abilandz)
+Access: 2020-05-01 12:46:20.551223700 +0200
+```
+
+have been deleted.
 
 **Example 4:** Finally, we also illustrate how to replace one pattern in the file with another. This is achieved with the following generic syntax:
 
 ```bash
 sed "s/firstPattern/secondPattern/" someFile
 ```
-This will substitute ('s' specifier) in each line of file ```someFile``` only the first occurrence of ```firstPattern``` with ```secondPattern```. On the other hand, if we want to replace all occurrences, we need to use the following, slightly modified syntax: 
+This will substitute (the 's' specifier) in each line of file ```someFile``` only the first occurrence of ```firstPattern``` with ```secondPattern```. On the other hand, if we want to replace all occurrences, we need to use the following, slightly modified syntax: 
 ```bash
 sed "s/firstPattern/secondPattern/g" someFile
 ```
@@ -1084,35 +1159,20 @@ Before=OldPatern
 After=NewPatern
 sed "s/${Before}/${After}/" someFile
 ```
-This gives a lot of flexibility, because old and new patterns can be supplied via arguments, etc. In the same spirit, we can use **sed** to modify on-the-fly the output stream of any command:
+This gives a lot of flexibility, because old and new patterns can be supplied via arguments to scripts or functions, etc. In the same spirit, we can use **sed** to modify on-the-fly the output stream of any command:
 
 ```bash
-date
-date | sed "s/Wed/Wednesday/"
-```
-The output is:
-```bash
+$ date
 Wed Jun  3 21:08:49 CEST 2020
+$ date | sed "s/Wed/Wednesday/"
 Wednesday Jun  3 21:08:49 CEST 2020
 ```
-Another example, when we insert a new line on-the-fly in the output stream of some command:
+As a concluding remarks to **sed**, we indicate that multiple commands can be specified and executed in one go by using option '-e' and by separating multiple commands with ';' &mdash; for instance:
 
 ```bash
-stat test.sh | sed "4i => File permissions, and other thingies:"
-```
-
-The output is:
-
-```bash
-  File: test.sh
-  Size: 62              Blocks: 0          IO Block: 4096   regular file
-Device: 2h/2d   Inode: 26740122787573808  Links: 1
-=> File permissions, and other thingies:
-Access: (0666/-rw-rw-rw-)  Uid: ( 1000/abilandz)   Gid: ( 1000/abilandz)
-Access: 2020-05-11 12:38:23.820690300 +0200
-Modify: 2020-05-14 13:13:46.970442600 +0200
-Change: 2020-05-14 13:13:46.970442600 +0200
- Birth: -
+$ echo "some text" | sed -e "s/text/TEXT/; s/some/SOME/"
+SOME TEXT
 ```
 
 Finally, **sed** provides full support for pattern matching via regular expressions, which increases its power and applicability tremendously.
+
