@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20220609
+**Last update**: 20220612
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -534,7 +534,7 @@ The power of piping is best illustrated in the combination with the three powerf
 
 ### 4. **sed**, **awk** and **grep** <a name="sed_awk_grep"></a>
 
-Frequently a text needs to be parsed through and inspected, or updated after the search for some patterns has been performed. In general, we want to modify programmatically some text for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution, or for any text saved in some physical file. Clearly, it is impractical and in some cases unfeasible to make all such changes in some graphics-based editors. In this section, we cover instead how the text can be manipulated programmatically, with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
+Frequently a text needs to be parsed through and inspected, or updated after the search for some patterns has been performed. In general, we want to be able to modify programmatically some text for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution, or for any text saved in some physical file. Clearly, there are cases in which it is impractical or even unfeasible to make all such changes in some graphics-based editors. In this section, we cover instead how the text can be manipulated programmatically, with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
 
 **grep**
 
@@ -556,7 +556,7 @@ The above syntax will select on-the-fly from the output of a command only the li
 
 **Example 1:** Copy and paste in the file ```grepExample.txt``` the following lines:
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 TeST1 TEST1 TESt1 TEST1 TEST1
@@ -572,13 +572,13 @@ grep "test" grepExample.txt
 
 The output is:
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 test TEST Test 11test test
 ```
 
-By default, the specified pattern ('test' in the above example) is case sensitive and it does not have to be an exact match, therefore here the patterns '11test', 'test22' and 'test' were all the matching patterns. Each line which contains one or more of matching patterns is printed by **grep** on the screen by default, but it can be also redirected to a physical file:
+By default, the specified pattern ('test' in the above example) is case sensitive and it does not have to be an exact match, therefore here the text '11test', 'test22' and 'test' were all the matching patterns. Each line which contains one or more of matching patterns is printed by **grep** on the screen by default, but it can be also redirected to a physical file:
 
 ```bash
 grep "test" grepExample.txt > filtered.txt
@@ -592,7 +592,7 @@ grep -n "test" grepExample.txt
 
 The result is:
 
-````bash
+````
 1:TEST Test test 11test test22
 2:test TEST Test 11test test22
 4:test TEST Test 11test test
@@ -606,7 +606,7 @@ grep -v "test" grepExample.txt
 
 Now only the lines which do not contain the pattern 'test' are printed on the screen:
 
-```bash
+```
 TeST1 TEST1 TESt1 TEST1 TEST1
 TeST2 TEST2 TEsT2 TEST2 tEST2
 ```
@@ -619,7 +619,7 @@ grep -i "test" grepExample.txt
 
 This prints all lines in the file which contain all case insensitive variants of pattern 'test', e.g. 'TEST', 'Test', 'tEsT, etc:
 
-```bash
+```
 TEST Test test 11test test22
 test TEST Test 11test test22
 TeST1 TEST1 TESt1 TEST1 TEST1
