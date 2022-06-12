@@ -775,7 +775,7 @@ ce8.dat
 ce9.dat
 ```
 
-Finally, we mention the flag '-r', which will force **grep** to search for specified patterns recursively in all specified directories, their subdirectories, etc. Generic syntax is: 
+Finally, we mention the flag '-r', which will force **grep** to search for specified patterns recursively in all files of specified directories, their subdirectories, etc. Generic syntax is: 
 
 ```bash
 grep -r somePattern dir1 dir2 ...
@@ -801,20 +801,15 @@ Now we move to **awk** (named after the initials of its authors: Aho, Weinberg a
 After we supply some input to **awk**, it will break each line of input into fields, separated by default with one or more empty characters. After that, **awk** parses the input and operates on each separate field. Just like with the **grep** command, **awk** can take its input either from a physical file, or from the output stream of another command via a pipe. For instance, if a certain command has produced an output that consists of column-wise entries separated with one or more empty characters, we can get hold of each field programmatically. For instance:
 
 ```bash
-date
-date | awk '{print $4}'
-```
-The output is only the current time:
-
-```bash
+$ date
 Wed Jun  3 15:36:12 CEST 2020
+$ date | awk '{print $4}'
 15:36:12
 ```
-
-In the 2nd line, we have, by using **awk**, isolated directly only the 4th field in the **date** output. In the similar fashion: 
+In the 2nd command input we have, by using **awk**, isolated directly only the 4th field in the output of **date**. In a similar fashion: 
 
 ```bash
-date | awk '{print $6}'
+$ date | awk '{print $6}'
 2020
 ```
 prints only the year, because the 6th field in the output of **date** is reserved for a year.
@@ -822,11 +817,11 @@ prints only the year, because the 6th field in the output of **date** is reserve
 We can select multiple fields, and immediately on-the-fly do some additional editing:
 
 ```bash
-date | awk '{print $4, "some text", $6}'
+$ date | awk '{print $4, "some text", $6}'
 15:36:12 some text 2020
 ```
 
-In the same way **awk** operates on the content of files --- the file content just needs to be redirected to **awk** with '<' operator. It is very convenient, for instance, to use **awk** to extract only the values from the specified column(s) in a file. For instance, if the content of the file ```someFile.dat``` is:
+In the same way **awk** operates on the content of files. It is very convenient, for instance, to use **awk** to extract only the values from the specified column(s) in a file. For instance, if the content of the file ```someFile.dat``` is:
 
 ```bash
 a 1
@@ -837,7 +832,7 @@ c 44
 we can extract the columns separately with
 
 ```bash
-awk '{print $1}' < someFile.dat
+$ awk '{print $1}' someFile.dat
 a
 yy
 c
@@ -846,7 +841,7 @@ c
 and
 
 ```bash
-awk '{print $2}' < someFile.dat
+$ awk '{print $2}' someFile.dat
 1
 10
 44
@@ -855,54 +850,51 @@ awk '{print $2}' < someFile.dat
 Typically, one can store such an output in an array, and then process further programmatically all entries, with the following code snippet which combines a few different functionalities covered by now:
 
 ```bash
-SomeArray=( $(awk '{print $2}' < someFile.dat) )
-echo ${SomeArray[*]}
+$ SomeArray=( $(awk '{print $2}' someFile.dat) )
+$ echo ${SomeArray[*]}
 1 10 44
 ```
 
-In order to get the total number of fields, we can use the **awk** built-in variable **NF**:
+In order to get the total number of fields, we can use the **awk**'s built-in variable **NF**:
 
 ```bash
-date
-date | awk '{print NF}'
-```
-Since the output stream of **date** has 6 entries separated with the empty character, we get:
-
-```bash
+$ date
 Wed Jun  3 15:36:12 CEST 2020
-6 
+$ date | awk '{print NF}'
+6
 ```
+Since the output stream of **date** has 6 entries separated with the empty character, we got 6 as a total number of fields.
 
 On the other hand, the entry from the last field can be achieved directly by obtaining the content of **NF** variable:
 
 ```bash
-date | awk '{print $NF}'
+$ date | awk '{print $NF}'
 2020
 ```
 Similarly, the entry from the penultimate field can be obtained directly with:
 ```bash
-date | awk '{print $(NF-1)}'
+$ date | awk '{print $(NF-1)}'
 CEST
 ```
 and so on. 
 
-But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator **FS** to some non-default value,  we use schematically the following syntax:
+But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk**'s' built-in variable **FS**. To set the field separator variable **FS** to some non-default value,  we use schematically the following syntax:
 
 ```bash
 awk 'BEGIN {FS="some-new-single-character-field-separator"} ... '
 ```
-For instance, if we want to use colon ```:``` as a field separator in **awk**, we would use:
+The key word 'BEGIN' next to the code snippet within ```{ ... }``` ensures that that particular code snippet is executed only once, at the very beginning (analogously, there exists a key word 'END' in **awk** with the opposite meaning). 
+
+For instance, if we want to use colon ```:``` as a field separator in **awk**, we must start with the following:
+
 ```bash
 awk 'BEGIN {FS=":"} ... '
 ```
-To extract only the minutes from the output of **date** command, we can use the following code snippet:
+Therefore, to extract only the minutes from the output of **date** command, we can use the following code snippet:
 ```bash
-date
-date | awk '{print $4}' | awk 'BEGIN {FS=":"}{print $2}'
-```
-The output is:
-```bash
+$ date
 Wed Jun  3 16:18:44 CEST 2020
+$ date | awk '{print $4}' | awk 'BEGIN {FS=":"}{print $2}'
 18
 ```
 What happened above is literally the following:  
@@ -911,7 +903,7 @@ What happened above is literally the following:
 2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was ```16:18:44```  
 3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 2nd field is minutes, which finally yields the final output ```18```   
 
-As a rule of thumb, field separators in **awk** shall be always single characters --- composite multi-character field separators are possible, but can lead to some inconsistent behavior among different **awk** versions (e.g. **gawk**, **mawk**, etc.).  
+As a rule of thumb, field separators in **awk** shall be always single characters &mdash; composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, **nawk**, etc.).  
 
 Very conveniently, with **awk** we can also calculate directly the length of the field, for instance:
 
@@ -921,7 +913,7 @@ echo "a:12454:b34d" | awk 'BEGIN {FS=":"}{print length($2)}' # prints 5
 echo "a:12345:b34d" | awk 'BEGIN {FS=":"}{print length($3)}' # prints 4
 ```
 
-On the other hand, different single characters can be treated as field separators simultaneously, they just all need to be embedded within ```[ ... ]```. For instance, we can treat during the same **awk** execution all three characters colon ```:```, semi-colon ```;``` and comma ```,``` as equivalent field separators in the following code snippet:
+On the other hand, multiple single characters can be treated as field separators simultaneously &mdash; they just all need to be embedded within ```[ ... ]```. For instance, we can treat during the same **awk** execution all three characters colon ```:```, semi-colon ```;``` and comma ```,``` as equivalent field separators in the following code snippet:
 
 ```bash
 echo "1,22;abc:44:1000;123" | awk 'BEGIN {FS="[:;,]"} {print $4}' 
@@ -930,7 +922,7 @@ The output is
 ```bash
 44
 ```
-If you find it very difficult to use **awk** to extract content from the specific fields, there is also a much simpler, however also much less powerful, command **cut**. For instance:
+As a side remark: If you find it very difficult to use **awk** to extract content from the specific fields, there is also a much simpler, however also much less powerful, command **cut**. For instance:
 
 ```bash
 echo A BBB CC | cut -d " " -f 3 # prints CC
@@ -938,7 +930,7 @@ echo A BBB CC | cut -d " " -f 3 # prints CC
 
 In the above snippet we have defined the field delimiter with flag '-d' to be empty character " " (by default, the field delimiter in **cut** command is TAB), and with the flag '-f' we have specified that we want the content of the 3rd field, which is 'CC' in the example above.
 
-The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables, before we can use them during **awk** execution, which in practice can be a bit, well, awkward. This limitation is not present in the command **sed**, which we cover next.
+The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables, before we can use them during **awk** execution, which in practice can be a bit, well, awkward... This limitation is not present in the command **sed**, which we cover next.
 
 **sed**
 
