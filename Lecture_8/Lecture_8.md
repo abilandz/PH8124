@@ -2,7 +2,7 @@
 
 # Lecture 8: **Bash** fancy features
 
-**Last update:** 20220425
+**Last update:** 20220621
 
 ### Table of Contents
 1. [Subshells: ```( ... )```](#subshells)
@@ -30,19 +30,19 @@ or completely equivalently, with the one-liner:
 ( command-input-1; command-input-2; ... ; command-input-n; )
 ```
 
-Just like it was done for the code block ```{ ... }``` in the previous sections, we now provide an executive summary of the most important features of subshell ```( ... )```:   
+Just like it was done for the code block ```{ ... }``` in the previous sections, we now provide an executive summary of the most important features of subshell:   
 
-1. it inherits the current environment and cannot modify it globally  
-2. has its own ```1>``` and ```2>``` streaming facilities  
-3. starts a separate process, its PID can be obtained programmatically from the built-in variable **BASHPID**  
+1. ```( ... )``` inherits the current environment and cannot modify it globally;
+2. ```( ... )``` has its own ```1>``` and ```2>``` streaming facilities;
+3. ```( ... )``` starts a separate process, its PID can be obtained programmatically from the built-in variable **BASHPID** . 
 
 From the above list, it is clear that there are a lot of similarities between ```{ ... }``` and ```( ... )```. Basically,  there are only two important differences:  
 
-1. when compared to the parent shell, ```( ... )``` starts a new process, while ```{ ... }``` does not  
-2. both ```( ... )``` and ```{ ... }```  inherit the environment from the parent shell, but ```{ ... }``` can modify it globally while ```( ... )``` cannot  
+1. when compared to the parent shell, ```( ... )``` starts a new process, while ```{ ... }``` does not;
+2. both ```( ... )``` and ```{ ... }```  inherit the environment from the parent shell, but ```{ ... }``` can modify it globally while ```( ... )``` cannot. For a subshell ```( ... )```, the fact that it cannot modify the global environment remains true even if the key word **export** have been used in declarations. 
    
 
-When it comes to _stdout_ and _stderr_ streams, there is no difference between ```( ... )``` and```{ ... }```. The subshell ```( ... )``` is usually less efficient than the code block ```{ ... }```, because it runs a separate process. However, since it cannot modify the environment in which it is run globally, ```( ... )``` is safer. As a rule of thumb,  ```( ... )``` shall be preferred over ```{ ... }``` unless the efficiency is concern.
+When it comes to _stdout_ and _stderr_ streams, there is no difference between ```( ... )``` and ```{ ... }```. The subshell ```( ... )``` is usually less efficient than the code block ```{ ... }```, because it runs a separate process. However, since it cannot modify the environment in which it is run globally, ```( ... )``` is safer. As a rule of thumb,  ```( ... )``` shall be preferred over ```{ ... }``` unless the efficiency is concern.
 
 Typically, subshells are executed in the background, by using the following generic syntax:
 ```bash
@@ -50,7 +50,7 @@ Typically, subshells are executed in the background, by using the following gene
 ```
 The advantage of running subshells in the background is that now by using the **wait** command we can decide whether the rest of the code in the script will or will not wait the subshell execution to terminate (just like for any other command running in the background). This is very handy because we can use in that subshell automatically the already initialized environment in the script, execute the subshell, use its result and keep environment unmodified. 
 
-The use case of subshell is illustrated with the following simple example:
+Use case of subshell is illustrated with the following simple example:
 ```bash
 ( echo "Subshell PID: ${BASHPID}"; date; date -q; sleep 10m; ) 1>output.log 2>error.log &
 ```
@@ -65,17 +65,17 @@ Completely equivalently, the above code snippet could have been implemented acro
 ) 1>output.log 2>error.log &
 ```
 
-It is a matter of personal taste which of the two versions is used in practice, but from the **Bash** perspective, they are the same. After executing, we see with **jobs -l** the following printout:
+After executing, we see with **jobs -l** the following printout:
 
 ```bash
 [2]+  7941 Running                 ( echo "Subshell PID: ${BASHPID}"; date; date -q; sleep 10m ) > output.log 2> error.log &
 ```
-This means that the whole composite code inside the subshell now behaves like any other command running in the background. Any _stdout_ printout in the body of subshell from any command is redirected with ```1>``` in the file 'output.log', whose content is:
+This means that the whole composite code inside the subshell now behaves like any other command running in the background. Any _stdout_ printout from any command in the body of subshell is redirected with ```1>``` in the file 'output.log', whose content is:
 ```bash
 Subshell PID: 7941
 Do 4. Jul 07:37:55 CEST 2019
 ```
-On the other hand, any _stderr_ stream within subshell body was redirected with ```2>``` in the separate file 'error.log':
+On the other hand, any _stderr_ stream from any command in the body of subshell was redirected with ```2>``` in the separate file 'error.log':
 ```bash
 date: invalid option -- 'q'
 Try 'date --help' for more information.
@@ -92,7 +92,7 @@ kill -CONT 7941
 jobs -l
 # [2]+  7941 Running                 ( echo "Subshell PID: ${BASHPID}"; date; date -q; sleep 10m ) > output.log 2> error.log &
 ```
-In the same fashion, we can terminate only the subshell execution, without affecting the script execution from which the subshell was launched. This is true whether or not subshell is executed in the background. For instance, if we have the following schematic situation:
+In the same fashion, we can terminate only the subshell execution, without affecting the script execution from which the subshell was launched. This is true whether or not subshell is executed in the background. For instance, we can have the following schematic implementation in the script:
 
 ```bash
 some code
@@ -100,15 +100,15 @@ some code
 the remaining code waiting subshell to terminate
 ```
 
-If the code execution got stuck because of some massive computation in the subshell, instead of terminating the whole script and restarting , we can terminate differentially only the subshell from a separate terminal, by sending some of the signals ```TSTP```, ```INT```, ```QUIT``` or ```KILL``` directly to the PID corresponding to the subshell. This is not possible for code block ```{ ... }``` because its PID is the same as the PID of the parent shell.
+If the execution of above script gets stuck because of some massive computation in the subshell, instead of terminating the whole script and restarting , we can terminate differentially only the subshell from a separate terminal, by sending some of the signals ```TSTP```, ```INT```, ```QUIT``` or ```KILL``` directly to the PID corresponding to the subshell. This is not possible for code block ```{ ... }``` because its PID is the same as the PID of the parent shell.
 
 
 
 ### 2. Process substitution operator: ```<( ... )``` <a name="process_substitution_operator"></a>
 
-Process substitution operator ```<( ... )``` is a feature which is not provided by all shells, therefore its usage typically leads to some portability problems across different shells. Nevertheless, since it is supported by **Bash** and since it comes very handy in some frequently encountered cases in practice,  we introduce it next.
+Process substitution operator ```<( ... )``` is a feature which is not provided by all shells, therefore its usage typically leads to some portability problems across different shells. Nevertheless, since it is supported by **Bash**, and since it comes very handy in some frequently encountered cases in practice,  we introduce it next.
 
-Loosely speaking, process substitution operator translates on the fly the standard output stream of any command into a 'virtual' file, which then can be fed to the commands which accept only files as arguments. The true mechanism behind the scene is much more complicated than that (it relies on so-called 'named pipes'), but this loose explanation captures its behaviour in practice quite well.
+Loosely speaking, process substitution operator translates on the fly the standard output stream of any command into a 'virtual' file, which then can be fed to the commands which accept only files as arguments. The true mechanism behind the scene is much more complicated than that (it relies on so-called 'named pipes', see the man pages of **mkfifo** command), but this loose explanation captures its behavior in practice quite well.
 
 Within ```<( ... )``` operator we can execute as many commands as we wish, separated with ```;``` delimiter. Because of this, the process substitution operator offers more flexibility than pipe ```|```, which can forward directly the _stdout_ of only one command as an input to another command.
 
@@ -131,18 +131,18 @@ Clearly, by using the process substitution operator ```<( ... )``` we have saved
 
 **Example 2:** How to parse line-by-line through the output of some command and manipulate each line programmatically?
 
-We have already seen that we can with the **while+read** construct parse line-by-line through the content of some external file. By using the process substitution operator ```<( ... )```, we can trivially extend that functionality to the output of some command. For instance, let us do some programmatic manipulation on the output of **ls -al** command:
+We have already seen that by using the **while+read** construct we can parse line-by-line through the content of some external file. By using the process substitution operator ```<( ... )```, we can trivially extend that functionality to the output of some command. For instance, let us do some programmatic manipulation on the output of **ls -al** command:
 ```bash
 while read; do
- echo "In the line $REPLY there are ${#REPLY} characters"
+ echo "In line $REPLY there are ${#REPLY} characters"
 done < <(ls -al)
 ```
 The output of this command could look like:
 ```bash
-In the line -rw-r--r--  1 abilandz abilandz  9508 Jul  2 09:42 bash_logo.png there are 64 characters
-In the line -rw-rw-r--  1 abilandz abilandz  7652 Jul  2 10:51 colours.png there are 62 characters
+In line -rw-r--r--  1 abilandz abilandz  9508 Jul  2 09:42 bash_logo.png there are 64 characters
+In line -rw-rw-r--  1 abilandz abilandz  7652 Jul  2 10:51 colours.png there are 62 characters
 ```
-This works because from the perspective of **while+read** construct, redirection from external file via ```< someFile``` or via process substitution operator ```< <( ... )``` is completely equivalent, because the  output of ```<( ... )``` is essentially a 'virtual' file.
+This works because from the perspective of **while+read** construct, redirection from external file via ```< someFile``` or via process substitution operator ```< <( ... )``` is completely equivalent, because the output of ```<( ... )``` is essentially a 'virtual' file.
 
 **Example 3:** How to check programmatically if the printouts of two commands are exactly the same?
 
@@ -154,7 +154,7 @@ With the process substitution operator, we can extend the functionality of **dif
 ```bash
 diff <(command1) <(command2) && echo same || echo different
 ```
-Without the process substitution operator, we would need to dump the printout of each command in some temporary file, and then compare the content of those temporary files with **diff** command. Clearly, process substitution operator saves also in this frequently encountered example a lot of additional and completely trivial coding.
+Without the process substitution operator, we would need to dump the printout of each command in temporary files and then compare the content of those temporary files with **diff** command. Clearly, process substitution operator saves also in this frequently encountered example a lot of additional and completely redundant coding.
 
 
 
@@ -171,7 +171,7 @@ In the above example, the input string is hardwired, but it can be also supplied
 Var="some hardwired string"
 command <<< ${Var}
 ```
-The command substitution operator ```$( ... )``` and arithmetic expansion ```$(( ... ))``` can be used as well on the right hand side of ```<<<``` operator. What **Bash** is doing when it encounters ```<<<``` can be summarized as follows: Whatever is on the right hand side of ```<<<``` undergoes expansion (e.g. ```${Var}``` is replaced with variable content, ```$(( ... ))``` is replaced with the result of arithmetic evaluation, etc.), and then the resulting expression is simply fed to the _stdin_ of **command**.  The result of expansion is supplied as a single string to **command**, with a newline always appended. 
+The command substitution operator ```$( ... )``` and arithmetic expansion ```$(( ... ))``` can be used as well on the right hand side of ```<<<``` operator. What **Bash** is doing when it encounters ```<<<``` can be summarized as follows: Whatever is on the right-hand side of ```<<<``` undergoes expansion (e.g. ```${Var}``` is replaced with variable content, ```$(( ... ))``` is replaced with the result of arithmetic evaluation, etc.), and then the resulting expression is simply fed to the _stdin_ of **command**. The result of expansion is supplied as a single string to **command**, with a newline always appended. 
 
 It is also possible to think about 'here strings' as being the shortcut notation for the following common construct:
 
@@ -182,14 +182,17 @@ because the output of above line is the same as of:
 ```bash
 command <<< "someString"
 ```
-Therefore, instead of using the command **echo** in combination with pipe ```|```, we can simply condense the syntax and use only ```<<<```, the final printout is exactly the same.
+Therefore, instead of using the command **echo** in combination with pipe ```|```, we can simply condense the syntax and only use ```<<<``` &mdash; the final printout is exactly the same.
       
 **Example 1:** Let's define ```Var=20180524```. How to check programmatically with **grep** if this string begins with the pattern '2018'?
 
 The two solutions below yield the same result:
 ```bash
-echo ${Var} | grep "^2018"
-grep "^2018" <<< ${Var}
+$ Var=20180524
+$ echo ${Var} | grep "^2018"
+20180524
+$ grep "^2018" <<< ${Var}
+20180524
 ```
 
 'Here strings' are frequently combined with **sed**, and that is illustrated in the next example. 
@@ -197,34 +200,35 @@ grep "^2018" <<< ${Var}
 **Example 2:** Let's define ```Var=20180524```. How to change pattern '2018' into '2020' programmatically and immediately redefine the variable ```Var``` to the new content?
 
 ```bash
-sed "s/2018/2020/" <<< $Var
-echo ${Var}
-# prints 20180524, content of 'Var' is unchanged
+$ Var=20180524
+$ sed "s/2018/2020/" <<< $Var
+20200524
+$ echo ${Var}
+20180524 # the content of 'Var' is unchanged
 ```
 Note that the content of the starting variable ```Var``` is still '20180524', we only saw the pattern replacement in the printout on the screen. If we want to update immediately the content of the starting variable, this can be achieved with:
 ```bash
-Var=$(sed "s/2018/2020/" <<< $Var)
-echo ${Var}
-# prints 20200524, content of 'Var' is changed
+$ Var=20180524
+$ Var=$(sed "s/2018/2020/" <<< $Var)
+$ echo ${Var}
+20200524 # the content of 'Var' has changed
 ```
 
-Finally, we illustrate the typical usage of 'here strings' in combination with **bc** command, to perform floating point arithmetic. We start by recalling  the example from Lecture 6.
+Finally, we illustrate the typical usage of 'here strings' in combination with **bc** command, to perform floating point arithmetic. We start by recalling the example from Lecture 6.
 
 **Example 3 (revised from Lecture 6):** How can we divide 10/7 at the precision of 30 significant digits? 
 Solution was given previously by the following code snippet:
 
 ```bash
-echo "scale=30; 10/7" | bc
+$ echo "scale=30; 10/7" | bc
+1.428571428571428571428571428571
 ```
 However, this problem can be also solved a bit simpler with the usage of 'here strings':
 ```bash
-bc <<< "scale=30; 10/7"
-```
-The output in both cases is the same and it reads:
-```
+$ bc <<< "scale=30; 10/7"
 1.428571428571428571428571428571
 ```
-There are the cases in which **echo** + ```|``` is more efficient, while there are also the cases in which the 'here strings' ```<<<``` run faster, so both versions are used frequently in practice. 
+There are the cases in which **echo** + ```|``` combination is more efficient, while there are also the cases in which the 'here strings' ```<<<``` run faster, so both versions are used frequently in practice. 
 
 
 
@@ -239,15 +243,15 @@ cat > someFile <<HERE-DOC
 ... some code here ...
 HERE-DOC
 ```
-The 'here document' begins with ```<<``` and its body is marked with the matching pair of delimiters. The name of the delimiters is arbitrary, as long as the closing one does not coincide with some string in the code in the body.  The above construct evaluates all code inside delimiters named 'HERE-DOC', and dumps it in the external file named 'someFile'. There is nothing special about the choice of 'HERE-DOC' to name the delimiters, we could have used as well something like 
+The 'here document' begins with ```<<``` and its body is marked with the matching pair of delimiters. The name of the delimiters is arbitrary, as long as the closing one does not coincide with some string in the code in the body. The above construct evaluates all code inside the matching pair of delimiters named 'HERE-DOC', and dumps it in the external file named 'someFile'. There is nothing special about the choice of 'HERE-DOC' to name the delimiters, we could have used as well something like 
 ```bash
 cat > someFile <<EOF
 ... some code here ...
 EOF
 ```
-The empty characters at the end of delimiters matter, and this is a typical source of errors. If the name of the opening delimiter is 'HERE-DOC' (no empty characters at the end!) and the name of the closing delimiter is 'HERE_DOC ' (one empty character at the end!), we will get an error, as the two delimiters do not match exactly each other. Therefore, make sure there are no trailing empty characters after the delimiters.
+The empty characters at the end of delimiters do matter, and this is a typical source of errors. If the name of the opening delimiter is 'HERE-DOC' (no empty characters at the end!) and the name of the closing delimiter is 'HERE_DOC ' (one empty character at the end!), we will get an error, as the two delimiters do not match each other exactly. Therefore, it is mandatory to ensure that there are no trailing empty characters after the delimiters.
 
-With the above version of 'here documents', **Bash** supports variable and command substitution in the body of 'here documents', which enables to write files programmatically. This is best illustrated with the following simple script named 'testHD.sh', which takes as two arguments two floats, sums them up, and dumps everything (alongside with some other info) in the external file named 'output.log':
+If the above version of 'here documents' is used, **Bash** supports variable and command substitution in the body of 'here documents', which enables to write files programmatically. This is best illustrated with the following simple script named 'testHD.sh', which takes as two arguments two floating-point numbers, sums them up, and dumps everything (alongside with some other info) in the external file named 'output.log':
 ```bash
 #!/bin/bash
 
@@ -291,13 +295,22 @@ return 0
 ```
 Because of this difference, 'here documents' are simpler and more elegant when writing programmatically the files than the code blocks ```{ ... }```.
 
-The second important use of 'here documents' uses the following generic syntax:
+The second important use case of 'here documents' is described with the following generic syntax:
 ```bash
 cat > someFile.log <<'HERE-DOC'
 ... some code here ...
 HERE-DOC
 ```
+or equivalently with:
+
+```bash
+cat > someFile.log <<"HERE-DOC"
+... some code here ...
+HERE-DOC
+```
+
 Note the use of quotes round the opening delimiter. In this version, the code in the body of 'here documents' is literally evaluated with the following phrase: _What you typed is what you get_. The meaning of all special symbols in the code in the body of 'here document' is killed if the starting delimiter is enclosed within quotes.  For instance, if we modify the previous example: 
+
 ```bash
 #!/bin/bash
 
@@ -311,13 +324,20 @@ HERE-DOC
 
 return 0 
 ```
-and execute it as before, the content of the file 'newScript.sh', to which we have redirected now the content of 'here document', is dramatically different:
+and execute it as before with
+
+```bash
+source testHD.sh 2.44 10.23
+```
+
+the content of the file 'newScript.sh', to which we have redirected now the content of 'here document', is different:
+
 ```bash
 Today is: $(date)
 File produced by script: ${BASH_SOURCE}
 Sum is: $(bc <<< "scale=2; $1 + $2")
 ```
-This is perfectly valid **Bash** source code. Literally, what we type in the body of this version of 'here document' is what we get in the external file. 
+This is a perfectly valid **Bash** source code. Literally, what we type in the body of this version of 'here document' is what we get in the external file. 
 
 The above version of 'here documents' has an obvious and important use case: We can within one **Bash** script programmatically write (and execute immediately if necessary) another **Bash** script, with all special characters and **Bash** syntax in place. This feature is more general, because with this version of 'here documents' we can preserve the special syntax of any other programming language, dump the code in external file, compile it and use executable immediately in the very same **Bash** script in which you have written the initial source code. 
 
@@ -333,7 +353,7 @@ Finally, 'here documents' can be used to comment out multiple lines of **Bash** 
 ... code line 8 ...
 ... code line 9 ...
 ```
-How for instance we would comment out the code in the lines 2 to 8, and execute only the code in the lines 1 and 9? This can be achieved in the following way:
+How for instance we would comment out the code in the lines from 2 to 8, and execute only the code in the lines 1 and 9? This can be achieved in the following way:
 ```bash
 ... code line 1 ...
 : <<'HERE-DOC'
@@ -347,7 +367,7 @@ How for instance we would comment out the code in the lines 2 to 8, and execute 
 HERE-DOC
 ... code line 9 ...
 ```
-We have essentially declared lines from 2 to 8 to be the body of 'here document', and then its content redirected to the infamous 'do-nothing' command ```:```. This is yet another very neat use case of 'do-nothing' command! When using 'here documents' to comment out piece of the code, the version in which the opening delimiter is enclosed in quotes is safer, as it will prevent any potential variable or command substitution in the body, before passing the code over to 'do-nothing' command. 
+We have essentially declared lines from 2 to 8 to be the body of 'here document', and then its content redirected to the 'do-nothing' command ```:``` &mdash; this is yet another very neat use case of 'do-nothing' command! When using 'here documents' to comment out a piece of code, the version in which the opening delimiter is enclosed in quotes is safer, because it prevents any potential variable or command substitution in the body, before passing the code over to 'do-nothing' command. 
 
 As this is the frequent source of painful debugging, we close this section by remarking again that the closing delimiter in 'here documents' shall not be followed by any trailing empty character. 
 
@@ -396,7 +416,7 @@ the following menu appears on the screen:
 ```bash
 You have selected: Germany
 ```
-Since we have used the key word **break**, the **select** command bails out immediately after the first selection in the menu was done.
+Since we have used the key word **break**, the **select** command bails out immediately after the first selection was done.
 
 As another example, we can build menu from the output of some command:
 ```bash
