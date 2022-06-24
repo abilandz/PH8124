@@ -1,32 +1,54 @@
 ![](bash_logo.png)
 
-# Homework #5: Playing with **Bash** arrays.
+# Homework #5: Mastering the command substitution operator.
 
-**Last update:** 20210526
+**Last update:** 20220624
 
-**Challenge #1**: Write your own version of **date** command, named **Date**, which has the following example printout:
-
-```bash
-Today is Wed, JUN 3, 2020
-It is precisely 19:12:05
-Have a nice time! 
-```
-
-Everything is the same as in the standard **date** command, except that:  
-
-1. The output stream is formatted in a different way  
-2. The name of the month is printed in all capitals
-3. Time zone is dropped 
-
-**Hint**: Implement **Date** as a **Bash** function, in its body execute the standard **date** command, and store the output in an array, something like:
+The developer is testing the time duration of a particular code segment in Bash script to execute. He would like to have the function **TimeDuration**, which he would like to use in the following generic way:
 
 ```bash
-myArray=( $(date -R) )
+Started=$(date -R)
+... some code ... 
+Finished=$(date -R)
+TimeDuration "$Started" "$Finished"
 ```
 
-The flag '-R' produces a more uniform output across different implementations of **date** command on different operating systems.
+The desired example printout is formatted as:
 
-Then manipulate all array elements separately, and in combination with **echo** achieve the desired reformatting. 
+```bash
+Time duration is: 12345 seconds.
+```
 
+**Challenge**: Develop the function **TimeDuration** which will accomplish the above goal. 
 
+**Hint**: In the body of **TimeDuration** convert the two input time stamps, stored into variables 'Started' and 'Finished', into the new format known as 'Unix epoch'. 'Unix epoch' is the number of seconds that have elapsed since January 1, 1970, for instance:
 
+```bash
+$ CurrentTime=$(date -R)
+$ echo $CurrentTime
+Fri, 24 Jun 2022 11:17:51 +0200
+$ UnixEpochTime=$(date -d "$CurrentTime" +%s)
+$ echo $UnixEpochTime
+1656062271
+```
+
+After that, simply use ```$(( ... ))``` to perform integer subtraction. 
+
+**Remark**: Yes, the developer could have obtained directly the relevant time stamps in the 'Unix epoch' format with
+
+```bash
+# print time in seconds since Unix epoch:
+$ date +%s
+1656062271
+```
+
+But the point behind this exercise is to demonstrate that **date** can internally interpret time stamps written in so many different formats, and convert them automatically into common 'Unix epoch'. For instance:
+
+```bash
+$ date -d "Fri, 24 Jun 2022 11:17:51 +0200" +%s
+1656062271
+$ date -d "24 Jun 2022 11:17:51 +0200" +%s
+1656062271
+$ date -d "2022-06-24 11:17:51" +%s
+1656062271
+```
