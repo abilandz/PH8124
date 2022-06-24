@@ -52,3 +52,5 @@ $ date -d "24 Jun 2022 11:17:51 +0200" +%s
 $ date -d "2022-06-24 11:17:51" +%s
 1656062271
 ```
+
+The last example above is the time stamp format used by ALICE Collaboration at Large Hadron Collider, in the log files of jobs running on Grid.
