@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20220612
+**Last update**: 20220701
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -94,22 +94,18 @@ By using string operators one can set the default value of a variable. Most freq
     Var=44
     echo ${Var:-100} # prints 44
    ```
-However:
-
+   However:
    ```bash
    unset Var
    echo ${Var:-100} # prints 100
    ```
-
    This syntax has a very important use case when a script or a function expects the user to supply an argument. Even if the user forgot to do it, we can nevertheless execute the code for some default and meaningful value of that argument. For instance:
    
    ```bash
    Var=${1:-defaultValue}
    ```
-
    This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'.   
-
-2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
+   2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
 
    ```bash
    function myFunction
