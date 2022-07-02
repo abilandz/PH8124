@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20220701
+**Last update**: 20220702
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -56,16 +56,19 @@ The curly-brace syntax interprets some characters in a special way. This is illu
 **Example 1:** How to get programmatically the length of the string?
 
 ```bash
-Var=1a3b56F8 
-echo ${#Var} # prints 8 
+$ Var=1a3b56F8 
+$ echo ${#Var}
+8 
 ```
 
 **Example 2:** How to lower/upper cases of all characters in the string?
 
 ```bash
-Var=aBcDeF 
-echo ${Var,,} # prints abcdef 
-echo ${Var^^} # prints ABCDEF 
+$ Var=aBcDeF 
+$ echo ${Var,,}
+abcdef 
+$ echo ${Var^^}
+ABCDEF 
 ```
 
 If in the above example only a single ```,``` or ```^``` is used, then only the first character is printed in lower or upper case, respectively.
@@ -77,14 +80,36 @@ ${Var:offset:length}
 ```
 The above construct returns substring, starting at 'offset', and continuing up to 'length' characters. By convention, the first character in the content of variable 'Var' is at the offset 0. If 'length' is omitted, it goes all the way until the end of 'Var'. If 'offset' is less than 0, then it counts from the end of 'Var'. All this is illustrated with the following examples:
 ```bash
-Var=0123456789
-echo ${Var:0:4} # prints 0123
-echo ${Var:5:2} # prints 56
-echo ${Var:5} # prints 56789
-echo ${Var:(-2)} # prints 89
-echo ${Var:(-3):2} # prints 78
+$ Var=abcdefghij
+$ echo ${Var:0:4}
+abcd
+$ echo ${Var:5:2} 
+fg
+$ echo ${Var:5}
+fghij
+$ echo ${Var:(-2)}
+ij
+$ echo ${Var:(-3):2}
+hi
 ```
-It is mandatory to embed negative offset within round braces ```( ... )``` in the above example, since otherwise **Bash** interprets negative integers after colon ```:``` in this context in a very special way &mdash; this is clarified next.
+We remark that in the expression ```${Var:offset:length}``` both 'offset' and 'length' are evaluated automatically in mathematical context. Therefore, we can write directly code snippets like this
+
+```bash
+$ Var=abcdefgh
+$ Start=2
+$ Lentgh=5
+$ echo ${Var:Start+1:Lentgh-2}
+def
+```
+
+instead of lengthier version, where mathematical context is explicitly requested via ```$(( ... ))```:
+
+```bash
+$ echo ${Var:$((Start+1)):$((Lentgh-2))}
+def
+```
+
+Finally, it is mandatory to embed negative offset within round braces ```( ... )``` in the above examples, since otherwise **Bash** interprets negative integers after colon ```:``` in this context in a very special way &mdash; this is clarified next.
 
 By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:  
 
@@ -104,8 +129,9 @@ By using string operators one can set the default value of a variable. Most freq
    ```bash
    Var=${1:-defaultValue}
    ```
-   This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'.   
-   2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
+   This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'. 
+   
+2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
 
    ```bash
    function myFunction
@@ -130,7 +156,7 @@ By using string operators one can set the default value of a variable. Most freq
    ```bash
    bash: someVariable: parameter null or not set
    ```
-   
+
 
 In both of these examples we have used colon ```:``` within the curly braces, but this is optional. However, if we omit the colon ```:``` and use instead the syntax ```${Var-defaultValue}``` and ```${Var?someMessage}```, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns cases like this:
 
