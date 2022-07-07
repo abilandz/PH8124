@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20220623
+**Last update**: 20220707
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -177,7 +177,7 @@ mkdir Dir1 Dir2 Dir3 && cd $_
 
 
 
-### 2. Searching for files and directories: **find** <a name="find"></a>
+### 2. Searching for files and directories: **find** and **locate** <a name="find"></a>
 
 We have already seen how we can list the content of the specified directory with the known location in the filesystem with **ls** command. However, in case we need to search for specific files or directories at unknown locations in the filesystem hierarchy, **ls** command cannot be used. Instead, we can use the **Linux** command  **find** which was designed precisely for that sake. This powerful command can perform search by name, by creation, accession and modification date, by owner, by permissions etc. In addition, **find** can immediately perform some action on the result of its search (for instance, it can immediately delete all files it has found, rename all directories, etc.).
 
@@ -413,7 +413,38 @@ while read File; do
  stat -c %s $File
 done < <(find pathToDirectory(-ies) -type f)
 ```
-The second solution is more readable, less error prone and easier to generalize in case more actions need to be performed over the found files
+The second solution is more readable, less error prone and easier to generalize in case more actions need to be performed over the found files. 
+
+Here we enlist a few additional flags of **find** command, which can become handy in practice:
+
+* ```-ls``` &mdash; print also file ownerships and timestamps, etc. (like ```ls -l```)
+
+* ```-user alice``` &mdash; search for files or directories only belonging to the specific user named 'alice' 
+
+* ```-perm 755``` &mdash; search for files or directories with specific permission '755'
+
+* ```-ok``` &mdash; same as flag ```-exec``` , but for each result found we are prompted with the question whether the specified command shall be executed
+
+* ```\( -user chris -o -user joe \)``` &mdash; example syntax to group multiple options in the common logical branch
+
+* ```-not -user someUser``` &mdash; exclude files or directories belonging to the user 'someUser' from search
+
+* ```-not -path somePattern``` &mdash; exclude from search all results which would match the pattern 'somePattern'.  Example:
+
+  ```bash
+  find someDir_{0..9} -not -path someDir_4/* -type f
+  ```
+
+  With the above syntax, the search will be performed for files in all directories named 'someDir_0', ... 'someDir_9', with the exception of directory named 'someDir_4'.
+
+Related to **find**, there is also the command **locate**, which searches for files and directories by following another design strategy. Namely, **locate** searches only through its own database, which is created once per day with the command **updatedb**. The types of files and directories which will be excluded from search are specified in its configuration file '/etc/updatedb.conf'. Generic usage:
+
+```bash
+$ locate pattern_1 pattern_2 ...
+# lists full paths of all files and directories which contain any of the specified patterns
+```
+
+In practice: When searching for new files or directories made within last 24 hours, only **find** can be used. For older files and directories both **find** and **locate** can be used, but the latter runs much faster. 
 
 
 
