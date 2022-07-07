@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20220527
+**Last update**: 20220707
 
 
 ### Table of Contents
@@ -153,7 +153,18 @@ Var = 2020
 ```
 This was yet another example to illustrate the importance of empty character as being the default field separator in **Linux/Bash**.
 
+By definition, the command substitution operator ``` $( ... ) ``` takes only stdout stream &mdash; in rare cases when both 'stdout' and 'stderr' streams, or only 'stderr' stream, need to be taken, the following generic syntax can be used, respectively:
+
+```bash
+# both 'sdtout' and 'stderr' of 'someCommandInput' are stored in Var:
+Var=$(someCommandInput 2>&1)
+
+# only 'stderr' of 'someCommandInput' is stored in Var:
+Var=$(someCommandInput 2>&1 1>/dev/null)
+```
+
 In the end, we would like to remark that the backticks ``` ` ... ` ``` do the same thing as command substitution operator ``` $( ... ) ```:
+
 ```bash
 echo "Today is: $(date) . Thanks for the info."
 echo "Today is: `date` . Thanks for the info."
