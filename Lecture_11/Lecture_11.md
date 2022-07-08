@@ -2,13 +2,17 @@
 
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20220425
+**Last update**: 20220708
 
 ### Disclaimer
-Here is a just a collection of code snippets used in the lecture, for the full description of the functionalities of **ROOT** classes in question, consult the official manual:
+Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
 
-*  https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html
-*  https://cernbox.cern.ch/index.php/s/UPTygtTacSQVtOj (pdf)
+* Overview of all tutorials: [https://root.cern/manual/](https://root.cern/manual/)
+
+* Primer (for beginners): [https://root.cern/primer/](https://root.cern/primer/) (or [pdf](https://cernbox.cern.ch/index.php/s/bmbmbqUMA1keZCH) version)
+
+* Users Guide (last update 2018, not maintained anymore): [html](https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html) or [pdf](https://cernbox.cern.ch/index.php/s/N4k9AQ8LtCFWQIc) version
+
 
 ### Table of Contents
 1. [Interpreted 'Hello World' example in ROOT](#hello_int)
