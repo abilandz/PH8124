@@ -4,7 +4,7 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20220425
+**Last update:** 20220714
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jets production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions and jet interaction in dense matter.
 
@@ -22,9 +22,9 @@ After downloading, extract the dataset (the size will be around 680 MB after thi
 tar xf HIJING_LBF_test.tar.gz
 ```
 
-This dataset corresponds to the HIJING model prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV. That was the colliding system and energy in Run 1 operations (2009-2013) at Large Hadron Collider.
+This dataset corresponds to the HIJING model prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV. That was the heavy-ion colliding system and energy used in Run 1 operations (2009-2013) at Large Hadron Collider.
 
-Inside the directory ```HIJING_LBF_test``` there are 10 subdirectories named ```0, 1, ..., 9```, and in each subdirectory 5 files. Each subdirectory corresponds to the working directory of a separate process that was running an independent HIJING simulation. Besides the various config or log files in each subdirectory, the most important file is ASCII file ```HIJING_LBF_test_small.out```, in which the final output of HIJING is stored. Each file ```HIJING_LBF_test_small.out``` contains the detailed output for 10 heavy-ion collisions. Therefore, the total dataset for the analysis in the final project amounts to 10x10 = 100 heavy-ion collisions. 
+Inside the directory ```HIJING_LBF_test``` there are 10 subdirectories named ```0, 1, ..., 9```, and in each subdirectory 5 files. Each subdirectory corresponds to the working directory of a separate process that was running an independent HIJING simulation. Besides the various config or log files in each subdirectory, the most important file is ASCII file ```HIJING_LBF_test_small.out```, in which the final output of HIJING is stored. Each file ```HIJING_LBF_test_small.out``` contains the detailed output for 10 heavy-ion collisions. Therefore, the total dataset for the analysis in the final project amounts to 10&times;10 = 100 heavy-ion collisions. 
 
 The file ```HIJING_LBF_test_small.out``` has the following example structure and content:
 ```bash
@@ -328,7 +328,7 @@ Instead of trivially dumping on the screen the data via ```cout<<Form("%d: %f %f
   TH1F *hist = dynamic_cast<TH1F*>(file->Get("hist-name"));
   ```
 
-* fill the histogram the new entries from particular event
+* fill in the histogram the new entries from particular event
 
 * save the updated histogram in the same **ROOT** file with
 

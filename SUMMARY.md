@@ -23,4 +23,4 @@
     * [Homework 8](./Homeworks/TBI_Homework_8.md)
     * [Homework 9](./Homeworks/TBI_Homework_9.md)
     * [Homework 10](./Homeworks/TBI_Homework_10.md)
-* [Final Project](./Final_Project/TBI_FinalProject.md)
+* [Final Project](./Final_Project/FinalProject.md)
