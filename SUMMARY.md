@@ -20,7 +20,7 @@
     * [Homework 5](./Homeworks/Homework_5.md)
     * [Homework 6](./Homeworks/Homework_6.md)
     * [Homework 7](./Homeworks/Homework_7.md)
-    * [Homework 8](./Homeworks/TBI_Homework_8.md)
+    * [Homework 8](./Homeworks/Homework_8.md)
     * [Homework 9](./Homeworks/TBI_Homework_9.md)
     * [Homework 10](./Homeworks/TBI_Homework_10.md)
 * [Final Project](./Final_Project/FinalProject.md)
