@@ -2,7 +2,7 @@
 
 # Homework #9: Real-life examples
 
-**Last update:** 20210709
+**Last update:** 20220721
 
 **Challenge #1:** Write down one-line code snippet in **Bash** which will return 0 if the first 20 lines (let's say) in two files are the same, and return 1 otherwise. 
 
