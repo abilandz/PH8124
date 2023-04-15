@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20220505
+**Last update**: 20230415
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -39,7 +39,7 @@ Loosely speaking, **shell** is the generic name of any program that user employs
 
 To get the list of **shells** available on your computer, type in the terminal:
 
-```linux
+```bash
 cat /etc/shells 
 ```
 
@@ -57,14 +57,14 @@ The output of that command could look like:
 
 How to select your favorite **shell**? It is simple, just type its name in the terminal and press 'Enter'! E.g. if you want to use **Bash** as your working **shell**, just type in the terminal:
 
-```linux
+```bash
 bash
 ```
 and press 'Enter' &mdash; now you are in the **Bash** wonderland! Since that is by far the most popular **shell** nowadays, this lecture will focus exclusively on its concepts, syntax and commands. But no worries, at least conceptually, a lot of subjects covered in this lecture apply also to other **shells**! The difference between **shells** is mostly in the syntax, but in essence, they all aim to provide the same functionalities.
 
 In this lecture we will cover only the **Bash** essentials, i.e. we will make you going, but how far you want to go eventually, it depends on your personal determination and time investment.
 
-Important remark: **Bash** (or any other **shell** as a matter of fact) is first and foremost a command interpreter (i.e. interface for executing commands). Even though it offers a lot of functionalities typical for programming languages, its direct use as a programming language is only a distant second goal. In practice, within **Bash** code we can use directly and easily executable of any full-fledged programming language (e.g. **C**, **C++**, **Mathematica**, etc.). But none of these languages can be used directly and easily as a command interpreter in the terminal.
+Important remark: **Bash** (or any other **shell** as a matter of fact) is first and foremost a command interpreter (i.e. interface for executing commands). Even though it offers a lot of functionalities typical for programming languages, its direct use as a programming language is only a distant second goal. In practice, within **Bash** code we can use directly and easily an executable of any full-fledged programming language (e.g. **C**, **C++**, **Mathematica**, etc.). But none of these languages can be used directly and easily as a command interpreter in the terminal.
 
 Traditionally, the first program people write when learning a new programming language is the so-called _"Hello World"_ example. Let's keep up with this tradition and type in the terminal:
 
@@ -78,7 +78,7 @@ This will output in the terminal:
 Hello World
 ```
 
-i.e. **Bash** has echoed back the text "Hello World" typed in the terminal as an _argument_ to **echo** command. Let's move on!
+i.e. **Bash** has echoed back the text "Hello World" which was typed in the terminal as an _argument_ to **echo** command. Let's move on!
 
 
 
@@ -151,7 +151,7 @@ $ cat -n /etc/shells
 
 The flag **-n** causes command **cat** to enumerate all lines in its printout.
 
-In general, all **Bash** and **Linux** commands are conceptually implemented in the same way &mdash; let us now discuss what is conceptually always the same in their implementation and usage. 
+In general, all **Bash** and **Linux** commands are conceptually implemented in the same way &mdash; let us now discuss what is conceptually always the same in their implementation and usage.
 
 Generically, for most cases of interest, we are executing commands in the terminal in the following way:
 
@@ -179,7 +179,7 @@ echo "Hello World" ;   date
 
 Let us now scrutinize the above generic syntax for command execution term by term:
 
-* ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some **Linux** command, **Bash** keyword, etc. In general, _command-name_ stand for one of the following:
+* ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some **Linux** command, **Bash** keyword, etc. In general, _command-name_ stands for one of the following:
 
   1) **Linux** command (i.e. system-wide executable or binary) &mdash; example: **cat**  
   2) **Bash** built-in command &mdash; example: **echo**   
@@ -193,7 +193,7 @@ Let us now scrutinize the above generic syntax for command execution term by ter
 	1) **-** (single dash) followed by single character(s), or   
 	2) **-\-** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
 
-For instance, the frequently used flags **-a** and **-\-all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the second one is easier to memorize. Example for **date** command:
+For instance, the frequently used flags **-a** and **-\-all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the meaning of the second one is easier to memorize. Example for **date** command:
 
 ```bash
 $ date -u
@@ -215,6 +215,8 @@ For **Linux** commands, we can use the command **man** (shortcut for _manual_) t
 ```linux
 man <command-name>
 ```
+
+The colorful online version of _man pages_ is available at this [link](https://manpages.org) .
 
 **Example:** To see which options are available for built-in **Bash** command **echo**, use:
 
@@ -262,7 +264,7 @@ touch file 1.log
 ```
 would literally create two empty files, the first one named ```file```, and the second one named ```1.log``` . If you apply **touch** command on an already existing file, only the time-stamp of that file will be updated to the current time, its content remains exactly the same. 
 
-In order to see or list all files and subdirectories in the current working directory, use **ls** command, i.e. 
+In order to see or to list all files and subdirectories in the current working directory, use **ls** command, i.e. 
 
 ```bash
 ls -al
@@ -295,7 +297,7 @@ Press 'Enter' and the output in the terminal shall be:
 ```bash
 Hello, welcome to the lecture PH8124
 ```
-Quite frequently, aliases are used in the following context:  If you want to connect from your desktop machine to some other computer, e.g.  _lxplus_ at CERN, you need to type in the terminal something like:
+Quite frequently, aliases are used in the following context:  If you want to connect from your desktop machine to some other computer, e.g.  _lxplus_ at CERN, you need to type in the terminal something lengthy like:
 
 ```bash
 ssh -Y abilandz@lxplus.cern.ch
@@ -349,21 +351,23 @@ Aliases are definitely a nice feature, but do not overuse them, because:
 
 * When you move to another computer your personal aliases are clearly not available there by default;
 
-* Aliases can overwrite the name of the existing **Linux** or **Bash** command &mdash; aliases will have the higher precedence in execution. In this case, you can execute the overwritten command with ```\commandName```. For instance:
+* Aliases can overwrite the name of the existing **Linux** or **Bash** command, and aliases will have the higher precedence in execution. In this case, you can execute the overwritten command by prepending backslash ```\``` to its name, i.e. with ```\commandName```. For instance:
 
   ```bash
-  alias ls="echo 44"
-  ls
+  $ alias ls="echo 44"
+  $ ls
   44
-  \ls
+  $ \ls
   ... standard list of files and directories ...
   ```
 
   In this context, we have _escaped_ the alias definition of 'ls' with the special symbol backslash ```\``` &mdash; this mechanism is elaborated more in detail and in a wider context later;   
 
-* Aliases cannot process programmatically options or arguments, like regular commands (or **Bash** functions, as we will see later). In fact, any alias implementation can be reimplemented as a **Bash** function in a more general and flexible way. However, the function implementation requires more coding.
+* Aliases cannot process programmatically options or arguments, like regular commands (or **Bash** functions, as we will see later). In fact, any alias implementation can be reimplemented as a **Bash** function in a more general and flexible way. However, the function implementation requires more coding;
 
-Aliases are literally shortcuts for lengthy commands or any other lengthy terminal input. They are defined for convenience only to save typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute &mdash; nothing more nor less than that! 
+* Do not use alias definitions in the shell scripts, that's considered to be both bad coding and design practice.  
+
+In summary, aliases are literally shortcuts for lengthy commands or any other lengthy terminal input, and aliases are meant to be used directly in the terminal merely to save time on typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute &mdash; nothing more nor less than that! 
 
 
 #### B) Variables <a name="variables"></a>
@@ -380,15 +384,15 @@ Var =44 # WRONG!!
 Var= 44 # WRONG!!
 Var = 44 # WRONG!!
 ```
-In the 1st and 3rd cases above, we get an error message, e.g. ```Var: command not found```, since **Bash** was trying to interpret the first token in the input, ```Var``` in this case, as a command name. Since command named ```Var``` was not found, **Bash** writes the error message in the terminal. 
+In the 1st and 3rd cases above, we get the following error message ```Var: command not found```, since **Bash** was trying to interpret the first token in the input, ```Var``` in this case, as a command name. Since command named ```Var``` was not found, **Bash** writes this error message in the terminal. 
 
-In the 2nd case, the error message is slightly different, namely ```44: command not found```, and it requires a separate explanation. In general, if we define a variable and execute some command in the same line like in the 2nd case above, without using ```;``` to separate them, the content of that variable is visible only during the execution of that particular command. The generic syntax is:
+In the 2nd case, the error message is slightly different, namely ```44: command not found```, and it requires a separate explanation. In general, if we define a variable and execute some command in the same line like in the 2nd case above, i.e. without using ```;``` to separate them, the content of that variable is visible only during the execution of that particular command. The generic syntax is:
 
 ```bash
 Var=value command # content of 'Var' is seen only in 'command' during its execution
 ```
 
-That means that ```Var= 44``` **Bash** will interpret as follows: Set the content of ```Var``` to nothing (i.e. remove the previous content if it existed), and use that new content only during the execution of command named '44'. Since such command does not exist, we get the error message ```44: command not found``` for this particular case. 
+That means that ```Var= 44``` **Bash** will interpret as follows: Set the content of ```Var``` to nothing (this also removes the previous content if it existed), and use that new content only during the execution of command named ```44```. Since such command does not exist, we get the error message ```44: command not found``` for this particular case. 
 
 Therefore, when introducing and initializing a new variable in **Bash**, make sure there are no empty characters on both sides of the _assignment operator_ **=** .
 
@@ -397,7 +401,7 @@ As a side remark, from the above three lines, we can also see how to make a comm
 **Example:** Writing a comment in **Bash** .
 
 ```bash
-$ echo "Hi there" # this is some comment which Bash ignores
+$ echo "Hi there" # this text is some comment which Bash ignores
 Hi there
 ```
 
@@ -446,10 +450,10 @@ test
 
 Few final additional remarks on variables in **Bash**:
 
-* They are untyped (i.e. you do not need to specify at declaration whether variables are integers, strings, etc.). By default, all **Bash** variables are strings, but if they contain only digits and if you pass them to some operator which takes as argument(s) only integers, then **Bash** will interpret the variable as an integer;
-* By convention, for the names of built-in **Bash** variables only capital characters are used (e.g. **BASHPID**, **BASH_SOURCE**, etc.), while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var``` or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in **Bash** variables. Variable name starts with a letter or underscore, and may contain any number of following letters, digits and underscores. Variable name can not start with a digit;
+* They are untyped (i.e. you do not need to specify at declaration whether variables are integers, strings, etc.). By default, all **Bash** variables are strings, but if they contain only digits and if you pass them to some operator which takes as argument(s) only integers, then **Bash** will interpret such variable as an integer;
+* By convention, for the names of built-in **Bash** variables only capital characters are used (e.g. **BASHPID**, **BASH_SOURCE**, etc.), while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var``` or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in **Bash** variables. Variable name starts with a letter or underscore, and may contain any number of following letters, digits and underscores. Common mistakes: Variable name can not start with a digit and it can not contain a dash ```-```;
 * The lifetime of a variable is by default limited to the terminal session in which you have defined it. But you can make its existence persistent in any new terminal you open (i.e. in your _environment_) by adding its definition to the very special ```.bashrc``` configuration file (more on this at the end of this section!);
-* The lifetime of a variable is by default limited to the current process in which it was declared. But you can make its existence persistent in any new process started from the current process (i.e. in any _child_ process), by using the shell's built-in command **export** at its declaration, for instance ```export Var=44``` . This way, variable `Var` is persistent in all the new processes started from your current terminal session, in which variable was both declared and exported. Using an alternative terminology, with **export** you have created a global variable;
+* The scope of a variable is by default limited to the current process in which it was declared. But you can make its existence persistent in any new process started from the current process (i.e. in any _child_ process), by using the shell's built-in command **export** at its declaration, for instance, ```export Var=44``` . This way, variable `Var` is persistent in all new processes started from your current terminal session, in which variable was both declared and exported. Using an alternative terminology, with **export** you have created a global variable;
 * It is possible to store in the variable the output of some command, and then manipulate this output programmatically (more on this later!);
 * It is possible to store in the variable the content of an external file (more on this later!);
 * There are some built-in variables always set to some values, e.g. **HOME**, **SHELL**, **PATH**, etc. These special variables are the essential part of your **shell** environment, and if they are not set correctly, everything in your current terminal session can start falling apart (more on this later!).
