@@ -465,7 +465,7 @@ Now that we have covered the very basics of commands and variables, let us see h
 
 ### 3. Editing a file in the terminal <a name="editing_file"></a>
 
-We have already seen how with **touch** command we can make an empty file. Now we will see how we can write a file or edit an already existing file in the terminal. The simplest way to write a new file, solely in the terminal (i.e. without using any graphics-based editor like **gedit**, **emacs**, **vim**, etc.), is to use the command **cat**, in the following construct:
+We have already seen how with **touch** command we can make an empty file. Now we will see how we can write a file or edit an already existing file in the terminal. The simplest way to write a new file, solely in the terminal (i.e. without using any graphics-based editor like **gedit**, **emacs**, **vim**, etc.), is to use command **cat**, in the following construct:
 
 ```bash
 cat > someFile.txt
