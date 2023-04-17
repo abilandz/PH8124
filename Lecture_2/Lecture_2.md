@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20230415
+**Last update**: 20230417
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -480,7 +480,7 @@ In the above construct, command **cat** takes the input directly from the standa
 ```bash
 cat someFile.txt
 ```
-Note that **cat** preserves all empty characters, line breaks, etc. In the case you want to append something to the already existing file, we can use a slightly modified construct:
+Note that **cat** preserves all empty characters, line breaks, etc. In case you want to append something to the already existing file, we can use a slightly modified construct:
 
 ```bash
 $ cat >> someFile.txt
@@ -490,12 +490,12 @@ CTRL+d
 ```
 The operator ```>>``` appends the text at the end of an already existing file. If we would have used ```>``` to redirect the new content to the already existing file, that file would be overwritten with this new content &mdash; use ```>``` in such a context with great care! This, however, also implies that the above **cat** construct is rather limited, as it can be used either to write a new file from scratch or to append new content at the very end of an already existing file. But what if we want to edit the already existing content of the file? 
 
-For that sake, we need to use some simple editor which can be run in the terminal (i.e. without graphics). One such, wide-spread, open-source, editor is **nano**, which includes only the bare minimum of functionality needed to edit documents, making it very simple to use. In addition, syntax coloring is available for most of the programming languages. Now as an exercise, let us edit the content of already existing non-empty file ```someFile.txt``` from previous **cat** example.
+For that sake, we need to use some simple editor which can be run in the terminal (i.e. without graphics). One such, wide-spread, open-source, editor is **nano**, which includes only the bare minimum of functionality needed to edit documents, making it very simple to use. In addition, syntax coloring is available for most of the programming languages. As an exercise, let us edit the content of already existing non-empty file ```someFile.txt``` from the previous **cat** example.
 
 ```bash 
 nano someFile.txt
 ```
-Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor &mdash; this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated &mdash; it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics!). For the editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however they offer much more features and are regularly used by professional programmers.
+Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor &mdash; this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated &mdash; it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics!). For editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however, they offer much more features and are regularly used by professional programmers.
 
 
 
@@ -514,7 +514,7 @@ Recall that now you are not any longer in the terminal, but in the very simple t
 ```bash
 #!/bin/bash
 
-echo "Welcome to Bash lecture"
+echo "Welcome to PH8124 lecture"
 # This is a comment...
 echo "Today is:" 
 date
@@ -540,7 +540,7 @@ source first.sh
 And the output could look like:
 
 ```bash
-Welcome to Bash lecture
+Welcome to PH8124 lecture
 Today is:
 Mon Apr 20 16:07:18 CEST 2020
 ```
@@ -559,14 +559,14 @@ Finally, ```return 0``` sets the _exit status_ of your script. In general, each 
 
 The exit status is stored in the special variable **$?**. For instance:
 
-```linux
+```bash
 date
 echo $? # prints 0 , i.e. success
 ```
 
 and
 
-```linux
+```bash
 date -q # option -q is NOT supported
 echo $? # prints 1 , i.e. one possible exit status for error
 ```
@@ -604,18 +604,18 @@ By convention, the name of all configuration files in the home directory begins 
 
 These are the personal configuration files in the user's home directory, which can be edited directly:
 
-- ```~/.bash_profile``` : this configuration file is only executed by **Bash** each time you log in on the computer. There are two synonyms for this file:  ```~/.bash_login``` and ```~/.profile``` , and they are executed at login only if ```~/.bash_profile``` is not present in your home directory. The files ```~/.bash_profile``` and ```~/.bash_login``` can be read only by **Bash**, while ```~/.profile``` is read also by some other shells, e.g. **sh** and **ksh**
-- ```~/.bashrc``` : this configuration file is read with the highest priority when you open a new terminal, or when you start a new _subshell_ (covered later in the lecture). This file will be read also at login only if you add a line ```source ~/.bashrc``` in ```~/.bash_profile```  
+- ```~/.bash_profile``` &mdash; this configuration file is only executed by **Bash** each time you log in on the computer. There are two synonyms for this file:  ```~/.bash_login``` and ```~/.profile``` , and they are executed at login only if ```~/.bash_profile``` is not present in your home directory. The files ```~/.bash_profile``` and ```~/.bash_login``` can be read only by **Bash**, while ```~/.profile``` is read also by some other shells, e.g. **sh** and **ksh**.
+- ```~/.bashrc``` &mdash; this configuration file is read with the highest priority when you open a new terminal, or when you start a new _subshell_ (covered later in the lecture). This file will be read also at login only if you add a line ```source ~/.bashrc``` in ```~/.bash_profile``` .
 
-- ```~/.bash_logout```: Executed whenever the shell exits (e.g. when you close the terminal, of when you log out from the computer). This configuration file is rarely used, but by editing this file, you can for instance automatically delete all temporary files at exit
+- ```~/.bash_logout``` &mdash; executed whenever the shell exits (e.g. when you close the terminal, of when you log out from the computer). This configuration file is rarely used, but by editing this file, you can for instance automatically delete all temporary files at exit.
 
 #### System-wide (default) configuration files
 
 If by accident you have deleted your personal configuration files in your home directory, as a backup solution you can always rely on the two system-wide configuration files, which you cannot edit directly without having the administrator privileges:
 
-- ```/etc/profile``` : the default, system-wide, configuration file which is read at login. It is read before ```~/.bash_profile```. This means that you will always have some default settings enabled after you log in on the computer, whether or not ```~/.bash_profile``` with your personal settings exists or not
+- ```/etc/profile``` &mdash; the default, system-wide, configuration file which is read at login. It is read before ```~/.bash_profile```. This means that you will always have some default settings enabled after you log in on the computer, whether or not ```~/.bash_profile``` with your personal settings exists or not.
 
-- ```/etc/bash.bashrc``` : the default, system-wide, configuration file which is read each time you open a new terminal or start a new subshell. It is read before ```~/.bashrc```. This means that you will always have some default settings enabled after you open a new terminal or start a subshell, whether or not ```~/.bashrc``` with your personal settings exists or not  
+- ```/etc/bash.bashrc``` &mdash; the default, system-wide, configuration file which is read each time you open a new terminal or start a new subshell. It is read before ```~/.bashrc```. This means that you will always have some default settings enabled after you open a new terminal or start a subshell, whether or not ```~/.bashrc``` with your personal settings exists or not.  
 
 We now elaborate on the usage of these configurations files by considering a few concrete examples.
 
