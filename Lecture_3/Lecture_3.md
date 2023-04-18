@@ -348,7 +348,35 @@ chmod 714 file.log
 
 It practice, it is not needed to remove old permissions and only then to set the new ones &mdash; it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
 
+
+
+| value |       permission        | standard syntax |
+| :---: | :---------------------: | :-------------: |
+|   7   | read, write and execute |       rwx       |
+|   6   |     read and write      |       rw-       |
+|   5   |    read and execute     |       r-x       |
+|   4   |        read only        |       r--       |
+|   3   |    write and execute    |       -wx       |
+|   2   |       write only        |       -w-       |
+|   1   |      execute only       |       --x       |
+|   0   |          none           |       ---       |
+
+
+
+
+
+
+|      |      |      |
+| ---- | ---- | ---- |
+|      |      |      |
+|      |      |      |
+|      |      |      |
+
+
+
 Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_ (or _script arguments_).
+
+
 
 
 
