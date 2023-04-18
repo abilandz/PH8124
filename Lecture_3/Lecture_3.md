@@ -26,7 +26,26 @@ The output could look like:
 bin  boot  dev  etc  home  lib  media  opt  proc  root  run  sbin  sys  tmp  usr  var
 ```
 
-All files and directories on your computer are in one of these subdirectories. Schematically, the **Linux** file system structure can be represented with the following diagram:
+All files and directories on your computer are in one of these subdirectories. Depending on which Linux distribution you are using, the details might differ &mdash; you can programmatically inspect which distribution is installed with the following command:
+
+```bash
+$ cat /etc/os-release 
+NAME="Ubuntu"
+VERSION="20.04.4 LTS (Focal Fossa)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 20.04.4 LTS"
+VERSION_ID="20.04"
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+VERSION_CODENAME=focal
+UBUNTU_CODENAME=focal
+
+```
+
+Schematically, the **Linux** file system structure can be represented with the following diagram:
 
 ![](linux_file_system.png)
 
@@ -503,11 +522,13 @@ Note that only the above implementation of function can easily be generalized &m
 ### 4. Command precedence <a name="precedence"></a>
 
 We have seen that your very first input in the terminal, before the empty character is encountered, will be interpreted by **Bash** as the command name, where the command name can stand for an alias, built-in **Bash** command (e.g. **echo**), **Linux** command (e.g. **date**), **Bash** functions (e.g. **Hello** from the previous example), etc. But what happens if we have, for instance, alias and **Linux** command named in the same way, like in this example:
-​```bash
+
+```bash
 alias date='echo "Hi"'
 ```
+
 If after this definition we type in the terminal **date**, we get:
-​```bash
+```bash
 $ date
 Hi
 ```
