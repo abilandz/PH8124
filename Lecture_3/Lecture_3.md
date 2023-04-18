@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20220505
+**Last update**: 20230418
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -15,7 +15,7 @@
 
 ### 1. **Linux** file system <a name="file_system"></a>
 
-We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows some common and widely accepted structure named _Filesystem Hierarchy Standard (FHS)_ (https://refspecs.linuxfoundation.org/fhs.shtml). The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
+We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows the common and widely accepted structure named _Filesystem Hierarchy Standard (FHS)_ (https://refspecs.linuxfoundation.org/fhs.shtml). The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
 ```bash
 cd /
 ls
@@ -54,7 +54,7 @@ The most important directories in the **Linux** file system structure are:
 * ```/proc``` : kernel and process information
 * ```/tmp``` : temporary files
 
-We have already used **Linux** commands **date** and **touch**. But to which physical executables (binaries), stored somewhere in the file system, these two commands correspond to? You can figure that out by using the command **which**:
+We have already used **Linux** commands **date** and **touch**. But to which physical executables (binaries), stored somewhere in the file system, these two commands correspond to? For all major cases of practical interest, you can figure that out simply by using the command **which**:
 ```bash
 $ which date
 /bin/date
@@ -86,14 +86,14 @@ The output could look like this:
 ```bash
 /home/abilandz/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
-This output looks messy, but in fact it has a well-defined structure and is easy to interpret. In the above output, we can see absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
+This output looks messy, but in fact it has a well-defined structure which is easy to decipher. In the above output, we can see absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
 
 By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command &mdash; just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in ```/home/abilandz/bin```). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like ```/bin```, ```/usr/bin```, etc.). This is achieved with the following standard code snippet:
 
 ```bash
 PATH="/home/abilandz/bin:${PATH}"
 ```
-With this syntax, your personal executables in ```/home/abilandz/bin``` are prepended to the current content of **PATH**, and will have therefore the highest priority in the **Bash** search. 
+With this syntax, directory with your personal executables ```/home/abilandz/bin``` is prepended to the current content of **PATH**, and therefore your executables will have the higher priority in the **Bash** search. 
 
 For the lower priority of your executables, use an alternative standard code snippet:
 
@@ -101,15 +101,15 @@ For the lower priority of your executables, use an alternative standard code sni
 PATH="${PATH}:/home/abilandz/bin"
 ```
 
-In this example, you have appended your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard, system-wide, **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new  terminal you open, add the above redefinitions of **PATH** into ```~/.bashrc``` file. In case you want the redefinition of **PATH** to be persistent in all new processes, use in addition the command **export** at declaration. 
+In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard, system-wide, **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new  terminal you open, add the above redefinitions of **PATH** into ```~/.bashrc``` file. In case you want the redefinition of **PATH** to be persistent in all new processes, use in addition the command **export** at declaration. 
 
-From the above explanation, it is clear that if you unset the **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
+From the above explanation, it is clear that if you unset **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
 
 We finalize the explanation of **PATH** variable with the following concluding remarks:
 
 * The search for the corresponding executable, after you have typed the short command name in the terminal, is optimized in the following ways: 
 
-  * Not all the files in the specified directories in **PATH** are considered during the search &mdash; only the files which have _execute permission_ (```x```) are taken into account by **Bash** (more on this in a moment!);
+  * Not all the files in the specified directories in **PATH** are considered during the search &mdash; only the files which have _execute permission_ (```x```) are taken into account (more on this in a moment!);
 
   * The recently used commands are _hashed_ in the table &mdash; this table is then looked up first by **Bash** after you type the command name in the terminal. To see the current content of the hash table, just type **Bash** built-in command **hash** in the terminal:
 
@@ -128,7 +128,7 @@ We finalize the explanation of **PATH** variable with the following concluding r
        6    /bin/ls
     ```
     
-    Clearly, the hash mechanism adds it a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty. Each terminal session keeps its own hash table.
+    Clearly, the hash mechanism adds a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty. Each terminal session keeps its own hash table.
 
 * The **PATH** search can be skipped by the user. In particular, when the command name contains the ```/``` (slash) character, not necessarily at the beginning of the name, **Bash** will not perform the search for the corresponding executable &mdash; underlying assumption is that you have now yourself specified the path in the file system, either absolute or relative, to the corresponding executable. In this case, **Bash** tries to execute that command name on the spot. This explains the standard syntax to run the command whose executable is in your current directory: 
 
@@ -150,7 +150,7 @@ Files and directories in the arguments of **cp** can be specified either with th
 
 * **cp -r** : copy directory and preserve its subdirectory structure
 ```bash
-cp -r directory1 directory2 # this will copy the whole first directory into  
+cp -r directory1 directory2 # this will copy the first directory into  
                             # a new subdirectory of the second directory
 ```
 
@@ -158,13 +158,13 @@ cp -r directory1 directory2 # this will copy the whole first directory into
 ```bash
 rm file1 file2 ... # delete the specifed files
 ```
-Use **rm** with great care, because after you deleted the file, there is no way back!
+Use **rm** with great care, because after you deleted the file, there is no easy way back!
 
 * **rm -rf** : delete one or more directories
 ```bash
 rm -rf dir1 dir2 ... # delete the specified directories
 ```
-Flag **-r** ('recursive') is needed to indicate that you want to delete all subdirectories recursively, **-f** ('force') is needed to avoid the prompt message which would ask you for the deleting confirmation of each file separately. Use **rm -rf** with the greatest possible care, because after you have deleted the directory, there is no way to get back any file that was in that directory!
+Flag **-r** ('recursive') is needed to indicate that you want to delete all subdirectories recursively, **-f** ('force') is needed to avoid the prompt message which would ask you for the deleting confirmation of each file separately. Use **rm -rf** with the greatest possible care, because after you have deleted the directory, there is no easy way to get back any of the files that were in that directory!
 
 * **mv** : move or rename file(s)
 ```bash
@@ -253,7 +253,7 @@ It is very important to understand all entries in this output, and how to modify
   
 * **Column #2:** Number of files (always 1 for files and 2 or more for directories)  
 * **Column #3:** The user who owns the file ('abilandz' in this case)
-* **Column #4:** The group of users to which the file belongs ('alice' experiment at CERN in this case)
+* **Column #4:** The group of users to which the file belongs (ALICE experiment at CERN in this case)
 * **Column #5:** The size of the file in bytes (for directories, it has another meaning, it is NOT the size of the directory!) 
 
 The meaning of the remaining columns is trivial. 
@@ -286,7 +286,7 @@ Next example:
 ```bash
 chmod ugo+rwx someFile.txt
 ```
-Now everybody (you as a user (```u```), group members (```g```)  and others (```o```)), can read (```r```), modify or write to (```w```), or execute your file (```x```). For directories, you can change permissions in one go for all files in all subdirectories, by specifying the flag ```-R``` ('recursive'), i.e. by using schematically:
+Now everybody (you as a user (```u```), group members (```g```)  and others (```o```)), can read (```r```), modify or write (```w```) to, or execute your file (```x```). For directories, you can change permissions in one go for all files in all subdirectories, by specifying the flag ```-R``` ('recursive'), i.e. by using schematically:
 ```bash
 chmod -R some-options-to-change-permissions someDirectory
 ```
@@ -299,9 +299,9 @@ Finally, we clarify that the setting for each permission can be represented alte
 
 When these values are added together, the sum is used to set specific permissions. 
 
-For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6. If you want to remove all  'read', 'write' and 'execute' permissions, you need to specify 0. 
+For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6. If you want to remove all of 'read', 'write' and 'execute' permissions, you need to specify 0. 
 
-For convenience, all possibilities are documented in the tables:
+For convenience, all possibilities are documented in the table:
 
  <img src="permissionsAll.png" style="zoom:75%;" />
 
@@ -312,7 +312,7 @@ touch file.log # make a new file
 # the default permission pattern is: -rw-rw-rw-
 chmod ugo-rwx file.log # strip off all permissions
 # pattern is now: ----------
-chmod u+rwx,g+x,o+r file.log # set new permissions
+chmod u+rwx,g+x,o+r file.log # set new requested permissions
 # the final pattern is: -rwx--xr--
 ```
 
@@ -324,7 +324,7 @@ touch file.log # make a new file
 chmod 000 file.log # strip off all permissions
 # pattern is now: ----------
 chmod 714 file.log
-# pattern is: -rwx--xr--
+# the final pattern is: -rwx--xr--
 ```
 
 It practice, it is not needed to remove old permissions and only then to set the new ones &mdash; it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
@@ -373,7 +373,7 @@ Once you fetch programmatically in the body of your script the supplied argument
 
 Few additional remarks on positional parameters: 
 
-* You can programmatically fetch their total number via the  variable: ```$#```
+* You can programmatically fetch their total number via the special variable: ```$#```
 
 * You can programmatically fetch them all in one go via the variables: ```$*``` or ```$@```. In most cases of interest, these two variables are the same. For the purists: ```"$*"``` is equal to ```"$1 $2 $3 ..."```, while ```"$@"``` is equal to ```"$1" "$2" "$3" ...``` . This means that ```"$*"``` is a single string, while ```"$@"``` is not, and this will cause a different behavior when you loop over all entries in ```"$*"``` or ```"$@"``` . But if you drop the double quotes, there is no difference between the content of special variables ```$*``` and ```$@```
 
@@ -476,11 +476,10 @@ The rest is the same as for the scripts:
 * You can call a function within another function, but only if it was defined first &mdash; order of implementation matters in scripting languages!
 * Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time functions are executed equivalently as commands, and then their exit status clearly matters
 * Typically, you implement all your functions in some file, let's say ```functions.sh```, and save it in your home directory (or anywhere else). Then, at the end of ```${HOME}/.bash_profile``` and ```${HOME}/.bashrc``` you insert the line:
-
-```bash 
-source ${HOME}/functions.sh
-```
-If you have added the definitions of your personal functions in ```${HOME}/.bashrc``` , your functions from the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands &mdash; in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
+	```bash 
+	source ${HOME}/functions.sh
+	```
+	If you have added the above line to ```${HOME}/.bashrc``` , your functions defined in the file ```functions.sh``` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands &mdash; in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
 
 Finally, we remark that functions are superior to aliases: anything that can be done with an alias can be done better with a function. For instance, the classical alias definition:
 
@@ -497,18 +496,18 @@ function ll
 }
 ```
 
-Note that only the above implementation of function can easily be generalized &mdash; within the function body we can programmatically manipulate the arguments and, for instance, use different formatting options for the printout depending upon which directory we are in.
+Note that only the above implementation of function can easily be generalized &mdash; within the function body we can programmatically manipulate the arguments and, for instance, use different formatting options for the printout depending upon which directory we are in, etc.
 
 
 
 ### 4. Command precedence <a name="precedence"></a>
 
 We have seen that your very first input in the terminal, before the empty character is encountered, will be interpreted by **Bash** as the command name, where the command name can stand for an alias, built-in **Bash** command (e.g. **echo**), **Linux** command (e.g. **date**), **Bash** functions (e.g. **Hello** from the previous example), etc. But what happens if we have, for instance, alias and **Linux** command named in the same way, like in this example:
-```bash
+​```bash
 alias date='echo "Hi"'
 ```
 If after this definition we type in the terminal **date**, we get:
-```bash
+​```bash
 $ date
 Hi
 ```
