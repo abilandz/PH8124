@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20220505
+**Last update**: 20230419
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -17,14 +17,17 @@
 
 
 ### 1. Scripts vs. functions <a name="s_vs_f"></a>
-Now that we have seen how to implement in **Bash** both scripts and functions, we can discuss briefly their similarities, differences and typical use cases.
+Now that we have seen how to implement in **Bash** both scripts and functions, we can discuss briefly their similarities, differences and typical use cases. First, let us start with the execution details of scripts. In general, we run any **Bash** script either by 'sourcing' or by 'executing' that script. 
 
-First, let us start with the execution details of scripts. In general, we run any **Bash** script either by 'sourcing' or by 'executing' that script. The first case corresponds to the following syntax:
+The first case corresponds to the following syntax:
 
 ```bash 
 source someScript.sh # sourcing the script
 ```
-When executed this way, all lines in the script are read and executed by **Bash** one-by-one, just as if they were typed separately line by line in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the keyword **return**. Script does not run in a separate process (more on this later).
+When executed this way, all lines in the script are read and executed by **Bash** one by one, just as if they were typed separately line by line in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the keyword **return**. Script does not run in a separate process (more on this later).
+
+The second case corresponds to the following syntax:
+
 ```bash 
 someScript # executing the script 
 ```
@@ -43,11 +46,11 @@ source ~/functions.sh
 ```
 where in the example file ```~/functions.sh``` you have the implementation of your **Bash** functions, you can use effortlessly all your functions in any new terminal you open.
 
-Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts, due to keyword **local**, which can be used only in the function body, and which limits the scope and lifetime of a variable defined in the function only to the function execution.
+Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts, due to keyword **local**, which can be used only in the function body, and which limits the scope and lifetime of a variable defined in the function only to the  execution of that function.
 
 If a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation, then executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process.
 
-Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body).  For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
+Programmatically, you can fetch the function name in its body implementation via built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of function body). For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints literally the line number of the source code where this variable is referenced).
 
 We summarize the above thorough comparison with the following final conclusion: Use **Bash** scripts only for the very simple cases and **Bash** functions for everything else.
 
@@ -57,7 +60,7 @@ We summarize the above thorough comparison with the following final conclusion: 
 ### 2. Command chain: **&&** and **||** <a name="chain"></a>
 Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1.. 255). For instance, we would like multiple commands to execute one after another, but only if all of them executed successfully. As soon as one command has failed, we would like immediately to abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
 
-The command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second command will be executed only if the first one executed successfully. For instance:
+The command chain is a sequence of commands separated either with ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second command will be executed only if the first one was executed successfully. For instance:
 
 ```bash
 $ mkdir someDirectory && echo "New directory was made."
@@ -100,7 +103,7 @@ The main point behind this construct is the following: **lastCommand** is execut
 echo "Hello" && pwd && date || echo "Failed"
 ```
 
-Since all commands executed successfully, it creates the following output:
+Since all commands executed successfully, this command chain creates the following output:
 
 ```bash
 Hello
@@ -154,7 +157,7 @@ $ type [
 
 For instance, the quotes can be omitted inside ```[[``` but not inside ```[```. But in most cases of practical interest,   ```[[ ... ]]``` and ```[ ... ]``` behave in the same way and yield the same results.
 
-Test constructs also return the exit status &mdash; if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use case of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
+Test constructs also return the exit status &mdash; if the test was successful the exit status is set to 0 also in this context.  Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use cases of the test construct ```[[ ... ]]```  in the following 3 categories, and we enlist the meaningful operators for each category:
 
 * General case: ```-z, -n, ==, != , =~```
 * Integers: ```-gt, -ge, -lt, -le, -eq```
@@ -169,7 +172,7 @@ These 3 distinct categories of the usage of ```[[ ... ]]``` are best explained w
 ```bash
 [[ -n ${Var} ]] && echo Yes || echo No
 ```
-Remember the correct syntax and the extreme importance of empty characters within the test construct ```[[ ... ]]```, as this is a typical source of errors:
+Remember the correct syntax and the extreme importance of empty characters within the test construct ```[[ ... ]]```, as these are some typical errors:
 
 ```bash
 [[ -n ${Var} ]] # correct
@@ -218,7 +221,7 @@ Var1=abcd
 Var2=bc
 [[ ${Var1} =~ ${Var2} ]] && echo "Var1 contains Var2"
 ```
-This frequently used operator is supported only within ```[[ ... ]]```, but not within ```[ ... ]```. 
+The frequently used operator  ```=~```  is supported only within ```[[ ... ]]```, but not within ```[ ... ]```. 
 
 The executive summary for the first category of operators is provided with the following table:
 
@@ -232,7 +235,7 @@ The executive summary for the first category of operators is provided with the f
 
 
 #### Integers
-When it comes to the second group of operators,  ```-gt, -ge, -lt, -le, -eq```, they are specific in a sense that they can accept only integers as arguments. 
+When it comes to the second group of operators, ```-gt, -ge, -lt, -le, -eq```, they are specific in a sense that they can accept only integers as arguments. 
 
 **Example 4**: How to check if one integer is greater than some other integer?
 
@@ -244,7 +247,7 @@ Quite frequently, if your script or function demands that a user must provide ex
 ```bash
 [[ $# -eq 2 ]] || return 1
 ```
-In the above example, if a user did not provide exactly two arguments, the code execution terminates. It is always safer to compare two integers with ```-eq``` than to treat them as strings with ```==```, due to corner cases like this one:
+In the above example, if a user did not provide exactly two arguments, the code execution terminates. It is always safer to compare two integers with ```-eq``` than to treat them as strings and use ```==``` for comparison, due to corner cases like this one:
 
 ```bash
 [[ 1 == 01 ]] && echo Yes || echo No # prints No
@@ -343,7 +346,7 @@ Later we will see that such a code branching can be optimized even further with 
 ### 4. Catching user input: **read** <a name="read"></a>
 We have seen already how variables can be initialized in a non-interactive way, by initializing them with some concrete values at declaration. Now we discuss how the user's input from the keyboard can be on-the-fly stored directly in some variable. In essence, this feature enables **Bash** scripts and functions to be interactive, in a sense that during the code execution (i.e. at _runtime_), with your input from the keyboard you can steer the code execution in one direction or another. This is achieved with a very powerful **Bash** built-in command **read**.
 
-By default, the command **read** saves input from the keyboard into its own variable **REPLY**. Alternatively,  you can specify yourself directly the name of the variable(s) which will store the input from the keyboard. This is best illustrated with examples.
+By default, the command **read** saves input from the keyboard into its variable **REPLY**. Alternatively,  you can specify yourself directly the name of the variable(s) which will store the input from the keyboard. This is best illustrated with examples.
 
 **Example 1**: If we use **read** without arguments, the entire line of user input is stored in the variable **REPLY**, as this code snippet demonstrates:
 
@@ -380,7 +383,7 @@ $ echo "Your surname is ${Surname}."
 Your surname is Hetfield.
 ```
 
-The user-supplied arguments to the **read** command, **Name** and **Surname**, have become variables **Name** and **Surname**, initialized with the user's input from the keyboard, ```James``` and ```Hetfield```, respectively. 
+The user-supplied arguments to **read** command, **Name** and **Surname**, have become variables **Name** and **Surname**, initialized with the user's input from the keyboard, ```James``` and ```Hetfield```, respectively. 
 
 If there are more words in the user's input from the keyboard than the variables supplied as arguments to **read**, all excess words are stored in the last variable. 
 
@@ -415,7 +418,7 @@ The default behavior of **read** can be modified with a bunch of options (check 
 
 ```bash
 -p : specify prompt
--s : no printing of input coming from a terminal
+-s : no printing of input coming from user in terminal
 -t : timeout
 ```
 
@@ -433,7 +436,7 @@ echo ${REPLY}
 
 For more complicated menus, **Bash** offers built-in command **select** which is covered later in the lecture.
 
-The flag ```-s``` ('silent') hides in the terminal the user input:
+The flag ```-s``` ('silent') hides in the terminal user's input:
 
 ```bash
 read -s Password
@@ -453,7 +456,7 @@ The command **read** can be used in some other contexts as well, e.g. to parse t
 
 
 ### 5. Arithmetic in **Bash** <a name="arithmetic"></a>
-We have already seen that, whatever is typed first in the terminal and before the next empty character is encountered, **Bash** will try to interpreted as command, function, etc. For this reason, we cannot do directly arithmetic in **Bash**. For instance:
+We have already seen that, whatever is typed first in the terminal and before the next empty character is encountered, **Bash** will try to interpret as command, function, etc. For this reason, we cannot do directly arithmetic in **Bash**. For instance:
 
 ```bash
 $ 1+1
@@ -570,7 +573,7 @@ The most frequent use case of ```(( ... ))``` operator is to increment the conte
 ### 6. Loops: **for**, **while** and **until** <a name="loops"></a>
 Just like any other programming language **Bash** also supports loops. The most frequently used loops are **for** and **while** loops, and only they will be discussed in this section in detail. The third possibility, the loop **until**, differs only marginally from the **while** loop, and therefore it will not be addressed separately. In particular, the **while** loop runs the loop _while_ the condition is ```true```, where the **until** loop runs the loop _until_ the condition is ```true``` (i.e. while the condition is ```false```).  Besides that, there is no much of a difference between these two versions, and it is a matter of personal taste which one is preferred in practice. On the other hand, there are a few non-trivial differences between **for** and **while** loops, both in terms of syntax and use cases.
 
-The syntax of **for** and **while** loops is fairly straightforward, and can be grasped easily from a few concrete examples. We start first with the examples for the **for** loop.
+The syntax of **for** and **while** loops is fairly straightforward, and can be grasped easily from a few concrete examples. We start first with examples for the **for** loop.
 
 **Example 1**: Looping over the specified list of elements.
 
@@ -638,7 +641,7 @@ Argument is: a
 Argument is: bb
 Argument is: ccc
 ```
-Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list of elements has been defaulted to all arguments supplied to that script or function.
+Therefore, if the list of elements is not explicitly specified in the first line of **for** loop, the list of elements has been defaulted to all arguments supplied to the script or function in which that **for** loop was implemented.
 
 There exists also the C-style version of **for** loop in **Bash**, which can handle explicitly the increment of a variable. The C-style version looks schematically as:
 
@@ -677,9 +680,9 @@ sleep 10m # pause the code execution for 10 minutes
 sleep 2h  # pause the code execution for 2 hours
 ```
 
-This command can be used in some simple-minded cases to avoid a conflict among concurrently running processes. Another use case is to determine the periodicity of infinite loops.
+This command can be used in some simple-minded cases to avoid a conflict among concurrently running processes. Another use case is to define the periodicity of infinite loops.
 
-**Example 3:** Infinite loops with the specified periodicity.
+**Example 3:** Infinite loops with the defined periodicity.
 
 The following loop will keep running forever, with the periodicity of once per hour:
 
@@ -732,7 +735,7 @@ In the next section, we discuss how we can combine some of these different funct
 
 
 ### 7. Parsing the file content: **while**+**read** <a name="parsing_files"></a>
-Very frequently, we need within a script or a function to parse through the content of an external file, and to perform some programmatic action line-by-line. This can be achieved very conveniently by combining the **while** loop and the **read** command. We remark, however, that this is not the most efficient way to parse the file content, its usage is recommended only for the short files.
+Very frequently, we need within a script or a function to parse through the content of an external file, and to perform some programmatic action line-by-line. This can be achieved conveniently by combining the **while** loop and the **read** command. We remark, however, that this is not the most efficient way to parse the file content, its usage is recommended only for the short files.
 
 As a concrete example, let us have a look at the following script, named ```parseFile.sh```. This script takes one argument and that argument must be a file:
 
