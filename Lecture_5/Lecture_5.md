@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20220707
+**Last update**: 20230420
 
 
 ### Table of Contents
@@ -93,7 +93,7 @@ Thu May 14 11:58:28 CEST 2020
 /home/abilandz/Lecture
 ```
 
-It is perfectly fine to inline the output of your function with this operator as well:
+It is perfectly fine to inline the output of function call with this operator as well:
 
 ```bash
 echo "Output of my function is: $(someFunction) . Very nice!" 
@@ -110,7 +110,7 @@ Finally, the very neat use case of the command substitution operator is to store
 ```bash
 FileContent=$(< someFile) 
 ```
-In the above example, ```<``` is just a shortcut for the command **cat**, which can be used completely equivalently in this context:
+In the above example, ```<``` is just a shortcut for the command **cat**, which can be used equivalently in this context:
 ```bash
 FileContent=$(cat someFile) 
 ```
