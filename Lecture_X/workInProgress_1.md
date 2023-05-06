@@ -521,12 +521,6 @@ o AB: options for shopt and set can differ, e.g. hashall option is available onl
 o part of environment that you want to modify, but cannot be expressed as on/off choice
    => characteristics of this type are stored in shell variables
 o bash keeps track of built-in variables
-o unset => use to delete variable
-    => makes sense to use only is set's option nounset is set (with this option, shell produced an error when it encouters unset variable)
-abilandz@anteb:~$ set -o nounset
-abilandz@anteb:~$ echo $VAR
-bash: VAR: unbound variable
-o variables which do to exist are assumed to be null, i.e. equal to the empty stringo 
 o echo prints arguments only after bash has evaluated them
 o if the variable is undefined, echo will print a blankline 
 o quoting: some special characters within "" are still interpreted, while within '' not a single special character is interpreted

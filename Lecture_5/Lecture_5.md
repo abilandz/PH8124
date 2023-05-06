@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20230420
+**Last update**: 20230506
 
 
 ### Table of Contents
