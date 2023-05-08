@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20220702
+**Last update**: 20230508
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -13,7 +13,7 @@
 
 
 ### 1. String manipulation <a name="string_manipulation"></a>
-**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to a certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**. 
+**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to a certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**.
 
 String operators in **Bash** can be used only in combination with curly-brace syntax, ```${Var}```, when the content of a variable is retrieved. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
@@ -131,7 +131,7 @@ By using string operators one can set the default value of a variable. Most freq
    ```
    This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'. 
    
-2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in the case this syntax is used in a script, it only prints the error message). For instance, in the body of your function you can add protection via:
+2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
 
    ```bash
    function myFunction
@@ -146,13 +146,13 @@ By using string operators one can set the default value of a variable. Most freq
    myFunction
    bash: 1: first argument is missing
    ```
-   If you do not specify the message, the default message will be produced. For instance:
+   If the message is not specified, the default message will be produced. For instance:
 
    ```bash
    unset someVariable 
    Var=${someVariable:?}
    ```
-   will produce the following error message:
+   will produce the following default error message:
    ```bash
    bash: someVariable: parameter null or not set
    ```
@@ -280,6 +280,13 @@ or
 SomeArray=()
 ```
 
+To check whether an array has any set elements, we can use in the test construct one of the following two possibilities:
+
+```bash
+[[ -v SomeArray[@] ]] # evaluates to true for non-empty array
+[[ ${#SomeArray[@]} > 0 ]] # evaluates to true for non-empty array
+```
+
 The array index works also backward. The last array element is:
 
 ```bash
@@ -385,12 +392,12 @@ SomeArray=( $(date) )
 We can now extract from the output of **date** only a particular entry:
 
 ```bash
-echo ${SomeArray[*]}
-# prints: 'Fri May 29 16:24:25 CEST 2020'
-echo "Current month: ${SomeArray[1]}"
-# prints: 'Current month: May'
-echo "Current time: ${SomeArray[3]}"
-# prints: 'Current time: 16:24:25'
+$ echo ${SomeArray[*]}
+Fri May 29 16:24:25 CEST 2020
+$ echo "Current month: ${SomeArray[1]}"
+Current month: May
+$ echo "Current time: ${SomeArray[3]}"
+Current time: 16:24:25
 ```
 
 **Example 6:** How can we catch the user's input directly into an array?
