@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20230508
+**Last update**: 20230510
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -581,7 +581,7 @@ Another frequent use case is:
 SomeCommand | grep SomePattern(s)
 ```
 
-The above syntax will select on-the-fly from the output of a command only the lines which conform to the specified patterns, and will print them on the screen. 
+The above syntax will select on-the-fly from the output stream of a command only the lines which conform to the specified patterns, and will print them on the screen. 
 
 **Example 1:** Copy and paste in the file ```grepExample.txt``` the following lines:
 
@@ -593,7 +593,7 @@ test TEST Test 11test test
 TeST2 TEST2 TEsT2 TEST2 tEST2
 ```
 
-By using this example file, we now present the most frequently used cases of **grep** command:
+By using this example file, we now demonstrate the most frequently used cases of **grep** command:
 
 ```bash
 grep "test" grepExample.txt 
@@ -613,7 +613,7 @@ By default, the specified pattern ('test' in the above example) is case sensitiv
 grep "test" grepExample.txt > filtered.txt
 ```
 
-In the next example, we instruct **grep** to use a flag '-n', to print all lines containing the pattern 'test', and the numbers of those lines:
+In the next example, we instruct **grep** to use a flag '-n', to print all lines containing the pattern 'test' alongside the numbers of those lines:
 
 ```bash
 grep -n "test" grepExample.txt
@@ -658,7 +658,7 @@ TeST2 TEST2 TEsT2 TEST2 tEST2
 
 Since each line has at least one case insensitive variant of the specified pattern 'test', the whole file is printed in this example.
 
-Very frequently, we need to filter out all lines in the file which contain the specified pattern only at the very beginning of the line. This is achieved by using the special character '^' (caret):
+Very frequently, we need to filter out all lines in the file which contain the specified pattern only at the very beginning of the line. This is achieved by using the special character ```^``` (caret):
 
 ```bash
 grep "^test" grepExample.txt
@@ -671,7 +671,7 @@ test TEST Test 11test test22
 test TEST Test 11test test
 ```
 
-The special character '^' is an anchor for the beginning of a line, and a lot of other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use '$':
+The special character '^' is an anchor for the beginning of a line, and a lot of other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use ```$ ```:
 
 ```bash
 grep "t22$" grepExample.txt
@@ -684,9 +684,9 @@ TEST Test test 11test test22
 test TEST Test 11test test22
 ```
 
-In this particular context, the special character '$' is an anchor for the end of a line.
+In this particular context, the special character ```$``` is an anchor for the end of a line.
 
-We can perform the pattern search with **grep** even more differentially. If we need to filter out all lines in the file which contain at least one word _beginning_ with the specified pattern, we need to use '\\<'. For instance,  we can proceed in the following way:
+We can perform the pattern search with **grep** even more differentially. If we need to filter out all lines in the file which contain at least one word _beginning_ with the specified pattern, we need to use ```\<```. For instance,  we can proceed in the following way:
 
 ```bash
 grep "\<TeST" grepExample.txt
@@ -729,7 +729,7 @@ test TEST Test 11test test
 
 Each of these three lines has at least one exact occurrence of the specified pattern 'Test'.
 
-It is also possible to combine patterns, with the special character '\\|':
+It is also possible to combine patterns, with the special character ```\|```:
 
 ```bash
 grep "11test\|test22" grepExample.txt
@@ -789,7 +789,7 @@ The solution is:
 ```bash
 ls | grep "^ce" | grep ".dat$"
 ```
-The **ls** command will print the list of all files in the current directory, and pipe that list to **grep** for further filtering. Then **grep** filters out the lines in the output of **ls** which begin (the anchor '^') with the pattern 'ce'. That results is then filtered further by chaining another pipe. In the 2nd **grep** we have used the anchor '$' since we are interested in the ending '.dat'. The final output is:
+The **ls** command will print the list of all files in the current directory, and pipe that list to **grep** for further filtering. Then **grep** filters out the lines in the output of **ls** which begin (the anchor ```^```) with the pattern 'ce'. That results is then filtered further by chaining another pipe. In the 2nd **grep** we have used the anchor ```$``` since we are interested in the ending '.dat'. The final output is:
 
 ```bash
 ce0.dat
@@ -827,7 +827,7 @@ $ grep -r "Bash" ~/Lectures/PH8124
 
 Now we move to **awk** (named after the initials of its authors: Aho, Weinberg and Kernighan), which is a programming language by itself, designed for text processing. One can easily teach the whole semester only about **awk**, here we will cover only its most important functionalities which are not available as built-in **Bash** functionalities. The frequently heard comment about **awk** is that its syntax and usage are awkward. Nevertheless, in a lot of cases of practical interest **awk** provides the best and the most elegant solution.
 
-After we supply some input to **awk**, it will break each line of input into fields, separated by default with one or more empty characters. After that, **awk** parses the input and operates on each separate field. Just like with the **grep** command, **awk** can take its input either from a physical file, or from the output stream of another command via a pipe. For instance, if a certain command has produced an output that consists of column-wise entries separated with one or more empty characters, we can get hold of each field programmatically. For instance:
+After we supply some input to **awk**, it will break each line of input into fields, which by default are separated with one or more empty characters. After that, **awk** parses the input and operates on each separate field. Just like with the **grep** command, **awk** can take its input either from a physical file, or from the output stream of another command via a pipe. For instance, if a certain command has produced an output that consists of column-wise entries separated with one or more empty characters, we can get hold of each field programmatically. For instance:
 
 ```bash
 $ date
@@ -835,7 +835,7 @@ Wed Jun  3 15:36:12 CEST 2020
 $ date | awk '{print $4}'
 15:36:12
 ```
-In the 2nd command input we have, by using **awk**, isolated directly only the 4th field in the output of **date**. In a similar fashion: 
+In the 2nd command input above, we have, by using **awk**, isolated directly only the 4th field in the output of **date**. In a similar fashion: 
 
 ```bash
 $ date | awk '{print $6}'
@@ -884,7 +884,7 @@ $ echo ${SomeArray[*]}
 1 10 44
 ```
 
-In order to get the total number of fields, we can use the **awk**'s built-in variable **NF**:
+In order to get the total number of fields, we can use **awk** built-in variable **NF**:
 
 ```bash
 $ date
@@ -894,7 +894,7 @@ $ date | awk '{print NF}'
 ```
 Since the output stream of **date** has 6 entries separated with the empty character, we got 6 as a total number of fields.
 
-On the other hand, the entry from the last field can be achieved directly by obtaining the content of **NF** variable:
+The entry from the last field can be achieved directly by obtaining the content of **NF** variable:
 
 ```bash
 $ date | awk '{print $NF}'
@@ -907,12 +907,12 @@ CEST
 ```
 and so on. 
 
-But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk**'s' built-in variable **FS**. To set the field separator variable **FS** to some non-default value,  we use schematically the following syntax:
+But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator variable **FS** to some non-default value,  we use schematically the following syntax:
 
 ```bash
 awk 'BEGIN {FS="some-new-single-character-field-separator"} ... '
 ```
-The key word 'BEGIN' next to the code snippet within ```{ ... }``` ensures that that particular code snippet is executed only once, at the very beginning (analogously, there exists a key word 'END' in **awk** with the opposite meaning). 
+The key word 'BEGIN' next to the code snippet enclosed in ```{ ... }``` ensures that that particular code snippet is executed only once, at the very beginning (analogously, there exists a key word 'END' in **awk** with the opposite meaning, i.e. that code snippet is executed only once at the very end). 
 
 For instance, if we want to use colon ```:``` as a field separator in **awk**, we must start with the following:
 
@@ -928,9 +928,9 @@ $ date | awk '{print $4}' | awk 'BEGIN {FS=":"}{print $2}'
 ```
 What happened above is literally the following:  
 
-1. the command **date** produced its output ```Wed Jun  3 16:18:44 CEST 2020```    
+1. the command **date** produced the output stream ```Wed Jun  3 16:18:44 CEST 2020```    
 2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was ```16:18:44```  
-3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 2nd field is minutes, which finally yields the final output ```18```   
+3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 2nd field is minutes, which yields as the final output ```18```   
 
 As a rule of thumb, field separators in **awk** shall be always single characters &mdash; composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, **nawk**, etc.).  
 
@@ -954,12 +954,13 @@ The output is
 As a side remark: If you find it very difficult to use **awk** to extract content from the specific fields, there is also a much simpler, however also much less powerful, command **cut**. For instance:
 
 ```bash
-echo A BBB CC | cut -d " " -f 3 # prints CC
+$ echo A BBB CC | cut -d " " -f 3 
+CC
 ```
 
 In the above snippet we have defined the field delimiter with flag '-d' to be empty character " " (by default, the field delimiter in **cut** command is TAB), and with the flag '-f' we have specified that we want the content of the 3rd field, which is 'CC' in the example above.
 
-The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables, before we can use them during **awk** execution, which in practice can be a bit, well, awkward... This limitation is not present in the command **sed**, which we cover next.
+The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables, before we can use them during **awk** execution, which in practice can be a bit, well, awkward... This particular limitation is not present in the command **sed**, which we cover next.
 
 **sed**
 
@@ -1031,11 +1032,12 @@ line 2
 line 3
 line 4
 ```
-We remark that number of empty characters between specified 'i' and the following text is irrelevant &mdash; the very same results as above is achieved for instance with:
+We remark that number of empty characters between the specifier 'i' and the following text is irrelevant &mdash; the very same results as above is achieved for instance with:
 
 ```bash
 sed "2iSome text" sedTest.dat
 sed "2i    Some text" sedTest.dat
+sed "2   i    Some text" sedTest.dat
 ```
 
 In case we want to start a new text with literal empty character, we have to escape it:
@@ -1054,10 +1056,10 @@ The above modified output stream can be redirected to a new file with ```1> some
 ```bash
 sed -i "2i Some text" sedTest.dat
 ```
-This will in the 2nd line of the file ```sedTest.dat``` insert the new text 'Some text' and the original file is modified, without backup. Remember in this context different meaning of 'i':   
+This will in the 2nd line of the file ```sedTest.dat``` insert the new text 'Some text' and the original file is modified, without backup. Remember in this context the different meaning of 'i':   
 
-* '-i' is a flag which instructs **sed** that we want to modify the original file in-place
-* 'ni' as an argument indicates that we want to insert something on the nth line
+* '-i' used as a flag instructs **sed** that we want to modify the original file in-place
+* 'ni' used as an argument indicates that we want to insert something on the nth line
 
 Clearly, it can be potentially dangerous to modify directly the original file in-place, because once the original file is overwritten, there is no way back. To prevent that, we can automatically create the backup of the original file by using the slightly modified flag '-i.backup':
 
@@ -1066,7 +1068,7 @@ sed -i.backup "2i Some text" sedTest.dat
 ```
 This will in the second line of the file ```sedTest.dat``` insert the new text 'Some text'. The original file is modified, but now also the backup of the original file was created automatically, and is saved in new file named ```sedTest.dat.backup```. 
 
-Analogously, we can instert new line on-the-fly in the output stream of some command:
+Analogously, we can insert a new line on-the-fly in the output stream of some command:
 
 ```bash
 stat test.sh | sed "4i => File permissions, and other thingies:"
@@ -1095,7 +1097,7 @@ To delete lines in the file's or in the command's output stream, we need to use 
 ```bash
 sed "4d" sedTest.dat
 ```
-This will delete the 4th ('4d' specifier) line in the file ```sedTest.dat```. We can also specify the line ranges for deletion, for instance:
+This will delete the 4th line ('4d' specifier) in the file ```sedTest.dat```. We can also specify the line ranges for deletion, for instance:
 ```bash
 sed "2,4d" sedTest.dat
 ```
@@ -1167,7 +1169,7 @@ energy p momentum
 p energy momentum
 ```
 
-On the other hand, we can replace all occurrence of 'momentum' with 'p' on each line with the slightly modified syntax:
+On the other hand, we can replace all occurrences of 'momentum' with 'p' on each line with the slightly modified syntax:
 
 ```bash
 sed "s/momentum/p/g" example.log
@@ -1181,7 +1183,7 @@ energy p p
 p energy p
 ```
 
-The very convenient thing about **sed** is that it can interpret **Bash** variables directly. It is perfectly feasible in your script to have something like:
+The very convenient thing about **sed** is that it can interpret **Bash** variables directly. It is perfectly feasible in to have in a script something like:
 
 ```bash
 Before=OldPatern
@@ -1196,7 +1198,7 @@ Wed Jun  3 21:08:49 CEST 2020
 $ date | sed "s/Wed/Wednesday/"
 Wednesday Jun  3 21:08:49 CEST 2020
 ```
-As a concluding remarks to **sed**, we indicate that multiple commands can be specified and executed in one go by using option '-e' and by separating multiple commands with ';' &mdash; for instance:
+As a concluding remarks about **sed**, we indicate that multiple commands can be specified and executed in one go by using option '-e' and by separating multiple commands with ';' &mdash; for instance:
 
 ```bash
 $ echo "some text" | sed -e "s/text/TEXT/; s/some/SOME/"
@@ -1204,4 +1206,3 @@ SOME TEXT
 ```
 
 Finally, **sed** provides full support for pattern matching via regular expressions, which increases its power and applicability tremendously.
-
