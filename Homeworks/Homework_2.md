@@ -1,7 +1,7 @@
 ![](bash_logo.png)
 
 # Using external executable as Linux/Bash command
-**Last update:** 20220519
+**Last update:** 20230511
 
 As a starting point of this homework, start the **nano** editor in the terminal and write the following simple code snippet of C/C++ programming language (this is just an example choice &mdash; this homework is fairly generic, and you can instead use some other programming language that you prefer more) into the file ```Hello.C``` 
 
@@ -39,7 +39,7 @@ Given the default settings on the computer I have used, after the **gcc** compil
 **Challenge #2:** If you type in the terminal **hello** you get an error message, something like:
 
 ```bash
-hello
+$ hello
 hello: command not found
 ```
 If you are in the same directory where ```hello``` sits, you can circumvent this by using instead ```./hello```. If you are outside of that directory, you have to prepend absolute path to that directory before the executable's name ```hello```, which is very tedious and inconvenient.
