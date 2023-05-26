@@ -27,7 +27,7 @@ For instance, to print "some text" in red in the terminal, execute:
 echo -e "\E[1;31;48msome text"; tput sgr0  
 ```
 
-In the above syntax, "m" terminates special sequence of characters started with "\E". The first two entries between "\E" and "m", e.g. "1;31" in the example above, determine foreground color. The 3rd entry determines the background color, where background colors are labeled in the same way as foreground, just starting from 40 instead from 30. The particular choice "48" for background color gives the same shade as the terminal window. Finally, command ```tput sgr0``` restores the default settings in the terminal.
+In the above syntax, "m" terminates special sequence of characters started with "\E[". The first two entries between "\E[" and "m", e.g. "1;31" in the example above, determine foreground color. The 3rd entry determines the background color, where background colors are labeled in the same way as foreground, just starting from 40 instead from 30. The particular choice "48" for background color gives the same shade as the terminal window. Finally, command ```tput sgr0``` restores the default settings in the terminal.
 
 **Challenge #3**: What do you need to do to be able to use the functions ```Red``` and ```Mkdir``` just like any other **Bash** or **Linux** command (i.e. to be able to call them only by their name from any place in the file system, each time you log in on the computer, or open a new terminal)?
 
