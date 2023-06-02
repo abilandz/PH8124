@@ -7,7 +7,7 @@
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
-2. [Command chain: **&&** and **||**](#chain)
+2. [Command chain: **&&** and **\|\|**](#chain)
 3. [Test construct: **[\[ ... ]\]**](#test)
 4. [Catching user input: **read**](#read)
 5. [Arithmetic in **Bash**](#arithmetic)
@@ -308,7 +308,9 @@ File1=${HOME}/test1.txt
 File2=${HOME}/test2.txt
 [[ ${File1} -nt ${File2} ]] && echo "${File1} is newer" || echo "${File2} is newer"
 ```
+
 The executive summary of the most important test operators in this last category is provided in the following table: 
+
 | Operator | Outcome (exit status) |
 | :--:     | :--     |
 | [[ -f ${Var} ]] | true (0) if Var is the existing file |
