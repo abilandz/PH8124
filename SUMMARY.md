@@ -16,7 +16,7 @@
     * [Homework 1](./Homeworks/Homework_1.md)
     * [Homework 2](./Homeworks/Homework_2.md)
     * [Homework 3](./Homeworks/Homework_3.md)
-    * [Homework 4](./Homeworks/Homework_4.md_TBI)
+    * [Homework 4](./Homeworks/Homework_4.md)
     * [Homework 5](./Homeworks/Homework_5.md_TBI)
     * [Homework 6](./Homeworks/Homework_6.md_TBI)
     * [Homework 7](./Homeworks/Homework_7.md_TBI)
