@@ -3,12 +3,12 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20230419
+**Last update**: 20230602
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
 2. [Command chain: **&&** and **||**](#chain)
-3. [Test construct: **[[ ... ]]**](#test)
+3. [Test construct: **[\[ ... ]\]**](#test)
 4. [Catching user input: **read**](#read)
 5. [Arithmetic in **Bash**](#arithmetic)
 6. [Loops: **for**, **while** and **until**](#loops)
@@ -318,17 +318,20 @@ The executive summary of the most important test operators in this last category
 | [[ ${Var1} -nt ${Var2} ]] | true (0) if a file Var1 is newer than a file Var2 |
 | [[ ${Var1} -ot ${Var2} ]] | true (0) if a file Var1 is older than a file Var2 |
 
+
 When it makes sense and it is convenient, it is possible to refine further the above examples with the negation operator ```!```, for instance:
 
 ```bash
 [[ ! -f ${Var} ]] # true (0) if Var is NOT the existing file
 ```
 
+
 In this section we have summarized the most important options &mdash; for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
 
 ```bash
 help test
 ```
+
 In the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch the code execution, depending on whether some command executed correctly, or it has failed. If it has failed, we can branch even further the code execution depending on the exit status of a particular error. This is achieved by storing and testing the content of special variable **$?**, schematically:
 
 ```bash
@@ -439,9 +442,9 @@ For more complicated menus, **Bash** offers built-in command **select** which is
 The flag ```-s``` ('silent') hides in the terminal user's input:
 
 ```bash
-read -s Password
+read -s -p "Password: " Password; echo
 ```
-Now the user's input is not showed in the terminal as you typed it, but it was stored nevertheless in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. If you remove the read permission on that file in which you are doing those checks, you have obtained a very simple-minded mechanism to handle passwords, etc. 
+Now the user got a prompt message ```Password: ``` in the terminal and his input is not showed on the screen as he types it, but it was stored silently in the variable **Password**. Within your subsequent code you can programmatically do some checks on the content of **Password**. If you remove the read permission on that file in which you are doing those checks, you have obtained a very simple-minded mechanism to handle passwords, etc. 
 
 Finally, with the following example:
 
@@ -530,7 +533,7 @@ echo $((8%3)) # prints 2
 echo $((9%3)) # prints 0
 ```
 
-Besides supporting integer arithmetic operators within, ```(( ... ))``` we can also perform integer comparison by using the familiar ```<```,```<=```, ```==```, ```!=```, ```>=``` and ```>``` operators. This is an alternative to integer comparison within the test construct ```[[ ... ]]``` which has its own operators for integer comparison. For instance, the following code snippet
+Besides supporting integer arithmetic operators within ```(( ... ))``` we can also perform integer comparison by using the familiar ```<```,```<=```, ```==```, ```!=```, ```>=``` and ```>``` operators. This is an alternative to integer comparison within the test construct ```[[ ... ]]``` which has its own operators for integer comparison. For instance, the following code snippet
 
 ```bash
 (( ${Var1} < ${Var2} ))  
