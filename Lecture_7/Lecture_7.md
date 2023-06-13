@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20220612
+**Last update**: 20230613
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -22,7 +22,7 @@ Some characters in **Bash** have a special meaning. As an elementary example:
 echo $Var
 ```
 
-would print the content of variable named ```Var``` since the variable is preceded with the special character ```$```, but ```$``` itself would not appear in the printout. To see also the special character ```$``` in the printout, we need to _escape_ (or kill) its special meaning with the backslash character ```\```. 
+would print the content of variable named ```Var``` since variable is preceded with the special character ```$```, but ```$``` itself would not appear in the printout. To see also the special character ```$``` in the printout, we need to _escape_ (or kill) its special meaning with the backslash character ```\```. 
 
 The escaping mechanism in **Bash** is illustrated in the following example:
 ```bash
@@ -109,7 +109,7 @@ The printout is literally:
 $Var1   $Var2
 ```
 
-Neither variable was replaced in the printout with its content, because the special meaning of both ```$``` was killed with strong quotes, and the exact number of empty characters was also preserved in the printout. 
+Neither variable was replaced in the printout with its content, because the special meaning of both ```$``` was killed in one go with strong quotes, and the exact number of empty characters was also preserved in the printout. 
 
 Strong quotes are used frequently for the file or directory whose name contains empty characters:
 
@@ -117,7 +117,7 @@ Strong quotes are used frequently for the file or directory whose name contains 
 ls 'crazy name'
 ```
 
-Without strong quotes, the command **ls** would interpret 'crazy' and 'name' separately, as two different arguments. 
+Without strong quotes, the command **ls** would interpret 'crazy' and 'name' separately, as two different arguments.
 
 To illustrate the importance of strong quotes, consider the following example:
 
@@ -192,7 +192,7 @@ Hi
 there
 ```
 
-Now **Bash** has interpreted the special meaning of '\n' character, not the **echo** command.
+Now **Bash** has interpreted the special meaning of '\n' character, not **echo**.
 
 **Example:** Prompt the user with the following multi-line question in **read** command:
 
@@ -262,6 +262,17 @@ The special meaning of the following special characters or constructs are preser
 * ```$(( ... ))``` : arithmetic expression evaluation
 * ```\``` : backslash preserves its special meaning within double quotes only in some cases, for instance, when it is followed by ```$```, ```"```, `\`, or newline.
 
+Since this is a common mistake, we stress out that tilde ```~``` as a shortcut for a home directory does not preserve that special meaning within quotes, instead, within quotes we have to use ${HOME} to get the full path to home directory:
+
+```bash
+$ echo 'Home directory: ~'
+Home directory: ~
+$ echo "Home directory: ~"
+Home directory: ~ # yes, also within weak quotes ~ loses its special meaning!!
+$ echo "Home directory: ${HOME}"
+Home directory: /home/abilandz
+```
+
 Nested double quotes are allowed as long as the inner ones are escaped with ```\``` . For instance, 
 
 ```bash
@@ -307,7 +318,7 @@ On the other hand, if we drop weak quotes,
 echo $Var
 ```
 
-will strip off from each line the trailing hidden new line character '\n', and the printout is scrambled. 
+this version will strip off from each line the trailing hidden new line character '\n', and the printout is scrambled. 
 
 To quote or not to quote: As a rule of thumb and whenever in doubt, it is always safer to use weak quotes than not to quote. 
 
