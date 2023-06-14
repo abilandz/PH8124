@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20230613
+**Last update**: 20230614
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -425,7 +425,7 @@ kill %2
 kill 17
 ```
 
-Note the usage of percentage symbol ```%``` in the first case &mdash; without it, **Bash** would attempt to kill the process with system-wide PID 2. Only after the percentage symbol ```%``` is used, **Bash** will interpret the following number as the job number, which is specific and known only to the current terminal. Note also that only the second version can be used from any terminal, as the PID of any job or process is the same in all terminals. Later we will see that the command **kill**, despite its terse name, can do much more than mere termination of running jobs.
+Note the usage of percentage symbol ```%``` in the first case &mdash; without it, **Bash** would attempt to kill the process with system-wide PID 2. Only after the percentage symbol ```%``` is used, **Bash** will interpret the following number as the job number, which is specific and known only to the shell in the current terminal. Note also that only the second version can be used from any terminal, as the PID of any job or process is the same in all terminals. Later we will see that the command **kill**, despite its terse name, can do much more than mere termination of running jobs.
 
 We have seen already how we can get the list of all background jobs started from the current terminal with **jobs** command. With the more general command named **top** we can get the list of all running processes on the computer, from all users, running both in foreground and background.
 
@@ -462,7 +462,7 @@ The above code snippet filters out only the information relevant for your own pr
 
 The command **top** can be run from any terminal on the computer, and its printout to a large extent will be the same in each terminal. On the other hand, the output of the command **jobs** will be completely different from one terminal to another. 
 
-Closely related to **top** command is **ps** command (see the corresponding 'man' pages), which gives only the current snapshot of currently active processes, while **top** is being continuously updated and can be used interactively. Unfortunately, the flags supported by **ps** command differ across different distributions, and to overcome this problem the GNU version of **ps** command support three different styles for options:
+Closely related to **top** command is **ps** command (see the corresponding 'man' pages), which gives only the current snapshot of currently active processes, while **top** is being continuously updated and can be used interactively. Unfortunately, the flags supported by **ps** command differ across different **Linux** distributions, and to overcome this problem the GNU version of **ps** command supports three different styles for options:
 
 1. Unix-style parameters: preceded by dash (-) 
 2. BSD-style parameters: not preceded by dash (-)
@@ -489,6 +489,22 @@ $ ps --forest
 22680 pts/4    00:00:00      \_ bash
 22691 pts/4    00:00:00          \_ ps
 ```
+
+Another frequent example is the following: How to obtain from the known PID the corresponding command input? For that, this can be used:
+
+```bash
+$ sleep 10m & sleep 20m &
+[1] 3280886
+[2] 3280887
+
+# We can now trace back the command input using PID this way:
+$ ps -fp 3280886 3280887
+UID          PID    PPID  C STIME TTY      STAT   TIME CMD
+abilandz 3280886 3246923  0 07:20 pts/33   S      0:00 sleep 11m
+abilandz 3280887 3246923  0 07:20 pts/33   S      0:00 sleep 22m
+```
+
+The command input is in the last column, and we can also see that both commands were executed from the same parent process (PPID), which in this example was the same shell with PID 3246923.
 
 For further details of this complex command, see its 'man' pages. 
 
@@ -523,6 +539,26 @@ $ pgrep -a "sle*"
 587 sleep 10s
 588 sleep 20s
 589 sleep 30s
+```
+
+Other typical uses cases of **pgrep** are given with these examples:
+
+```bash
+# Print PIDs and command inputs of all running processes of $USER:
+$ pgrep -a -u $USER 
+3104204 root figureQM23_gen.C
+3104206 /home/abilandz/ROOT_6/bin/root.exe -splash figureQM23_gen.C
+3253577 bash --norc -i
+3255550 bash
+... 
+
+# Print all proceeses, except the ones belonging to 'root' account:
+$ pgrep -a -v -u root
+... long list ...
+
+# Print latest executed process of $USER:
+$ pgrep -n -a -u $USER
+3104204 gedit figureQM23_gen.C 
 ```
 
 There is also a related command **pkill**, which can terminate on the spot all running instances of the same command, just by its name. For the above example, we can terminate all 3 instances of the command **sleep** running in parallel as follows:
@@ -601,7 +637,7 @@ $ jobs -l
 
 This is precisely what we wanted to achieve: We have suspended with ```Ctrl+Z``` the job running in the foreground which was blocking the terminal input, and then restarted its execution in the background with the command **bg %jobNumber**. While that job is now running in parallel in the background, we can do our thing in the terminal again. As the last remark, we stress out that the command **bg** can accept as an argument the job number, but not its PID.
 
-A closely related command is the **Bash** built-in command **fg**. This command moves the jobs running in the background to the foreground. Before discussing its syntax, we first stress out the following important fact: It is impossible solely by using **Bash** built-in features to bring to the foreground a process running in the background in the current shell instance if it was not started in the background from the current shell instance. Basically, this means that you cannot in the current terminal take over a process that was started in a different terminal. To achieve that level of flexibility, there are specialized programs available that allow us to move other programs around from one shell instance to another, for instance **screen**.
+A closely related command is the **Bash** built-in command **fg**. This command moves the jobs running in the background to the foreground. Before discussing its syntax, we first highlight the following important fact: It is impossible solely by using **Bash** built-in features to bring to the foreground a process running in the background in the current shell instance if it was not started in the background from the current shell instance. Basically, this means that you cannot in the current terminal take over a process that was started in a different terminal. To achieve that level of flexibility, there are specialized programs available that allow us to move other programs around from one shell instance to another, for instance **screen**.
 
 Looking at this from another angle, it makes perfect sense, but only after we realize the following subtle difference between job and process: a job can be a group of processes, but not vice versa. When we suspend a job via its job number, we suspend all processes in that job. When we suspend a process via its PID, we suspend only that particular process. 
 
@@ -828,7 +864,7 @@ The above generic syntax is interpreted as follows: When any of the signals ```s
 2. resume the program execution    
 
 
-After the execution of **someCommand** has terminated, the program execution resumes just after the command that was interrupted. In this context, **someCommand** can be also a script or a function. The signals```signal_1```, ```signal_2```, ```...```, can be specified either by signal name or by signal number. 
+After the execution of **someCommand** has terminated, the program execution resumes just after the command that was interrupted. In this context, **someCommand** can be also a script or a function. The signals ```signal_1```, ```signal_2```, ```...```, can be specified either by signal name or by signal number. 
 
 The usage of **trap** is best illustrated with examples. We use the script named ```trapExample.sh``` with the following content:
 ```bash
