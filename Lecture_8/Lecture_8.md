@@ -449,41 +449,4 @@ The menu is now:
 What is your choice? 
 ```
 
-
-
-
-
-
-2. **Setup zoxide on your shell**
-
-   To start using zoxide, add it to your shell.
-
-   <details>
-   <summary>Bash</summary>
-
-   > Add this to the **end** of your config file (usually `~/.bashrc`):
-   >
-   > ```sh
-   > eval "$(zoxide init bash)"
-   > ```
-
-   </details>
-
-   <details>
-   <summary>Elvish</summary>
-
-   > Add this to the **end** of your config file (usually `~/.elvish/rc.elv`):
-   >
-   > ```sh
-   > eval (zoxide init elvish | slurp)
-   > ```
-   >
-   > **Note**
-   > zoxide only supports elvish v0.18.0 and above.
-
-   </details>
-
-
-
-
 As a concluding remark, we indicate that if the key word **in** is omitted and the list is not specified, the list is defaulted to the positional parameters supplied to the script or function, and menu is built out of all supplied positional parameters.
