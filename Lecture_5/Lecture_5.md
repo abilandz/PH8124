@@ -419,14 +419,14 @@ a b c d e f
 ```
 Brace expansion is very frequently used in enumerating sequentially either files or directories. 
 
-**Example 1: ** How to make 100 new directories named ```Dir_0, Dir_1, ... Dir_99```? 
+**Example 1:** How to make 100 new directories named ```Dir_0, Dir_1, ... Dir_99```? 
 
 The solution is very elegant by using the brace expansion mechanism:
 
 ```bash
 mkdir Dir_{0..99}
 ```
-**Example 2: ** How to make 100 new files named ```File_0.data, File_1.data, ... File_99.data```? 
+**Example 2:** How to make 100 new files named ```File_0.data, File_1.data, ... File_99.data```? 
 
 We can both prepend and append strings to the brace expansion, so also in this case there is a very elegant solution:
 
