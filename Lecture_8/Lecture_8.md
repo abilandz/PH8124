@@ -2,7 +2,7 @@
 
 # Lecture 8: **Bash** fancy features
 
-**Last update:** 20220621
+**Last update:** 20230619
 
 ### Table of Contents
 1. [Subshells: ```( ... )```](#subshells)
@@ -25,7 +25,7 @@ We have already seen how the code block ```{ ... }``` can be used in **Bash** to
  command-input-n 
 )
 ```
-or completely equivalently, with the one-liner:
+or completely equivalently, with one-liner:
 ```bash
 ( command-input-1; command-input-2; ... ; command-input-n; )
 ```
@@ -39,10 +39,10 @@ Just like it was done for the code block ```{ ... }``` in the previous sections,
 From the above list, it is clear that there are a lot of similarities between ```{ ... }``` and ```( ... )```. Basically,  there are only two important differences:  
 
 1. when compared to the parent shell, ```( ... )``` starts a new process, while ```{ ... }``` does not;
-2. both ```( ... )``` and ```{ ... }```  inherit the environment from the parent shell, but ```{ ... }``` can modify it globally while ```( ... )``` cannot. For a subshell ```( ... )```, the fact that it cannot modify the global environment remains true even if the key word **export** have been used in declarations. 
+2. both ```( ... )``` and ```{ ... }```  inherit the environment from the parent shell, but ```{ ... }``` can modify it globally while ```( ... )``` cannot. For a subshell ```( ... )```, the fact that it cannot modify the global environment remains true even if the key word **export** have been used in declarations in subshell. 
    
 
-When it comes to _stdout_ and _stderr_ streams, there is no difference between ```( ... )``` and ```{ ... }```. The subshell ```( ... )``` is usually less efficient than the code block ```{ ... }```, because it runs a separate process. However, since it cannot modify the environment in which it is run globally, ```( ... )``` is safer. As a rule of thumb,  ```( ... )``` shall be preferred over ```{ ... }``` unless the efficiency is concern.
+When it comes to _stdout_ and _stderr_ streams, there is no difference between ```( ... )``` and ```{ ... }```. The subshell ```( ... )``` is usually less efficient than the code block ```{ ... }```, because it runs a separate process and time has to be invested in starting a new process. However, since it cannot modify the environment in which it is run globally, ```( ... )``` is safer. As a rule of thumb,  ```( ... )``` shall be preferred over ```{ ... }``` unless the efficiency is concern.
 
 Typically, subshells are executed in the background, by using the following generic syntax:
 ```bash
@@ -228,7 +228,7 @@ However, this problem can be also solved a bit simpler with the usage of 'here s
 $ bc <<< "scale=30; 10/7"
 1.428571428571428571428571428571
 ```
-There are the cases in which **echo** + ```|``` combination is more efficient, while there are also the cases in which the 'here strings' ```<<<``` run faster, so both versions are used frequently in practice. 
+There are the cases in which **echo** + ```|``` combination is more efficient, while there are also the cases in which the 'here strings' ```<<<``` run faster, so both versions are used equally frequently in practice. 
 
 
 
