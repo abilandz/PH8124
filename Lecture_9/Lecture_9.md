@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20220707
+**Last update**: 20230621
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -15,7 +15,7 @@
 
 
 ### 1. Command history search <a name="command_history_search"></a>
-When working directly in the terminal we want to speed up typing the command input as much as possible. Besides, frequently we want to be able to re-use the certain command input again, without re-typing it from scratch. A lot of typing is saved by using ```TAB```, which autocompletes the command input to existing commands names (here commands are meant in the broader sense and include also **Bash** functions, aliases, etc.). In case command is expecting as argument a file or a directory, ```TAB``` will also autocomplete file or directory name, after we have typed in the terminal the first few characters and hit ```TAB```. Last but not least, ```TAB``` also autocompletes **Bash** variable names when we are getting their content with ```$```. This is illustrated with the following three simple examples:
+When working directly in the terminal we want to speed up typing the command input as much as possible. Besides, frequently we want to be able to re-use the certain command input again, without re-typing it from scratch. A lot of typing is saved by using ```TAB```, which autocompletes the command input to existing command names (here command is meant in the broader sense and include also **Bash** functions, aliases, etc.). In case command is expecting as argument a file or a directory, ```TAB``` will also autocomplete file or directory name, after we have typed in the terminal the first few characters and hit ```TAB```. Last but not least, ```TAB``` also autocompletes **Bash** variable names when we are getting their content with ```$```. This is illustrated with the following three simple examples:
 ```bash
 $ dirn + TAB 
 # autocompletes to command 'dirname'
@@ -43,7 +43,7 @@ The autocompletion via ```TAB``` is a very neat feature and speeds up a lot the 
 
 To achieve that, we need to use **Bash** built-in command **history**.  After we type in the terminal
 ```bash
-history
+$ history
 ```
 all the command input which we have typed in the terminal recently (not necessarily only in the current terminal!) will be printed and enumerated by **Bash**. For instance, the output could be:
 
@@ -60,17 +60,14 @@ all the command input which we have typed in the terminal recently (not necessar
 ```
 From where **Bash** has retrieved this detailed information of what we have typed recently in the terminal? All previously typed commands are stored by default in the file to which the environment variable **HISTFILE** is pointing to:
 ```bash
-echo $HISTFILE
-```
-The printout could look like:
-```bash
+$ echo $HISTFILE
 /home/abilandz/.bash_history
 ```
 That means that, by default, the history of all our command input is saved in the file ```.bash_history``` placed in the home directory. By default, at maximum 1000 lines of command input are kept in this file, but that can be changed by modifying the **Bash** environment variable **HISTSIZE**. If we now have a look at the content of **Bash** command history file:
 ```bash
-cat /home/abilandz/.bash_history
+$ cat /home/abilandz/.bash_history
 ```
-we see that we get a similar printout like the one from the command **history** showed above. The printout is similar, but not the same, and we will now clarify this difference, which sometimes leads to big confusion. 
+we see that we get a similar printout like the one from the command **history** showed above. The printout is similar, but not exactly the same, and we will now clarify this difference, which sometimes leads to big confusion. 
 
 Each time we start a new terminal, the file ```~/.bash_history``` is read. From that point onward, each terminal maintains its own history (i.e. its own list of all commands we have typed in the terminal). When we exit the terminal, **Bash** updates the ```~/.bash_history``` file with the history which corresponds to that terminal. Therefore, and very importantly, the current content of ```~/.bash_history``` will correspond to the last terminal we have closed. 
 
@@ -115,7 +112,7 @@ Press the right arrow, and the offered result from the inverse history search is
 We indicate now how we can directly re-execute any command input from the history list. For instance, if the command
 
 ```bash
-history
+$ history
 ```
 has produced the following output
 ```bash
@@ -127,7 +124,7 @@ has produced the following output
 ```
 we can execute any command from above just by typing ```!commandNumberInTheList```. Given the above output, the following input in the terminal: 
 ```bash
-!190
+$ !190
 ```
 gives immediately
 ```bash
@@ -143,10 +140,10 @@ for i in {1..10}; do echo $i; done
 9
 10
 ```
-To rerun the very last command, we can use the shortcut:
+To re-execute the very last command, we can use the shortcut:
 
 ```bash
-!!
+$ !!
 ```
 
 The above syntax has the same effect as pressing the up arrow followed by 'Enter'. For more elaborate cases of retrieving and even editing the command input from **history** on-the-fly, please see the documentation of the command **fc** ('fix command').
@@ -156,22 +153,22 @@ Finally, we remark that programmatically we can retrieve the last argument of th
 ```bash
 $ mkdir Dir1 Dir2 Dir3
 $ echo $_ 
-prints Dir3
+Dir3
 ```
 
 A frequent use case is the following example:
 
 ```bash
-ls file_{1..99}.log
-rm $_
+$ ls file_{1..99}.log
+$ rm $_
 ```
 
 If the first line has expanded in the list of files we want to delete, we can reuse the same brace expansion in the second line as the argument for **rm** command.
 
-**Example:** How to make a few directories, and automatically move into the last one created?
+**Example:** How to make directly in the terminal a few directories, and automatically change working directory into the last one created?
 
 ```bash
-mkdir Dir1 Dir2 Dir3 && cd $_
+$ mkdir Dir1 Dir2 Dir3 && cd $_
 ```
 
 
@@ -179,7 +176,7 @@ mkdir Dir1 Dir2 Dir3 && cd $_
 
 ### 2. Searching for files and directories: **find** and **locate** <a name="find"></a>
 
-We have already seen how we can list the content of the specified directory with the known location in the filesystem with **ls** command. However, in case we need to search for specific files or directories at unknown locations in the filesystem hierarchy, **ls** command cannot be used. Instead, we can use the **Linux** command  **find** which was designed precisely for that sake. This powerful command can perform search by name, by creation, accession and modification date, by owner, by permissions etc. In addition, **find** can immediately perform some action on the result of its search (for instance, it can immediately delete all files it has found, rename all directories, etc.).
+We have already seen how we can list the content of the specified directory with the known location in the filesystem with **ls** command. However, in case we need to search for specific files or directories at unknown locations in the filesystem hierarchy, **ls** command cannot be used. Instead, we can use the **Linux** command  **find** which was designed precisely for that sake. This powerful command can perform search by name, by creation, accession and modification date, by owner, by permissions etc. In addition, **find** can immediately perform some actions on the result of its search (for instance, it can immediately delete all files it has found, rename all directories, etc.).
 
 The generic usage of command **find** can be described as follows:
 ```bash
@@ -187,7 +184,7 @@ find Where What Action
 ```
 When interpreting its arguments, **find** defaults the meaning of first arguments which are not preceded by ```-``` or ```--``` to a list of directories in which the search will be performed. Therefore, in the above generic syntax 'Where' stands for one or more directories. After that, **find** expects one or more options starting with ```-``` or ```--``` , which will typically nail down what **find** needs to search for ('What' in the above syntax). Finally, there exists a special option **-exec** after which we can optionally set the commands which **find** will execute immediately on the results it has found ('Action').
 
-The usage of **find** is best illustrated on concrete examples. Let us start with a directory named 'Examples' in which we have the following situation:
+The usage of **find** is best illustrated with concrete examples. Let us start with a directory named 'Examples' in which we have the following situation:
 ```bash
 $ ls Examples/
 Directory_0  Directory_1  Directory_2  Directory_3  file_0.dat  file_0.pdf  file_0.png  file_1.dat  file_1.pdf  file_1.png
@@ -196,10 +193,7 @@ Directory_0  Directory_1  Directory_2  Directory_3  file_0.dat  file_0.pdf  file
 **Example 1:** Find and print on the screen only the files in the specified directory.
 
 ```bash
-find Examples/ -type f
-```
-The result is:
-```bash
+$ find Examples/ -type f
 Examples/file_0.png
 Examples/file_1.dat
 Examples/file_1.pdf
@@ -209,10 +203,7 @@ Examples/file_0.pdf
 ```
 By default, the result of **find** is not sorted, but you can trivially, and in general, sort the output of some command by piping to the command **sort**:
 ```bash
-find Examples/ -type f | sort
-```
-The output is now sorted:
-```bash
+$ find Examples/ -type f | sort
 Examples/file_0.dat
 Examples/file_0.pdf
 Examples/file_0.png
@@ -220,8 +211,7 @@ Examples/file_1.dat
 Examples/file_1.pdf
 Examples/file_1.png
 ```
-
-Now that we have mentioned it, let us say a few more handy things about the **sort** command, by discussing its frequently used flags: 
+Now that it was mentioned, let us say a few more handy things about the **sort** command, by discussing its frequently used flags: 
 
 ```bash
 -n : sort numerically (by default it sorts alphabetically)
@@ -274,7 +264,7 @@ As another example, if we want to sort the following content of 'sortExample.txt
 /2/SS2018/PH8124
 ```
 
-with respect to its fields, we need to specify the non-default field separator with ```-t``` flag:
+with respect to its fields, we need to specify the non-default field separator ```\``` with ```-t``` flag:
 
 ```bash
 $ sort -t/ -k2 sortExample.txt
@@ -294,34 +284,23 @@ Now back to the **find** command!
 **Example 2:** Find all subdirectories in the specified directory.
 
 ```bash
-find Examples/ -type d
-```
-The result is:
-```bash
+$ find Examples/ -type d
 Examples/Directory_3
 Examples/Directory_2
 Examples/Directory_0
 Examples/Directory_1
 ```
-
 **Example 3:** Find all files with an extension '.pdf' in the specified directory
 
 ```bash
-find Examples/ -type f -name "*.pdf"
-```
-The result is:
-```bash
+$ find Examples/ -type f -name "*.pdf"
 Examples/file_1.pdf
 Examples/file_0.pdf
 ```
-
 **Example 4:** Find all files with an extension '.pdf' and pattern 'file_0' in their name, in the specified directory.
-```bash
-find Examples/ -type f -name "*.pdf" -a -name "*file_0*"  
-```
-The result is:
 
 ```bash
+$ find Examples/ -type f -name "*.pdf" -a -name "*file_0*"
 Examples/file_0.pdf
 ```
 From the above example, we see that **find** interprets the flag ```-a``` as the logical ```AND```. Similarly, the flag ```-o``` can be used within **find** as the logical ```OR```. 
@@ -329,33 +308,33 @@ From the above example, we see that **find** interprets the flag ```-a``` as the
 Since the flag ```-name``` is very frequently used, it deserves some additional clarification. The usage of quotes in the pattern, as in ```"*.pdf"```, was essential, because now the special characters will be supplied as the special characters to the **find** command, and will prevent **Bash** to expand them. Dropping quotes round the pattern is a typical mistake when **find** is used:
 
 ```bash
-find Examples/ -type f -name *.pdf # WRONG!!
+$ find Examples/ -type f -name *.pdf # WRONG!!
 ```
-The above syntax is wrong, because **Bash** now will first expand the pattern ```*.pdf``` to match all files in the current working directory (not in the directory 'Examples' !) that end with ```.pdf```, and only then those fully expanded file names will be supplied to the command **find**. Clearly, this will work only by accident if in the current working directory, where we have executed the command **find**, there was no a single file which ends in ```.pdf```, and therefore ```*.pdf``` remained unexpanded. Alternatively, the special symbols can be supplied to **find** with the escaping mechanism ```\```. Summarizing everything:
+The above syntax is wrong, because **Bash** now will first expand the pattern ```*.pdf``` to match all files in the current working directory (not in the directory 'Examples'!) that end with ```.pdf```, and only then those fully expanded file names will be supplied to the command **find**. Clearly, this will work only by accident if in the current working directory, where we have executed the command **find**, there was no a single file which ends with pattern ```.pdf```, and therefore ```*.pdf``` remained unexpanded. Alternatively, the special symbols can be supplied to **find** with the escaping mechanism ```\```. Summarizing everything:
 ```bash
-find Examples/ -type f -name "*.pdf" # CORRECT
-find Examples/ -type f -name '*.pdf' # CORRECT
-find Examples/ -type f -name \*.pdf # CORRECT
-find Examples/ -type f -name *.pdf # WRONG!!
+$ find Examples/ -type f -name "*.pdf" # CORRECT
+$ find Examples/ -type f -name '*.pdf' # CORRECT
+$ find Examples/ -type f -name \*.pdf # CORRECT
+$ find Examples/ -type f -name *.pdf # WRONG!!
 ```
 **Example 5:** Find all files with an extension '.pdf' larger than 10 KB in the specified directory(-ies).
 
 ```bash
-find pathToDirectory(-ies) -type f -name "*.pdf" -size +10k
+$ find pathToDirectory(-ies) -type f -name "*.pdf" -size +10k
 ```
 Here prefix ```+``` is not trivial, if we would omit it, the flag ```-size 10k``` would filter out instead the files whose size is exactly 10 KB. Unfortunately, syntax for KB in **find** is a small 'k', and not capital 'K' (like in **ls -lh**), which frequently leads to confusion.  Analogously, files which are smaller than 10 KB in size, we would filter out by using prefix ```-```, i.e. ```-size -10k```.
 
 **Example 6:** Find all files with an extension '.tex' modified within last 10 days in the specified directory(-ies).
 
 ```bash
-find pathToDirectory(-ies) -type f -name "*.tex" -mtime -10
+$ find pathToDirectory(-ies) -type f -name "*.tex" -mtime -10
 ```
-Similarly as with the option ```-size```, the option ```-mtime +10``` means more than 10 days ago, ```-mtime 10``` exactly 10 days ago, and ```-mtime -10``` less than 10 days ago. Closely related flags are ```-atime```  and ```-ctime```. The flag ```-atime``` traces when the files were last accessed (i.e. read without being modified, for instance, using **cat** command), while the flag ```-ctime``` traces when the file's metadata (permissions, name, location, etc.) were last time changed. 
+Similarly as with the option ```-size```, the option ```-mtime +10``` means more than 10 days ago, ```-mtime 10``` exactly 10 days ago, and ```-mtime -10``` less than 10 days ago. Closely related flags are ```-atime``` and ```-ctime```. The flag ```-atime``` traces when the files were last accessed (i.e. read without being modified, for instance, using **cat** command), while the flag ```-ctime``` traces when the file's metadata (permissions, name, location, etc.) were last time changed. 
 
 **Example 7:** Find all obsolete files in the specified directory(-ies) which were not accessed for more than 1 year.
 
 ```bash
-find pathToDirectory(-ies) -type f -atime +365
+$ find pathToDirectory(-ies) -type f -atime +365
 ```
 The three frequently used flags ```-mtime```, ```-ctime``` and ```-atime``` have the resolution of 1 day. To perform the search with even finer time resolution in minutes, we need to use the flags ```-mmin```, ```-cmin``` and ```-amin```.
 
@@ -364,13 +343,13 @@ By default, the command **find** searches through all subdirectories of specifie
 **Example 8:** Find all files with an extension '.pdf' in the specified directory(-ies), not going deeper than 2 levels in the subdirectory structure.
 
 ```bash
-find pathToDirectory(-ies) -maxdepth 2 -type f -name "*.pdf"
+$ find pathToDirectory(-ies) -maxdepth 2 -type f -name "*.pdf"
 ```
 
 **Example 9:** Find all files with an extension '.pdf' in the specified directory(-ies), by looking only in the subdirectories (i.e. not in the current directory, and not in subsubdirectories, subsubsubdirectories, etc.). The solution is:
 
 ```bash
-find pathToDirectory(-ies) -mindepth 2 -maxdepth 2 -type f -name "*.pdf"
+$ find pathToDirectory(-ies) -mindepth 2 -maxdepth 2 -type f -name "*.pdf"
 ```
 
 Finally, and very importantly, we describe the flag ```-exec``` which is used to specify the 'Action' part in the previously mentioned generic syntax, i.e. the command input which **find** needs to execute on the spot on the outcome of search. The syntax for flag ```-exec``` is a bit peculiar, but there are essentially two important things to remember:  
@@ -381,20 +360,20 @@ Finally, and very importantly, we describe the flag ```-exec``` which is used to
 **Example 10:** Find all empty files in the specified directory(-ies), and for each of them prints its size.
 
 ```bash
-find pathToDirectory(-ies) -type f -exec stat -c %s {} \;
+$ find pathToDirectory(-ies) -type f -exec stat -c %s {} \;
 ```
 From this example it is self-evident when and how we use the placeholder ```{}``` for the found file or directory in combination with ```-exec``` flag.
 
 **Example 11:** Find all empty files in the specified directory(-ies), and delete them immediately:
 
 ```bash
-find pathToDirectory(-ies) -type f -size 0 -exec rm {} \;
+$ find pathToDirectory(-ies) -type f -size 0 -exec rm {} \;
 ```
 
 Alternatively, we can use ```-delete``` flag:
 
 ```bash
-find pathToDirectory(-ies) -type f -size 0 -delete
+$ find pathToDirectory(-ies) -type f -size 0 -delete
 ```
 
 To delete recursively non-empty directories found by **find**, only the first version will work, but only after we replace **rm** with **rm -rf** (use with great care!).
@@ -404,7 +383,7 @@ It is also possible to execute multiple commands on the files or directories whi
 **Example 12:** Find all files in the specified directory(-ies), and for each of them: a) print the full metadata with **ls -al**; and b) print the size with **stat -c %s**. 
 
 ```bash
-find pathToDirectory(-ies) -type f -exec ls -al {} \; -exec stat -c %s {} \;
+$ find pathToDirectory(-ies) -type f -exec ls -al {} \; -exec stat -c %s {} \;
 ```
 Equivalently we can use **while+read** construct in combination with the process substitution operator ```<( ... )``` to achieve the same result:
 ```bash
@@ -432,7 +411,7 @@ Here we enlist a few additional flags of **find** command, which can become hand
 * ```-not -path somePattern``` &mdash; exclude from search all results which would match the pattern 'somePattern'.  Example:
 
   ```bash
-  find someDir_{0..9} -not -path someDir_4/* -type f
+  $ find someDir_{0..9} -not -path someDir_4/* -type f
   ```
 
   With the above syntax, the search will be performed for files in all directories named 'someDir_0', ... 'someDir_9', with the exception of directory named 'someDir_4'.
@@ -462,30 +441,23 @@ line 7
 ```
 we have already seen in previous sections that we can select with **sed** for viewing only the lines in the specified range (both ends included), like in the following example:
 ```bash
-sed -n 2,4p example.txt
-```
-Flag ```-n``` ensures that the starting file is not superimposed with the desired selected printout, while ```p``` stands for 'print'. The result is:
-```bash
+$ sed -n 2,4p example.txt
 line 2
 line 3
 line 4
 ```
-Alternatively, if we are interested to print only the first 'n' lines of the file, we can use **head -n** command. For instance:
+Flag ```-n``` ensures that the starting file is not superimposed with the desired selected printout, while ```p``` stands for 'print'.
+
+Alternatively, if we are interested to print only the first 'n' lines of a file, we can use **head -n** command. For instance:
 ```bash
-head -3 example.txt
-```
-will print only the first 3 lines:
-```bash
+$ head -3 example.txt
 line 1
 line 2
 line 3
 ```
 On the other hand, if we are interested to print only last 'n' lines of the file, we can use **tail -n** command. For instance, to get programmatically only the last line in the file, we can use:
 ```bash
-tail -1 example.txt
-```
-which gives for the above example:
-```bash
+$ tail -1 example.txt
 line 7
 ```
 Without arguments, **head** and **tail** print by default the first and the last 10 lines, respectively.
@@ -506,10 +478,7 @@ $ jobs -l
 ```
 The great thing now is that we can see directly in the terminal what each of these jobs is doing in the background. For instance:
 ```bash
-tail -f first.log
-```
-This gives:
-```bash
+$ tail -f first.log
 20860
 1: Tue Jun 23 12:39:57 CEST 2020
 1: Tue Jun 23 12:40:07 CEST 2020
@@ -520,10 +489,7 @@ This gives:
 ```
 As the subshell execution proceeds, the output of **tail -f** gets updated on the screen automatically, just like the subshell is directly running in the terminal, and not in the background. If we now hit ```Ctrl-C```, we terminate only the **tail -f** command, without any interference with the running subshell in the background. After terminating with ```Ctrl-C```, we can inspect the status of second subshell running in the background by executing:
 ```bash
-tail -f second.log
-```
-This gives:
-```bash
+$ tail -f second.log
 20867
 2: Tue Jun 23 12:40:02 CEST 2020
 2: Tue Jun 23 12:40:22 CEST 2020
@@ -536,7 +502,7 @@ We now monitor online what the second subshell running in the background is doin
 
 
 ### 4. Timing: **timeout** and **time** <a name="timing"></a>
-Frequently in practice we are faced with the situation when the command execution gets stalled, without clear indication when its execution might resume. For instance, if we are copying files over the network, and if the network connection experiences a problem, the copying itself will hang until the network connection recovers. But for instance if are copying over network 1000 files containing our data, and if we managed to copy 90% of them, clearly we can reach the decent statistics and reliable results in our analysis, even if we did not analyze the whole dataset. 
+Frequently in practice we are faced with the situation when the command execution gets stalled, without clear indication when its execution might resume. For instance, if we are copying files over the network, and if the network connection experiences a problem, copying itself will hang until the network connection recovers. But for instance if are copying over network 1000 files containing our data, and if we managed to copy 90% of them, clearly we can reach the decent statistics and reliable results in our analysis, even if we did not analyze the whole dataset. 
 
 In general, we can prevent command to hang forever with the **timeout** command. This command in essence ensures that a given command is run within a specified time limit. Its generic syntax is:
 ```bash
@@ -601,7 +567,7 @@ real	0m1.499s
 user	0m0.165s
 sys	0m1.397s
 ```
-This is clearly a great utility when the efficiency of code execution starts to matter.
+This is clearly a handy utility when the efficiency of code execution starts to matter.
 
 
 
@@ -664,7 +630,7 @@ $ date | awk '{print $4}'
 ```
 But now let us attempt in the **Bash** variable **DateSimple** to store that command input:
 ```bash
-DateSimple="date | awk '{print $4}'"
+$ DateSimple="date | awk '{print $4}'"
 ```
 If we now attempt to obtain the content of the variable **DateSimple** via '$', and use it directly in the same way as command input, we get an error:
 ```bash
@@ -682,27 +648,19 @@ To a certain degree, echoing the command input into the file, and then sourcing 
 
 In this context, we mention the following frequently encountered example. We can generate sequences with brace expansion, for instance:
 ```bash
-echo {0..9}
-```
-prints 
-```bash
+$ echo {0..9}
 0 1 2 3 4 5 6 7 8 9
 ```
 But what if we want to set low and upper ends via variables? We could try:
 ```bash
-Min=0
-Max=9
-echo {$Min..$Max}
-```
-The result is however only the following printout:
-```bash
+$ Min=0
+$ Max=9
+$ echo {$Min..$Max}
 {0..9}
 ```
-This is a nice example where **eval** saves the day again, because 
+We see that this natural attempt failed. This is a nice example where **eval** saves the day again, because this works: 
 ```bash
-eval echo {$Min..$Max}
-```
-forces the re-interpretation of intermediate result ```{0..9}```, and produces the desired output:
-```bash
+$ eval echo {$Min..$Max}
 0 1 2 3 4 5 6 7 8 9
 ```
+In this example, **eval** forces the re-interpretation of intermediate result ```{0..9}```, and produces the desired output.
