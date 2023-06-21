@@ -577,20 +577,13 @@ The number of different elements (lines, words, characters) in the file content,
 
 For instance:
 ```bash
-echo "a bb ccc" | wc
-```
-provides the following output:
-```bash
+$ echo "a bb ccc" | wc
       1       3       9
 ```
 The first entry is the number of lines (1), then the number of words (3, namely "a", "bb" and "ccc"), and finally the number of characters (9, since both the empty characters and hidden new lines also count!). Using **wc** to count the number of characters frequently leads to surprises and it is not recommended because the hidden new line character '\n' at the end of each line is also counted, for instance:
 
 ```bash
-echo | wc
-```
-prints 
-
-```bash
+$ echo | wc
        1       0       1
 ```
 In the above printout, 1 character corresponds to the default new line character '\n' in **echo**.
