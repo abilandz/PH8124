@@ -2,7 +2,7 @@
 
 # Homework #6: Playing with **Bash** strings and arrays.
 
-**Last update:** 20220701
+**Last update:** 20230622
 
 **Challenge #1:** Write down a **Bash** code snippet which will capitalize only the very last character of a word. Example use case:
 

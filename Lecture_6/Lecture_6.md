@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20230613
+**Last update**: 20230624
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -113,7 +113,7 @@ Finally, it is mandatory to embed negative offset within round braces ```( ... )
 
 By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:  
 
-1. ```${Var:-defaultValue}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, return the hardwired 'defaultValue'. This is basically protection that variable always has some content. For instance:
+1. ```${Var:-defaultValue}``` &mdash; if 'Var' exists and it is not null, return its current value. Otherwise, return the hardwired 'defaultValue'. This is basically protection that variable always has some content. For instance:
 
    ```bash
     Var=44
@@ -131,7 +131,7 @@ By using string operators one can set the default value of a variable. Most freq
    ```
    This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'. 
    
-2. ```${Var:?someMessage}``` &Rightarrow; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
+2. ```${Var:?someMessage}``` &mdash; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
 
    ```bash
    function myFunction
@@ -306,8 +306,8 @@ The above syntax works, because array indexing starts from 0 and ends with N-1, 
 Quite frequently, we need to prepend or append the same string to all array elements. This can be achieved  elegantly with the following syntax:
 
 ```bash
-SomeArray=${SomeArray[*]/#/SomePattern} # prepend
-SomeArray=${SomeArray[*]/%/SomePattern} # append
+SomeArray=( ${SomeArray[*]/#/SomePattern} ) # prepend
+SomeArray=( ${SomeArray[*]/%/SomePattern} ) # append
 ```
 
 **Example 1:** We have the following starting array which just contains some file names:
