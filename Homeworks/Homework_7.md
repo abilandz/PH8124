@@ -1,4 +1,4 @@
-![](bash_logo.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Homework #7: Coding adventures with grep, sed and awk
 
