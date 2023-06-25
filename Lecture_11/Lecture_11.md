@@ -292,7 +292,7 @@ sys     0m1.906s
 ```
 In above examples, we have used 3 frequently used flags for **ROOT** with the following meaning:
 
-* -l : switch off the splash screen at the beginning
+* -l : switch off the splash screen at the beginning (in **ROOT 5** and older versions)
 * -b : run **ROOT** in the batch mode
 * -q : exit **ROOT** upon execution
 
