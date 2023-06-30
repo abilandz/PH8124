@@ -68,11 +68,11 @@ If more than one directory was supplied to **Ls**, the above formatting repeats 
 ```bash
 a1 a2 a3 a4
 b3 b1 b3 b4
-c1 c2 c3 c4
+c1 c3 c2 c4
 ```
 into a new ASCII file with the following content: 
 ```bash
 a1 a2 a3 test a4
 b3 b1 b3 test b4
-c1 c2 c3 test c4
+c1 c3 c2 test c4
 ```
