@@ -2,7 +2,7 @@
 
 # Homework #7: Coding adventures with grep, sed and awk
 
-**Last update:** 20220707
+**Last update:** 20230630
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
@@ -62,3 +62,17 @@ If more than one directory was supplied to **Ls**, the above formatting repeats 
 **Hint #3:** To extract and order the relevant fields, pipe further to **awk** (for files), or store temporarily in some array (for subdirectories) 
 
 **Hint #4:** To ensure that all columns have the same width in the final printout, simply pipe at the very end to the command **column -t** 
+
+**Challenge #3:** Injecting a new column. Write down one-line code snippet which can be used in the terminal, and which will transfer ASCII file with the content:
+
+```bash
+a1 a2 a3 a4
+b3 b1 b3 b4
+c1 c2 c3 c4
+```
+into a new ASCII file with the following content: 
+```bash
+a1 a2 a3 test a4
+b3 b1 b3 test b4
+c1 c2 c3 test c4
+```
