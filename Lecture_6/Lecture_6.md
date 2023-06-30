@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20230624
+**Last update**: 20230630
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -906,7 +906,7 @@ CEST
 ```
 and so on. 
 
-But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the minutes, and not the full timestamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator variable **FS** to some non-default value,  we use schematically the following syntax:
+But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of **date** command only the seconds, and not the full timestamp '15:36:12' by specifying the 4th field? In order to achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator variable **FS** to some non-default value,  we use schematically the following syntax:
 
 ```bash
 awk 'BEGIN {FS="some-new-single-character-field-separator"} ... '
@@ -918,18 +918,18 @@ For instance, if we want to use colon ```:``` as a field separator in **awk**, w
 ```bash
 awk 'BEGIN {FS=":"} ... '
 ```
-Therefore, to extract only the minutes from the output of **date** command, we can use the following code snippet:
+Therefore, to extract only the seconds from the output of **date** command, we can use the following code snippet:
 ```bash
 $ date
 Wed Jun  3 16:18:44 CEST 2020
-$ date | awk '{print $4}' | awk 'BEGIN {FS=":"}{print $2}'
-18
+$ date | awk '{print $4}' | awk 'BEGIN {FS=":"}{print $3}'
+44
 ```
 What happened above is literally the following:  
 
 1. the command **date** produced the output stream ```Wed Jun  3 16:18:44 CEST 2020```    
 2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was ```16:18:44```  
-3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 2nd field is minutes, which yields as the final output ```18```   
+3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 3rd field is seconds, which yields as the final output ```44```   
 
 As a rule of thumb, field separators in **awk** shall be always single characters &mdash; composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, **nawk**, etc.).  
 
