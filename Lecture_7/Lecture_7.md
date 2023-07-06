@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20230614
+**Last update**: 20230706
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -173,7 +173,7 @@ Hi      there
 
 and so on.
 
-In general, we can force **Bash** to interpret directly the backslash-escaped characters by using the following generic syntax**: **
+In general, we can force **Bash** to interpret directly the backslash-escaped characters by using the following generic syntax: 
 
 ```bash
 $'whatever'
@@ -500,8 +500,8 @@ $ sleep 10m & sleep 20m &
 # We can now trace back the command input using PID this way:
 $ ps -fp 3280886 3280887
 UID          PID    PPID  C STIME TTY      STAT   TIME CMD
-abilandz 3280886 3246923  0 07:20 pts/33   S      0:00 sleep 11m
-abilandz 3280887 3246923  0 07:20 pts/33   S      0:00 sleep 22m
+abilandz 3280886 3246923  0 07:20 pts/33   S      0:00 sleep 10m
+abilandz 3280887 3246923  0 07:20 pts/33   S      0:00 sleep 20m
 ```
 
 The command input is in the last column, and we can also see that both commands were executed from the same parent process (PPID), which in this example was the same shell with PID 3246923.
