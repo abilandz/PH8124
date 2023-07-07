@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20230706
+**Last update**: 20230707
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -466,7 +466,7 @@ Closely related to **top** command is **ps** command (see the corresponding 'man
 
 1. Unix-style parameters: preceded by dash (-) 
 2. BSD-style parameters: not preceded by dash (-)
-3. GNU long parameters: preceded by double dash (--)
+3. GNU long parameters: preceded by double dash (-\-)
 
 For instance, to see all processes running on the system, we can use:
 
