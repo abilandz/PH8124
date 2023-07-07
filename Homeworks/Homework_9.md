@@ -34,11 +34,11 @@ This will dump only lines 1-10 (both ends included) from ```toyData.dat``` into 
 ```bash
 split -d -l 10000 toyData.dat someNamingPattern_
 ```
-If the file 'toyData' has 100000 lines, **split** will fragment it into 10 chunks each of which is holding 10000 lines (flag '-l' specifies number of lines in each chunk), and each chunk is named successively ```someNamingPattern_00```, ```someNamingPattern_01```, ..., ```someNamingPattern_09``` (numerical suffices are used, because flag '-d' is specified). In case there is no exact divisor, reminder goes into the last chunk.
+If the file 'toyData' has 100000 lines, **split** will fragment it into 10 chunks each of which is holding 10000 lines (flag '-l' specifies number of lines in each chunk), and each chunk is named successively ```someNamingPattern_00```, ```someNamingPattern_01```, ..., ```someNamingPattern_09``` (numerical suffixes are used, because flag '-d' is specified). In case there is no exact divisor, reminder goes into the last chunk.
 
 
 
-**Off the record (not a challenge!)**: Lock mechanism. When processes running in parallel are accessing and modifying the same file, it is extremely important to ensure that that file can be modified only by one process at the time. This is typically achieved by a lock mechanism, and here it is demonstrated how a simple lock mechanism can be implemented in **Bash**. The starting idea is to use some atomic command, i.e. command which is ensured by underlying operating system to be possible only once. One such simple atomic command is
+**Off the record (not a challenge!)**: Lock mechanism. When processes running in parallel are accessing and modifying the same file, it is extremely important to ensure that that file can be modified only by one process at the time. This is typically achieved by a lock mechanism, and here it is demonstrated how a simple lock mechanism can be implemented in **Bash**. The starting idea is to use some atomic command, i.e. command execution which is ensured by underlying operating system to be possible only once. One such simple atomic command execution is
 
 ```bash
  mkdir someDir
@@ -73,7 +73,7 @@ Given these two functions, schematic usage of lock mechanism is as follows, when
   sleep 1s # this is not necessary, but it reduces a bit stress on the system
  done
 
- # 2. Lock was obtained for file 'someFile', modify safely that file:
+ # 2. Lock was obtained for file 'someFile', modify safely that file now and here:
  ... some lines which modify the content of file 'someFile' ...
  
  # 3. Release the lock when done:
