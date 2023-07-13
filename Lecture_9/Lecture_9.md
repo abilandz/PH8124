@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20230621
+**Last update**: 20230713
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -264,7 +264,7 @@ As another example, if we want to sort the following content of 'sortExample.txt
 /2/SS2018/PH8124
 ```
 
-with respect to its fields, we need to specify the non-default field separator ```\``` with ```-t``` flag:
+with respect to its fields, we need to specify the non-default field separator ```/``` with ```-t``` flag:
 
 ```bash
 $ sort -t/ -k2 sortExample.txt
