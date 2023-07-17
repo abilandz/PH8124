@@ -41,5 +41,5 @@ For **ROOT**, the official documentation is used:
     * [Homework 7](./Homeworks/Homework_7.md)
     * [Homework 8](./Homeworks/Homework_8.md)
     * [Homework 9](./Homeworks/Homework_9.md)
-    * [Homework 10](./Homeworks/Homework_10_TBI.md)
+    * [Homework 10](./Homeworks/Homework_10.md)
 * [Final Project](./Final_Project/FinalProject.md_TBI)
