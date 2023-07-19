@@ -4,7 +4,7 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20220714
+**Last update:** 20230719
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jets production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions and jet interaction in dense matter.
 
