@@ -17,7 +17,7 @@ Here is a just a collection of code snippets which were used in the lecture &mda
 ### Table of Contents
 1. [Superimposing different plots](#superimposing)
 2. [Playing with ROOT files](#root_files)
-3. [TFileMerger](#tfilemerger)
+3. [TFileMerger and 'hadd'](#tfilemerger)
 4. [TTree](#ttree)
 
 
@@ -183,7 +183,7 @@ We see clearly our two objects in this printout, let us now fetch their pointers
 
 
 
-### 3. TFileMerger <a name="tfilemerger"></a>
+### 3. TFileMerger and 'hadd' <a name="tfilemerger"></a>
 When part of the data is analyzed with one process, and another part with another process, the output ROOT files have exactly the same internal structure (e.g. number of histograms), only the histogram content is different. In situations like this, and in order to achieve the total statistics in the analysis, one is interested in merging (i.e. summing up) all histogram together. This can be achieved very conveniently with the ```TFileMerger``` class, which will merge automatically the content of all mergeable objects within the ROOT files (typically histograms and profiles).
 
 As an important remark, we stress it out again that the ROOT files we want to merge must have exactly the same internal structure, otherwise weird things can happen, as ROOT cannot easily determine the internal structure of final merged file.
@@ -213,6 +213,18 @@ we can merge them with the following code snippet:
 ```
 The new file 'merged.root' has full statistics, which was initially fragmented in the files '10/mergeMe.root' and '11/mergeMe.root' summed up. This simple example can be trivially generalized for any number of histograms per ROOT file, and for any number of ROOT files. 
 
+Alternatively, it is possible to use ROOT executable **hadd** to merge ROOT files directly from the terminal. This is particularly handy if merging has to be done on the fly in some script. For the above example, the syntax is:
+```bash
+hadd merged.root 10/mergeMe.root 11/mergeMe.root
+```
+
+The first file specified as argument is a TARGET file, i.e. the final merged ROOT file. Of course, the files which need to be merged do not have to be specified explicitly, we can ask **Bash** to generate list of files, for instance:
+
+```bash
+hadd merged.root $(find $PWD -name mergeMe.root)
+```
+
+For other supported options in **hadd**, see its documentation **hadd -h**.
 
 
 
