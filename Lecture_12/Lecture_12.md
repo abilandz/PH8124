@@ -2,7 +2,7 @@
 
 # Lecture 12: ROOT - basic classes (Part 2/2)
 
-**Last update**: 20220708
+**Last update**: 20230720
 
 ### Disclaimer
 Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
@@ -47,7 +47,7 @@ only the histogram 'hist2' is shown on the canvas. If we change the order, i.e.:
 hist2->Draw();
 hist1->Draw();
 ```
-only the histogram 'hist1' is shown. This indicates that the histogram we have drawn last by default overwrites what was drawn previously in the same default canvas. We can instead superimpose the current object on what is already plotted in the canvas, by passing argument ```"same"``` to member function ```Draw()```. For instance, if we use:
+only the histogram 'hist1' is shown. This indicates that the histogram we have drawn last by default overwrites what was drawn previously in the same default canvas. We can instead superimpose the current object on what is already plotted on the canvas, by passing argument ```"same"``` to member function ```Draw()```. For instance, if we use:
 ```cpp
 hist2->Draw();
 hist1->Draw("same");
@@ -94,10 +94,10 @@ ROOT files are made in a very straightforward way by using class ```TFile```:
  TFile *file = new TFile("someFileName.root","NEW");
 }
 ```
-This simple one-line code snippet created a new physical file on the hard disk, in the current working directory (otherwise in the first argument specify absolute path!), named ```someFileName.root```. If the file with that name already exists in the current working directory, that file will NOT be overwritten, because we have made a new flie with the option 'NEW'. The meaning of 4 most important options in ```TFile``` constructor is summarized here: 
+This simple one-line code snippet created a new physical file on the hard disk, in the current working directory (otherwise, in the first argument we need to specify absolute path), named ```someFileName.root```. If the file with that name already exists in the current working directory, that file will NOT be overwritten, because we have made a new file with the option 'NEW'. The meaning of 4 most important options in ```TFile``` constructor is summarized here: 
 
 * **NEW** or **CREATE** : Create a new file and open it for writing, if the file already exists the file is not opened.
-* **RECREATE**	: Create a new file, if the file already exists it will be overwritten.
+* **RECREATE** : Create a new file, if the file already exists it will be overwritten.
 * **UPDATE** : Open an existing file for writing. If no file exists, it is created.
 * **READ** : Open an existing file for reading (default).
 
