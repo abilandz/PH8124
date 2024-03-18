@@ -1,6 +1,6 @@
-This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2023.
+This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2024.
 
-The material covered in the previous year is at [SS2022]( https://abilandz.gitbook.io/ss2022 ) (the current semester is based on it, only minor modifications are foreseen).
+The material covered in the previous year is at [SS2023]( https://abilandz.gitbook.io/ss2023 ) (the current semester is based on it, only minor modifications are foreseen).
 
 The formal course description can be found at the TUM website at the following link:
 
