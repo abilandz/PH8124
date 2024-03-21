@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20230417
+**Last update**: 20240321
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -161,7 +161,7 @@ Generically, for most cases of interest, we are executing commands in the termin
 
 This is the right moment to stress the importance and profound meaning of empty character: Empty character is the default input field separator (**IFS**) in the world of **Linux**. If you misuse the empty character, a lot of input in the terminal will be completely incomprehensible to **Bash**, and to **Linux** commands in general. In the above generic example, empty character separates the three items, which conceptually have a completely different meaning. As the very first step, after you have typed the input in the terminal and pressed 'Enter', the **Bash** splits your input into tokens that are separated (by default, and in a bit simplified picture) with one or more empty characters. Then, it checks whether the very first token is a known **Linux** command, **Bash** keyword, etc.
 
-The command input in **Bash** is terminated either by a new line or by a semi-colon ```;``` . It is completely equivalent to write:
+The command input in **Bash** is terminated either by a new line or by a semi-colon ```;``` character. It is completely equivalent to write:
 
 ```bash
 echo "Hello World"
@@ -454,6 +454,7 @@ Few final additional remarks on variables in **Bash**:
 * By convention, for the names of built-in **Bash** variables only capital characters are used (e.g. **BASHPID**, **BASH_SOURCE**, etc.), while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var``` or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in **Bash** variables. Variable name starts with a letter or underscore, and may contain any number of following letters, digits and underscores. Common mistakes: Variable name can not start with a digit and it can not contain a dash ```-```;
 * The lifetime of a variable is by default limited to the terminal session in which you have defined it. But you can make its existence persistent in any new terminal you open (i.e. in your _environment_) by adding its definition to the very special ```.bashrc``` configuration file (more on this at the end of this section!);
 * The scope of a variable is by default limited to the current process in which it was declared. But you can make its existence persistent in any new process started from the current process (i.e. in any _child_ process), by using the shell's built-in command **export** at its declaration, for instance, ```export Var=44``` . This way, variable `Var` is persistent in all new processes started from your current terminal session, in which variable was both declared and exported. Using an alternative terminology, with **export** you have created a global variable;
+* To delete variable, use built-in command **unset**, e.g. ```unset Var``` . Variables which do not exist are assumed to be null, i.e. equal to the empty strings. Therefore, even if 'Var' was not declared, this code snippet does not produce an error: ```echo $Var``` (simply, nothing is printed); 
 * It is possible to store in the variable the output of some command, and then manipulate this output programmatically (more on this later!);
 * It is possible to store in the variable the content of an external file (more on this later!);
 * There are some built-in variables always set to some values, e.g. **HOME**, **SHELL**, **PATH**, etc. These special variables are the essential part of your **shell** environment, and if they are not set correctly, everything in your current terminal session can start falling apart (more on this later!).
