@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20240321
+**Last update**: 20240325
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -454,7 +454,7 @@ Few final additional remarks on variables in **Bash**:
 * By convention, for the names of built-in **Bash** variables only capital characters are used (e.g. **BASHPID**, **BASH_SOURCE**, etc.), while for command names we use all low-case characters. For user's variables, use some intermediate case, like ```Var``` or ```someVariable```, to ease the code readability and to avoid potential conflict with the existing built-in **Bash** variables. Variable name starts with a letter or underscore, and may contain any number of following letters, digits and underscores. Common mistakes: Variable name can not start with a digit and it can not contain a dash ```-```;
 * The lifetime of a variable is by default limited to the terminal session in which you have defined it. But you can make its existence persistent in any new terminal you open (i.e. in your _environment_) by adding its definition to the very special ```.bashrc``` configuration file (more on this at the end of this section!);
 * The scope of a variable is by default limited to the current process in which it was declared. But you can make its existence persistent in any new process started from the current process (i.e. in any _child_ process), by using the shell's built-in command **export** at its declaration, for instance, ```export Var=44``` . This way, variable `Var` is persistent in all new processes started from your current terminal session, in which variable was both declared and exported. Using an alternative terminology, with **export** you have created a global variable;
-* To delete variable, use built-in command **unset**, e.g. ```unset Var``` . Variables which do not exist are assumed to be null, i.e. equal to the empty strings. Therefore, even if 'Var' was not declared, this code snippet does not produce an error: ```echo $Var``` (simply, nothing is printed); 
+* To delete variable, use built-in command **unset**, e.g. ```unset Var``` . Variables which do not exist are assumed to be null, i.e. equal to the empty strings. Therefore, even if variable named ```Var``` was not declared, this code snippet does not produce an error: ```echo $Var``` (simply, nothing is printed); 
 * It is possible to store in the variable the output of some command, and then manipulate this output programmatically (more on this later!);
 * It is possible to store in the variable the content of an external file (more on this later!);
 * There are some built-in variables always set to some values, e.g. **HOME**, **SHELL**, **PATH**, etc. These special variables are the essential part of your **shell** environment, and if they are not set correctly, everything in your current terminal session can start falling apart (more on this later!).
@@ -469,7 +469,7 @@ Now that we have covered the very basics of commands and variables, let us see h
 We have already seen how with **touch** command we can make an empty file. Now we will see how we can write a file or edit an already existing file in the terminal. The simplest way to write a new file, solely in the terminal (i.e. without using any graphics-based editor like **gedit**, **emacs**, **vim**, etc.), is to use command **cat**, in the following construct:
 
 ```bash
-cat > someFile.txt
+$ cat > someFile.txt
  This text is the content 
   of my 
 first 
@@ -491,12 +491,12 @@ CTRL+d
 ```
 The operator ```>>``` appends the text at the end of an already existing file. If we would have used ```>``` to redirect the new content to the already existing file, that file would be overwritten with this new content &mdash; use ```>``` in such a context with great care! This, however, also implies that the above **cat** construct is rather limited, as it can be used either to write a new file from scratch or to append new content at the very end of an already existing file. But what if we want to edit the already existing content of the file? 
 
-For that sake, we need to use some simple editor which can be run in the terminal (i.e. without graphics). One such, wide-spread, open-source, editor is **nano**, which includes only the bare minimum of functionality needed to edit documents, making it very simple to use. In addition, syntax coloring is available for most of the programming languages. As an exercise, let us edit the content of already existing non-empty file ```someFile.txt``` from the previous **cat** example.
+For that sake, we need to use some simple editor which can be run in the terminal (i.e. without graphics). One such, wide-spread, open-source, editor is **nano**, which includes only the bare minimum of functionality needed to edit documents, making it very simple to use. In addition, the syntax coloring is available for most of the programming languages. As an exercise, let us edit the content of already existing non-empty file ```someFile.txt``` from the previous **cat** example.
 
 ```bash 
 nano someFile.txt
 ```
-Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor &mdash; this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated &mdash; it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics!). For editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however, they offer much more features and are regularly used by professional programmers.
+Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press ```CTRL+o``` (to write out into the physical file ```someFile.txt``` what you have edited so far in the editor &mdash; this is the same thing as saving, just jargon is different...). When you are done with editing, press ```CTRL+x``` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated &mdash; it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics). For editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however, they offer much more features and are regularly used by professional programmers.
 
 
 
@@ -526,11 +526,11 @@ return 0
 Now let us have a closer look at the content of your first **Bash** script:
 
 * The first line is mandatory, namely: ```#!/bin/bash```
-* The first two characters in the first line are mandatory, namely: ```#!``` (the combination of these two characters is called shebang or hashbang)
+* The first two characters in the first line are mandatory, namely: ```#!``` (the combination of these two characters is called _shebang_ or _hashbang_)
 
 What is happening here is the following: ```#!``` in the first line indicates to the operating system that whatever follows next on the first line, must be interpreted as a path to the executable (e.g. ```/bin/bash``` if you want to run **Bash**), which then must be used to interpret the code in all the remaining lines in the script. In this way, you can put up together any script, not necessarily the one for **Bash** &mdash; you just need to change ```/bin/bash``` in the first line, and point out to some other executable.
 
-From the above example, you can see that whatever we have previously executed directly in the terminal (e.g. **echo** or **date** commands), we can also write in the script, and then execute all commands in one go, by executing the script. That being said, at the very basic level, scripting saves you the time needed to retype again and again any regular sequence of commands, after you open a new terminal &mdash; for instance, the file ```first.sh``` you just made, is available in any new terminal you open!
+From the above example, it can be seen that whatever we have previously executed directly in the terminal (e.g. **echo** or **date** commands), we can also write in the script, and then execute all commands in one go, by executing the script. That being said, at the very basic level, scripting saves you the time needed to retype again and again any regular sequence of commands, after you open a new terminal &mdash; for instance, the file ```first.sh``` you just made, is available in any new terminal you open!
 
 How to execute the **Bash** script? It's simple, just pass the file name as an argument to the command **source** (i.e. in jargon, you need to _source_ your script):
 
@@ -558,7 +558,7 @@ Finally, ```return 0``` sets the _exit status_ of your script. In general, each 
 * 0 : success
 * 1, 2, 3, ... , 255 : various error states
 
-The exit status is stored in the special variable **$?**. For instance:
+The exit status is stored in the special variable **$? **. For instance:
 
 ```bash
 date
@@ -568,7 +568,7 @@ echo $? # prints 0 , i.e. success
 and
 
 ```bash
-date -q # option -q is NOT supported
+date -q # option -q is NOT supported in command 'date'
 echo $? # prints 1 , i.e. one possible exit status for error
 ```
 
@@ -593,10 +593,11 @@ The output might look like:
 /home/abilandz
 ```
 
-This is the absolute path to your home directory in the **Linux** file system. The slash ```/``` delineates directories in the **Linux** directory structure (on **Windows** backslash ```\``` is used instead in the same context). Each time you login, by default this is your starting working directory. This information is alternatively also stored in environment variable **HOME**, i.e. try:
+This is the absolute path to your home directory in the **Linux** file system. The slash ```/``` delineates directories in the **Linux** directory structure (on **Windows** backslash ```\``` is used instead in the same context). Each time you login, by default this is your starting working directory. This information is alternatively also stored in environment variable **HOME**, i.e.:
 
 ```bash
-echo $HOME
+$ echo $HOME
+/home/abilandz
 ```
 
 By convention, the name of all configuration files in the home directory begins with '.' (dot), which means that **ls** will not list them by default.
