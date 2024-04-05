@@ -488,7 +488,7 @@ Hello Alice
 
 The output is:
 
-```bash
+```linux
 Hello
 Your name is: Alice
 ```
@@ -497,7 +497,7 @@ When compared to the script implementation, there are few differences:
 
 * Usage of keyword **function** (an alternative syntax exists, ```someName()```, but it is really a matter of taste which one you prefer)
 * Body of the function must be embedded within ```{ ... }```
-* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of that function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, a call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local**
+* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of that function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, a call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local** .
 
 The rest is the same as for the scripts:
 
