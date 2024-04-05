@@ -15,7 +15,7 @@
 
 ### 1. **Linux** file system <a name="file_system"></a>
 
-We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows the common and widely accepted structure named _Filesystem Hierarchy Standard (FHS)_ (https://refspecs.linuxfoundation.org/fhs.shtml). The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can see its content by executing the following code snippet in the terminal:
+We have already seen how you can make your own files (e.g. with **touch**, **cat** or **nano**), and your own directories (with **mkdir**). The organization of files and directories in **Linux** is not arbitrary, and it follows the common and widely accepted structure named [_Filesystem Hierarchy Standard (FHS)_]( https://refspecs.linuxfoundation.org/fhs.shtml ). The top directory is the so-called _root_ directory and is denoted by ```/``` (slash). You can enter it and see its content by executing the following code snippet in the terminal:
 ```bash
 cd /
 ls
