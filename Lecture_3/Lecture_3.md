@@ -26,7 +26,7 @@ The output could look like:
 bin  boot  dev  etc  home  lib  media  opt  proc  root  run  sbin  sys  tmp  usr  var
 ```
 
-All files and directories on your computer are in one of these subdirectories. Depending on which Linux distribution you are using, the details might differ &mdash; you can programmatically inspect which distribution is installed with the following command:
+All files and directories on your computer are in one of these subdirectories. Depending on which Linux distribution you are using, the details might differ &mdash; you can programmatically inspect which Linux distribution is installed on your computer with the following command:
 
 ```bash
 $ cat /etc/os-release 
@@ -120,7 +120,7 @@ For the lower priority of your executables, use an alternative standard code sni
 PATH="${PATH}:/home/abilandz/bin"
 ```
 
-In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard, system-wide, **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new  terminal you open, add the above redefinitions of **PATH** into ```~/.bashrc``` file. In case you want the redefinition of **PATH** to be persistent in all new processes, use in addition the command **export** at declaration. 
+In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard system-wide **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new terminal you open, add the above redefinitions of **PATH** into ```~/.bashrc``` file. In case you want the redefinition of **PATH** to be persistent in all new processes you start from a terminal, use in addition the command **export** at the first declaration or redefinition of **PATH** variable. 
 
 From the above explanation, it is clear that if you unset **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
 
@@ -162,14 +162,14 @@ Some frequently used **Linux** commands to work within the file system are:
 * **cp** : copy file(s)
 ```bash
 cp file1 file2 # copying and renaming a file
-cp file1 file2 ... someDirectory # copying two or more files in someDirectory  
+cp file1 file2 ... someDirectory # copying two or more files in someDirectory
                                  # the names of original files are preserved
 ```
 Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
 * **cp -r** : copy directory and preserve its subdirectory structure
 ```bash
-cp -r directory1 directory2 # this will copy the first directory into  
+cp -r directory1 directory2 # this will copy the first directory into
                             # a new subdirectory of the second directory
 ```
 
