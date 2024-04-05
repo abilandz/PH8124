@@ -188,8 +188,9 @@ Flag **-r** ('recursive') is needed to indicate that you want to delete all subd
 * **mv** : move or rename files or directories
 ```bash
 mv someFile someDir/   # moving a file into new directory
-mv file1 someDir/file2 # content of 'file1' overwrites content of 'file2', and 'file1' is deleted
-mv file1 file2         # renaming - 'file2' becomes 'file1' (they are in the same directory)
+mv file1 someDir/file2 # content of 'file1' overwrites 'file2', and 'file1' is deleted
+mv file1 file2         # effectively renaming - 'file2' becomes 'file1' 
+                       # (they are in the same directory!)
 ```
 The command **mv** uses the same syntax for directories (no additional flags are needed).
 ```bash
