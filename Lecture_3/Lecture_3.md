@@ -162,7 +162,7 @@ Some frequently used **Linux** commands to work within the file system are:
 * **cp** : copy file(s)
 ```bash
 cp file1 file2 # copying and renaming a file
-cp file1 file2 ... someDirectory # copying two or more files in someDirectory
+cp file1 file2 ... someDirectory # copyying two or more files in someDirectory
                                  # the names of original files are preserved
 ```
 Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
