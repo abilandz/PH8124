@@ -162,8 +162,8 @@ Some frequently used **Linux** commands to work within the file system are:
 * **cp** : copy file(s)
 ```bash
 cp file1 file2 # copying and renaming a file
-cp file1 file2 ... someDirectory # copyyyying two or more files in someDirectory
-                                   # the names of original files are preserved
+cp file1 file2 ... someDirectory # copying two or more files into someDirectory
+                                 # the names of original files are preserved
 ```
 Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
@@ -183,14 +183,21 @@ Use **rm** with great care, because after you deleted the file, there is no easy
 ```bash
 rm -rf dir1 dir2 ... # delete the specified directories
 ```
-Flag **-r** ('recursive') is needed to indicate that you want to delete all subdirectories recursively, **-f** ('force') is needed to avoid the prompt message which would ask you for the deleting confirmation of each file separately. Use **rm -rf** with the greatest possible care, because after you have deleted the directory, there is no easy way to get back any of the files that were in that directory!
+Flag **-r** ('recursive') is needed to indicate that you want to delete all subdirectories recursively, **-f** ('force') is needed to avoid the prompt message which would ask you for the deleting confirmation of each file separately. Use **rm -rf** with the greatest possible care, because after you have deleted the directory, there is no easy way to get back any of the files that was in that directory!
 
-* **mv** : move or rename file(s)
+* **mv** : move or rename files or directories
 ```bash
-mv file1 file2 # moving, if two files are not in the same directory
-               # renaming, if two files are in the same directory
+mv someFile someDir/   # moving a file into new directory
+mv file1 someDir/file2 # content of 'file1' overwrites content of 'file2', and 'file1' is deleted
+mv file1 file2         # renaming - 'file2' becomes 'file1' (they are in the same directory)
 ```
 The command **mv** uses the same syntax for directories (no additional flags are needed).
+```bash
+mv dir1 dir2      # if 'dir2' exists, 'dir1' becomes the subdirectory of 'dir2'
+                  # if 'dir2' doesn't exist, 'dir1' is renamed into 'dir2'
+mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of 'dirN'
+                  # if 'dirN' doesn't exist, syntax error   
+```
 
 * **du -sh** : ('disk usage') : summary (flag **-s**) for the size of directory in the human-readable (flag **-h**) format 
 ```bash
