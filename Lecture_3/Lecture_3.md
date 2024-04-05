@@ -369,7 +369,7 @@ In this section we discuss how some arguments can be supplied to your script at 
 
 **Example:** We want to develop a script named ```favorite.sh``` which takes two arguments: the first one is the name of the collider, the second the name of the experiment. This script then just prints something like: 
 
-```bash
+```linux
 My favorite collider is <some-collider>
 My favorite experiment at <some-collider> is <some-experiment>
 ```
@@ -391,7 +391,7 @@ source favorite.sh LHC ALICE
 
 the printout looks as follows:
 
-```bash
+```linux
 My favorite collider is LHC
 My favorite experiment at LHC is ALICE
 ```
