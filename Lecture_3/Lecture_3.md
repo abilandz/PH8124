@@ -318,13 +318,17 @@ Now everybody (you as a user (```u```), group members (```g```)  and others (```
 chmod -R some-options-to-change-permissions someDirectory
 ```
 
-Note that it makes a perfect sense to use ```x``` permission also for directories, because we can then add recursively in one go ```x``` permissions to all files in that directory.
+Note that it makes a perfect sense to use ```x``` permission also for directories, because we can then add recursively in one go ```x``` permission to all files in that directory.
 
 Finally, we clarify that the setting for each permission can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
  <img src="permissions.png" style="zoom:50%;" />
 
 When these values are added together, the sum is used to set specific permissions. 
+
+| permission |  r   |  w   |  x   |  -   |
+| :--------- | :--: | :--: | :--: | :--: |
+| **value**  |  4   |  2   |  1   |  0   |
 
 For example, if you want to set only 'read' and 'write' permissions, you need to use a value 6, because from the above table, it follows immediately: 4 ('read') + 2 ('write') = 6. If you want to remove all of 'read', 'write' and 'execute' permissions, you need to specify 0. 
 
