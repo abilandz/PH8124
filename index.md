@@ -6,7 +6,7 @@ This webpage contains the lecturing material for the course PH8124, 'Scientific 
 
 The material covered in the previous year is at [SS2023]( https://abilandz.gitbook.io/ss2023 ) (the current semester is based on it, only minor modifications are foreseen).
 
-The formal course description can be found at the TUM website at the following internal [link]( https://app.srv.nat.tum.de/mhb/description?id=12862 ) 
+The formal course description can be found at the TUM website at the following internal [link]( https://app.srv.nat.tum.de/mhb/description?id=12862 ), and at the following public [link]( https://academics.nat.tum.de/org/mh/details/mod/PH8124/ ).
 
 For **ROOT**, the official documentation is used:
 
