@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20230506
+**Last update**: 20240429
 
 
 ### Table of Contents
@@ -11,6 +11,7 @@
 2. [Input/Output (I/O) and redirections](#io)
 3. [Code blocks and brace expansion: **{ ... }**](#code_blocks_and_brace_expansion)
 4. [Conditional statements](#conditional_statements)  
+
  	 A) [if-elif-else-fi](#if)   
  	 B) [case-in-esac](#case)   
 
