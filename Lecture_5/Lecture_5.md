@@ -154,23 +154,50 @@ Var = 2020
 ```
 This was yet another example to illustrate the importance of empty character as being the default field separator in **Linux/Bash**.
 
-By definition, the command substitution operator ``` $( ... ) ``` takes only stdout stream &mdash; in rare cases when both 'stdout' and 'stderr' streams, or only 'stderr' stream, need to be taken, the following generic syntax can be used, respectively:
+For historical reasons, we would like to remark that the backticks ``` ` ... ` ``` do the same thing as command substitution operator ``` $( ... ) ```:
 
 ```bash
-# both 'sdtout' and 'stderr' of 'someCommandInput' are stored in Var:
+echo "Today is: $(date) . Thanks for the info."
+echo "Today is: `date` . Thanks for the info."
+```
+
+**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` does not work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be always preferred in **Bash** scripts over backticks ``` ` ... ` ```.
+
+Even though Input/Output (I/O) is discussed in detail in the very next section, for completeness sake we summarize that the command substitution operator ``` $( ... ) ``` takes only 'stdout' stream, i.e. the successful output of command execution:
+
+```bash
+$ Var=$(echo AA && echooo BB) # the 2nd command failed
+echooo: command not found
+$ echo $Var # only 'stdout' of 1st command is saved in Var
+AA
+$ Var=$(echooo AA || echo BB) # the 1st command failed
+echooo: command not found
+$ echo $Var # only 'stdout' of 2nd command is saved in Var
+BB
+```
+
+In rare cases when both 'stdout' and 'stderr' streams (or only 'stderr' stream) need to be stored, the following generic syntax can be used, respectively:
+
+```bash
+# both 'stdout' and 'stderr' of 'someCommandInput' are stored in Var:
 Var=$(someCommandInput 2>&1)
 
 # only 'stderr' of 'someCommandInput' is stored in Var:
 Var=$(someCommandInput 2>&1 1>/dev/null)
 ```
 
-In the end, we would like to remark that the backticks ``` ` ... ` ``` do the same thing as command substitution operator ``` $( ... ) ```:
+Applying this generic syntax to the concrete examples, we obtain:
 
 ```bash
-echo "Today is: $(date) . Thanks for the info."
-echo "Today is: `date` . Thanks for the info."
+$ Var=$(echo AA && echooo BB 2>&1)
+$ echo $Var # both 'stdout' of 1st command and 'stderr' of 2nd command are saved in Var
+AA echooo: command not found
+$ Var=$(echooo BB 2>&1 1>/dev/null) # the command failed - only its error stream is saved in Var
+$ echo $Var
+echooo: command not found
 ```
-**Bash** supports backticks in this context only for backward compatibility with some very old shells. There is, however, one important difference: Nesting of backticks ``` ` ... ` ``` does not work properly, only the nesting of command substitution operator ``` $( ... ) ``` is reliable. That being said, ``` $( ... ) ``` shall be preferred in **Bash** scripts over backticks ``` ` ... ` ```.
+
+In what follows next, we introduce and discuss input and output streams of **Linux** commands in more detail.
 
 
 
