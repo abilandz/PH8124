@@ -2,7 +2,7 @@
 
 # Using **Bash** aliases as your simplest commands
 
-**Last update:** 20230504
+**Last update:** 20240502
 
 **Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as 
 

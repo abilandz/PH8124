@@ -32,7 +32,7 @@ For **ROOT**, the official documentation is used:
 * [Lecture 11](./Lecture_11/Lecture_11.md_TBI)
 * [Lecture 12](./Lecture_12/Lecture_12.md_TBI)
 * [Homeworks](./Homeworks/Trivia.md_TBI)
-    * [Homework 1](./Homeworks/Homework_1.md_TBI)
+    * [Homework 1](./Homeworks/Homework_1.md)
     * [Homework 2](./Homeworks/Homework_2.md_TBI)
     * [Homework 3](./Homeworks/Homework_3.md_TBI)
     * [Homework 4](./Homeworks/Homework_4.md_TBI)
