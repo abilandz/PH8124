@@ -11,5 +11,3 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 | 03752534 | 1.0 | | | | | | | | | | 1.0 |
 | 03734063 | 1.0 | | | | | | | | | | 1.0 |
 | 03746277 | 1.0 | | | | | | | | | | 1.0 |
-
-
