@@ -31,7 +31,7 @@ For **ROOT**, the official documentation is used:
 * [Lecture 10](./Lecture_10/Lecture_10.md_TBI)
 * [Lecture 11](./Lecture_11/Lecture_11.md_TBI)
 * [Lecture 12](./Lecture_12/Lecture_12.md_TBI)
-* [Homeworks](./Homeworks/Trivia.md_TBI)
+* [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1](./Homeworks/Homework_1.md)
     * [Homework 2](./Homeworks/Homework_2.md_TBI)
     * [Homework 3](./Homeworks/Homework_3.md_TBI)
