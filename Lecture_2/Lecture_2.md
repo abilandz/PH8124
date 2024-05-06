@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20240325
+**Last update**: 20240506
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -558,7 +558,7 @@ Finally, ```return 0``` sets the _exit status_ of your script. In general, each 
 * 0 : success
 * 1, 2, 3, ... , 255 : various error states
 
-The exit status is stored in the special variable **$? **. For instance:
+The exit status is stored in the special variable **$?** . For instance:
 
 ```bash
 date
