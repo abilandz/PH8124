@@ -201,23 +201,23 @@ In what follows next, we introduce and discuss input and output streams of **Lin
 
 
 ### 2. Input/Output (I/O) and redirections <a name="io"></a>
-In the previous section we have seen how we can embed the output of one command into the input of another command with the command substitution operator ```$( ... )```. Let us now make a further progress in this direction and clarify in more detail the input and output streams of **Linux** commands. By convention, each **Linux** command has three standard input/output (I/O) channels set. More concretely, each **Linux** command has a single way of:
+In the previous section we saw how we can embed the output of one command into the input of another command with the command substitution operator ```$( ... )```. Let us make further progress in this direction and clarify in more detail the input and output streams of **Linux** commands. By convention, each **Linux** command has three standard input/output (I/O) channels set. More concretely, each **Linux** command has a single way of:
 
 * accepting input : **standard input (_stdin_)** = file descriptor 0 
 * producing output : **standard output (_stdout_)** = file descriptor 1
 * producing error messages : **standard error (_stderr_)** = file descriptor 2
 
-Each command that you execute has these three standard I/O channels set to some default values. By default, standard input is a keyboard (but it can be also a file redirection, touchscreen, etc.). On the other hand, standard output and standard error are by default set to screen. The most important things to remember is:
+Each executed command has these three standard I/O channels set to some default values. By default, standard input is a keyboard (but it can also be a file redirection, touchscreen, etc.). On the other hand, standard output and standard error are, by default, set to screen. The most important things to remember are:
 
-* _stdout_ (file descriptor 1): This is the textual stream you see in the terminal if a command executed successfully;
-* _stderr_ (file descriptor 2): This is the textual stream you see in the terminal if a command failed (a.k.a. error message).
+* _stdout_ (file descriptor 1): This is the textual stream you see in the terminal if a command is executed successfully;
+* _stderr_ (file descriptor 2): This is the textual stream you see in the terminal if a command fails (a.k.a. error message).
 
 For instance, when the command **date** executes successfully, it produces the following:
 ```bash
 $ date
 Sun May 17 11:53:03 CEST 2020
 ```
-The above printout is an example _stdout_ stream of command **date**.  On the other hand, when the command **date** fails, for instance when it is called with the flag which is not supported:
+The above printout is an example _stdout_ stream of command **date**. On the other hand, when the command **date** fails, for instance, when it is called with a flag which is not supported:
 ```bash
 date -q
 ```
@@ -227,7 +227,7 @@ date: invalid option -- 'q'
 ```
 The above printout is an example _stderr_ stream of command **date**. This behavior is true for basically all **Linux** commands.
 
-Since the two streams, _stdout_ and _stderr_, are always set for a command, we will now see how to handle them programmatically. In practice, one can programmatically fetch the _stdout_ of some command, parse through it, and depending on its content, issue some specific action. In a similar fashion, one can fetch programmatically _stderr_ (i.e. error message) of some  command, and depending on its content, issue some specific action to fix that particular problem. For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
+Since the two streams, _stdout_ and _stderr_, are always set for a command, we will now see how to handle them programmatically. In practice, one can programmatically fetch the _stdout_ of some command, parse through it, and depending on its content, issue some specific action. Similarly, one can fetch programmatically _stderr_ (i.e. error message) of some command, and, depending on its content, issue some specific action to fix that particular problem. For that sake, we need to use their respective file descriptors. The following operators are available in **Bash** to handle _stdout_ and _stderr_ streams:
 
 * ```1>``` : captures and redirects to a file only the successful output of command (_stdout_)
 * ```2>``` : captures and redirects to a file only the error message if command failed (_stderr_)
@@ -237,7 +237,7 @@ For instance, if we want to redirect the _stdout_ stream of **date** command int
 ```bash
 date 1> output.log
 ```
-Whatever the command **date** was printing on the terminal, now is re-directed to the physical file named ```output.log```. If that file does not exist, it will be automatically created at this point. The file's location in the file system can be specified also in this context both with an absolute and a relative path. If you now execute:
+Whatever the command **date** was printing on the terminal, now it is re-directed to the physical file named ```output.log```. If that file does not exist, it will be automatically created at this point. The file's location in the file system can also be specified in this context both with an absolute and a relative path. If you now execute:
 
 ```bash
 cat output.log
@@ -251,7 +251,7 @@ Sun May 17 11:53:03 CEST 2020
 
 In this sense, by using ```1>``` redirection, the printout of some command during execution is stored permanently in the physical file on a local disk.
 
-Analogously, we can also programmatically redirect the error message of command, we just need to change the file descriptor:
+Analogously, we can also programmatically redirect the error message of command &mdash; we just need to change the file descriptor:
 
 ```bash
 date -q 2> error.log
@@ -265,9 +265,9 @@ We can also redirect both _stdout_ and _stderr_ in the same file with ```&>``` o
 someCommand &> outputAndError.log
 ```
 
-This way we can keep the whole printout which command has produced during execution permanently in some local files, separately for _stdout_ and _stderr_, or combined . Then later at any point by inspecting those printouts in the files we can trace back the whole execution, which helps enormously the code development and debugging.
+This way, we can keep the whole printout the command has produced during execution permanently in some local files, separately for _stdout_ and _stderr_, or combined. Then, at any point later, by inspecting those printouts in the files we can trace back the whole execution, which helps enormously the code development and debugging.
 
-If we re-execute the above examples, the previous content of specified files will be overwritten with the new information. If instead, you want the new information to be appended to the existing content of those files, use instead the operators: ```1>>```, ```2>>``` and ```&>>```. 
+If we re-execute the above examples, the previous content of specified files will be overwritten with the new information. If, instead, you want the new information to be appended to the existing content of those files, use instead the operators: ```1>>```, ```2>>``` and ```&>>```. 
 
 If the file descriptor number is not specified, it is defaulted to 1, i.e. ```>``` is exactly the same as ```1>```, and ```>>``` is exactly the same as ```1>>```.
 
@@ -275,7 +275,7 @@ Especially in the older **Bash** scripts you will see also ```2>&1``` redirectio
 
  ![](blackHole.jpg)
 
-There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, commands can print some warnings on the screen. After you have acknowledged them and concluded that those warnings are harmless, you clearly do not want to see them again and again. This is precisely where the special file ```/dev/null``` becomes very handy, because whatever you redirect to it, it is lost forever.
+There is also a black hole in **Linux**, and it is called ```/dev/null```. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, commands can print some warnings on the screen. After you have acknowledged them and concluded that those warnings are harmless, you clearly do not want to see them again and again. This is precisely where the special file ```/dev/null``` becomes very handy because whatever you redirect to it, it is lost forever.
 
 **Example 1:** How to redirect only the successful output of a command to a file, and ignore completely the error messages (which are sometimes just the very annoying and harmless warnings)? 
 
@@ -289,7 +289,7 @@ With the above construct, the file ```someFile``` will contain only the successf
 
 **Example 2:** How to set programmatically the separate _stdout_ and _stderr_ streams in your own code? 
 
-This question is answered with the following concrete example, in which a function expects some arguments from the user. If the user supplied arguments, the functions prints successful _stdout_ stream, and if the user failed to provide arguments, it prints the error message via _stderr_ stream:
+This question is answered with the following concrete example: a function expects some arguments from the user. If the user supplies arguments, the functions prints a successful _stdout_ stream, and if the user fails to provide arguments, it prints the error message via _stderr_ stream:
 
 ```bash
 function myFunction
@@ -305,13 +305,27 @@ With such an implementation, it is now possible programmatically to handle both 
 myFunction a b c 1>output.log 2>error.log
 ```
 
-In the above use case, the user has supplied some arguments ('a', 'b', 'c'), and therefore only the file ```output.log``` is filled, with the message defined in the function body for the _stdout_ stream, namely 'Arguments supplied'.
+In the above use case, the user has supplied some arguments ('a', 'b', 'c'), and therefore only the file ```output.log``` is filled, with the message defined in the function body for the _stdout_ stream:
+
+``` bash
+$ cat output.log
+Arguments supplied
+$ cat error.log # empty file
+```
+
+On the other hand, if the function is called this way, the _stderr_ stream becomes relevant:
 
 ```bash
 myFunction 1>output.log 2>error.log
 ```
 
-In the above example, no arguments were supplied. This is treated as an error within the function and it triggers its _stderr_ stream, which is the message defined as 'Error: No arguments' in the function body.
+In the above example, no arguments were supplied. This is treated as an error within the function and it triggers its _stderr_ stream, so we end up with the following situation:
+
+```bash
+$ cat output.log # empty file
+$ cat error.log
+Error: No arguments
+```
 
 Let us also say a few words about the last file descriptor 0, _stdin_ ('standard input'). In general, _stdin_ comes from the keyboard, but we can also feed a command with the content of some file. Schematically, we would use:
 
@@ -325,7 +339,7 @@ cat < someFile
 cat 0< someFile
 ```
 
-When you are checking the content of some file with **cat**, you are essentially redirecting its content into _stdin_ (file descriptor 0) for the **cat** command. 
+When you check the content of some file with **cat**, you are essentially redirecting its content into _stdin_ (file descriptor 0) for the **cat** command. 
 
 
 
