@@ -345,15 +345,15 @@ When you check the content of some file with **cat**, you are essentially redire
 
 ### 3. Code blocks and brace expansion: **{ ... }** <a name="code_blocks_and_brace_expansion"></a>
 
-Clearly, the file descriptors are an extremely nice feature, but they would be even nicer if we would be able to use them to handle the output streams of multiple commands in one go, instead of redirecting the output stream of each command separately. This is possible in **Bash** by using the _code blocks_.
+The file descriptors are an extremely nice feature. Still, they would be even nicer if we could use them to handle the output streams of multiple commands in one go instead of redirecting the output stream of each command separately. This can be achieved in **Bash** by using the _code blocks_.
 
-The code block in **Bash** is basically any sequence of commands within curly braces ```{ ... }```. 
+The code block in **Bash** is any sequence of commands within curly braces ```{ ... }```. 
 
 Before presenting the concrete use cases, we first summarize the general facts about code blocks:
 
 1. ```{ ... }``` inherits the environment and can modify it globally;  
 2. ```{ ... }``` has its own ```1>``` and ```2>``` streaming facilities;
-3. ```{ ... }``` does not launch a separate process. Therefore, the rest of a script or a function needs to wait for all commands in the code block to finish.
+3. ```{ ... }``` does not launch a separate process. Therefore, the rest of a script or function must wait for all commands in the code block to finish.
 
 Consider the following code snippet:
 ```bash
@@ -380,9 +380,9 @@ before code block
 ```
 because we did not redirect the first **echo** command anywhere.
 
-Some other piece of code in the same script or function can be embedded into another code block, and then redirected to some other files. This way we can easily profile the code with redirectors, and decide what goes on the screen and what is dumped in files. Typically, code blocks ```{ ... }``` are used when it is not beneficial to break down some large monolithic script into functions.
+Some other piece of code in the same script or function can be embedded into another code block, and then redirected to some other files. This way, we can easily profile the code with redirectors, and decide what goes on the screen and what is dumped in files. Typically, code blocks ```{ ... }``` are used when breaking down some large monolithic script into functions is not beneficial.
 
-When it comes to redirections, it is possible to treat loops analogously as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, we can easily disentangle what is happening in a particular loop, from what is happening in the rest of the code. Schematically, we would use for **for** loop:
+Regarding redirections, it is possible to treat loops analogously as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, we can easily disentangle what is happening in a particular loop from what is happening in the rest of the code. Schematically, we would use for **for** loop:
 
 ```bash
 for Var in someList; do
@@ -398,7 +398,7 @@ while read Line; do
 done <someFile.log 1>output.log 2>error.log
 ```
 
-This way we can elegantly parse and modify programmatically the example file ```someFile.log``` line-by-line, save the modified new content immediately in the file ```output.log```, and all errors which might occur during the editing we save in a separate file ```error.log```.
+This way, we can elegantly parse and modify programmatically the example file ```someFile.log``` line-by-line, save the modified new content immediately in the file ```output.log```, and all errors which might occur during the editing we save in a separate file ```error.log```.
 
 To check the influence of code block on the environment in your terminal, you can execute the following code snippet:
 ```bash
@@ -416,11 +416,11 @@ Before : 44
 Inside : 44
 After  : 55
 ```
-From this example we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_ &mdash; this will be covered later.
+From this example, we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_ &mdash; this will be covered later.
 
-Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the next example illustrates.  
+Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the following example illustrates.  
 
-**Example:** Is it possible to condense the following lines into a single line:
+**Example:** Is it possible to condense the following lines into a single line?
 
 ```bash
 someCommand
@@ -434,12 +434,11 @@ By using the code blocks, this can be rewritten as:
 someCommand && { command1 && command2 && ... ; } 
 ```
 
-Note the mandatory trailing semicolon ```;``` within code block in this context. This is important, because you need to indicate that ```}``` is not an argument to the last command within the code block &mdash; the last command input is terminated with semicolon ```;```.
+Note the mandatory trailing semicolon ```;``` within code block in this context. This is important because you need to indicate that ```}``` is not an argument to the last command within the code block &mdash; the last command input is terminated with semicolon ```;```.
 
 **Brace expansion**
 
-We close this section with a side remark on curly braces. Besides being used to mark the code blocks, curly braces are also used in a completely different context to define programmatically the sequences, via the so-called _brace expansion_. 
-
+We close this section with a side remark on curly braces. Besides being used to mark the code blocks, curly braces are also used in a completely different context to define programmatically the sequences via the so-called _brace expansion_. 
 
 The syntax to generate sequences by using the brace expansion is demonstrated with the following concrete examples:
 
@@ -458,7 +457,7 @@ The corresponding printouts are:
 a b c d e f
 -4 -3 -2 -1 0 1 2 3 4
 ```
-Brace expansion is very frequently used in enumerating sequentially either files or directories. 
+Brace expansion is very frequently used to enumerate files or directories sequentially. 
 
 **Example 1:** How to make 100 new directories named ```Dir_0, Dir_1, ... Dir_99```? 
 
@@ -474,7 +473,7 @@ We can both prepend and append strings to the brace expansion, so also in this c
 ```bash
 touch File_{0..99}.data
 ```
-Brace expansion can be used also in combination with arbitrary string patterns. 
+Brace expansion can also be used in combination with arbitrary string patterns. 
 
 **Example 3:** How to make three new files named ```someLengthyFileName.log```, ```someLengthyFileName.png``` and ```someLengthyFileName.pdf``` in one go?
 
@@ -486,7 +485,7 @@ touch someLengthyFileName.{log,png,pdf}
 
 which clearly saves a lot of typing.
 
-Multiple brace expansions can be combined in the same command input. For instance, having already named directories or files sequentially, we can easily manipulate only a subset of them, by using the brace expansion.
+Multiple brace expansions can be combined within the same command input. For instance, having already named directories or files sequentially, we can easily manipulate only a subset of them by using the brace expansion.
 
 **Example 4**: Imagine that in some directory you have the following files:
 
@@ -500,7 +499,7 @@ How to delete each 4th file within the interval 111 to 222, whose extension is `
 ls File_{111..222..4}.{log,inf} # always do 'ls' before deleting!
 rm File_{111..222..4}.{log,inf}
 ```
-Without brace expansion the solution would take much more work. It is also possible to nest brace expansion, but this is rarely used in practice.
+Without brace expansion, the solution would take much more work. It is also possible to nest the brace expansion, but this is rarely used in practice.
 
 
 
