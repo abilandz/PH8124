@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20240506
+**Last update**: 20240509
 
 
 ### Table of Contents
@@ -416,7 +416,7 @@ Before : 44
 Inside : 44
 After  : 55
 ```
-From this example, we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different type of braces, namely the round braces ```( ... ) ```, to define the _subshell_ &mdash; this will be covered later.
+From this example, we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different types of braces, namely the round braces ```( ... ) ```, to define the _subshell_ &mdash; this will be covered later.
 
 Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the following example illustrates.  
 
@@ -434,7 +434,7 @@ By using the code blocks, this can be rewritten as:
 someCommand && { command1 && command2 && ... ; } 
 ```
 
-Note the mandatory trailing semicolon ```;``` within code block in this context. This is important because you need to indicate that ```}``` is not an argument to the last command within the code block &mdash; the last command input is terminated with semicolon ```;```.
+Note the mandatory trailing semicolon ```;``` within the code block in this context. This is important because you need to indicate that ```}``` is not an argument to the last command within the code block &mdash; the last command input is terminated with semicolon ```;```.
 
 **Brace expansion**
 
@@ -459,7 +459,7 @@ a b c d e f
 ```
 Brace expansion is very frequently used to enumerate files or directories sequentially. 
 
-**Example 1:** How to make 100 new directories named ```Dir_0, Dir_1, ... Dir_99```? 
+**Example 1:** How do you make 100 new directories named ```Dir_0, Dir_1, ... Dir_99```? 
 
 The solution is very elegant by using the brace expansion mechanism:
 
@@ -475,7 +475,7 @@ touch File_{0..99}.data
 ```
 Brace expansion can also be used in combination with arbitrary string patterns. 
 
-**Example 3:** How to make three new files named ```someLengthyFileName.log```, ```someLengthyFileName.png``` and ```someLengthyFileName.pdf``` in one go?
+**Example 3:** How do you make three new files named ```someLengthyFileName.log```, ```someLengthyFileName.png``` and ```someLengthyFileName.pdf``` in one go?
 
 The solution is:
 
@@ -494,7 +494,7 @@ File_0.log File_1.log ... File_999.log
 File_0.inf File_1.inf ... File_999.inf
 File_0.dat File_1.dat ... File_999.dat
 ```
-How to delete each 4th file within the interval 111 to 222, whose extension is ```.log``` or ```.inf```, but not ```.dat```? If you use the brace expansion, the solution is very simple and elegant:
+How do you delete each 4th file within the interval 111 to 222, whose extension is ```.log``` or ```.inf```, but not ```.dat```? If you use the brace expansion, the solution is very simple and elegant:
 ```bash
 ls File_{111..222..4}.{log,inf} # always do 'ls' before deleting!
 rm File_{111..222..4}.{log,inf}
@@ -504,7 +504,7 @@ Without brace expansion, the solution would take much more work. It is also poss
 
 
 ### 4. Conditional statements <a name="conditional_statements"></a>
-We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similar like in most programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
+We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similarly tofailed most programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
 
 #### A) **if-elif-else-fi** <a name="if"></a>
 
@@ -537,7 +537,7 @@ fi
 
 However, if the keyword **then** is placed on the same line with keywords **if** and **elif**, it has to be separated with semicolon ```;```.  
 
-Another typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on whether a command or a function execution succeeded (exit status 0) or failed (exist status 1 to 255).  Schematically:
+Another typical use case of an **if-elif-else-fi** conditional statement is to branch the code execution depending on whether a command or a function execution succeeded (exit status 0) or failed (exifailedt status 1 to 255). Schematically:
 ```bash
 if someCommand; then
   some code when someCommand succeeded
@@ -548,7 +548,7 @@ else
   some code when all commands above failed
 fi
 ```
-In practice, you frequently need to check only the exit status of a command, and do not need to see any output stream when executing that command. That can be achieved with:
+In practice, you frequently need to check only the exit status of a command and do not need to see any output stream when executing that command. That can be achieved with:
 ```bash
 if someCommand &>/dev/null; then
 ```
@@ -567,7 +567,7 @@ Finally, it is also possible to execute sequentially different commands within t
 if command1; someFunction; command2; then
 ```
 
-In this example, the corresponding branch will be executed only if the exit status of the very last command **command2** is 0, the exit status of previous commands play no role in this version. 
+In this example, the corresponding branch will be executed only if the exit status of the very last command **command2** is 0, the exit status of previous commands plays no role in this version. 
 
 
 
@@ -584,11 +584,11 @@ case someValue in
  *) some code when all specified options are not met ;;
 esac 
 ```
-The thing to remember is that in **case-in-esac** conditional statement a specific branch of code execution is embedded within round brace ```)``` and double semicolon ```;;``` (yes, double semicolon, no empty character is allowed between semicolons here!). This peculiar syntax, the unbalanced round brace ```)``` and the double semicolon ```;;``` are special to **case-in-esac** conditional statement, and therefore easy to remember.
+The thing to remember is that in **case-in-esac** conditional statement a specific branch of code execution is embedded within a round brace ```)``` and double semicolon ```;;``` (yes, double semicolon, no empty character is allowed between semicolons here!). This peculiar syntax, the unbalanced round brace ```)``` and the double semicolon ```;;``` are special to **case-in-esac** conditional statement, and, therefore, easy to remember.
 
 The usage of **case-in-esac** conditional statement is best illustrated with a few concrete examples.
 
-**Example:** How to implement the support for options in your script or function? 
+**Example:** How do you implement the support for options in your script or function? 
 
 Schematically, for the simplest cases, that can be achieved with the following code snippet:
 
@@ -611,7 +611,7 @@ case $Flag in
   ;;
 esac
 ```
-For more elaborate cases on how to parse command-line arguments in such context, see **Bash** built-in command **getopts**.
+For more elaborate cases on how to parse command-line arguments in such context, see **Bash** built-in command **getopts** (which is particularly suitable to handle short, single-character options, like -h).
 
 Multiple options can be grouped with ```|``` (OR) under the same statement, schematically:
 ```bash
@@ -623,27 +623,27 @@ case someValue in
       ... some code when one option from this group is met ... 
     ;;
     ... even more options ... 
-*) some code when all specified options are not met ;;
+ *) some code when all specified options are not met ;;
 esac 
 ```
 The **case-in-esac** conditional statement recognizes the so-called POSIX brackets. The most important examples are:   
 
-* ```[[:alpha:]]``` Alphabetic characters [a-zA-Z]  
-* ```[[:digit:]]``` Digits [0-9]       
-* ```[[:alnum:]]``` Alphanumeric characters [a-zA-Z0-9]    
+* ```[[:alpha:]]``` &mdash; Alphabetic characters [a-zA-Z]  
+* ```[[:digit:]]``` &mdash; Digits [0-9]       
+* ```[[:alnum:]]``` &mdash; Alphanumeric characters [a-zA-Z0-9]    
 
 Example use case:
 ```bash
 Var=someValue
 case $Var in
  [[:alpha:]]) 
-   echo "Var is a single alphabetic character" 
+   echo "$Var is a single alphabetic character" 
  ;;
  [[:digit:]]) 
-   echo "Var is a digit" 
+   echo "$Var is a digit" 
  ;;
  *) 
-   echo "Var is something else" 
+   echo "$Var is something else" 
  ;;
 esac
 ```
@@ -655,7 +655,7 @@ if [[ ${Var1} -gt ${Var2} ]]; then
 fi 
 ```
 The error message is:
-```bash
+```linux
 line 4: syntax error near unexpected token `fi'
 line 4: `fi '
 ```
@@ -667,22 +667,22 @@ if [[ ${Var1} -gt ${Var2} ]]; then
  : # I will implement this part later 
 fi 
 ```
-'Do nothing' command ```:``` does literally nothing, except that it always returns the exit status 0, i.e. it always succeeds in what it needs to do, which is not surprising given that fact that it does nothing:
+'Do nothing' command ```:``` does literally nothing, except that it always returns the exit status 0, i.e. it always succeeds in what it needs to do, which is not surprising given the fact that it does nothing:
 
 ```bash
-:
-echo $?
-# prints 0
+$ :
+$ echo $?
+0
 ```
 
-Quite remarkably, even such a simple command has some interesting and frequent use cases.
+Quite remarkably, even such a trivial command has some interesting and nontrivial use cases.
 
 **Example:** How to empty the already existing file, keeping all file permissions intact?
 
 ```bash
 : > someFile
 ```
-Literally, we have redirected nothing into the existing file, therefore its content is now nothing. Note that we have kept all file permissions intact in a process. Therefore, this is in general not the same as deleting the existing file, and then creating a new empty file with the same name: 
+Literally, we have redirected _nothing_ into the existing file, therefore its content is now nothing. Note that we have kept all file permissions intact in the process. Therefore, this is in general not the same as deleting the existing file, and then creating a new empty file with the same name: 
 
 ```bash
 rm someFile
@@ -700,7 +700,7 @@ while :; do
 done
 ```
 
-**Example**: Ignore the exit status of command. 
+**Example**: Ignore the exit status of the command. 
 
 This is the common idiom:
 
