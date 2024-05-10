@@ -16,3 +16,6 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 | 03788343 | 1.0 | | | | | | | | | | 1.0 |
 | 03722858 | 1.0 | | | | | | | | | | 1.0 |
 | 03698158 | 1.0 | | | | | | | | | | 1.0 |
+| 03788184 | 1.0 | | | | | | | | | | 1.0 |
+
+
