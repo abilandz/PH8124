@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20230630
+**Last update**: 20240514
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -13,7 +13,7 @@
 
 
 ### 1. String manipulation <a name="string_manipulation"></a>
-**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can to a certain extent solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use the high-level programming languages, like **perl**.
+**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can, to a certain extent, solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use high-level programming languages, like **perl**.
 
 String operators in **Bash** can be used only in combination with curly-brace syntax, ```${Var}```, when the content of a variable is retrieved. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
