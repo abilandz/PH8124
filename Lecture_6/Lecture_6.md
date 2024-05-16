@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20240514
+**Last update**: 20240516
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -13,12 +13,12 @@
 
 
 ### 1. String manipulation <a name="string_manipulation"></a>
-**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can, to a certain extent, solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use high-level programming languages, like **perl**.
+**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can, to a certain extent, solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use high-level programming languages like Perl.
 
 String operators in **Bash** can be used only in combination with curly-brace syntax, ```${Var}```, when the content of a variable is retrieved. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
-1. Remove, replace or modify a portion of variable's content that matches some patterns   
-2. Ensure that variable exists (i.e. that it is defined and has a non-zero value)   
+1. Remove, replace, or modify a portion of the variable's content that matches some patterns   
+2. Ensure that the variable exists (i.e. that it is defined and has a non-zero value)   
 3. Set the default value for a variable   
 
 The generic syntax for manipulating the content of the variable is:
@@ -53,7 +53,7 @@ Var=${Var/$Old/$New}
 ```
 The curly-brace syntax interprets some characters in a special way. This is illustrated with the following examples.
 
-**Example 1:** How to get programmatically the length of the string?
+**Example 1:** How do you programmatically get the length of the string?
 
 ```bash
 $ Var=1a3b56F8 
@@ -92,7 +92,7 @@ ij
 $ echo ${Var:(-3):2}
 hi
 ```
-We remark that in the expression ```${Var:offset:length}``` both 'offset' and 'length' are evaluated automatically in mathematical context. Therefore, we can write directly code snippets like this
+We remark that in the expression ```${Var:offset:length}``` both 'offset' and 'length' are evaluated automatically in a mathematical context. Therefore, we can write directly code snippets like this
 
 ```bash
 $ Var=abcdefgh
@@ -102,7 +102,7 @@ $ echo ${Var:Start+1:Lentgh-2}
 def
 ```
 
-instead of lengthier version, where mathematical context is explicitly requested via ```$(( ... ))```:
+instead of a lengthier version, where mathematical context is explicitly requested via ```$(( ... ))```:
 
 ```bash
 $ echo ${Var:$((Start+1)):$((Lentgh-2))}
@@ -113,7 +113,7 @@ Finally, it is mandatory to embed negative offset within round braces ```( ... )
 
 By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:  
 
-1. ```${Var:-defaultValue}``` &mdash; if 'Var' exists and it is not null, return its current value. Otherwise, return the hardwired 'defaultValue'. This is basically protection that variable always has some content. For instance:
+1. ```${Var:-defaultValue}``` &mdash; if 'Var' exists and it is not null, return its current value. Otherwise, return the hardwired 'defaultValue'. This is basically protection that the variable always has some content. For instance:
 
    ```bash
     Var=44
@@ -129,9 +129,9 @@ By using string operators one can set the default value of a variable. Most freq
    ```bash
    Var=${1:-defaultValue}
    ```
-   This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code can still execute by setting 'Var' to 'defaultValue'. 
+   This literally means that 'Var' is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code could still execute by setting 'Var' to 'defaultValue'. 
    
-2. ```${Var:?someMessage}``` &mdash; if 'Var' exists and it is not null, return its current value. Otherwise, prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
+2. ```${Var:?someMessage}``` &mdash; if 'Var' exists and it is not null, return its current value. Otherwise, it prints 'Var', followed by hardwired text 'someMessage', and abort the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
 
    ```bash
    function myFunction
@@ -158,7 +158,7 @@ By using string operators one can set the default value of a variable. Most freq
    ```
 
 
-In both of these examples we have used colon ```:``` within the curly braces, but this is optional. However, if we omit the colon ```:``` and use instead the syntax ```${Var-defaultValue}``` and ```${Var?someMessage}```, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns cases like this:
+In both of these examples, we have used colon ```:``` within the curly braces, but this is optional. However, if we omit the colon ```:``` and use instead the syntax ```${Var-defaultValue}``` and ```${Var?someMessage}```, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns cases like this:
 
 ```bash
 Var= # Var exists but it is NULL
