@@ -2,7 +2,7 @@
 
 # **Bash** functions
 
-**Last update:** 20240523
+**Last update:** 20240526
 
 **Challenge #1**: Develop a **Bash** function named ```Mkdir``` which makes a directory and immediately goes into it. Directory names are specified as arguments, either via relative or absolute paths. If more than one directory name is supplied, all of them are made, and then it goes immediately into the very last directory.
 
@@ -27,7 +27,12 @@ For instance, to print "some text" in red in the terminal, execute:
 echo -e "\E[1;31;48msome text"; tput sgr0  
 ```
 
-In the above syntax, ```m``` terminates a special sequence of characters starting with ```\E[```, where ```\E``` by itself stands for ESCAPE character, encoded in octal notation as ```\033```, in hexadecimal as ```\x1B``` , or directly as ```\E``` or ```\e``` (beware that not all encodings are supported by all shells, so check out which encoding applies to your case).  The first two entries between "\E[" and "m", e.g. "1;31" in the example above, determine foreground color. The 3rd entry determines the background color, where background colors are labeled in the same way as the foreground, just starting from 40 instead of 30. The particular choice "48" for the background color gives the same shade as the terminal window. Finally, the command ```tput sgr0``` restores the default settings in the terminal.
+In the above syntax, ```m``` terminates a special sequence of characters starting with ```\E[```, where ```\E``` by itself stands for ESCAPE character, encoded in octal notation as ```\033```, in hexadecimal as ```\x1B``` , or directly as ```\E``` or ```\e``` (beware that not all encodings are supported by all shells, so check out which encoding applies to your case). The first two entries between ```\E[``` and ```m```, e.g. ```1;31``` in the example above, determine foreground color. The 3rd entry determines the background color, where background colors are labeled in the same way as the foreground, just starting from 40 instead of 30. The particular choice 48 for the background color gives the same shade as the terminal window. Finally, the command ```tput sgr0``` restores the default settings in the terminal. 
+
+If the command **echo** fails on your computer, alternative solution can be achieved using **printf** which supports a sligtly different syntax, for instance:
+```bash
+printf "\e[1;31m%s\e[0m\n" "some text"
+```
 
 **Challenge #3**: What do you need to do to be able to use the functions ```Red``` and ```Mkdir``` just like any other **Bash** or **Linux** command (i.e. to be able to call them only by their name from any place in the file system, each time you log in on the computer, or open a new terminal)?
 
