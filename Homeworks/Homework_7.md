@@ -2,7 +2,7 @@
 
 # Homework #7: Coding adventures with grep, sed and awk
 
-**Last update:** 20230630
+**Last update:** 20240607
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
@@ -35,13 +35,13 @@ Px = 0.324 , Py = -1.133
 Px = 0.355 , Py = -2.134
 ```
 
-**Hint #1:**  For security reasons, within the same pipe chain ```... | ... | ...``` you cannot read and modify on-the-fly the very same file, but it is possible if you combine command chain operators (```&&``` and ```||```) and pipes in the same line. It's perfectly fine to introduce some intermediate temporary file. 
+**Hint #1:**  For security reasons, within the same pipe chain ```... | ... | ...``` you cannot read and modify on-the-fly the very same file, but it is possible if you combine command chain operators (```&&``` and ```||```) and pipes in the same line. It's perfectly fine to introduce an intermediate temporary file. 
 
 **Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments one or more directories, and whose printout is:
 
 1. directory name. If no arguments were supplied, default to one argument, which is the current working directory (i.e. the directory from which **Ls** was executed)
 2. list of subdirectories in that directory
-3. files sorted with respect to size, largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size``` 
+3. files sorted with respect to size, the largest file on the bottom. For each file, the following metadata is printed: ```name month date hour:min size``` 
 
 The output of **Ls** is formatted like in this example:
 
@@ -55,15 +55,15 @@ Lecture_7_20200606_0b.md  Jun  06  15:25  1234
 
 If more than one directory was supplied to **Ls**, the above formatting repeats for each directory, separated with an empty line.
 
-**Hint #1:** Develop a function **Ls**, in its body execute the standard **ls** with carefully chosen options (check for instance **man ls** for the meaning of the flags '-l', '-S', '-r')
+**Hint #1:** Develop a function **Ls**, in its body execute the standard **ls** with carefully chosen options (check, for instance, **man ls** for the meaning of the flags '-l', '-S', '-r')
 
-**Hint #2:** To differentiate between files and subdirectories, pipe the output of **ls** executed with the flag '-l' to **grep**, and then just use either **grep -v "^d"** or **grep "^d"** (file metadata begin with 'd' only for directories)   
+**Hint #2:** To differentiate between files and subdirectories, pipe the output of **ls** executed with the flag '-l' to **grep**, and then use either **grep -v "^d"** or **grep "^d"** (file metadata begin with 'd' only for directories)   
 
 **Hint #3:** To extract and order the relevant fields, pipe further to **awk** (for files), or store temporarily in some array (for subdirectories) 
 
 **Hint #4:** To ensure that all columns have the same width in the final printout, simply pipe at the very end to the command **column -t** 
 
-**Challenge #3:** Injecting a new column. Write down one-line code snippet which can be used in the terminal, and which will transfer ASCII file with the content:
+**Challenge #3:** Injecting a new column. Write down one-line code snippet that can be used in the terminal, and which will transfer the ASCII file with the content:
 
 ```bash
 a1 a2 a3 a4
@@ -76,3 +76,47 @@ a1 a2 a3 test a4
 b3 b1 b3 test b4
 c1 c3 c2 test c4
 ```
+
+**Challenge #4:** Injecting an external file in an already existing file. Develop a shell function **InjectFileAtLine** , which will, at the specified line number of an already existing file, inject line-by-line the content of an external file. For instance, let the content of the current file _currentFile.txt_ is:
+
+```bash
+a1 a2 a3 a4
+b3 b1 b3 b4
+c1 c3 c2 c4
+```
+
+and the content of the external file _externalFile.txt_ is:
+
+```bash
+The shell is both an     interactive command language 
+      and a scripting language, and is used by the operating system to 
+
+control the execution of the system using shell scripts.
+```
+
+Then, a user would like to execute in the terminal: **InjectFileAtLine currentFile.txt 2 externalFile.txt** , to inject (i.e. to embed) starting from line 2 of the current file an external file, to obtain:
+
+```bash
+a1 a2 a3 test a4
+b3 b1 b3 test b4
+The shell is both an     interactive command language 
+      and a scripting language, and is used by the operating system to 
+
+control the execution of the system using shell scripts.
+c1 c3 c2 test c4
+```
+
+All formatting (spacing, etc.), needs to be preserved, as it was in original files. If the user specifies as the 2nd argument the line number which exceeds the length of the current file, the external file is appended to it.
+
+**Hint #1:** To preserve spacings also at the beginning of the lines when parsing through the file, use the following technique:
+
+```bash
+while IFS= read -r Line; do
+ echo "$Line"
+done < someFile.txt
+```
+
+**Hint #2:** Empty lines deserve a special treatment. To inject empty line in the file, e.g. at line 4, use ```sed -i "4i\\\n" someFile.txt``` 
+
+**Hine #3**: For large files and when efficiency matters, this sort of problem can be solved better only by using **awk** and its advanced features. But it's also instructive to solve the problem only by combining the shell built-in functionalities with **sed**.
+
