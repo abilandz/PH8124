@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20240602
+**Last update**: 20240609
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -209,12 +209,12 @@ The pattern '^^[c-f]' will capitalize all single characters, but only in the spe
 
 ### 2. Arrays <a name="arrays"></a>
 
-**Bash** also supports arrays, i.e. variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. Array index in **Bash** starts with zero, and there is no limit to the size of an array. There are a few ways in which an array can be initialized with its elements &mdash; the quickest one is to use the round braces ```( ... )```. This syntax is illustrated with the following code snippet:
+**Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways &mdash; the quickest one is to use the round braces ```( ... )```. This syntax is illustrated with the following code snippet:
 
 ```bash
 SomeArray=( 5 a ccc 44 )
 ```
-Array elements are separated with one or more empty characters. To obtain the content of a particular array element, we use again the curly-brace notation ```${ArrayName[index]}```. For instance, for the above example we have:
+One or more empty characters separate array elements. To obtain the content of a particular array element, we use the curly-brace notation ```${ArrayName[index]}``` again. For instance, for the above example, we have:
 ```bash
 echo ${SomeArray[0]} # prints 5
 echo ${SomeArray[2]} # prints ccc 
@@ -256,7 +256,24 @@ Now if we print all elements, the initial 3rd element 'ccc' was replaced with th
 ```bash
 echo ${SomeArray[*]} # prints 5 a ddd 44
 ```
-In order to remove a particular element of an array, we need to explicitly use the keyword **unset**. This way, the length of an array and all indices are automatically recalculated:
+An alternative syntax for setting array elements using ```+=``` operator is illustrated in this example:
+
+```bash
+$ arr=()
+$ arr+=( "abc" )
+$ arr+=( "123" "ddd" )
+$ echo ${arr[0]}
+abc
+$ echo ${arr[1]}
+123
+$ echo ${arr[2]}
+ddd
+echo ${#arr[*]} 
+3
+```
+
+To remove a particular element of an array, we need to explicitly use the keyword **unset**. This way, the length of an array and all indices are automatically recalculated:
+
 ```bash
 unset SomeArray[2]
 echo ${SomeArray[*]} # prints 5 a 44
@@ -266,7 +283,7 @@ On the other hand, unsetting the array element with:
 ```bash
 SomeArray[2]= # WRONG!!
 ```
-is wrong, since the total size of an array was not reset, i.e. this particular element is still counted as a part of an array, only it has now NULL content. 
+is wrong, since the total size of an array was not reset, i.e., this particular element is still counted as a part of an array, but it now has NULL content. 
 
 The whole array can be reset either with
 
@@ -287,7 +304,7 @@ To check whether an array has any set elements, we can use in the test construct
 [[ ${#SomeArray[@]} > 0 ]] # evaluates to true for non-empty array
 ```
 
-The array index works also backward. The last array element is:
+The array index also works backward. The last array element is:
 
 ```bash
 echo ${SomeArray[-1]}
@@ -310,13 +327,13 @@ SomeArray=( ${SomeArray[*]/#/SomePattern} ) # prepend
 SomeArray=( ${SomeArray[*]/%/SomePattern} ) # append
 ```
 
-**Example 1:** We have the following starting array which just contains some file names:
+**Example 1:** We have the following starting array, which contains some file names:
 
 ```bash
 Files=( file_0 file_1 file_2 )
 ```
 
-How to append to all file names the same file extension '.dat'? How to prepend to all file names the same string 'some_'?
+How to append to all file names the same file extension '.dat'? How to prepend the same string 'some_' to all file names?
 
 The solution to the first question is:
 
@@ -324,7 +341,7 @@ The solution to the first question is:
 Files=( ${Files[*]/%/.dat} )
 ```
 
-In the above code snippet, we have first appended (by specifying ```%```) to all array elements the same extension '.dat', and immediately redefined the array to the new content. The array elements are now:
+In the above code snippet, we have first appended (by specifying ```%```) the same extension '.dat' to all array elements and immediately redefined the array to the new content. The array elements are now:
 
 ```bash
 $ echo ${Files[*]}
@@ -342,18 +359,18 @@ $ echo ${Files[*]}
 some_file_0.dat some_file_1.dat some_file_2.dat some_file_3.dat
 ```
 
-The power and flexibility of arrays come from the fact that at array declaration within ```( ... )``` a lot of other **Bash** functionalities are supported, for instance, the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That in particular means that we can effortlessly store the entire output of a command into an array, and then do some manipulation element-by-element. 
+The power and flexibility of arrays come from the fact that at array declaration within ```( ... )```, a lot of other **Bash** functionalities are supported, for instance, the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That, in particular, means that we can effortlessly store the entire output of a command into an array and then do some manipulation element-by-element. 
 
 **Example 2:** Count the number of words in an external file using arrays. 
 
-The solution is very simple and elegant:
+The solution is straightforward and elegant:
 ```bash
 FileContent=$(< SomeFile)
 SomeArray=( ${FileContent} )
 echo "Number of words: ${#SomeArray[*]}"
 ```
 
-In the first line we have stored the content of an external file ```SomeFile``` into variable **FileContent**, and then just defined the array elements by obtaining its content. The empty characters which separate the words in the file, now separate the array elements in the definition. 
+In the first line, we have stored the content of an external file ```SomeFile``` into variable **FileContent**, and then just defined the array elements by obtaining its content. The empty characters which separate the words in the file, now separate the array elements in the definition. 
 
 At the expense of becoming a bit cryptic, the above solution can be condensed even further:
 
@@ -362,7 +379,7 @@ SomeArray=( $(< SomeFile) )
 echo "Number of words: ${#SomeArray[*]}"
 ```
 
-**Example 3:** How to merge entries of two arrays into one array, without using loops?
+**Example 3:** How to merge entries of two arrays into one array without using loops?
 
 The solution is:
 ```bash
@@ -383,7 +400,17 @@ The printout is:
 file_0.pdf file_0.eps file_1.pdf file_1.eps file_2.pdf file_2.eps file_3.pdf file_3.eps
 ```
 
-**Example 5:** How to store the output of some command in array?
+**Example 5:** How to initialize all entries of an array with the same value?
+
+Here we can use the shell builtin command **declare** with flag **-a** (for "array", not for "all" in this context!), to set desired attribute to variable: 
+
+```bash
+$ declare -a arr[{0..4}]=someValue
+$ echo ${arr[*]}
+someValue someValue someValue someValue someValue
+```
+
+**Example 6:** How to store the output of some command in an array?
 
 ```bash
 SomeArray=( $(date) )
@@ -400,7 +427,7 @@ $ echo "Current time: ${SomeArray[3]}"
 Current time: 16:24:25
 ```
 
-**Example 6:** How can we catch the user's input directly into an array?
+**Example 7:** How can we directly catch the user's input into an array?
 
 We have already seen that by using **read** command we can catch the user's input, but if we want to store the input in a few different variables, that quickly becomes inconvenient. And quite frequently, we cannot foresee the length of the user's input. For instance, how to handle the user's reply to the question: "Which countries have you visited ?" That can be solved elegantly with arrays:
 ```bash
@@ -415,7 +442,7 @@ echo "Number of countries is: ${#Countries[*]}"
 echo "The first country is: ${Countries[0]}"
 echo "The last country is: ${Countries[-1]}"
 ```
-But what if the user visited New Zealand or Northern Ireland? Since these two countries contain an empty character in their names, the code above clearly cannot correctly handle these cases. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and a lot of **Linux** commands rely on its content. We can proceed in the following schematic way:
+But what if the user visited New Zealand or Northern Ireland? Since these two countries have empty characters in their names, the code above clearly cannot correctly handle these cases. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and many **Linux** commands rely on its content. We can proceed in the following schematic way:
 
 ``` bash
 DefaultIFS="$IFS" # save default setting
@@ -424,13 +451,13 @@ IFS=somethingNew
 IFS="$DefaultIFS" # revert back to default setting
 ```
 
-Since this is the frequently encountered case in practice, when a certain variable needs to be set only during the command execution, as we already saw before, there exists a specialized syntax applicable to cover such uses cases:
+Since this is the frequently encountered case in practice, when a specific variable needs to be set only during the command execution, as we already saw before, there exists a specialized syntax applicable to cover such use cases:
 
 ```bash
 SomeVariable=someValue SomeCommand
 ```
 
-Remember that there is no semicolon ```;``` between variable definition and command execution, this way the new definition of variable **SomeVariable** is visible only during the execution of **SomeCommand**. As soon as command terminates, **SomeVariable** gets automatically reset to its default value (if any).
+Remember that there is no semicolon ```;``` between variable definition and command execution; this way, the new definition of variable **SomeVariable** is visible only during the execution of **SomeCommand**. As soon as command terminates, **SomeVariable** gets automatically reset to its default value (if any).
 
 The final solution for our example is therefore:
 
@@ -440,7 +467,7 @@ IFS=',' read -p "List (comma separated) countries you have visited: " -a Countri
 
 This way, the input field separator will be comma ```,``` but only during the execution of **read**.
 
-Now if a user replied 'New Zealand,Northern Ireland' we have that:
+Now if a user replies 'New Zealand,Northern Ireland' we have that:
 
 ```bash
 echo ${Countries[0]}
@@ -465,14 +492,38 @@ echo ${SomeArray[1,2,3]} # prints a
 echo ${SomeArray[2,3,1]} # prints bb
 ```
 
-The indices do not have to be hardwired &mdash; index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer. 
+The indices do not have to be hardwired &mdash; the index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer. 
+
+**Example 8:** How to initialize all entries of an associative array with the same value?
+
+```bash
+$ declare -A ARR[{a..e}]=X
+$ echo ${ARR[a]}
+X
+$ echo ${ARR[e]}
+X
+```
+
+Finally, and whenever in doubt, it is possible to print variable definition, content and attributes with **declare -p someVariable**. For instance:
+
+```bash
+$ declare -a arr[{0..4}]=someValue
+$ declare -p arr
+declare -a arr=([0]="someValue" [1]="someValue" [2]="someValue" [3]="someValue" [4]="someValue")
+
+$ declare -A ARR[{a..e}]=X
+$ declare -p ARR
+declare -A ARR=([e]="X" [d]="X" [c]="X" [b]="X" [a]="X" )
+```
+
+
 
 
 
 ### 3. Piping: ```|``` <a name="piping"></a>
-We have already seen that commands can take their input directly from the user or from files. But in general, one command can take directly the output of another command as its input. This mechanism is called _piping_ and it is a very generic concept in **Linux**. 
+We have already seen that commands can take their input directly from the user or from files. But in general, one command can take directly the output of another command as its input. This mechanism is called _piping_ and is a very generic concept in **Linux**. 
 
-In order to use the output of one command as the input to another, we use operator ```|``` ('pipe'), schematically as:
+To use the output of one command as the input to another, we use operator ```|``` ('pipe'), schematically as:
 
 ```bash
 firstCommand | secondCommand
@@ -483,7 +534,7 @@ It is possible to chain with the pipe operator ```|``` multiple commands:
 firstCommand | secondCommand | thirdCommand | ...
 ```
 
-In the above example, the successful output, i.e. the _stdout_ stream, of ```firstCommand``` has become the input, i.e. the _stdin_, to ```secondCommand```. That command now processes that input, and produces its own output, which is then becoming the input to the ```thirdCommand```, and so on.
+In the above example, the successful output, i.e., the _stdout_ stream of ```firstCommand``` has become the input, i.e., the _stdin_, to ```secondCommand```. That command now processes that input, and produces its own output, which is then becoming the input to ```thirdCommand```, and so on.
 
 It is possible to redirect simultaneously both _stdout_ and _stderr_ stream of one command into _stdin_ of another, with the slightly modified pipe operator ```|&```, schematically:
 
@@ -491,11 +542,11 @@ It is possible to redirect simultaneously both _stdout_ and _stderr_ stream of o
 firstCommand |& secondCommand
 ```
 
-In the above example, both the successful output stream and the error message of ```firstCommand``` are simultaneously redirected as an input to ```secondCommand```. 
+In the above example, both the successful output stream and the error message of the first command are simultaneously redirected as an input to the second command. 
 
-Usage of pipe ```|``` eliminates the need for making temporary files to redirect and store the output of one command, and then supply that temporary file as an input to another command.  The data flow among all commands chained with ```|``` in the pipeline is automated without any restriction on the size. 
+Using pipe ```|``` eliminates the need to make temporary files to redirect and store the output of one command and then supply that temporary file as an input to another command.  The data flow among all commands chained with ```|``` in the pipeline is automated without any restriction on the size. 
 
-We now provide a few frequently use cases of piping. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator'). 
+We now provide a few frequently use cases  of piping. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator'). 
 
 **Example 1:** How would you divide 10/7 at the precision of 30 significant digits? 
 
@@ -507,7 +558,7 @@ $ echo "scale=30; 10/7" | bc
 ```
 The internal keyword **scale** sets the precision in **bc** program. Instead of using **bc** interactively and providing via keyboard _stdin_ for its execution, we have just piped the _stdout_ of **echo** as an input to **bc**.
 
-For more sophisticated use cases, for instance when you want to use special mathematical functions, etc., use **bc -l**. The flag '-l' (ell) loads additionally in the memory the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it is defaulted to 1 when only **bc** is executed, and to 20 when **bc -l** is executed.
+For more sophisticated use cases, for instance when using special mathematical functions, etc., use **bc -l**. The flag '-l' (ell) additionally loads in the memory the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it is defaulted to 1 when only **bc** is executed, and to 20 when **bc -l** is executed.
 
 The math library of **bc** defines the following example functions:
 ```bash
@@ -526,9 +577,9 @@ $ echo "e(2)" | bc -l
 7.38905609893065022723
 ```
 
-Another typical use case of the pipe operator ```|``` is in a combination with **tee** command. Quite frequently, when a certain command is executing, we would like to see its output on the screen, but also simultaneously redirected to some file, so that at any time later we can carefully inspect the whole command output by reading through the content of that file.    
+Another typical use case of the pipe operator ```|``` is in combination with the **tee** command. Quite frequently, when a specific command is executing, we would like to see its output on the screen, but also simultaneously redirected to some file, so that at any time later, we can carefully inspect the whole command output by reading through the content of that file.    
 
-This can be achieved with the **tee** command, schematically:
+This can be achieved with the **tee** command schematically as:
 ```bash
 someCommand | tee someFile.log  
 ```
@@ -546,17 +597,17 @@ someCommand | tee -a someFile.log
 
 Flag '-a' in this particular case stands for 'append'.
 
-As the final remark on the pipelines, we consider the following important question: If the pipeline, composed of multiple commands, has failed during execution, how to figure out programmatically which particular command in the pipeline has failed? In order to answer this question, we need to inspect the status of the built-in variable **PIPESTATUS**. This variable is an array holding the exit status of each command in the last executed pipeline:
+As the final remark on the pipelines, we consider the following important question: If the pipeline, composed of multiple commands, has failed during execution, how do we figure out programmatically which particular command in the pipeline has failed? To answer this question, we need to inspect the status of the built-in variable **PIPESTATUS**. This variable is an array holding the exit status of each command in the last executed pipeline:
 
 ```bash
 $ echo "scale=5000; e(2)" | bc -l | more
 $ echo ${PIPESTATUS[*]}
-0 0 0 # exit status of last command ('echo', 'bc' and 'more') in the pipe above 
+0 0 0 # exit status of the last command ('echo', 'bc' and 'more') in the pipe above 
 ```
 
-In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully, therefore the array **PIPESTATUS** holds three zeros. When only the single command has been executed, that is a trivial pipeline, and **PIPESTATUS** array has only one entry, the very same information which is stored in the special **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute command, even the trivial ones like **echo**.  
+In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully; therefore, the array **PIPESTATUS** holds three zeros. When only the single command has been executed, that is a trivial pipeline, and the **PIPESTATUS** array has only one entry, the very same information that is stored in the special **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute the command, even the trivial ones like **echo**.  
 
-The power of piping is best illustrated in the combination with the three powerful commands **sed**, **awk** and **grep**, the three core **Linux** utilities for text parsing and manipulation, which we cover in the next section.
+The power of piping is best illustrated in combination with the three powerful commands sed, awk, and **grep**, the three core **Linux** utilities for text parsing and manipulation, which we cover in the next section.
 
 
 
