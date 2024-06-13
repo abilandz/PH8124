@@ -2,7 +2,7 @@
 
 # Homework #5: Mastering the command substitution operator.
 
-**Last update:** 20230615
+**Last update:** 20240613
 
 The developer is testing the execution time a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following generic way:
 
