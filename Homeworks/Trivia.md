@@ -7,7 +7,7 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 
 | Student ID | #1   | #2   | #3   | #4   | #5   | #6   | #7   | #8   | #9   | #10  | Sum  |
 | ---------- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 03725299 | 1.0 | 1.0 | 1.0 | 1.1 * | | | | | | | 4.1 |
+| 03725299 | 1.0 | 1.0 | 1.0 | 1.1 \* | | | | | | | 4.1 |
 | 03746277 | 1.0 | 1.0 | 1.0 | 1.0 | | | | | | | 4.0 |
 | 03752534 | 1.0 | 1.0 | 1.0 | 1.0 | | | | | | | 4.0 |
 | 03722858 | 1.0 | 1.0 | 1.0 | 1.0 | | | | | | | 4.0 |
@@ -24,4 +24,4 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 | 03788568 | 1.0 | 1.0 | | | | | | | | | 2.0 |
 | 03726017 | 1.0 | | | | | | | | | | 1.0 |
 
-* Special bonus for a very original solution.
+\* Special bonus for a very original solution.
