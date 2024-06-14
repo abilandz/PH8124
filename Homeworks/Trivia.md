@@ -14,8 +14,8 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 | 03788184 | 1.0 | 1.0 | 1.0 | 1.0 | | | | | | | 4.0 |
 | 03788343 | 1.0 | 1.0 | 1.0 | 1.0 | | | | | | | 4.0 |
 | 03787478 | 1.0 | 1.0 | 1.0 | 1.0 | | | | | | | 4.0 |
+| 03734063 | 1.0 | 1.0 | 1.0 | 1.0 | | | | | | | 4.0 |
 | 03746102 | 1.0 | 1.0 | 1.0 | | | | | | | | 3.0 |
-| 03734063 | 1.0 | 1.0 | 1.0 | | | | | | | | 3.0 |
 | 03698158 | 1.0 | 1.0 | 1.0 | | | | | | | | 3.0 |
 | 03719061 | 1.0 | 1.0 | 1.0 | | | | | | | | 3.0 |
 | 03787830 | 1.0 | 1.0 | 1.0 | | | | | | | | 3.0 |
@@ -24,4 +24,4 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 | 03788568 | 1.0 | 1.0 | | | | | | | | | 2.0 |
 | 03726017 | 1.0 | | | | | | | | | | 1.0 |
 
-* Secret bonus for a very original solution.
+* Special bonus for a very original solution.
