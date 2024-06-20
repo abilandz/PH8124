@@ -2,9 +2,9 @@
 
 # Homework #6: Playing with **Bash** strings and arrays.
 
-**Last update:** 20230622
+**Last update:** 20240619
 
-**Challenge #1:** Write down a **Bash** code snippet which will capitalize only the very last character of a word. Example use case:
+**Challenge #1:** Write down a **Bash** code snippet that will capitalize only a word's very last character. Example use case:
 
 ```bash
 $ Var=abdDef
@@ -27,7 +27,7 @@ Everything is the same as in the standard **date** command, except that:
 
 1. The output stream is formatted in a different way  
 2. The name of the month is printed in all capitals
-3. Time zone is dropped 
+3. The time zone is dropped 
 
 **Hint**: Implement **Date** as a **Bash** function, in its body execute the standard **date** command, and store the output in an array, something like:
 
@@ -37,7 +37,7 @@ myArray=( $(date -R) )
 
 The flag '-R' produces a more uniform output (number and ordering of fields) across different implementations of **date** command on different operating systems.
 
-Then manipulate all array elements separately, and in combination with **echo** achieve the desired reformatting. 
+Then, manipulate all array elements separately, and in combination with **echo** achieve the desired reformatting. 
 
 
 
