@@ -2,7 +2,7 @@
 
 # Homework #7: Coding adventures with grep, sed and awk
 
-**Last update:** 20240607
+**Last update:** 20240622
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
@@ -76,47 +76,4 @@ a1 a2 a3 test a4
 b3 b1 b3 test b4
 c1 c3 c2 test c4
 ```
-
-**Challenge #4:** Injecting an external file in an already existing file. Develop a shell function **InjectFileAtLine** , which will, at the specified line number of an already existing file, inject line-by-line the content of an external file. For instance, let the content of the current file _currentFile.txt_ is:
-
-```bash
-a1 a2 a3 a4
-b3 b1 b3 b4
-c1 c3 c2 c4
-```
-
-and the content of the external file _externalFile.txt_ is:
-
-```bash
-The shell is both an     interactive command language 
-      and a scripting language, and is used by the operating system to 
-
-control the execution of the system using shell scripts.
-```
-
-Then, a user would like to execute in the terminal: **InjectFileAtLine currentFile.txt 2 externalFile.txt** , to inject (i.e. to embed) starting from line 2 of the current file an external file, to obtain:
-
-```bash
-a1 a2 a3 test a4
-b3 b1 b3 test b4
-The shell is both an     interactive command language 
-      and a scripting language, and is used by the operating system to 
-
-control the execution of the system using shell scripts.
-c1 c3 c2 test c4
-```
-
-All formatting (spacing, etc.), needs to be preserved, as it was in original files. If the user specifies as the 2nd argument the line number which exceeds the length of the current file, the external file is appended to it.
-
-**Hint #1:** To preserve spacings also at the beginning of the lines when parsing through the file, use the following technique:
-
-```bash
-while IFS= read -r Line; do
- echo "$Line"
-done < someFile.txt
-```
-
-**Hint #2:** Empty lines deserve a special treatment. To inject empty line in the file, e.g. at line 4, use ```sed -i "4i\\\n" someFile.txt``` 
-
-**Hine #3**: For large files and when efficiency matters, this sort of problem can be solved better only by using **awk** and its advanced features. But it's also instructive to solve the problem only by combining the shell built-in functionalities with **sed**.
 
