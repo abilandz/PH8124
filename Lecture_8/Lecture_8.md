@@ -179,7 +179,7 @@ TEMP/dir_2
 TEMP/dir 1
 ```
 
-
+In the above example, we have used the command **find**, which is covered in detail in Lecture 8.
 
 
 
