@@ -4,11 +4,11 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20230719
+**Last update:** 20240630
 
-HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jets production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions and jet interaction in dense matter.
+HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jet production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions, and jet interaction in dense matter.
 
-In this final project, you are challenged to use combined **Linux**, **Bash** and **ROOT** functionalities covered in the lecture, in order to fully automate the data analysis over one typical HIJING dataset, generated in 10 separate jobs on a local batch farm.
+In this final project, you are challenged to use combined **Linux**, **Bash** and **ROOT** functionalities covered in the lecture in order to fully automate the data analysis over one typical HIJING dataset generated in 10 separate jobs on a local batch farm.
 
 **Challenge #0: The dataset.** Download the compressed HIJING dataset (the compressed size is around 170 MB) from the following direct link: https://cernbox.cern.ch/index.php/s/BJern5Ky7ajoULd . From the terminal, you can download by using the command **wget**:
 
@@ -22,9 +22,9 @@ After downloading, extract the dataset (the size will be around 680 MB after thi
 tar xf HIJING_LBF_test.tar.gz
 ```
 
-This dataset corresponds to the HIJING model prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV. That was the heavy-ion colliding system and energy used in Run 1 operations (2009-2013) at Large Hadron Collider.
+This dataset corresponds to the HIJING model prediction for the collisions of heavy ions (Pb-Pb) at a collision energy of 2.76 TeV. That was the heavy-ion colliding system and energy used in Run 1 operations (2009-2013) at the Large Hadron Collider.
 
-Inside the directory ```HIJING_LBF_test``` there are 10 subdirectories named ```0, 1, ..., 9```, and in each subdirectory 5 files. Each subdirectory corresponds to the working directory of a separate process that was running an independent HIJING simulation. Besides the various config or log files in each subdirectory, the most important file is ASCII file ```HIJING_LBF_test_small.out```, in which the final output of HIJING is stored. Each file ```HIJING_LBF_test_small.out``` contains the detailed output for 10 heavy-ion collisions. Therefore, the total dataset for the analysis in the final project amounts to 10&times;10 = 100 heavy-ion collisions. 
+Inside the directory ```HIJING_LBF_test```, there are 10 subdirectories named ```0, 1, ..., 9```, and in each subdirectory 5 files. Each subdirectory corresponds to the working directory of a separate process that was running an independent HIJING simulation. Besides the various config or log files in each subdirectory, the most important file is the ASCII file ```HIJING_LBF_test_small.out```, in which the final output of HIJING is stored. Each file ```HIJING_LBF_test_small.out``` contains the detailed output for 10 heavy-ion collisions. Therefore, the total dataset for the analysis in the final project amounts to 10&times;10 = 100 heavy-ion collisions. 
 
 The file ```HIJING_LBF_test_small.out``` has the following example structure and content:
 ```bash
@@ -81,7 +81,7 @@ The file ```HIJING_LBF_test_small.out``` has the following example structure and
 
 ... and so on for remaining events ...
 ```
-The meaning of different entries above is as follows:  
+The meaning of the different entries above is as follows:  
 
   1. The beginning of data for each new event is marked with the tag **BEGINNINGOFEVENT**   
 
@@ -93,22 +93,22 @@ The meaning of different entries above is as follows:
      3           211             0             1    0.105007850        -6.46358531E-04   -0.609461606        0.634002090   
      ```
 
-     have the following meaning:
+     have the following meanings:
 
      * ```3``` : particle label within a particular event      
      * ```211``` : PID, i.e. particle identity (211 = positively charged pion, -2212 = antiproton, etc.). To get the standardized PID code in high-energy physics for all particles, consult http://pdg.lbl.gov/2007/reviews/montecarlorpp.pdf      
      * ```0``` : this is the primary particle, i.e. this particle is not a product of resonance decay. Otherwise, this column indicates the label of the parent particle      
      * ```1``` : final or directly produced particle (alternatively, ```11``` in the 4th column indicates that this particle has decayed)    
-     * ```0.105007850``` : _x_ component of momentum (in GeV/c)    
-     * ```-6.46358531E-04``` : _y_ component of momentum (in GeV/c)  
-     * ```-0.609461606``` : _z_ component of momentum (in GeV/c)     
+     * ```0.105007850``` : _x_ component of momentum (in GeV/_c_)    
+     * ```-6.46358531E-04``` : _y_ component of momentum (in GeV/_c_)  
+     * ```-0.609461606``` : _z_ component of momentum (in GeV/_c_)     
      * ```0.634002090``` : particle energy (in GeV)   
 
 
 
 
 
-**Challenge #1: Splitting.** Develop the script **Splitter.sh** which takes one argument, the top directory to your local HIJING dataset. That script splits in each of the subdirectories ```0, 1, ..., 9``` the large HIJING output file ```HIJING_LBF_test_small.out``` in 10 separate files named ```event_0.dat, ..., event_9.dat ```. Each of these new files contains the data only for a particular event.
+**Challenge #1: Splitting.** Develop the script **Splitter.sh** which takes one argument, the top directory of your local HIJING dataset. That script splits into each of the subdirectories ```0, 1, ..., 9``` the large HIJING output file ```HIJING_LBF_test_small.out``` in 10 separate files named ```event_0.dat, ..., event_9.dat ```. Each of these new files contains the data only for a particular event.
 
 At the end of this step, the situation in your local dataset needs to be schematically as follows:
 
@@ -135,7 +135,7 @@ event_0.dat
 event_9.dat
 ```
 
-**Hint:** Use **grep -n BEGINNINGOFEVENT HIJING_LBF_test_small.out** to get the line numbers at which the entry for each new event begins. Then, programmatically extract those line numbers with **awk**. Finally, the output of **awk** use as an input to **sed** to split the file ```HIJING_LBF_test_small.out``` into 10 chunks, each chunk corresponding to the data of one event, something like:
+**Hint:** Use **grep -n BEGINNINGOFEVENT HIJING_LBF_test_small.out** to get the line numbers at which the entry for each new event begins. Then, programmatically extract those line numbers with **awk**. Finally, the output of **awk** is used as an input to **sed** to split the file ```HIJING_LBF_test_small.out``` into 10 chunks, each chunk corresponding to the data of one event, something like:
 
 ```bash
 sed -n 123,123456p HIJING_LBF_test_small.out > event_0.dat
@@ -145,7 +145,7 @@ sed -n 123,123456p HIJING_LBF_test_small.out > event_0.dat
 
 
 
-**Challenge #2: Filtering.** Develop the script **Filter.sh** which takes one argument, the top directory to your local HIJING dataset. Then, this script filters in each of the subdirectories ```0, 1, ..., 9``` out of each new file ```event_?.dat``` obtained in the previous step only the information for the primary particles (i.e. particles with the label ```0``` in the 3rd column).
+**Challenge #2: Filtering.** Develop the script **Filter.sh** which takes one argument, the top directory of your local HIJING dataset. Then, this script filters in each of the subdirectories ```0, 1, ..., 9``` out of each new file ```event_?.dat``` obtained in the previous step only the information for the primary particles (i.e. particles with the label ```0``` in the 3rd column).
 
 **Hint #1:** Collect all files ```event_?.dat``` with the command **find** and loop over them via **while+read**, something like:
 
@@ -170,7 +170,7 @@ If filtering went OK, clean up the temporary backup files.
 
 
 
-**Challenge #3: Transferring.** Develop the script **Transfer.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to process all filtered files ```event_?.dat``` and store for each event for each particle its PID and kinematics (three components of momenta and energy) into **ROOT**'s container ```TTree```. Make one ```TTree``` container for each event, and then all ```TTree``` containers save in one common **ROOT** file named ```HIJING_LBF_test_small.root```, in each of the subdirectories ```0, 1, ..., 9```. After the transfer, clean up all files ```event_?.dat```.
+**Challenge #3: Transferring.** Develop the script **Transfer.sh** which takes one argument, the top directory of your local HIJING dataset. This script is responsible for processing all filtered files ```event_?.dat``` and for storing for each event and for each particle its PID and kinematics (three components of momenta and energy) into **ROOT**'s container ```TTree```. Make one ```TTree``` container for each event, and then all ```TTree``` containers save in one common **ROOT** file named ```HIJING_LBF_test_small.root```, in each of the subdirectories ```0, 1, ..., 9```. After the transfer, clean up all files ```event_?.dat```.
 
 At the end of this step, the situation in your local dataset needs to be schematically as follows:
 
@@ -240,7 +240,7 @@ From this point onward, only the dataset stored in ```TTree``` containers in the
 
 
 
-**Challenge #4: Analysis.** Develop the script **Analysis.sh** which takes one argument, the top directory to your local HIJING dataset. This script is responsible to collect all **ROOT** files ```HIJING_LBF_test_small.root``` obtained in the previous step, and hand them over to dedicated **ROOT** macros for the final analysis. For the whole dataset, i.e. for all 100 heavy-ion collisions, this final script needs to produce:
+**Challenge #4: Analysis.** Develop the script **Analysis.sh** which takes one argument, the top directory of your local HIJING dataset. This script is responsible for collecting all **ROOT** files ```HIJING_LBF_test_small.root``` obtained in the previous step, and handing them over to dedicated **ROOT** macros for the final analysis. For the whole dataset, i.e. for all 100 heavy-ion collisions, this final script needs to produce:
 
 1. figure (in 4 standard formats .pdf,.eps, .png and .C) holding the 3 histograms plotted side-by-side, with distributions of transverse momentum for pions, kaons and protons, respectively (to increase statistics, take that particles and antiparticles are the same). Transverse momentum is the Lorentz invariant quantity defined as: 
    $$
@@ -307,13 +307,13 @@ int readDataFromTTree(const char *filename)
 }
 ```
 
-Use above macro for instance in the script **Analysis.sh** as:
+Use the above macro for instance in the script **Analysis.sh** as:
 ```c
 root -l readDataFromTTree.C\(\"output.root\"\)
 ```
 Instead of trivially dumping on the screen the data via ```cout<<Form("%d: %f %f %f %f",p,px,py,pz,E)<<endl;``` expand this macro with the code which fills the histograms, and stores those histograms in the **ROOT** file ```ÀnalysisResults.root``` which contains the output results of your personal analysis. 
 
-**Hint #2:** The 3 histograms (for pion, kaon and proton) need to be generated to hold the entries for the whole dataset of 100 events, not per event! So here you need to demonstrate that you can access histograms from the **ROOT** file, fill histograms with the new entries, and save them back updated to the **ROOT** file. This is a real-life example. At any point, in the **ROOT** file you need to have only 3 histograms, which you just access, fill and save updated for each event. To achieve that, please consider using the following standard strategy:
+**Hint #2:** The 3 histograms (for pion, kaon and proton) need to be generated to hold the entries for the whole dataset of 100 events, not per event! So here you need to demonstrate that you can access histograms from the **ROOT** file, fill histograms with the new entries, and save them back and updated in the **ROOT** file. This is a real-life example. At any point, in the **ROOT** file you need to have only 3 histograms, which you just access, fill and save updated for each event. To achieve that, please consider using the following standard strategy:
 
 * open **ROOT** file (the global **ROOT** variable **gFile** points now to that particular file):
 
@@ -328,7 +328,7 @@ Instead of trivially dumping on the screen the data via ```cout<<Form("%d: %f %f
   TH1F *hist = dynamic_cast<TH1F*>(file->Get("hist-name"));
   ```
 
-* fill in the histogram the new entries from particular event
+* fill in the histogram new entries from a particular event
 
 * save the updated histogram in the same **ROOT** file with
 
@@ -338,9 +338,9 @@ Instead of trivially dumping on the screen the data via ```cout<<Form("%d: %f %f
 
   This will write the updated histogram in the **ROOT** file to which the global **ROOT** variable **gFile** points to. Each time you open a new **ROOT** file, **gFile** is updated. The previous instance of that histogram is overwritten (see more details in the ROOT documentation at: https://root.cern.ch/doc/master/classTObject.html#a211e8b1ab4ef54a5f2ecbe809945fee8).
 
-  Note that ownership is not affected, histogram is still owned by the very same **ROOT** file. On the other hand, you cannot access histogram from one file, update it and save it into another **ROOT** file in the same code straightforwardly, as here you have first to deal with the histogram ownership, which is always a bit tricky...
+  Note that ownership is not affected, the histogram is still owned by the very same **ROOT** file. On the other hand, you cannot access the histogram from one file, update it, and save it into another **ROOT** file in the same code straightforwardly, as here you have first to deal with the histogram ownership, which is always a bit tricky...
 
-**Hint #3:** For the final plotting and printout, develop a separate standalone **ROOT** macro which only processes the final **ROOT** file ```ÀnalysisResults.root``` which contains the histograms of your personal analysis, and execute that macro at the end of script **Analysis.sh**.
+**Hint #3:** For the final plotting and printout, develop a separate standalone **ROOT** macro that only processes the final **ROOT** file ```ÀnalysisResults.root``` that contains the histograms of your personal analysis, and execute that macro at the end of script **Analysis.sh**.
 
 
 
@@ -366,5 +366,7 @@ return 0
 ```
 
 
+
+**The final remark:** It's perfectly fine if you solve all steps by implementing shell functions, instead of scripts. 
 
  
