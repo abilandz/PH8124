@@ -23,7 +23,7 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 | 03709580 | 1.0 | 1.0 | 1.0 | | | | | | | | 3.0 |
 | 03737601 | 1.0 | 1.0 | 1.0 | | | | | | | | 3.0 |
 | 03788568 | 1.0 | 1.0 | | | | | | | | | 2.0 |
-| 03710258 | 1.0 | 0.8 | | | | | | | | | 1.8 |
+| 03710258 | 1.0 | 0.9 | | | | | | | | | 1.9 |
 | 03726017 | 1.0 | | | | | | | | | | 1.0 |
 
 \* Special bonus for a very original solution.
