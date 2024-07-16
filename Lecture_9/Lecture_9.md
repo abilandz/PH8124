@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20240623
+**Last update**: 20240716
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -557,7 +557,17 @@ real	0m4.002s
 user	0m0.000s
 sys	0m0.002s
 ```
-However, we can use also **time** for **Bash** code snippets directly:
+It works as expected also when used for shell functions:
+```bash
+$ fun(){ sleep 4s; } # define some simple shell function
+$ time fun
+
+real	0m4.002s
+user	0m0.000s
+sys	0m0.002s
+```
+
+Finally, we can use also **time** for **Bash** code snippets directly:
 ```bash
 time for i in {1..1000}; do date; done > /dev/null 
 ```
@@ -633,7 +643,9 @@ Try 'date --help' for more information.
 ```
 However, this saves the day:
 ```bash
-eval $DateSimple
+$ DateSimple="date | awk '{print \$4}'" # note that we have to escape \$
+$ eval $DateSimple
+12:22:02
 ```
 What happened above is the following: Upon expanding the content of the variable **DateSimple**, **Bash** interpreted pipe ```|``` and ```awk``` as arguments to the **date** command, and since the command **date** can handle only one argument (besides flags which are indicated with prepended ```-``` or ```--```), it bailed out when it hit at the second argument, which is string ```awk```. When interpreting the command input, one of the very first things **Bash** is looking for are pipes ```|```. However, since in the literal command input **$DateSimple** there are no pipes (before expansion!), **Bash** stopped searching for them. Then, after expanding **$DateSimple**, **Bash** continued with the other steps in the command input interpretation, none of which included pipes. Therefore, the pipe ```|``` ended up being interpreted as a mere argument to **date** command. This sort of problem can be fixed with **eval**, because that command literally forces the command input to be re-interpreted from scratch. After using **eval $DateSimple**, and expanding **$DateSimple** in the first step, **Bash** goes from scratch through the command input interpretation once again, and interprets the pipe ```|``` correctly.
 
