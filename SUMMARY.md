@@ -1,6 +1,6 @@
 # Summary
 
-* [Lecture 1](./Lecture_1/TBI_Trivia.md)
+* [Lecture 1](./Lecture_1/Trivia.md)
 * [Lecture 2](./Lecture_2/TBI_Lecture_2.md)
 * [Lecture 3](./Lecture_3/TBI_Lecture_3.md)
 * [Lecture 4](./Lecture_4/TBI_Lecture_4.md)
