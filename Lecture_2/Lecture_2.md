@@ -2,7 +2,7 @@
 
 # Lecture 2: Commands and variables
 
-**Last update**: 20240506
+**Last update**: 20250425
 
 ### Table of Contents
 1. [Introduction](#introduction)
@@ -212,7 +212,7 @@ help <command-name>
 
 For **Linux** commands, we can use the command **man** (shortcut for _manual_) to retrieve the documentation. The syntax is fairly simple:  
 
-```linux
+```bash
 man <command-name>
 ```
 
@@ -262,7 +262,7 @@ Important remark: Since the empty character is an input field separator, never u
 ```bash
 touch file 1.log
 ```
-would literally create two empty files, the first one named ```file```, and the second one named ```1.log``` . If you apply **touch** command on an already existing file, only the time-stamp of that file will be updated to the current time, its content remains exactly the same. 
+would literally create two empty files, the first one named ```file```, and the second one named ```1.log``` . If you apply **touch** command on an already existing file, only the timestamp of that file will be updated to the current time, its content remains exactly the same. 
 
 In order to see or to list all files and subdirectories in the current working directory, use **ls** command, i.e. 
 
@@ -425,7 +425,7 @@ In both cases the printout in the terminal is the same, namely:
 44
 ```
 
-So what is the difference between the two syntaxes above? The latter is less error-prone (as it clearly delineates with curly braces the variable name from the rest of the code!) and more powerful, as it enables a lot of built-in functionalities for the string manipulations programmatically within **Bash**. 
+So what is the difference between the two syntaxes above? The latter is less error-prone (as it clearly delineates with curly braces the variable name from the rest of the code!) and more powerful, as it enables a lot of built-in functionalities for string manipulations programmatically within **Bash**. 
 
 As an example, this will produce the desired result only in the latter case: 
 
@@ -558,7 +558,7 @@ Finally, ```return 0``` sets the _exit status_ of your script. In general, each 
 * 0 : success
 * 1, 2, 3, ... , 255 : various error states
 
-The exit status is stored in the special variable **$?** . For instance:
+The exit status is stored in the special variable ```$?``` . For instance:
 
 ```bash
 date
@@ -572,9 +572,9 @@ date -q # option -q is NOT supported in command 'date'
 echo $? # prints 1 , i.e. one possible exit status for error
 ```
 
-Typically in your code, after you have executed the command, you check its exit status. Then, depending on the value of this exit status, your subsequent code can branch in multiple directions. Remember that each **Linux** command has an exit status stored in the special variable **$?** upon its execution, so it shall also your  **Bash** script. As long as you are executing your script via **source** command, you can set the exit status with the keyword **return** (as in the last line in your above script ```first.sh```). 
+Typically in your code, after you have executed the command, you check its exit status. Then, depending on the value of this exit status, your subsequent code can branch in multiple directions. Remember that each **Linux** command has an exit status stored in the special variable ```$?``` upon its execution, so it shall also your  **Bash** script. As long as you are executing your script via **source** command, you can set the exit status with the keyword **return** (as in the last line in your above script ```first.sh```). 
 
-If you forgot to specify the exit status of your script with the keyword **return**, the special variable **$?** is nevertheless automatically set, but now to the exit status of lastly executed command in your script, which can lead to unexpected results.
+If you forgot to specify the exit status of your script with the keyword **return**, the special variable ```$?``` is nevertheless automatically set, but now to the exit status of lastly executed command in your script, which can lead to unexpected results.
 
 
 
@@ -600,7 +600,7 @@ $ echo $HOME
 /home/abilandz
 ```
 
-By convention, the name of all configuration files in the home directory begins with '.' (dot), which means that **ls** will not list them by default.
+By convention, the name of all configuration files in the home directory begins with ```.``` (dot), which means that **ls** will not list them by default.
 
 #### User's configuration files
 
