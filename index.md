@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20250425
+**Last update**: 20250426
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2025.
 
@@ -21,7 +21,7 @@ For **ROOT**, the official documentation is used:
 
 * [Lecture 1](./Lecture_1/Trivia.md)
 * [Lecture 2](./Lecture_2/Lecture_2.md)
-* [Lecture 3](./Lecture_3/TBI_Lecture_3.md)
+* [Lecture 3](./Lecture_3/Lecture_3.md)
 * [Lecture 4](./Lecture_4/TBI_Lecture_4.md)
 * [Lecture 5](./Lecture_5/TBI_Lecture_5.md)
 * [Lecture 6](./Lecture_6/TBI_Lecture_6.md)

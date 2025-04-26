@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20240405
+**Last update**: 20250426
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -60,7 +60,7 @@ or by referencing the content of environment variable **PWD**, which is always s
 ```bash
 echo $PWD
 ```
-Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it is always much more efficient to get information directly from the environment variable like **PWD**, than to retrieve and store in a variable the same information by executing the command, via the so-called _command substitution operator $( ... )_ (more on this later).
+Both versions return the same answer in all cases of practical interest. However, and as a general rule of thumb, it is always much more efficient to get information directly from the environment variable like **PWD**, than to retrieve and store in a variable the same information by executing the command, via the so-called _command substitution operator_ ```$( ... )``` (more on this later).
 
 The most important directories in the **Linux** file system structure are:
 
@@ -73,7 +73,7 @@ The most important directories in the **Linux** file system structure are:
 * ```/proc``` : kernel and process information
 * ```/tmp``` : temporary files
 
-We have already used **Linux** commands **date** and **touch**. But to which physical executables (binaries), stored somewhere in the file system, these two commands correspond to? For all major cases of practical interest, you can figure that out simply by using the command **which**:
+We have already used **Linux** commands **date** and **touch**. But to which physical executables (binaries), stored somewhere in the file system, these two commands correspond to? For all cases of practical interest, you can figure that out simply by using the command **which**:
 ```bash
 $ which date
 /bin/date
@@ -105,14 +105,14 @@ The output could look like this:
 ```bash
 /home/abilandz/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
-This output looks messy, but in fact it has a well-defined structure which is easy to decipher. In the above output, we can see absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
+This output looks messy, but in fact it has a well-defined structure which is easy to decipher. In the above output, we can recognize absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
 
 By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command &mdash; just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in ```/home/abilandz/bin```). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like ```/bin```, ```/usr/bin```, etc.). This is achieved with the following standard code snippet:
 
 ```bash
 PATH="/home/abilandz/bin:${PATH}"
 ```
-With this syntax, directory with your personal executables ```/home/abilandz/bin``` is prepended to the current content of **PATH**, and therefore your executables will have the higher priority in the **Bash** search. 
+With this syntax, directory with your personal executables ```/home/abilandz/bin``` is prepended to the current content of **PATH**, and therefore your executables will have a higher priority in the **Bash** search. 
 
 For the lower priority of your executables, use an alternative standard code snippet:
 
@@ -120,7 +120,7 @@ For the lower priority of your executables, use an alternative standard code sni
 PATH="${PATH}:/home/abilandz/bin"
 ```
 
-In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard system-wide **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new terminal you open, add the above redefinitions of **PATH** into ```~/.bashrc``` file. In case you want the redefinition of **PATH** to be persistent in all new processes you start from a terminal, use in addition the command **export** at the first declaration or redefinition of **PATH** variable. 
+In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard system-wide **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new terminal you open, add the above redefinitions of **PATH** into ```~/.bashrc``` file. In case you want the redefinition of **PATH** to be persistent in all new processes you start from a terminal, use in addition the command **export** at the first redefinition of **PATH** variable. 
 
 From the above explanation, it is clear that if you unset **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
 
@@ -273,7 +273,7 @@ you can get the following example output:
 It is very important to understand all entries in this output, and how to modify or set some of them. Reading from left to right:
 
 * **Column #1:**  
-  * the very first character is the file type : ```-``` is an ordinary file, ```d``` is a directory, ```l``` is soft link, etc.  
+  * the very first character is the file type : ```-``` is an ordinary file, ```d``` is a directory, ```l``` is a soft link, etc.  
   * characters 2, 3 and 4 are fields for ```r```, ```w``` or ```x``` permissions for the user (i.e. for you)   
   * characters 5, 6 and 7 are fields for ```r```, ```w``` or ```x``` permissions for the group (i.e. wider group of people where your account belongs to)   
   * characters 8, 9 and 10 are fields for ```r```, ```w``` or ```x``` permissions for anybody else    
@@ -456,7 +456,7 @@ As the very first and respectable version of your own command in **Linux/Bash**,
 
 Functions in **Bash** are very similar to scripts, however, the details of their implementations differ. In addition, functions are safer to use than scripts, since they have a well-defined notion of _local environment_. This basically means that if you have the variable with the same name in your current terminal session, as well as in the script or in the function you are executing, it's much easier to prevent the clash of these variables if you use functions. In addition, usage of functions to great extent resembles the usage of **Linux** commands, and it is in this sense, that your first function developed in **Bash** can be also treated as your first **Linux** command! 
 
-Example implementation of **Bash** function could look like:
+An example implementation of **Bash** function could look like:
 
 ```bash
 #!/bin/bash
@@ -497,13 +497,13 @@ When compared to the script implementation, there are few differences:
 
 * Usage of keyword **function** (an alternative syntax exists, ```someName()```, but it is really a matter of taste which one you prefer)
 * Body of the function must be embedded within ```{ ... }```
-* For any variable needed only within the function, use the keyword **local**, to restrict its scope only within the body of that function. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or in some other code from where you have called the function. If a variable is defined in the function without the keyword **local**, a call to that function can spoil severely the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, each variable you need only in the function, declare as **local** .
+* For any variable needed only within the function, use the **Bash** built-in command **local**, to restrict its lifetime only within the body of that function. Every time **local** is executed, it creates a new local variable, which exists until the function exits. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or within some other code from where you have called the function. If a variable is defined in the function without the **local**, a call to that function can severely spoil the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, declare each variable you need only in the function as **local** .
 
 The rest is the same as for the scripts:
 
 * Functions handle arguments in exactly the same way as scripts, via special ```${1}```, ```${2}```, ... variables
 * You can call a function within another function, but only if it was defined first &mdash; order of implementation matters in scripting languages!
-* Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time functions are executed equivalently as commands, and then their exit status clearly matters
+* Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time, functions are executed equivalently as commands, and then their exit status clearly matters. Functions cannot return values (e.g. string) directly to the caller, apart from the exit status set via **return**, which must be in the interval 0..255
 * Typically, you implement all your functions in some file, let's say ```functions.sh```, and save it in your home directory (or anywhere else). Then, at the end of ```${HOME}/.bash_profile``` and ```${HOME}/.bashrc``` you insert the line:
 	```bash 
 	source ${HOME}/functions.sh
