@@ -3,7 +3,7 @@
 
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20240422
+**Last update**: 20250501
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
@@ -46,11 +46,11 @@ source ~/functions.sh
 ```
 where in the example file ```~/functions.sh``` you have the implementation of your **Bash** functions, you can use all your functions effortlessly in any new terminal you open.
 
-Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts due to the keyword **local**, which can be used only in the function body and which limits the scope and lifetime of a variable defined in the function only to the execution of that function.
+Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts due to the built-in command **local**, which can be used only in the function body and which limits the scope and lifetime of a variable defined in the function only to the execution of that function.
 
 Suppose a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation. In that case, executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process.
 
-Programmatically, you can fetch the function name in its body implementation via the built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of the function body). For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints the line number of the source code where this variable is referenced).
+Programmatically, you can fetch the function name within the source code of its implementation via the built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of the function implementation). For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints the line number of the source code where this variable is referenced).
 
 We summarize the above thorough comparison with the following final conclusion: Use **Bash** scripts only for very simple cases and **Bash** functions for everything else.
 
@@ -75,7 +75,7 @@ mkdirrr: command not found
 
 In this case, **echo** is not executed because the failure of **mkdirrr** has broken the command chain ```&&```.
 
-If ```||``` operator chains two commands, the second command in the chain will be executed only if the first command has failed:
+If the ```||``` operator chains two commands, the second command in the chain will be executed only if the first command has failed:
 
 ```bash
 $ mkdirrr someDirectory || echo "Cannot make directory. Sorry."
@@ -141,7 +141,7 @@ someOtherCommand || exit 2
 ...
 ```
 
-This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable **$?**, it is also possible, by inspecting its content upon termination, to fix the particular reason of the failure programmatically, without intervening manually in the code. 
+This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable ```$?```, it is also possible, by inspecting its content upon termination, to fix the particular reason of the failure programmatically, without intervening manually in the code. 
 
 
 
@@ -212,7 +212,7 @@ Var2=ab
 [[ ${Var1} == ${Var2} ]] && echo Yes || echo No
 ```
 
-Note that ```==```  is the comparison operator, while ```=``` is the assignment operator. The comparison operator ```==``` expects two arguments, and it treats both LHS and RHS arguments as strings. Since any variable in **Bash** is a string by default, this operator applies to any variable content. In particular, you can also compare integers this way, but it's much safer to do an integer comparison with the ```-eq``` operator, as explained below. The operator ```!=``` does the opposite to ```==```, i.e. it exits with 0 if two strings are different. 
+Note that ```==```  is the comparison operator, while ```=``` is the assignment operator. The comparison operator ```==``` expects two arguments, and it treats both LHS and RHS arguments as strings. Since any variable in **Bash** is a string by default, this operator applies to any variable content. In particular, you can also compare integers this way, but it is much safer to do an integer comparison with the ```-eq``` operator, as explained below. The operator ```!=``` does the opposite to ```==```, i.e. it exits with 0 if two strings are different. 
 
 **Example 3**: How do you check if one string contains another as a substring?
 
@@ -250,8 +250,8 @@ Quite frequently, if your script or function demands that a user must provide pr
 In the above example, if a user does not provide exactly two arguments, the code execution terminates. It is always safer to compare two integers with ```-eq``` than to treat them as strings and use ```==``` for comparison, due to corner cases like this one:
 
 ```bash
-[[ 1 == 01 ]] && echo Yes || echo No # prints No
-[[ 1 -eq 01 ]] && echo Yes || echo No # prints Yes
+[[ 1 == 01 ]] && echo Yes || echo  No # prints No
+[[ 1 -eq 01 ]] && echo Yes || echo No # prints Yes, but it works accidentally
 ```
 
 As a side remark, we indicate that prepending '0' to a number is not trivial. In fact, that is a widely accepted convention in a lot of programming languages to change the representation of a number from decimal (default) to an octal base. Therefore, this doesn't work:
@@ -262,7 +262,7 @@ bash: [[: 08: value too great for base (error token is "08")
 No
 ```
 
-Since the meaning of integer operators is rather obvious, we provide the executive summary of their usage with the following table:
+Since the meaning of integer operators is rather obvious, we provide only the executive summary of their usage with the following table:
 
 | Operator | Outcome (exit status) |
 | :--:     | :--     |
@@ -274,7 +274,7 @@ Since the meaning of integer operators is rather obvious, we provide the executi
 
 
 #### Files and directories
-The last group of operators, ```-f, -d, -e, -s, -nt, -ot```, expects their argument(s) to be files or directories. The first four accept one argument, while the last two take two arguments. Their meaning is illustrated in the following examples.
+The operators in the last group, ```-f```, ```-d```, ```-e```, ```-s```, ```-nt```, ```-ot```, expect their argument(s) to be files or directories. The first four accept one argument, while the last two take two arguments. Their meaning is illustrated in the following examples.
 
 **Example 5**: How to check whether the file ```${HOME}/test.txt``` exists?
 
@@ -334,7 +334,7 @@ In this section, we have summarized the most important options &mdash; for the o
 help test
 ```
 
-In the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch the code execution, depending on whether some command executed correctly or has failed. If it has failed, we can branch the code execution even further depending on the exit status of a particular error. This is achieved by storing and testing the content of special variable **$?**, schematically:
+In the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch the code execution, depending on whether some command executed correctly or has failed. If it has failed, we can branch the code execution even further depending on the exit status of a particular error. This is achieved by storing and testing the content of special variable ```$?```, schematically:
 
 ```bash
 someCommand # variable $? gets updated with the exit status of this command
@@ -446,7 +446,7 @@ The flag ```-s``` ('silent') hides in the terminal user's input:
 ```bash
 read -s -p "Password: " Password; echo
 ```
-Now the user got a prompt message ```Password: ``` in the terminal and his input is not showed on the screen as he types it, but it was stored silently in the variable **Password**. Within your subsequent code you can programmatically check the **Password**'s content. If you remove the read permission on the file in which you are doing those checks, you have obtained a very simple-minded mechanism to handle passwords, etc. 
+Now the user got a prompt message ```Password:``` in the terminal and his input is not showed on the screen as he types it, but it was stored silently in the variable **Password**. Within your subsequent code you can programmatically check the **Password**'s content. If you remove the read permission on the file in which you are doing those checks, you have obtained a very simple-minded mechanism to handle passwords, etc. 
 
 Finally, with the following example:
 
@@ -495,7 +495,7 @@ Counter=1
 echo ${Counter} # prints 11
 ```
 
-Within ```(( ... ))``` we can use all standard operators to perform integer arithmetic: ```+, -, /, *, %, ++, --, **, +=, -=, /=, *=``` , with the self-explanatory meanings. 
+Within ```(( ... ))``` we can use all standard operators to perform integer arithmetic: ```+```, ```-```, ```/```, ```*```, ```%```, ```++```, ```--```, ```**```, ```+=```, ```-=```, ```/=```, ```*=``` , with the self-explanatory meanings. 
 
 **Example:** How to calculate powers of integers in **Bash**? We can raise an integer to some exponent in the following way:
 
@@ -504,7 +504,7 @@ Int=5
 Exp=2
 echo $((Int**Exp)) # prints 25
 ```
-As you can see from the above example, it is not necessary within ```(( ... ))``` to reference the content of the variable explicitly with **$** &mdash; the operator itself takes care of that. The following alternatives with lengthier code are also correct:
+As you can see from the above example, it is not necessary within ```(( ... ))``` to reference the content of the variable explicitly with ```$``` &mdash; the operator itself takes care of that. The following alternatives with lengthier code are also correct:
 
 ```bash
 echo $(($Int**$Exp)) # prints 25
