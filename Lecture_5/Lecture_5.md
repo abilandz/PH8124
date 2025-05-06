@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20240509
+**Last update**: 20250506
 
 
 ### Table of Contents
@@ -58,7 +58,7 @@ This is just a schematic solution &mdash; most likely the output of **commandNam
 
 You can fearlessly nest the command substitution operators, like in the following example. 
 
-**Example 3**: How can you get programmatically only the name of the parent directory of the directory in which your script sits (knowing that the environment variable **PWD** holds the full absolute path of script's directory)? 
+**Example 3**: How can you get programmatically only the name of the parent directory of the directory in which your script sits? 
 
 To solve this problem, we need first to introduce two widely used **Linux** commands in this context: **basename** and **dirname**. The command **basename** is typically used in the following way: It takes as an argument the absolute path to some directory or file, and drops the part which corresponds to an absolute path. This is illustrated with the following code snippets:
 ```bash
