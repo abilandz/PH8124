@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20240611
+**Last update**: 20250509
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -607,7 +607,7 @@ $ echo ${PIPESTATUS[*]}
 
 In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully; therefore, the array **PIPESTATUS** holds three zeros. When only the single command has been executed, that is a trivial pipeline, and the **PIPESTATUS** array has only one entry, the very same information that is stored in the special **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute the command, even the trivial ones like **echo**.  
 
-The power of piping is best illustrated in combination with the three powerful commands sed, awk, and **grep**, the three core **Linux** utilities for text parsing and manipulation, which we cover in the next section.
+The power of piping is best illustrated in combination with the three powerful commands **sed**, **awk**, and **grep**, the three widely used **Linux** utilities for text parsing and manipulation, which we cover in the next section.
 
 
 
@@ -721,7 +721,7 @@ test TEST Test 11test test22
 test TEST Test 11test test
 ```
 
-The special character '^' is an anchor for the beginning of a line, and many other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use ```$ ```:
+The special character ```^``` is an anchor for the beginning of a line, and many other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use ```$``` :
 
 ```bash
 grep "t22$" grepExample.txt
@@ -870,7 +870,7 @@ $ grep -r "Bash" ~/Lectures/PH8124
 /home/abilandz/Lectures/PH8124/Homeworks/Homework_1.md:**Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as
 /home/abilandz/Lectures/PH8124/Homeworks/Homework_2.md:# Using external executable as Linux/Bash command
 
-... many, many, more lines ...
+... many more lines ...
 ```
 
 **awk**
@@ -1255,4 +1255,4 @@ $ echo "some text" | sed -e "s/text/TEXT/; s/some/SOME/"
 SOME TEXT
 ```
 
-Finally, **sed** provides full support for pattern matching via regular expressions, which increases its power and applicability tremendously.
+Finally, we remark that **grep**, **awk**, and **sed** provide full support for pattern matching via regular expressions (```*```, ```?```, ```[...]```, etc.), which increases their power and applicability tremendously.
