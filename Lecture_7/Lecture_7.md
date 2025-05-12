@@ -4,7 +4,7 @@
 
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20240622
+**Last update**: 20250512
 
 ### Table of Contents
 1. [Escaping: ```\```](#escaping)
@@ -66,7 +66,7 @@ $ echo "Today is: \$(date)"
 Today is: $(date) 
 ```
 
-In the second example nothing happened, because the command substitution operator was escaped.
+In the second example the command **date** was not executed, because the command substitution operator was escaped.
 
 We have already seen that in **Bash**, the command input is terminated either with semicolon ```;``` or with the new line. Frequently, the command input needs to span over a few lines in the terminal, and in order to handle such a case, we need to escape the end of the line, i.e. we need to kill the special meaning of a new line. To achieve that, it suffices to place backslash ```\``` at the very end of the line:
 
