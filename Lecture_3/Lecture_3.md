@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20250426
+**Last update**: 20250514
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -278,7 +278,7 @@ It is very important to understand all entries in this output, and how to modify
   * characters 5, 6 and 7 are fields for ```r```, ```w``` or ```x``` permissions for the group (i.e. wider group of people where your account belongs to)   
   * characters 8, 9 and 10 are fields for ```r```, ```w``` or ```x``` permissions for anybody else    
   
-* **Column #2:** Number of files (always 1 for files and 2 or more for directories)  
+* **Column #2:** For a file, it is always 1. For a directory, it is the number of immediate subdirectories in it, plus its parent directory and itself. Therefore, for directories, this number is always greater than or equal to 2. It is equal to 2 for an empty directory, and for a directory that contains only files (i.e. there are no subdirectories). It is greater than 2 for a directory if there is at least one subdirectory in that directory.
 * **Column #3:** The user who owns the file ('abilandz' in this case)
 * **Column #4:** The group of users to which the file belongs (ALICE experiment at CERN in this case)
 * **Column #5:** The size of the file in bytes (for directories, it has another meaning, it is NOT the size of the directory!) 
@@ -356,8 +356,40 @@ chmod 714 file.log
 
 It practice, it is not needed to remove old permissions and only then to set the new ones &mdash; it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
 
-Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_ (or _script arguments_).
+**Example:** Does command **cp** copy also the permissions of original file into a new file?
 
+```bash
+# make a new file with default permissions:
+$ touch file1.txt 
+
+# check the permisions:
+$ ls -la file1.txt
+-rw-rw-r-- 1 abilandz abilandz 0 Mai 14 14:19 file1.txt
+
+# change the permisions:
+chmod o+w file1.txt
+
+# copy the original file into new file:
+$ cp file1.txt file2.txt
+
+# check the permissions of both files:
+$ ls -al file*
+-rw-rw-rw- 1 abilandz abilandz 0 Mai 14 14:19 file1.txt
+-rw-rw-r-- 1 abilandz abilandz 0 Mai 14 14:22 file2.txt
+
+# copy the original file into new file using option '-a':
+$ cp -a file1.txt file3.txt
+
+# check the permissions of all files:
+$ ls -al file*
+-rw-rw-rw- 1 abilandz abilandz 0 Mai 14 14:19 file1.txt
+-rw-rw-r-- 1 abilandz abilandz 0 Mai 14 14:22 file2.txt
+-rw-rw-rw- 1 abilandz abilandz 0 Mai 14 14:19 file3.txt
+```
+
+As we can see above, the new file _file2.txt_ was created with default permissions if **cp** was used without any options. Permissions were correctly copied over into the new file __file3.txt__ only when **cp -a** was used (in this context the flag '-a' means 'preserve all'). The same thing happens when on a shared computer we copy a file from the home directory of another user into our home directory. As a side remark, we indicate that the default permissions for files and directories can be modified with shell's built-in command **umask**. 
+
+Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_ (or _script arguments_).
 
 
 
