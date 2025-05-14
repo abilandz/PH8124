@@ -387,7 +387,7 @@ $ ls -al file*
 -rw-rw-rw- 1 abilandz abilandz 0 Mai 14 14:19 file3.txt
 ```
 
-As we can see above, the new file _file2.txt_ was created with default permissions if **cp** was used without any options. Permissions were correctly copied over into the new file __file3.txt__ only when **cp -a** was used (in this context the flag '-a' means 'preserve all'). The same thing happens when on a shared computer we copy a file from the home directory of another user into our home directory. As a side remark, we indicate that the default permissions for files and directories can be modified with shell's built-in command **umask**. 
+As we can see above, the new file _file2.txt_ was created with default permissions if **cp** was used without any options. Permissions were correctly copied over into the new file _file3.txt_ only if **cp -a** was used (in this context, the flag '-a' means 'preserve all'). The same thing happens when on a shared computer we copy a file from the home directory of another user into our home directory. As a side remark, we indicate that the default permissions for files and directories can be modified with shell's built-in command **umask**. 
 
 Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_ (or _script arguments_).
 
