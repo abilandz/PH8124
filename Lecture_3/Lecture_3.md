@@ -2,7 +2,7 @@
 
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20250514
+**Last update**: 20250515
 
 ### Table of Contents
 1. [**Linux** file system](#file_system)  
@@ -200,7 +200,7 @@ mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of
                   # if 'dirN' doesn't exist, syntax error   
 ```
 
-* **du -sh** : ('disk usage') : summary (flag **-s**) for the size of directory in the human-readable (flag **-h**) format 
+* **du -sh** : ('disk usage') : Estimate the disk space used by files and directories. For directories, the flag **-s** prints the summary size for all nested subdirectories. The flag **-h** prints the size in a human-readable format. 
 ```bash
 $ du -sh ${HOME} # prints how much disk space your home directory is taking
 967M
@@ -208,6 +208,10 @@ $ du -h --max-depth=1 ${HOME} # the size of directory, and differentially
                               # of its subdirectories
 $ du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
                               # subdirectories and all sub-subdirectories
+                              
+$ du -h file1.txt file2.txt # prints size of two specified files
+20K  	file1.txt
+192K	file2.txt                           
 ```
 
 * **df -h** : ('disk free') : get the used disk space of all disks
@@ -367,7 +371,7 @@ $ ls -la file1.txt
 -rw-rw-r-- 1 abilandz abilandz 0 Mai 14 14:19 file1.txt
 
 # change the permisions:
-chmod o+w file1.txt
+$ chmod o+w file1.txt
 
 # copy the original file into new file:
 $ cp file1.txt file2.txt
