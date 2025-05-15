@@ -1,7 +1,7 @@
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
 # Using external executable as Linux/Bash command
-**Last update:** 20240516
+**Last update:** 20250515
 
 As a starting point for this homework, start the **nano** editor in the terminal and write the following simple code snippet of C/C++ programming language (this is just an example choice &mdash; this homework is fairly generic, and you can instead use some other programming language that you prefer more) into the file ```Hello.C``` 
 
@@ -14,7 +14,7 @@ int main()
 }
 ```
 
-Then, compile the above code in order to create an executable (or binary) file. For instance, you can compile C/C++ code by using the widely used and freely available **gcc** compiler, with the following generic syntax:
+Then, compile the above code in order to create an executable (or binary) file. For instance, you can compile C/C++ code by using the freely available **gcc** compiler, with the following generic syntax:
 
 ```bash
 gcc inputSourceCode -o finalExecutable
