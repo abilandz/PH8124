@@ -50,7 +50,7 @@ Typically, subshells are executed in the background, by using the following gene
 ```
 The advantage of running subshells in the background is that now, by using the **wait** command, we can decide whether the rest of the code in the script will or will not wait for the subshell execution to terminate (just like for any other command running in the background in its own process). This is very handy because we can use in that subshell automatically the already initialized environment in the script, execute the subshell, use its result, and keep the environment unmodified. 
 
-As a side remark, we clarify the difference between the content of **$BASHPID** and **$$**. In the current parent shell, they both expand to the  process ID of that shell:
+As a side remark, we clarify the difference between the content of **$BASHPID** and **$$**. In the current shell, they both expand to the  process ID of that shell:
 
 ```bash
 $ echo $$; echo $BASHPID;
@@ -58,7 +58,7 @@ $ echo $$; echo $BASHPID;
 1217831
 ```
 
-However, in a subshell, only **BASHPID** gets reset to the new process ID of subshell:
+However, in a subshell, only **BASHPID** gets reset to the new process ID of a subshell:
 
 ```bash
 $ ( echo $$; echo $BASHPID; )
@@ -66,7 +66,7 @@ $ ( echo $$; echo $BASHPID; )
 1217887
 ```
 
-Therefore, by using them both in a subshell, we can trace back separately the PID of a parent shell from which subshell was started, and of that subshell. 
+Therefore, by using them both in a subshell, we can trace back separately the PID of a parent shell from which a subshell was started, and of that subshell. 
 
 The use case of the subshell is illustrated with the following simple example:
 ```bash
