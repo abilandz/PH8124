@@ -2,7 +2,7 @@
 
 # **Bash** functions
 
-**Last update:** 20240526
+**Last update:** 20250523
 
 **Challenge #1**: Develop a **Bash** function named ```Mkdir``` which makes a directory and immediately goes into it. Directory names are specified as arguments, either via relative or absolute paths. If more than one directory name is supplied, all of them are made, and then it goes immediately into the very last directory.
 
