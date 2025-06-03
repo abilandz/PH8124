@@ -2,7 +2,7 @@
 
 # Lecture 9: Real-life examples
 
-**Last update**: 20240716
+**Last update**: 20250603
 
 ### Table of Contents
 1. [Command history search](#command_history_search)
@@ -305,7 +305,7 @@ Examples/file_0.pdf
 ```
 From the above example, we see that **find** interprets the flag ```-a``` as the logical ```AND```. Similarly, the flag ```-o``` can be used within **find** as the logical ```OR```. 
 
-Since the flag ```-name``` is very frequently used, it deserves some additional clarification. The usage of quotes in the pattern, as in ```"*.pdf"``` was essential because now the special characters will be supplied as the special characters to the **find** command, and will prevent **Bash** from expanding them. Dropping quotes around the pattern is a typical mistake when **find** is used:
+Since the flag ```-name``` is very frequently used, it deserves some additional clarification. This flag allows exactly only one pattern as its argument. The usage of quotes in the pattern, as in ```"*.pdf"``` was essential because now the special characters will be supplied as the special characters to the **find** command, and will prevent **Bash** from expanding them. Dropping quotes around the pattern is a typical mistake when **find** is used:
 
 ```bash
 $ find Examples/ -type f -name *.pdf # WRONG!!
@@ -392,7 +392,7 @@ while read File; do
  stat -c %s $File
 done < <(find pathToDirectory(-ies) -type f)
 ```
-The second solution is more readable, less error prone and easier to generalize in case more actions need to be performed over the found files. 
+The second solution is more readable, less error prone and easier to generalize in case more actions need to be performed over the found files. However, it is less portable to other shells because it involves **Bash**-specific operator ```<( … )```. 
 
 Here we enlist a few additional flags of **find** command, which can become handy in practice:
 
