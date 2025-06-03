@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20250506
+**Last update**: 20250603
 
 
 ### Table of Contents
@@ -611,8 +611,6 @@ case $Flag in
   ;;
 esac
 ```
-For more elaborate cases on how to parse command-line arguments in such context, see **Bash** built-in command **getopts** (which is particularly suitable to handle short, single-character options, like -h).
-
 Multiple options can be grouped with ```|``` (OR) under the same statement, schematically:
 ```bash
 case someValue in 
@@ -626,6 +624,108 @@ case someValue in
  *) some code when all specified options are not met ;;
 esac 
 ```
+This functionality can be combined with the shell built-in command **shift**, to implement support for option which takes its own argument. When you use **shift N** in the script or function body, basically you drop the first **N** arguments supplied to that script or function. For instance, if the function is defined this way:
+```bash
+function fun
+{
+  echo $1 $2
+  shift 2
+  echo $1 $2
+  return 0
+}
+```
+
+the following would happen at execution:
+
+```bash
+$ fun a b c d
+a b
+c d
+```
+
+If we drop **shift 2** from above implementation, then the printout is different:
+
+```bash
+$ fun a b c d
+a b
+a b
+```
+
+This is precisely what we need when parsing arguments, and it is illustrated with the next example.
+
+**Example:** How do you implement the support for options which take their own mandatory arguments in your script or function? 
+
+This requirement is solved with the following code snippet:
+
+```bash
+
+function Parse
+{
+  # Local variables and default configuration:
+  local Verbose=false
+  local nFiles=50 # modify with "-f <numberOfFiles>"
+
+  # Parse all options and corresponding arguments, and allow user to change default configuration:
+  while [[ $# -gt 0 ]]; do  
+ 
+    case $1 in  
+      -v|--verbose) 
+        Verbose=true
+        shift 1 # because option "-v" does not take any argument
+      ;;
+   
+      -f|--files) 
+        nFiles=$2 # in this iteration, $1 is "-f" and the argument next to it, $2, is interpreted as <numberOfFiles>
+        shift 2 # because option "-f" does take its own argument, namely <numberOfFiles>
+      ;;
+   
+      *) 
+        echo "The specified option $1 is not supported (yet)."
+        return 1 # bail out with error exit status
+      ;;
+     esac
+     
+  done
+
+  echo "Verbose: $Verbose"
+  echo "nFiles: $nFiles"
+
+  return 0
+  
+}
+```
+
+With the above implementation, we have the following behavior at execution:
+
+```bash
+# call function with default configuration:
+$ Parse
+Verbose: false
+nFiles: 50
+
+# call function with non-default configuration:
+$ Parse -v
+Verbose: true
+nFiles: 50
+
+# call function with non-default configuration:
+$ Parse -v -f 100
+Verbose: true
+nFiles: 100
+
+# call function with non-default configuration:
+$ Parse -f 100 -v
+Verbose: true
+nFiles: 100
+
+# call function with non-default configuration:
+$ Parse -g
+The specified option -g is not supported (yet).
+```
+
+Use with care, though, the shell built-in command **shift** as the code quickly becomes unreadable and challenging to maintain, if **shift** is overused. For even more elaborate cases on how to parse command-line arguments in such context, see **Bash** built-in command **getopts** (which is particularly suitable to handle short, single-character options, like -h).
+
+
 The **case-in-esac** conditional statement recognizes the so-called POSIX brackets. The most important examples are:   
 
 * ```[[:alpha:]]``` &mdash; Alphabetic characters [a-zA-Z]  
