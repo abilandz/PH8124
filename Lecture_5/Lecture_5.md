@@ -624,7 +624,7 @@ case someValue in
  *) some code when all specified options are not met ;;
 esac 
 ```
-This functionality can be combined with the shell built-in command **shift**, to implement support for option which takes its own argument. When you use **shift N** in the script or function body, basically you drop the first **N** arguments supplied to that script or function. For instance, if the function is defined this way:
+This functionality can be combined with the shell built-in command **shift**, to implement support for option which takes its own argument, covering both short and lengthy format for option names. When you use **shift N** in the script or function body, basically you drop the first **N** arguments supplied to that script or function. For instance, if the function is defined this way:
 ```bash
 function fun
 {
@@ -643,7 +643,7 @@ a b
 c d
 ```
 
-If we drop **shift 2** from above implementation, then the printout is different:
+If we omit **shift 2** in the above implementation, then the printout would be different:
 
 ```bash
 $ fun a b c d
@@ -651,11 +651,11 @@ a b
 a b
 ```
 
-This is precisely what we need when parsing arguments, and it is illustrated with the next example.
+This functionality is precisely what we need when parsing and interpreting arguments as options, and it is illustrated with the next example.
 
-**Example:** How do you implement the support for options which take their own mandatory arguments in your script or function? 
+**Example:** How do you implement the support for options (both short and lengthy format) which take their own mandatory arguments in your script or function? 
 
-This requirement is solved with the following code snippet:
+This design requirement is demonstrated with the following code snippet:
 
 ```bash
 
@@ -665,7 +665,8 @@ function Parse
   local Verbose=false
   local nFiles=50 # modify with "-f <numberOfFiles>"
 
-  # Parse all options and corresponding arguments, and allow user to change default configuration:
+  # Parse all options and corresponding arguments, and allow user to change 
+  # the default configuration:
   while [[ $# -gt 0 ]]; do  
  
     case $1 in  
@@ -675,8 +676,10 @@ function Parse
       ;;
    
       -f|--files) 
-        nFiles=$2 # in this iteration, $1 is "-f" and the argument next to it, $2, is interpreted as <numberOfFiles>
-        shift 2 # because option "-f" does take its own argument, namely <numberOfFiles>
+        nFiles=$2 # in this iteration, $1 is "-f" while the argument next
+                  # to it, $2, is interpreted as <numberOfFiles>
+        shift 2 # because option "-f" does take its own argument, 
+                # namely <numberOfFiles>
       ;;
    
       *) 
