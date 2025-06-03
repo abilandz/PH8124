@@ -2,7 +2,7 @@
 
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20250509
+**Last update**: 20250603
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
@@ -778,6 +778,18 @@ test TEST Test 11test test
 ```
 
 Each of these three lines has at least one exact occurrence of the specified pattern 'Test'.
+
+Sometimes it can be desired to print differentially only the matched parts of a matching line, with each such part on a separate output line. This can be achieved with the flag '-o':
+
+```bash
+$ echo "a test Test b test" | grep -o test
+test
+test
+$ echo "a test Test b test" | grep -o -i test
+test
+test
+Test
+```
 
 It is also possible to combine patterns with the special character ```\|```:
 
