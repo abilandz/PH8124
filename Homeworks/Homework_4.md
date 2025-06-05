@@ -2,7 +2,7 @@
 
 # Filtering and reformatting the file content programmatically
 
-**Last update:** 20240605
+**Last update:** 20250605
 
 **Challenge #1**: Develop a **Bash** function named ```OldestFile``` which takes as arguments a list of files. The function does the following:  
 
@@ -20,7 +20,7 @@ The output of your function could look like:
 The oldest file is:
 ... some-file-name ...
 ```
-**Hint #1**: It suffices to use command chain operators ```&&``` and ```||``` in combination with the test construct ```[[ ... ]]```.  
+**Hint #1**: For file comparison, it suffices to use command chain operators ```&&``` and ```||``` in combination with the test construct ```[[ ... ]]```. 
 
 
 
