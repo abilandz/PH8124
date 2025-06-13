@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20250603
+**Last update**: 20250613
 
 
 ### Table of Contents
@@ -416,7 +416,7 @@ Before : 44
 Inside : 44
 After  : 55
 ```
-From this example, we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different types of braces, namely the round braces ```( ... ) ```, to define the _subshell_ &mdash; this will be covered later.
+From this example, we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different types of braces, namely the round braces ```( ... )```, to define the _subshell_ &mdash; this will be covered later.
 
 Very conveniently, the code block ```{ ... }``` can be combined with the command chain operators, as the following example illustrates.  
 
@@ -504,7 +504,7 @@ Without brace expansion, the solution would take much more work. It is also poss
 
 
 ### 4. Conditional statements <a name="conditional_statements"></a>
-We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similarly tofailed most programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
+We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similarly to most programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
 
 #### A) **if-elif-else-fi** <a name="if"></a>
 
