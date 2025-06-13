@@ -2,9 +2,9 @@
 
 # Homework #5: Mastering the command substitution operator.
 
-**Last update:** 20240613
+**Last update:** 20250613
 
-The developer is testing the execution time a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following generic way:
+The developer is testing the execution time of a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following generic way:
 
 ```bash
 Started=$(date -R)
@@ -32,7 +32,7 @@ $ echo $UnixEpochTime
 1656062271
 ```
 
-After that, simply use ```$(( ... ))``` to perform integer subtraction, and 'echo' the final result. 
+After that, simply use ```$(( ... ))``` to perform integer subtraction, and use **echo** to print the final result. 
 
 **Remark**: Yes, the developer could have obtained directly the relevant time stamps in the 'Unix epoch' format with
 
