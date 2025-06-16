@@ -3,7 +3,7 @@
 
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20250613
+**Last update**: 20250616
 
 
 ### Table of Contents
@@ -662,7 +662,7 @@ This design requirement is demonstrated with the following code snippet:
 function Parse
 {
   # Local variables and default configuration:
-  local Verbose=false
+  local Verbose=false # modify to true with option "-v"
   local nFiles=50 # modify with "-f <numberOfFiles>"
 
   # Parse all options and corresponding arguments, and allow user to change 
