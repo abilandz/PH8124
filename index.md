@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20250603
+**Last update**: 20250627
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2025.
 
@@ -38,7 +38,7 @@ For **ROOT**, the official documentation is used:
     * [Homework 4](./Homeworks/Homework_4.md)
     * [Homework 5](./Homeworks/Homework_5.md)
     * [Homework 6](./Homeworks/Homework_6.md)
-    * [Homework 7](./Homeworks/TBI_Homework_7.md)
+    * [Homework 7](./Homeworks/Homework_7.md)
     * [Homework 8](./Homeworks/TBI_Homework_8.md)
     * [Homework 9](./Homeworks/TBI_Homework_9.md)
     * [Homework 10](./Homeworks/TBI_Homework_10.md)

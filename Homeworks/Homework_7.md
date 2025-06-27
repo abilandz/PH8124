@@ -1,8 +1,8 @@
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
-# Homework #7: Coding adventures with grep, sed and awk
+# Homework #7: Coding adventures with grep, awk and sed
 
-**Last update:** 20240622
+**Last update:** 20250627
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 
