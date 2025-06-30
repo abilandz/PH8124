@@ -2,7 +2,7 @@
 
 # Lecture 10: ROOT - getting started
 
-**Last update**: 20230625
+**Last update**: 20250630
 
 For **ROOT**, the official documentation is used:
 
