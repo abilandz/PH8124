@@ -1,8 +1,8 @@
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
-# Homework #9: Running in parallel and lock mechanism
+# Homework #9: Running in parallel and the lock mechanism
 
-**Last update:** 20240622
+**Last update:** 20250711
 
 **Challenge #1**: We start this challenge by creating a simple toy dataset, by executing in the terminal the following code snippet:
 
@@ -70,7 +70,7 @@ Given these two functions, the schematic usage of the lock mechanism is as follo
  # 1. Request the lock for file 'someFile' in the current process:
  while ! Lock someFile; do
   echo " .... Waiting for the lock .... $(date) "
-  sleep 1s # this is not necessary, but it reduces a bit the stress on the system
+  sleep 1s # this line is not necessary, but it reduces a bit the stress on the system
  done
 
  # 2. Lock was obtained for file 'someFile', modify that file safely now and here:

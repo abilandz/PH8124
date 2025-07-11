@@ -2,7 +2,7 @@
 
 # Lecture 8: **Bash** fancy features
 
-**Last update:** 20250516
+**Last update:** 20250711
 
 ### Table of Contents
 1. [Subshells: ```( ... )```](#subshells)
@@ -197,7 +197,7 @@ TEMP/dir_2
 TEMP/dir 1
 ```
 
-In the above example, we have used the command **find**, which is covered in detail in Lecture 8.
+In the above example, we have used the command **find**, which is covered in detail in Lecture 9.
 
 
 
