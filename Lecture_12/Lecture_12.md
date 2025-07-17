@@ -2,7 +2,7 @@
 
 # Lecture 12: ROOT - basic classes (Part 2/2)
 
-**Last update**: 20230720
+**Last update**: 20250717
 
 ### Disclaimer
 Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
