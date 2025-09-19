@@ -193,7 +193,7 @@ space : prefix positive values with a space, and negative with minus
 
 - : always prefix numeric values with a sign, even if the value is positive
 
-# : Use an alternat form => TBI AB re-read and test this
+Use an alternat form => TBI AB re-read and test this
 
 0 : Pad output with zeros, not spaces.  => TBI AB re-read and test this
 
@@ -268,31 +268,6 @@ These 12 steps are not the whole story. There are still 5 ways to modify the pro
 
 
 
-### make
-
-=> keeps track of multiple files in a particular project, some of which depend on the others
-=> it makes sure that when you change a file, all of the other files that depend on it are processed
-=> make figures out which files need to be re-processed, after a certain change has been made
-o How does make does this?
-=> Simple: It compares the modification times of the input and output files (called sources and targets in make terminology), and if the input file is newer, then make re-processes it
-=> You tell make which files to check by building a file called makefile that has constructs like this:
-target : source1 source2 ...
-    commands to make target
-\# This syntax essentially says: For target to be up to date, it must be newer than all of the sources. If it's not, run the commands to bring it up to date
-\# The commands are on one or more lines that must start with TABs
-\# See examples in ~/Tutorials/LINUX/MAKE
-\# AB: It seems make is checking only the timestamp difference between target and source, i.e. touch <source-file> wil trigger the default action, even if the file is the same
-o TBI AB : have a look again at nice example on page 189, how to leading order to implement yourself what make is doing. And its continuation as Exercise 2 on page 193
-o TBI AB: solve exercises 3) a-g on pages 194 and 196
-
-
-
-
-
-
-
-
-
 
 
 
@@ -319,7 +294,7 @@ function testMe
  echo Function
 }
 
-# source the above file
+=> source the above file
 
 $ testMe
 Alias
@@ -338,7 +313,13 @@ o This default order can be modified with the three built-ins: command, builtin 
   function cd
   {
 
-# some fancy stuff
+
+
+
+
+
+
+### some fancy stuff
 
  command cd
 }
@@ -693,7 +674,6 @@ o TBI The X Window System
 
 ooo Other common variables
 o some programs, like mail, need to know which type of editor you would like to use. Most likely, they will default to ed, unless you set EDITOR
-
 
 
 
