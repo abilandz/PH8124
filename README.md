@@ -1,10 +1,10 @@
-**Last update**: 20250731
+**Last update**: 20260311
 
-This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2025.
+This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
-The material covered in the previous year is at [SS2024]( https://abilandz.gitbook.io/ss2024 ) (the current semester is based on it, only minor modifications are foreseen).
+The material covered in the previous year is at [SS2025]( https://abilandz.gitbook.io/ss2025 ) (the current semester is based on it, only minor modifications are foreseen).
 
-The formal course description can be found at the TUM website at the following internal [link]( https://app.srv.nat.tum.de/mhb/description?id=14712 ), and at the following public [link]( https://academics.nat.tum.de/org/mh/details/mod/PH8124/ ).
+The formal course description can be found at the TUM website at the following internal [link]( https://app.srv.nat.tum.de/mhb/description?id=17361 ), and at the following public [link]( https://academics.nat.tum.de/org/mh/details/mod/PH8124/ ).
 
 For **ROOT**, the official documentation is used:
 
