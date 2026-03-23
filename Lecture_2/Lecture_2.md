@@ -1,6 +1,6 @@
 # Lecture 2: Commands and variables
 
-**Last update**: 20260323-1
+**Last update**: 20260323-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -161,7 +161,7 @@ Generically, for most cases of interest, we are executing commands in the termin
 
 This is the right moment to stress the importance and profound meaning of empty character: Empty character is the default input field separator (**IFS**) in the world of **Linux**. If you misuse the empty character, a lot of input in the terminal will be completely incomprehensible to **Bash**, and to **Linux** commands in general. In the above generic example, empty character separates the three items, which conceptually have a completely different meaning. As the very first step, after you have typed the input in the terminal and pressed 'Enter', the **Bash** splits your input into tokens that are separated (by default, and in a bit simplified picture) with one or more empty characters. Then, it checks whether the very first token is a known **Linux** command, **Bash** keyword, etc.
 
-The command input in **Bash** is terminated either by a new line or by a semi-colon ```;``` character. It is completely equivalent to write:
+The command input in **Bash** is terminated either by a new line or by a semi-colon ```;``` character. In practice, it is equivalent to write:
 
 ```bash
 echo "Hello World"
@@ -176,6 +176,20 @@ or
 echo "Hello World" ;   date
 ``````
 
+For the purists, from a technical point of view, however, there is a slight conceptual difference between
+
+```bash
+firstCommand
+secondCommand
+```
+
+and
+
+```bash
+firstCommand; secondCommand
+```
+
+In the first case, **Bash** first parses the syntax of ```firstCommand``` and executes it, only after that it will parse the syntax of ```secondCommand```, and execute it. In the second case, **Bash** parses both the command inputs of ```firstCommand``` and ```secondCommand``` in a single pass, then executes ```firstCommand```, followed by ```secondCommand```. 
 
 Let us now scrutinize the above generic syntax for command execution term by term:
 
