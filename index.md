@@ -24,7 +24,7 @@ For **ROOT**, the official documentation is used:
 * [Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence](./Lecture_3/Lecture_3.md)
 * [Lecture 4: Loops and few other thingies](./Lecture_4/Lecture_4.md_TBI)
 * [Lecture 5: Command substitution. Input/Output (I/O). Conditional statements](./Lecture_5/Lecture_5.md_TBI)
-* [Lecture 6: String manipulation. Arrays. Piping "|". sed, awk and grep](./Lecture_6/Lecture_6.md_TBI)
+* [Lecture 6: String manipulation. Arrays. Pipes. sed, awk and grep](./Lecture_6/Lecture_6.md)
 * [Lecture 7: Escaping. Quotes. Handling processes and jobs](./Lecture_7/Lecture_7.md_TBI)
 * [Lecture 8: Bash fancy features](./Lecture_8/Lecture_8.md_TBI)
 * [Lecture 9: Real-life examples](./Lecture_9/Lecture_9.md_TBI)

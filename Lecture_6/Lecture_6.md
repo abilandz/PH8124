@@ -1,19 +1,19 @@
-# Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
+# Lecture 6: String manipulation. Arrays. Pipes. **sed**, **awk** and **grep** 
 
-**Last update**: 20260323
+**Last update**: 20260323-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
 2. [Arrays](#arrays)
-3. [Piping: ```|```](#piping)
+3. [Pipes: ```|```](#pipes)
 4. [**sed**, **awk** and **grep**](#sed_awk_grep)
 
 
 
 ### 1. String manipulation <a name="string_manipulation"></a>
-**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can, to a certain extent, solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use high-level programming languages like Perl.
+**Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can, to a certain extent, solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use high-level programming languages like **Perl**.
 
 String operators in **Bash** can be used only in combination with curly-brace syntax ```${Var}```. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
@@ -520,8 +520,8 @@ declare -A ARR=([e]="X" [d]="X" [c]="X" [b]="X" [a]="X" )
 
 
 
-### 3. Piping: ```|``` <a name="piping"></a>
-We have already seen that commands can take their input directly from the user or from files. But in general, one command can take directly the output of another command as its input. This mechanism is called _piping_ and is a very generic concept in **Linux**. 
+### 3. Pipes: ```|``` <a name="pipes"></a>
+We have already seen that commands can take their input directly from the user or from files. But in general, one command can take directly the output of another command as its input. This mechanism is called a _pipe_ and is a very generic concept in **Linux**. 
 
 To use the output of one command as the input to another, we use operator ```|``` ('pipe'), schematically as:
 
@@ -546,7 +546,7 @@ In the above example, both the successful output stream and the error message of
 
 Using pipe ```|``` eliminates the need to make temporary files to redirect and store the output of one command and then supply that temporary file as an input to another command.  The data flow among all commands chained with ```|``` in the pipeline is automated without any restriction on the size. 
 
-We now provide a few frequently use cases  of piping. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator'). 
+We now provide a few frequently use cases  of pipes. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator'). 
 
 **Example 1:** How would you divide 10/7 at the precision of 30 significant digits? 
 
@@ -607,7 +607,7 @@ $ echo ${PIPESTATUS[*]}
 
 In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully; therefore, the array **PIPESTATUS** holds three zeros. When only the single command has been executed, that is a trivial pipeline, and the **PIPESTATUS** array has only one entry, the very same information that is stored in the special **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute the command, even the trivial ones like **echo**.  
 
-The power of piping is best illustrated in combination with the three powerful commands **sed**, **awk**, and **grep**, the three widely used **Linux** utilities for text parsing and manipulation, which we cover in the next section.
+The power of pipes is best illustrated in combination with the three powerful commands **sed**, **awk**, and **grep**, the three widely used **Linux** utilities for text parsing and manipulation, which we cover in the next section.
 
 
 
@@ -1054,7 +1054,7 @@ Change: 2020-05-29 08:32:38.081673700 +0200
  Birth: -
 ```
 
-If we want to print only a particular line on the screen , we need to use **sed** with the flag '-n' and the specifier 'p' ('print'). Flag '-n' is needed to suppress the default printout of the original file. To print only the 2nd line, we can use the following syntax:
+If we want to print only a particular line on the screen, we need to use **sed** with the flag '-n' and the specifier 'p' ('print'). Flag '-n' is needed to suppress the default printout of the original file. To print only the 2nd line, we can use the following syntax:
 
 ```bash
 stat test.sh | sed -n 2p
