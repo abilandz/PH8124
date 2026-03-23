@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Lecture 9: Real-life examples
 
-**Last update**: 20250603
+**Last update**: 20260323
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [Command history search](#command_history_search)

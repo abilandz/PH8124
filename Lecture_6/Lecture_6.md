@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Lecture 6: String manipulation. Arrays. Piping (```|```). **sed**, **awk** and **grep** 
 
-**Last update**: 20250603
+**Last update**: 20260323
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)

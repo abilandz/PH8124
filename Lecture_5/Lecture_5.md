@@ -1,10 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
-
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20250616
+**Last update**: 20260323
 
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [Command substitution: **$( ... )**](#command_substitution)

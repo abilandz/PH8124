@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Lecture 8: **Bash** fancy features
 
-**Last update:** 20250711
+**Last update:** 20260323
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [Subshells: ```( ... )```](#subshells)

@@ -1,9 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
-
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20250501
+**Last update**: 20260323
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [Scripts vs. functions](#s_vs_f)
