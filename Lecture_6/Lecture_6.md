@@ -1,12 +1,12 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **sed**, **awk** and **grep** 
 
-**Last update**: 20260323-1
+**Last update**: 20260323-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [String manipulation](#string_manipulation)
-2. [Arrays](#arrays)
+2. [Arrays: ```=( )```](#arrays)
 3. [Pipes: ```|```](#pipes)
 4. [**sed**, **awk** and **grep**](#sed_awk_grep)
 
