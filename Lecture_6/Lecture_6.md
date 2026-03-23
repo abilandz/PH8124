@@ -207,7 +207,7 @@ The pattern '^^[c-f]' will capitalize all single characters, but only in the spe
 
  
 
-### 2. Arrays <a name="arrays"></a>
+### 2. Arrays: ```=( )``` <a name="arrays"></a>
 
 **Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways &mdash; the quickest one is to use the round braces ```( ... )```. This syntax is illustrated with the following code snippet:
 
