@@ -1,14 +1,14 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Lecture 2: Commands and variables
 
-**Last update**: 20250425
+**Last update**: 20260323-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 1. [Introduction](#introduction)
-2. [Shell environment](#environment)  
-     A) [Commands](#commands)  
-     B) [Variables](#variables)    
+2. [Shell environment](#environment)   	
+	* [Commands](#commands)
+	* [Variables](#variables)    
 3. [Editing a file in the terminal](#editing_file)
 4. [Your first **Bash** script](#first-script)
 5. [Special configuration files in **Bash**](#configuration-files)
@@ -87,7 +87,7 @@ i.e. **Bash** has echoed back the text "Hello World" which was typed in the term
 
 When you open a terminal, your local environment is defined via some command names and predefined variables, which can be used directly in the current terminal session. Before going more into the details of how to modify the **shell** environment, let us see first how commands and variables are used in general.
 
-#### A) Commands <a name="commands"></a>
+#### Commands <a name="commands"></a>
 
 We have already seen how one built-in **Bash** command works, namely **echo**. In the same spirit, we can use in the terminal any other **Linux** command, not necessarily the built-in **Bash** command.
 
@@ -370,7 +370,7 @@ Aliases are definitely a nice feature, but do not overuse them, because:
 In summary, aliases are literally shortcuts for lengthy commands or any other lengthy terminal input, and aliases are meant to be used directly in the terminal merely to save time on typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute &mdash; nothing more nor less than that! 
 
 
-#### B) Variables <a name="variables"></a>
+#### Variables <a name="variables"></a>
 
 Just as any other programming language, **Bash** also supports a notion of _variable_. How to define variable in **Bash**? For instance, we want to use the variable named ```Var``` and initialize it with the value of 44. Simply type in the terminal: 
 
