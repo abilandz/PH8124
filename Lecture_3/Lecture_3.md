@@ -1,12 +1,12 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260323
+**Last update**: 20260323-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
-1. [**Linux** file system](#file_system)  
-	A) [File metadata](#file_metadata)  
+1. [**Linux** file system](#file_system) 
+	* [File metadata](#file_metadata)  
 2. [Positional parameters](#positional_parameters)
 3. [Your first **Linux/Bash** commands: **Bash** functions](#first_command)
 4. [Command precedence](#precedence)
@@ -240,15 +240,15 @@ $ stat -c %s Lecture_2.md
 ```
 For the size of a directory, use instead **du -sh** as explained above. As you can see from the output of **stat**, the example file ```Lecture_2.md``` is characterized by three timestamps: **Access**, **Modify** and **Change**. These three timestamps are an important part of file metadata, which we cover next.
 
-#### A) File metadata <a name="file_metadata"></a>
+#### File metadata <a name="file_metadata"></a>
 
 File metadata is any file-related information besides its content. From the user's perspective, the most important file metadata are _timestamps_, _ownership_ and _permissions_.  
 
 The meaning of three timestamps is as follows:  
 
-* **Access (a)** : last time a file was accessed (opened) and read without any modification   
-* **Modify (m)** : last time a file was modified (i.e. its content has been edited)
-* **Change (c)** : last time a file's metadata was changed (e.g. permissions)  
+* **Access (atime)** : last time a file was accessed (opened) and read without any modification   
+* **Modify (mtime)** : last time a file was modified (i.e. its content has been edited)
+* **Change (ctime)** : last time a file's metadata was changed (e.g. permissions)  
 
 These three timestamps are not an overkill, in fact, they enable a lot of very powerful features when searching for specific files or directories in the file system. For instance, by using them, it is possible to list names of all files modified within the last day, to delete all files which were not accessed for more than 1 year, etc.
 
