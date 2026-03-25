@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20260323
+**Last update**: 20260325
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
@@ -19,7 +19,7 @@ For **ROOT**, the official documentation is used:
 
 ### Lectures, homeworks and final project
 
-* [Lecture 1: Trivia](./Lecture_1/Trivia.md_TBI)
+* [Lecture 1: Trivia](./Lecture_1/Trivia.md)
 * [Lecture 2: Commands and variables](./Lecture_2/Lecture_2.md)
 * [Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence](./Lecture_3/Lecture_3.md)
 * [Lecture 4: Loops and few other thingies](./Lecture_4/Lecture_4.md_TBI)

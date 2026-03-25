@@ -1,6 +1,6 @@
 # Summary
 
-* [Lecture 1: Trivia](./Lecture_1/Trivia.md_TBI)
+* [Lecture 1: Trivia](./Lecture_1/Trivia.md)
 * [Lecture 2: Commands and variables](./Lecture_2/Lecture_2.md)
 * [Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence](./Lecture_3/Lecture_3.md)
 * [Lecture 4: Loops and few other thingies](./Lecture_4/Lecture_4.md_TBI)
