@@ -1,6 +1,6 @@
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20260323
+**Last update**: 20260326-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -57,7 +57,7 @@ We summarize the above thorough comparison with the following final conclusion: 
 
 
 ### 2. Command chain: **&&** and **||** <a name="chain"></a>
-Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1.. 255). For instance, we would like multiple commands to execute one after another, but only if all are executed successfully. As soon as one command fails, we would like to immediately abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
+Since every command in **Linux** and **Bash** has the exit status, it is possible programmatically to branch the code execution, depending on whether a command has executed successfully (exit status 0), or has failed during execution with some error status (exit status 1, 2, ..., 255). For instance, we would like multiple commands to execute one after another, but only if all are executed successfully. As soon as one command fails, we would like to immediately abort the execution of all subsequent commands. In **Bash**, we can achieve that with the _command chain_. 
 
 The command chain is a sequence of commands separated by ```&&``` or ```||``` operators. If two commands are chained by ```&&```, the second command will be executed only if the first one was executed successfully. For instance:
 
@@ -95,6 +95,34 @@ command1 && command2 && command3 ... || lastCommand
 ```
 
 The main point behind this construct is the following: **lastCommand** is executed if and only if any of the commands **command1**, **command2**, ..., has failed. The command **lastCommand** is not executed only if all of the commands **command1**, **command2**, ..., have executed successfully. Typically, the last command in the above chain would be some error printout accompanied by the code termination, either with **exit** or **return**. Therefore, the **lastCommand** is a sort of safeguard for the execution of all previous commands in the chain. 
+
+From a purely technical point of view, one can say that the ```&&``` and ```||``` operators are left-associative and have equal precedence. In practice, that means that
+
+``` 
+A && B || C
+```
+
+and
+
+```
+{ A && B; } || C
+```
+
+are parsed and executed in the same way by the shell. 
+
+On the other hand, it is important to realize that 
+
+```
+A && B || C
+```
+
+and 
+
+```
+if A; then B; else C
+```
+
+are not logically equivalent, because in the former the C is executed if B failed, whereas in the latter C is not executed if B failed (the code block syntax ```{ ... }``` and the conditional statement ```if-then-else``` are introduced and discussed in detail in the next lecture).
 
 **Example**: Consider the following command chain
 
@@ -391,7 +419,7 @@ The user-supplied arguments to **read** command, **Name** and **Surname**, have 
 
 If there are more words in the user's input from the keyboard than the variables supplied as arguments to **read**, all excess words are stored in the last variable. 
 
-**Example 3**: The previous example re-re-visited,  but now using **read** with fewer arguments that there are words in the user's input.
+**Example 3**: The previous example re-re-visited, but now using **read** with fewer arguments than there are words in the user's input.
 
 ```bash
 read Var1 Var2
