@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20260326
+**Last update**: 20260408
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
@@ -23,7 +23,7 @@ For **ROOT**, the official documentation is used:
 * [Lecture 2: Commands and variables](./Lecture_2/Lecture_2.md)
 * [Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence](./Lecture_3/Lecture_3.md)
 * [Lecture 4: Loops and few other thingies](./Lecture_4/Lecture_4.md)
-* [Lecture 5: Command substitution. Input/Output (I/O). Conditional statements](./Lecture_5/Lecture_5.md_TBI)
+* [Lecture 5: Command substitution. Input/Output (I/O). Conditional statements](./Lecture_5/Lecture_5.md)
 * [Lecture 6: String manipulation. Arrays. Pipes. sed, awk and grep](./Lecture_6/Lecture_6.md)
 * [Lecture 7: Escaping. Quotes. Handling processes and jobs](./Lecture_7/Lecture_7.md_TBI)
 * [Lecture 8: Bash fancy features](./Lecture_8/Lecture_8.md)

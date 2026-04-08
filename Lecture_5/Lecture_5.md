@@ -1,6 +1,6 @@
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20260323
+**Last update**: 20260408-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -8,9 +8,9 @@
 1. [Command substitution: **$( ... )**](#command_substitution)
 2. [Input/Output (I/O) and redirections](#io)
 3. [Code blocks and brace expansion: **{ ... }**](#code_blocks_and_brace_expansion)
-4. [Conditional statements](#conditional_statements)  
-    A) [if-elif-else-fi](#if)   
-    B) [case-in-esac](#case)  
+4. [Conditional statements](#conditional_statements)
+	* [if-elif-else-fi](#if)   
+	* [case-in-esac](#case)  
 
 
 
@@ -504,7 +504,7 @@ Without brace expansion, the solution would take much more work. It is also poss
 ### 4. Conditional statements <a name="conditional_statements"></a>
 We have already seen how to branch the code execution in **Bash** by using the command chain ```&&``` and ```||```. For more complicated cases, however, a more elegant and flexible solution can be reached with _conditional statements_, which in **Bash** work very similarly to most programming languages. For simpler cases, we can use **if-elif-else-fi** conditional statement, while the syntax of **case-in-esac** is better suitable for more complicated cases.
 
-#### A) **if-elif-else-fi** <a name="if"></a>
+#### **if-elif-else-fi** <a name="if"></a>
 
 The typical use case of **if-elif-else-fi** conditional statement is to branch the code execution depending on the outcome of the test construct ```[[ ... ]]```. Schematically:
 
@@ -570,7 +570,7 @@ In this example, the corresponding branch will be executed only if the exit stat
 
 
 
-#### B) **case-in-esac** <a name="case"></a>
+#### **case-in-esac** <a name="case"></a>
 
 On the other hand, the syntax of **case-in-esac** conditional statement is more elaborate, but also more powerful. The generic syntax looks like:
 
@@ -586,7 +586,7 @@ The thing to remember is that in **case-in-esac** conditional statement a specif
 
 The usage of **case-in-esac** conditional statement is best illustrated with a few concrete examples.
 
-**Example:** How do you implement the support for options in your script or function? 
+**Example 1:** How do you implement the support for options in your script or function? 
 
 Schematically, for the simplest cases, that can be achieved with the following code snippet:
 
@@ -651,20 +651,21 @@ a b
 
 This functionality is precisely what we need when parsing and interpreting arguments as options, and it is illustrated with the next example.
 
-**Example:** How do you implement the support for options (both short and lengthy format) which take their own mandatory arguments in your script or function? 
+**Example 2:** How do you implement in a shell script or a function the support for options (both short and lengthy format), where each option can take its own argument? How to distinguish between option arguments, and the standard arguments (positional parameters)? 
+
+We first answer the 2nd question: The common convention is to use a double-dash notation, ```--```, to terminate option processing, i.e. anything that follows ```--``` on the command line input is treated as the standard script or function arguments, and is assigned automatically to the internal variables ```$1```, ```$2```, etc.
 
 This design requirement is demonstrated with the following code snippet:
 
 ```bash
-
 function Parse
 {
-  # Local variables and default configuration:
-  local Verbose=false # modify to true with option "-v"
-  local nFiles=50 # modify with "-f <numberOfFiles>"
+  # 1) Local variables which can be modified with options, and their default values:
+  local Verbose=false # modify to true with option "-v" or "--verbose"
+  local nFiles=50 # modify with "-f <numberOfFiles>" or "--files <numberOfFiles>"
 
-  # Parse all options and corresponding arguments, and allow user to change 
-  # the default configuration:
+  # Parse all options and corresponding option arguments, and allow user to change 
+  # their default values:
   while [[ $# -gt 0 ]]; do  
  
     case $1 in  
@@ -678,6 +679,13 @@ function Parse
                   # to it, $2, is interpreted as <numberOfFiles>
         shift 2 # because option "-f" does take its own argument, 
                 # namely <numberOfFiles>
+        # here some sanity check on the value of nFiles can be implemented          
+      ;;
+   
+      --)
+        # special meaning of a double-dash: it terminates option processing
+        shift 1 # yes, throw away "--" as an argument before bailing out
+        break
       ;;
    
       *) 
@@ -688,38 +696,54 @@ function Parse
      
   done
 
+  # 2) Local variables which are set with standard function arguments, and their default values:
+  local DirPath=${1:-$PWD} # set to the first argument if it's provided, otherwise default to ${PWD}
+  
   echo "Verbose: $Verbose"
   echo "nFiles: $nFiles"
+  echo "DirPath: $DirPath"
 
   return 0
   
 }
 ```
 
-With the above implementation, we have the following behavior at execution:
+With the above implementation, we have the following behavior at execution, from example directory ```/home/abilandz/Test```:
 
 ```bash
 # call function with default configuration:
 $ Parse
 Verbose: false
 nFiles: 50
+DirPath: /home/abilandz/Test
 
-# call function with non-default configuration:
+# call function with changed verbosity:
 $ Parse -v
 Verbose: true
 nFiles: 50
+DirPath: /home/abilandz/Test
 
-# call function with non-default configuration:
+# call function with changed verbosity and for different number of files:
 $ Parse -v -f 100
 Verbose: true
 nFiles: 100
+DirPath: /home/abilandz/Test
 
-# call function with non-default configuration:
+# call function with changed verbosity and for different number of files
+# (demonstrating that ordering of options does not matter, if used correctly):
 $ Parse -f 100 -v
 Verbose: true
 nFiles: 100
+DirPath: /home/abilandz/Test
 
-# call function with non-default configuration:
+# call function with changed verbosity, for different number of files,
+# and set different directory path via standard argument:
+$ Parse -v -f 100 -- /home/abilandz/someOtherDirectory
+Verbose: true
+nFiles: 100
+DirPath: /home/abilandz/someOtherDirectory
+
+# call function with an option which is not supported:
 $ Parse -g
 The specified option -g is not supported (yet).
 ```
@@ -778,7 +802,7 @@ $ echo $?
 
 Quite remarkably, even such a trivial command has some interesting and nontrivial use cases.
 
-**Example:** How to empty the already existing file, keeping all file permissions intact?
+**Example 3:** How to empty the already existing file, keeping all file permissions intact?
 
 ```bash
 : > someFile
@@ -792,7 +816,7 @@ touch someFile
 
 because now the permissions of a new file are set to default permissions, and we need to invest some additional work to set again our own permissions.
 
-**Example:** Infinite loop in **Bash**.
+**Example 4:** Infinite loop in **Bash**.
 
 The simplest implementation is:
 ```bash
@@ -801,7 +825,7 @@ while :; do
 done
 ```
 
-**Example**: Ignore the exit status of the command. 
+**Example 5**: Ignore the exit status of the command. 
 
 This is the common idiom:
 
