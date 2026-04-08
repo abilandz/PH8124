@@ -6,7 +6,7 @@
 * [Lecture 4: Loops and few other thingies](./Lecture_4/Lecture_4.md)
 * [Lecture 5: Command substitution. Input/Output (I/O). Conditional statements](./Lecture_5/Lecture_5.md)
 * [Lecture 6: String manipulation. Arrays. Pipes. sed, awk and grep](./Lecture_6/Lecture_6.md)
-* [Lecture 7: Escaping. Quotes. Handling processes and jobs](./Lecture_7/Lecture_7.md_TBI)
+* [Lecture 7: Escaping. Quotes. Handling processes and jobs](./Lecture_7/Lecture_7.md)
 * [Lecture 8: Bash fancy features](./Lecture_8/Lecture_8.md)
 * [Lecture 9: Real-life examples](./Lecture_9/Lecture_9.md)
 * [Lecture 10: ROOT - getting started](./Lecture_10/Lecture_10.md_TBI)

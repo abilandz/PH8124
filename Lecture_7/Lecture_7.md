@@ -1,6 +1,6 @@
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20260323
+**Last update**: 20260408-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -460,7 +460,7 @@ The above code snippet filters out only the information relevant to your own pro
 
 The command **top** can be run from any terminal on the computer, and its printout, to a large extent, will be the same in each terminal. On the other hand, the output of the command **jobs** will be completely different from one terminal to another. 
 
-Closely related to the **top** command is the **ps** command (see the corresponding 'man' pages), which gives only the current snapshot of currently active processes, while **top** is being continuously updated and can be used interactively. Unfortunately, the flags supported by the **ps** command differ across different **Linux** distributions, and to overcome this problem the GNU version of the **ps** command supports three different styles for options:
+Closely related to the **top** command is the **ps** command ('process status', see the corresponding 'man' pages), which gives only the current snapshot of currently active processes, while **top** is being continuously updated and can be used interactively. Unfortunately, the flags supported by the **ps** command differ across different **Unix** descendants, and to overcome this problem the GNU version of the **ps** command supports three different styles for options:
 
 1. Unix-style parameters: preceded by dash (-) 
 2. BSD-style parameters: not preceded by dash (-)
