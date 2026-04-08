@@ -1,6 +1,6 @@
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20260408-1
+**Last update**: 20260408-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -664,7 +664,7 @@ function Parse
   local Verbose=false # modify to true with option "-v" or "--verbose"
   local nFiles=50 # modify with "-f <numberOfFiles>" or "--files <numberOfFiles>"
 
-  # Parse all options and corresponding option arguments, and allow user to change 
+  # Parse all options and corresponding option arguments, and allow the user to change 
   # their default values:
   while [[ $# -gt 0 ]]; do  
  
@@ -679,7 +679,7 @@ function Parse
                   # to it, $2, is interpreted as <numberOfFiles>
         shift 2 # because option "-f" does take its own argument, 
                 # namely <numberOfFiles>
-        # here some sanity check on the value of nFiles can be implemented          
+        # here, some sanity checks on the value of nFiles can be implemented          
       ;;
    
       --)
