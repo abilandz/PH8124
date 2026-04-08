@@ -1,6 +1,6 @@
 # Lecture 12: ROOT - basic classes (Part 2/2)
 
-**Last update**: 20260408-1
+**Last update**: 20260408-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -189,8 +189,8 @@ When part of the data is analyzed with one process, and another part with anothe
 As an important remark, we stress it out again that the ROOT files we want to merge must have exactly the same internal structure, otherwise weird things can happen, as ROOT cannot easily determine the internal structure of final merged file.
 
 If in two subdirectories of your current working directory, named 10 and 11 let's say, you have file named 'mergeMe.root'
-```linux
-ls 10 11
+```bash
+$ ls 10 11
 10:
 mergeMe.root
 
@@ -215,13 +215,13 @@ The new file 'merged.root' has full statistics, which was initially fragmented i
 
 Alternatively, it is possible to use ROOT executable **hadd** to merge ROOT files directly from the terminal. This is particularly handy if merging has to be done on the fly in some script. For the above example, the syntax is:
 ```bash
-hadd merged.root 10/mergeMe.root 11/mergeMe.root
+$ hadd merged.root 10/mergeMe.root 11/mergeMe.root
 ```
 
 The first file specified as argument is a TARGET file, i.e. the final merged ROOT file. Of course, the files which need to be merged do not have to be specified explicitly, we can ask **Bash** to generate list of files, for instance:
 
 ```bash
-hadd merged.root $(find $PWD -name mergeMe.root)
+$ hadd merged.root $(find $PWD -name mergeMe.root)
 ```
 
 For other supported options in **hadd**, see its documentation **hadd -h**.
@@ -327,7 +327,7 @@ void readDataFromTTree(const char *filename)
 
 }
 ```
-Execute that code with:
+Execute that code in the terminal with:
 ```bash
-root readDataFromTTree.C\(\"output.root\"\)
+$ root readDataFromTTree.C\(\"output.root\"\)
 ```
