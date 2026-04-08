@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Lecture 12: ROOT - basic classes (Part 2/2)
 
-**Last update**: 20250717
+**Last update**: 20260408-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Disclaimer
 Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
@@ -271,9 +271,9 @@ root -l -b -q importASCIIfileIntoTTree.C\(\"someData.dat\"\)
 ```
 It is instructive to compare the sizes of initial ASCII file, and the resulting ROOT file:
 ```linux
-stat -c '%s' someData.dat 
+$ stat -c '%s' someData.dat 
 30643925
-stat -c '%s' output.root 
+$ stat -c '%s' output.root 
 12142219
 ```
 So almost factor 3 gain in size, even for such a simple example!
@@ -331,7 +331,6 @@ Execute that code with:
 ```bash
 root -l readDataFromTTree.C\(\"output.root\"\)
 ```
-
 
 
 

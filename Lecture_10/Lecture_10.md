@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Lecture 10: ROOT - getting started
 
-**Last update**: 20250630
+**Last update**: 20260408-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 For **ROOT**, the official documentation is used:
 

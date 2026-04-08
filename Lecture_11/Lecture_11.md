@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20250717
+**Last update**: 20260408-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Disclaimer
 Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
@@ -245,7 +245,7 @@ The following interpreted code is saved in the file ```f1_random_interpreted.C``
 
 We time its execution with the **Bash** built-in command **time**:  
 ```bash
-time root -l -b -q f1_random_interpreted.C
+time root -b -q f1_random_interpreted.C
 root [0] 
 Processing f1_random_interpreted.C...
 
@@ -280,7 +280,7 @@ Int_t f1_random_compiled()
 We now time its execution in the same way (in the timing also the overhead from compilation is accounted for!):
 
 ```bash
-time root -l -b -q f1_random_compiled.C++
+time root -b -q f1_random_compiled.C++
 root [0] 
 Processing f1_random_compiled.C++...
 Info in <TUnixSystem::ACLiC>: creating shared library /home/abilandz/Lecture/SS2019/Lecture_11/Examples/./f1_random_compiled_C.so
@@ -292,7 +292,6 @@ sys     0m1.906s
 ```
 In above examples, we have used 3 frequently used flags for **ROOT** with the following meaning:
 
-* -l : switch off the splash screen at the beginning (in **ROOT 5** and older versions)
 * -b : run **ROOT** in the batch mode
 * -q : exit **ROOT** upon execution
 
@@ -308,7 +307,7 @@ In above examples, we have used 3 frequently used flags for **ROOT** with the fo
  delete gRandom;
  gRandom = new TRandom3(0);
 
- // Define and onfigure the 2D f(x,y):
+ // Define and configure the 2D f(x,y):
  TF2 *f2 = new TF2("f2","[0]*x + [1]*y",-1,1,100,1000);
  f2->SetParameter(0,4.1234);
  f2->SetParameter(1,2.1234);
