@@ -1,6 +1,6 @@
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20260408-2
+**Last update**: 20260408-3
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -696,8 +696,9 @@ function Parse
      
   done
 
-  # 2) Local variables which are set with standard function arguments, and their default values:
-  local DirPath=${1:-$PWD} # set to the first argument if it's provided, otherwise default to ${PWD}
+  # 2) Local variables which are set with standard function arguments, 
+  #    and their default values:
+  local DirPath=${1:-$PWD} # set to the first argument if provided, or default to ${PWD}
   
   echo "Verbose: $Verbose"
   echo "nFiles: $nFiles"
