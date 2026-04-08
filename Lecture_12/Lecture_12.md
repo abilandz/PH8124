@@ -267,7 +267,7 @@ void importASCIIfileIntoTTree(const char *filename)
 ```
 Then, just execute that macro either in interpreted or in compiled mode, for instance with:
 ```linux
-root -l -b -q importASCIIfileIntoTTree.C\(\"someData.dat\"\)
+root -b -q importASCIIfileIntoTTree.C\(\"someData.dat\"\)
 ```
 It is instructive to compare the sizes of initial ASCII file, and the resulting ROOT file:
 ```linux
@@ -329,8 +329,5 @@ void readDataFromTTree(const char *filename)
 ```
 Execute that code with:
 ```bash
-root -l readDataFromTTree.C\(\"output.root\"\)
+root readDataFromTTree.C\(\"output.root\"\)
 ```
-
-
-
