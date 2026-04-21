@@ -1,6 +1,6 @@
 # Lecture 2: Commands and variables
 
-**Last update**: 20260323-2
+**Last update**: 20260421-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -159,7 +159,7 @@ Generically, for most cases of interest, we are executing commands in the termin
 <command-name> <option(s)> <argument(s)>
 ```
 
-This is the right moment to stress the importance and profound meaning of empty character: Empty character is the default input field separator (**IFS**) in the world of **Linux**. If you misuse the empty character, a lot of input in the terminal will be completely incomprehensible to **Bash**, and to **Linux** commands in general. In the above generic example, empty character separates the three items, which conceptually have a completely different meaning. As the very first step, after you have typed the input in the terminal and pressed 'Enter', the **Bash** splits your input into tokens that are separated (by default, and in a bit simplified picture) with one or more empty characters. Then, it checks whether the very first token is a known **Linux** command, **Bash** keyword, etc.
+This is the right moment to stress the importance and profound meaning of empty character: Empty character is the default input field separator (**IFS**) in the world of **Linux**. If you misuse the empty character, a lot of input in the terminal will be completely incomprehensible to **Bash**, and to **Linux** commands in general. In the above generic example, empty character separates the three items, which conceptually have a completely different meaning. As the very first step, after you have typed the input in the terminal and pressed 'Enter', the **Bash** splits your input into tokens that are separated (by default, and in a bit simplified picture) with one or more empty characters. Then, it checks whether the very first token is a known **Linux** command, **Bash** built-in command, etc.
 
 The command input in **Bash** is terminated either by a new line or by a semi-colon ```;``` character. In practice, it is equivalent to write:
 
@@ -193,17 +193,15 @@ In the first case, **Bash** first parses the syntax of ```firstCommand``` and ex
 
 Let us now scrutinize the above generic syntax for command execution term by term:
 
-* ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some **Linux** command, **Bash** keyword, etc. In general, _command-name_ stands for one of the following:
-
+* ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some **Linux** command, **Bash** built-in command, **Bash** keyword, etc. In general, _command-name_ stands for one of the following:
   1) **Linux** command (i.e. system-wide executable or binary) &mdash; example: **cat**  
   2) **Bash** built-in command &mdash; example: **echo**   
   3) **Bash** keyword &mdash; example: **for**   
   4) alias   
   5) function   
   6) script   
-
+  
 * ```<option(s)>``` : Options (or flags) are used to modify the default behaviour of command. Options are indicated either with:
-
 	1) **-** (single dash) followed by single character(s), or   
 	2) **-\-** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
 
@@ -216,9 +214,9 @@ $ date --utc
 Mon Apr 20 12:49:12 UTC 2020
 ```
 
-The output in both cases above is the same, because flags **-u** and **--utc** are synonyms when used for **date** command.
+The output in both cases above is the same, because flags **-u** and **-\-utc** are synonyms when used for **date** command.
 
-But how do we know that for command **date** flags **-u** and **-\-utc** are available, and how do we know in which way they will modify the default behavior of command? All such options for each command are documented in so-called _man pages_. Whenever you develop a new command, it is also essential that you develop its documentation, otherwise nobody will be able to use your command. For built-in **Bash** commands, documentation is retrieved simply with:
+But how do we know that for command **date** flags **-u** and **-\-utc** are available, and how do we know in which way they will modify the default behavior of command? All such options for each command are documented in so-called _man pages_. Whenever you develop a new command, it is also essential that you develop its documentation, otherwise nobody will be able to use your command. For built-in **Bash** commands, keywords, etc., the documentation is retrieved simply with:
 
 ```bash
 help <command-name>
@@ -271,7 +269,7 @@ But we could create plenty of empty files with **touch** command in one go, not 
 touch file_1.log file_2.log file_3.log file_4.log
 ```
 
-Important remark: Since the empty character is an input field separator, never use it as a part of a file or directory name! In such a context, always replace it with underscore "_" or any other character which does not have special meaning. For instance:
+Important remark: Since the empty character is an input field separator, never use it as a part of a file or directory name! In such a context, always replace it with underscore ```_``` or any other character which does not have special meaning. For instance:
 
 ```bash
 touch file 1.log
@@ -290,7 +288,7 @@ In the same spirit, we can create multiple directories in one go, with **mkdir**
 ```bash
 mkdir subdir_1 subdir_2 subdir_3
 ```
-will make 3 new subdirectories in your current working directory (check again by executing **ls -al**).
+will make three new subdirectories in your current working directory (check again its content by executing **ls -al**).
 
 We have been using so far only the already existing **Bash** or **Linux** commands. The simplest way to create your own command, with a rather limited functionality and flexibility but nevertheless quite convenient, is to use **Bash** built-in feature **alias**. If you are bored to type something lengthy again and again in the terminal, you can introduce shortcut for it, by using **alias**. For instance, you can abbreviate this lengthy input
 
@@ -361,7 +359,7 @@ where also for the command **unalias** the option **-a** stands for 'all'.
 
 Aliases are definitely a nice feature, but do not overuse them, because:
 
-* By default, aliases are available only in the terminal in which you have defined them. But this can be easily circumvented by modifying the special configuration files ```.bashrc``` and/or ```.bash_aliases``` &mdash; to be clarified later in this section;
+* By default, aliases are available only in the terminal in which you have defined them. But this can be easily circumvented by modifying the special configuration file ```.bashrc``` and/or an additional customary file ```.bash_aliases``` &mdash; to be clarified later in this section;
 
 * When you move to another computer your personal aliases are clearly not available there by default;
 
@@ -375,11 +373,11 @@ Aliases are definitely a nice feature, but do not overuse them, because:
   ... standard list of files and directories ...
   ```
 
-  In this context, we have _escaped_ the alias definition of 'ls' with the special symbol backslash ```\``` &mdash; this mechanism is elaborated more in detail and in a wider context later;   
+  In this context, we have _escaped_ the alias definition of 'ls' with the special symbol backslash ```\``` &mdash; this escaping mechanism is elaborated more in detail and in a wider context later;   
 
 * Aliases cannot process programmatically options or arguments, like regular commands (or **Bash** functions, as we will see later). In fact, any alias implementation can be reimplemented as a **Bash** function in a more general and flexible way. However, the function implementation requires more coding;
 
-* Do not use alias definitions in the shell scripts, that's considered to be both bad coding and design practice.  
+* Do not use alias definitions in the shell scripts, that's considered to be both bad coding and bad design practice.  
 
 In summary, aliases are literally shortcuts for lengthy commands or any other lengthy terminal input, and aliases are meant to be used directly in the terminal merely to save time on typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute &mdash; nothing more nor less than that! 
 
@@ -406,13 +404,13 @@ In the 2nd case, the error message is slightly different, namely ```44: command 
 Var=value command # content of 'Var' is seen only in 'command' during its execution
 ```
 
-That means that ```Var= 44``` **Bash** will interpret as follows: Set the content of ```Var``` to nothing (this also removes the previous content if it existed), and use that new content only during the execution of command named ```44```. Since such command does not exist, we get the error message ```44: command not found``` for this particular case. 
+That means that the command input ```Var= 44``` **Bash** will interpret as follows: Set the content of ```Var``` to nothing (this also removes the previous content if it existed), and use that new content only during the execution of command named ```44```. Since such command does not exist, we get the error message ```44: command not found``` for this particular case. 
 
 Therefore, when introducing and initializing a new variable in **Bash**, make sure there are no empty characters on both sides of the _assignment operator_ **=** .
 
 As a side remark, from the above three lines, we can also see how to make a comment in **Bash** &mdash; simply use the special character **#** (hash symbol) to start your comment. Once this character is used on the particular line, any text after it is being ignored by **Bash**. You can not terminate the comment within a given line in which you have used **#** to start the comment. Therefore, you can terminate the commented text only by starting to write in the new line.
 
-**Example:** Writing a comment in **Bash** .
+**Example:** Writing a comment in **Bash**.
 
 ```bash
 $ echo "Hi there" # this text is some comment which Bash ignores
@@ -473,7 +471,7 @@ Few final additional remarks on variables in **Bash**:
 * It is possible to store in the variable the content of an external file (more on this later!);
 * There are some built-in variables always set to some values, e.g. **HOME**, **SHELL**, **PATH**, etc. These special variables are the essential part of your **shell** environment, and if they are not set correctly, everything in your current terminal session can start falling apart (more on this later!).
 
-Now that we have covered the very basics of commands and variables, let us see how we can develop the first **Bash** scripts. In order to achieve that, the very first step is to learn how to edit the file in the terminal. 
+Now that we have covered the very basics of commands and variables, let us see how we can develop the first **Bash** script. In order to achieve that, the very first step is to learn how to edit the file in the terminal. 
 
 
 
@@ -686,4 +684,4 @@ Finally, we can also edit the ```~/.bash_logout``` in the following example way:
 echo "Hasta la vista, that was all for today."; sleep 1s
 ```
 
-Now each time you close the terminal, you will see the specified printout, and after the hardwired timeout of 1s, the terminal will close. In the very same spirit, you can specify any other action, which will be automatically executed by **Bash** when you close the terminal.
+Now each time you close the terminal in which you are running the instance of login shell (e.g. when connected remotely to another computer), you will see the specified printout, and after the hardwired timeout of 1s, the terminal will close. In the very same spirit, you can specify any other action, which will be automatically executed by **Bash** when you close the terminal running the login shell.
