@@ -1,6 +1,6 @@
 # Lecture 2: Commands and variables
 
-**Last update**: 20260421-1
+**Last update**: 20260422-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -633,7 +633,17 @@ If by accident you have deleted your personal configuration files in your home d
 
 We now elaborate on the usage of these configurations files by considering a few concrete examples.
 
-We have already seen how to define your own aliases and variables and we already stressed out one important point: Their lifetime is limited to the duration of the terminal sessions in which you have defined them. In any new terminal you start, their definitions are not known. But there is one important thing which happens behind the scene each time you start a new terminal, and before you can start typing anything: **Bash** reads automatically the configuration files end executes line-by-line whatever is being set in them. 
+**Example 1:** _Changing a default shell on remote computer_. You got access rights to some remote computer, and the admin responsible for it has set the old Bourne shell **sh** to be the default login shell. How to switch automatically at login to the **Bash** shell (or to any other shell you prefer)?
+
+First, you have to figure out which configuration file is read by **sh** at login, and that turns out to be the special configuration file ```~/.profile```. If you add to that file a single line with the following content,
+
+```bash
+bash
+```
+
+each time you login on that remote computer, **sh** will execute the content of ```~/.profile```, i.e. it will start the **Bash** shell for you automatically, which in turn at its startup will read some of its own configuration files discussed above. The net effect is that you will transparently run and configure the **Bash** shell at login on a remote computer, even though it is not the default shell on that computer. 
+
+**Example 2:** _Making definitions of variables and aliases permanent_. We have already seen how to define your own aliases and variables and we already stressed out one important point: Their lifetime is limited to the duration of the terminal sessions in which you have defined them. In any new terminal you start, their definitions are not known. But there is one important thing which happens behind the scene each time you start a new terminal, and before you can start typing anything: **Bash** reads automatically the configuration files end executes line-by-line whatever is being set in them. 
 
 In the most cases of interest, it suffices to know that you need to edit directly your personal file, e.g. ```~/.bash_aliases```, and then in the **Bash** configuration files ```~/.bash_profile``` and ```~/.bashrc```, which must be stored directly in your home directory, you insert the line:
 
@@ -677,7 +687,7 @@ Each time you run a new terminal, the variable ```Var``` is set to 44, and you c
 
 We remark that it is much safer to edit directly ```~/.bash_aliases``` than to edit directly the file ```~/.bashrc```, where also some other and more important settings can be defined as well. In the case you move to another computer, you can enable your aliases there simply by porting the file ```~/.bash_aliases``` , and adding on the new computer in ```~/.bashrc``` and ```~/.bash_profile``` the line ```source ~/.bash_aliases```. On the other hand, typically it's very difficult to port the whole ```~/.bashrc``` from one computer to another, especially if they are running different **Linux** distributions.
 
-Finally, we can also edit the ```~/.bash_logout``` in the following example way:
+**Example 3:** _Automating some work at logout_. We can also edit the ```~/.bash_logout``` in the following example way:
 
 ```bash
 # Set what will be executed when shell exits (e.g. when you close the terminal):
