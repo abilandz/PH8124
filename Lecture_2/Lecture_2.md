@@ -1,6 +1,6 @@
 # Lecture 2: Commands and variables
 
-**Last update**: 20260422-1
+**Last update**: 20260423-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -193,17 +193,17 @@ In the first case, **Bash** first parses the syntax of ```firstCommand``` and ex
 
 Let us now scrutinize the above generic syntax for command execution term by term:
 
-* ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some **Linux** command, **Bash** built-in command, **Bash** keyword, etc. In general, _command-name_ stands for one of the following:
-  1) **Linux** command (i.e. system-wide executable or binary) &mdash; example: **cat**  
-  2) **Bash** built-in command &mdash; example: **echo**   
-  3) **Bash** keyword &mdash; example: **for**   
-  4) alias   
-  5) function   
-  6) script   
+* ```<command-name>``` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some **Linux** command, **Bash** built-in command, **Bash** keyword, etc. In general, _command-name_ stands for one of the following:	
+  1. **Linux** command (i.e. system-wide executable or binary) &mdash; example: **cat**  
+  2. **Bash** built-in command &mdash; example: **echo**   
+  3. **Bash** keyword &mdash; example: **for**   
+  4. alias   
+  5. function   
+  6. script   
   
 * ```<option(s)>``` : Options (or flags) are used to modify the default behaviour of command. Options are indicated either with:
-	1) **-** (single dash) followed by single character(s), or   
-	2) **-\-** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
+	1. **-** (single dash) followed by single character(s), or   
+	2. **-\-** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
 
 For instance, the frequently used flags **-a** and **-\-all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the meaning of the second one is easier to memorize. Example for **date** command:
 
