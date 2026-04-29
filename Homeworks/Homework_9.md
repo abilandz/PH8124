@@ -1,8 +1,8 @@
+# Running in parallel and the lock mechanism
+
+**Last update:** 20260429-1
+
 ![](../Common_Figures/LinuxBashROOT_logos.png)
-
-# Homework #9: Running in parallel and the lock mechanism
-
-**Last update:** 20250711
 
 **Challenge #1**: We start this challenge by creating a simple toy dataset, by executing in the terminal the following code snippet:
 

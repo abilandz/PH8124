@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Filtering and reformatting the file content programmatically
 
-**Last update:** 20250605
+**Last update:** 20260429-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge #1**: Develop a **Bash** function named ```OldestFile``` which takes as arguments a list of files. The function does the following:  
 

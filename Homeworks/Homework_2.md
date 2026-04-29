@@ -1,7 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Using external executable as Linux/Bash command
-**Last update:** 20250515
+
+**Last update:** 20260429-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 As a starting point for this homework, start the **nano** editor in the terminal and write the following simple code snippet of C/C++ programming language (this is just an example choice &mdash; this homework is fairly generic, and you can instead use some other programming language that you prefer more) into the file ```Hello.C``` 
 

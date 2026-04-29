@@ -1,8 +1,8 @@
-![](bash_logo.png)
+# Jobs and processes
 
-# Homework #8: Jobs and processes
+**Last update:** 20260429-1
 
-**Last update:** 20250704
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge:** Develop a **Bash** function called **Safeguard**, which does the following:  
 

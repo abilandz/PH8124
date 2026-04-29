@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Using **Bash** aliases as your simplest commands
 
-**Last update:** 20250507
+**Last update:** 20260429-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as 
 

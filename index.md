@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20260428
+**Last update**: 20260429
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
@@ -31,9 +31,9 @@ For **ROOT**, the official documentation is used:
 * [Lecture 10: ROOT - getting started](./Lecture_10/Lecture_10.md)
 * [Lecture 11: ROOT - basic classes (Part 1/2)](./Lecture_11/Lecture_11.md)
 * [Lecture 12: ROOT - basic classes (Part 2/2)](./Lecture_12/Lecture_12.md)
-* [Homeworks](./Homeworks/Trivia.md_TBI)
-    * [Homework 1](./Homeworks/Homework_1.md_TBI)
-    * [Homework 2](./Homeworks/Homework_2.md_TBI)
+* [Homeworks](./Homeworks/Trivia.md)
+    * [Homework 1](./Homeworks/Homework_1.md)
+    * [Homework 2](./Homeworks/Homework_2.md)
     * [Homework 3](./Homeworks/Homework_3.md_TBI)
     * [Homework 4](./Homeworks/Homework_4.md_TBI)
     * [Homework 5](./Homeworks/Homework_5.md_TBI)

@@ -1,8 +1,8 @@
-![](../Common_Figures/LinuxBashROOT_logos.png)
-
 # Homework #5: Mastering the command substitution operator.
 
-**Last update:** 20250613
+**Last update:** 20260429-1
+
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 The developer is testing the execution time of a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following generic way:
 

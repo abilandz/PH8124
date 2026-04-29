@@ -1,8 +1,8 @@
+# Playing with **Bash** strings and arrays.
+
+**Last update:** 20260429-1
+
 ![](../Common_Figures/LinuxBashROOT_logos.png)
-
-# Homework #6: Playing with **Bash** strings and arrays.
-
-**Last update:** 20250616
 
 **Challenge #1:** Write down a **Bash** code snippet that will capitalize only a word's very last character. Example use case:
 
