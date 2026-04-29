@@ -1,6 +1,6 @@
 # Using shell aliases as your simplest commands
 
-**Last update:** 20260429-2
+**Last update:** 20260429-3
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -44,8 +44,19 @@ Also, this is wrong in this context:
 
 ```bash
 TZ=Asia/Tokyo; date # now variable 'TZ' is set and interpreted in your local
-                    # environment and not within the execution of 'date'
+                    # environment and not within the execution of 'date',
+                    # which runs in its own process
 ```
+
+At the expense of polluting the local environment, this works:
+
+```bash  
+export TZ=Asia/Tokyo; date # variable 'TZ' is exported, i.e. set to be global;
+                           # it is set to a new value persistently both in the local environment
+                           # and in the environment of any new process started from it 
+```
+
+Based on the above example, we see the advantage of a special ```Var=value command``` syntax &mdash; values of environment variables can be changed for the execution of the command, and those changes are not propagated in the current working environment when that command terminates.
 
 The supported time zones are typically sorted out in the directory ```/usr/share/zoneinfo/```, just inspect its content with the **ls** command, and figure out the analogous syntax for the time zone you need!
 
