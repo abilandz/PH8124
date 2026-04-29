@@ -1,4 +1,4 @@
-# Using **Bash** aliases as your simplest commands
+# Using shell aliases as your simplest commands
 
 **Last update:** 20260429-1
 

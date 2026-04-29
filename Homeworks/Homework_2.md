@@ -1,4 +1,4 @@
-# Using external executable as Linux/Bash command
+# User-made executables as Linux/Bash commands
 
 **Last update:** 20260429-1
 
