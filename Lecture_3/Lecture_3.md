@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260430-2
+**Last update**: 20260430-3
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -202,17 +202,17 @@ mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of
 
 * **du -sh** : ('disk usage') : Estimate the disk space used by files and directories. For directories, the flag **-s** prints the summary size for all nested subdirectories. The flag **-h** prints the size in a human-readable format. 
 
-```bash
-$ du -sh ${HOME} # prints how much disk space your home directory is taking
-967M
-$ du -h --max-depth=1 ${HOME} # the size of directory, and differentially 
-                              # of its subdirectories
-$ du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
-                              # subdirectories and all sub-subdirectories                            
-$ du -h file1.txt file2.txt # prints size of two specified files
-20K  	file1.txt
-192K	file2.txt                           
-```
+    ```bash
+    $ du -sh ${HOME} # prints how much disk space your home directory is taking
+    967M
+    $ du -h --max-depth=1 ${HOME} # the size of directory, and differentially 
+                                  # of its subdirectories
+    $ du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
+                                  # subdirectories and all sub-subdirectories                            
+    $ du -h file1.txt file2.txt # prints size of two specified files
+    20K  	file1.txt
+    192K	file2.txt                           
+    ```
 
 * **df -h** : ('disk free') : get the used disk space of all disks
 ```bash
