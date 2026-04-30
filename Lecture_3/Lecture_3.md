@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260430-1
+**Last update**: 20260430-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -162,15 +162,15 @@ Some frequently used **Linux** commands to work within the file system are:
 * **cp** : copy file(s)
 ```bash
 cp file1 file2 # copying and renaming a file
-cp file1 file2 ... someDirectory # copying two or more files into someDirectory
-                                   # the names of original files are preserved
+cp file1 file2 ... someDirectory # copying two or more files into someDirectory 
+                                 # the names of original files are preserved
 ```
 Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
 * **cp -r** : copy directory and preserve its subdirectory structure
 ```bash
-cp -r directory1 directory2 # this will copy the first directory into
-                              # a new subdirectory of the second directory
+cp -r directory1 directory2 # this will copy the first directory into 
+                            # a new subdirectory of the second directory
 ```
 
 * **rm** : delete file(s)
@@ -190,14 +190,14 @@ Flag **-r** ('recursive') is needed to indicate that you want to delete all subd
 mv someFile someDir/   # moving a file into new directory
 mv file1 someDir/file2 # content of 'file1' overwrites 'file2', and 'file1' is deleted
 mv file1 file2         # effectively renaming - 'file2' becomes 'file1' 
-                         # (they are in the same directory!)
+                       # (they are in the same directory!)
 ```
 The command **mv** uses the same syntax for directories (no additional flags are needed).
 ```bash
-mv dir1 dir2      # if 'dir2' exists, 'dir1' becomes the subdirectory of 'dir2'
-                    # if 'dir2' doesn't exist, 'dir1' is renamed into 'dir2'
-mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of 'dirN'
-                    # if 'dirN' doesn't exist, syntax error   
+mv dir1 dir2      # if 'dir2' exists, 'dir1' becomes the subdirectory of 'dir2' 
+                  # if 'dir2' doesn't exist, 'dir1' is renamed into 'dir2'
+mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of 'dirN' 
+                  # if 'dirN' doesn't exist, syntax error   
 ```
 
 * **du -sh** : ('disk usage') : Estimate the disk space used by files and directories. For directories, the flag **-s** prints the summary size for all nested subdirectories. The flag **-h** prints the size in a human-readable format. 
@@ -206,9 +206,9 @@ mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of
 $ du -sh ${HOME} # prints how much disk space your home directory is taking
 967M
 $ du -h --max-depth=1 ${HOME} # the size of directory, and differentially 
-                                # of its subdirectories
+                              # of its subdirectories
 $ du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
-                                # subdirectories and all sub-subdirectories                            
+                              # subdirectories and all sub-subdirectories                            
 $ du -h file1.txt file2.txt # prints size of two specified files
 20K  	file1.txt
 192K	file2.txt                           
