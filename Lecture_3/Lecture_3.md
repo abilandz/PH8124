@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260501-4
+**Last update**: 20260501-5
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -571,6 +571,7 @@ When compared to the script implementation, there are few differences:
   $ fun
   abc
   ```
+	This feature is rarely used, however, because when a new shell instance is started, the configuration file ```~/.bashrc``` is executed, and all function definitions can be automatically sourced from it (see below!).
 
 The rest is the same as for the scripts:
 
