@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260501-1
+**Last update**: 20260501-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -176,31 +176,35 @@ Some frequently used **Linux** commands to work within the file system are:
     ```
 
 * **rm** : delete file(s)
-```bash
-rm file1 file2 ... # delete the specifed files
-```
-Use **rm** with great care, because after you deleted the file, there is no easy way back!
+
+    ```bash
+    rm file1 file2 ... # delete the specifed files
+    ```
+    Use **rm** with great care, because after you deleted the file, there is no easy way back!
 
 * **rm -rf** : delete one or more directories
-```bash
-rm -rf dir1 dir2 ... # delete the specified directories
-```
-Flag **-r** ('recursive') is needed to indicate that you want to delete all subdirectories recursively, **-f** ('force') is needed to avoid the prompt message which would ask you for the deleting confirmation of each file separately. Use **rm -rf** with the greatest possible care, because after you have deleted the directory, there is no easy way to get back any of the files that was in that directory!
+
+    ```bash
+    rm -rf dir1 dir2 ... # delete the specified directories
+    ```
+    Flag **-r** ('recursive') is needed to indicate that you want to delete all subdirectories recursively, **-f** ('force') is needed to avoid the prompt message which would ask you for the deleting confirmation of each file separately. Use **rm -rf** with the greatest possible care, because after you have deleted the directory, there is no easy way to get back any of the files that was in that directory!
 
 * **mv** : move or rename files or directories
-```bash
-mv someFile someDir/   # moving a file into new directory
-mv file1 someDir/file2 # content of 'file1' overwrites 'file2', and 'file1' is deleted
-mv file1 file2         # effectively renaming - 'file2' becomes 'file1' 
-                       # (they are in the same directory!)
-```
-The command **mv** uses the same syntax for directories (no additional flags are needed).
-```bash
-mv dir1 dir2      # if 'dir2' exists, 'dir1' becomes the subdirectory of 'dir2' 
-                  # if 'dir2' doesn't exist, 'dir1' is renamed into 'dir2'
-mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of 'dirN' 
-                  # if 'dirN' doesn't exist, syntax error   
-```
+
+    ```bash
+    mv someFile someDir/   # moving a file into new directory
+    mv file1 someDir/file2 # content of 'file1' overwrites 'file2', and 'file1' is deleted
+    mv file1 file2         # effectively renaming - 'file2' becomes 'file1' 
+                           # (they are in the same directory!)
+    ```
+    The command **mv** uses the same syntax for directories (no additional flags are needed).
+
+    ```bash
+    mv dir1 dir2      # if 'dir2' exists, 'dir1' becomes the subdirectory of 'dir2' 
+                      # if 'dir2' doesn't exist, 'dir1' is renamed into 'dir2'
+    mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of 'dirN' 
+                      # if 'dirN' doesn't exist, syntax error   
+    ```
 
 * **du -sh** : ('disk usage') : Estimate the disk space used by files and directories. For directories, the flag **-s** prints the summary size for all nested subdirectories. The flag **-h** prints the size in a human-readable format. 
 
@@ -217,30 +221,34 @@ mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of
     ```
 
 * **df -h** : ('disk free') : get the used disk space of all disks
-```bash
-$ df -h # get the status of all disks on your computer 
-file system      Size  Used Avail Use% Mounted on
-/dev/sda1        1.8T  1.6T  132G  93% /
-```
+
+    ```bash
+    $ df -h # get the status of all disks on your computer 
+    file system      Size  Used Avail Use% Mounted on
+    /dev/sda1        1.8T  1.6T  132G  93% /
+    ```
 
 * **stat** : display the detailed metadata of file or directory
-```bash
-$ stat Lecture_2.md # just specify the abs. or rel. path to file as an argument
-  File: Lecture_2.md
-  Size: 97805           Blocks: 384        IO Block: 4096   regular file
-Device: 2h/2d   Inode: 12947848928707821  Links: 1
-Access: (0666/-rw-rw-rw-)  Uid: ( 1000/abilandz)   Gid: ( 1000/abilandz)
-Access: 2020-04-15 21:05:26.002857000 +0200
-Modify: 2020-04-28 11:44:53.454187100 +0200
-Change: 2020-04-28 11:45:14.515681300 +0200
- Birth: -
-```
-Later we will learn how to parse through and extract programmatically from any command output (or from any physical file) only the information we need. For the time being, if you want to get only the size of the file in bytes, use:
-```bash
-$ stat -c %s Lecture_2.md
-97805
-```
-For the size of a directory, use instead **du -sh** as explained above. As you can see from the output of **stat**, the example file ```Lecture_2.md``` is characterized by three timestamps: **Access**, **Modify** and **Change**. These three timestamps are an important part of file metadata, which we cover next.
+
+    ```bash
+    $ stat Lecture_2.md # just specify the abs. or rel. path to file as an argument
+      File: Lecture_2.md
+      Size: 97805           Blocks: 384        IO Block: 4096   regular file
+    Device: 2h/2d   Inode: 12947848928707821  Links: 1
+    Access: (0666/-rw-rw-rw-)  Uid: ( 1000/abilandz)   Gid: ( 1000/abilandz)
+    Access: 2020-04-15 21:05:26.002857000 +0200
+    Modify: 2020-04-28 11:44:53.454187100 +0200
+    Change: 2020-04-28 11:45:14.515681300 +0200
+     Birth: -
+    ```
+    Later we will learn how to parse through and extract programmatically from any command output (or from any physical file) only the information we need. For the time being, if you want to get only the size of the file in bytes, use:
+    ```bash
+    $ stat -c %s Lecture_2.md
+    97805
+    ```
+    For the size of a directory, use instead **du -sh** as explained above. 
+    
+As you can see from the above output of **stat**, the example file ```Lecture_2.md``` is characterized by three timestamps: **Access**, **Modify** and **Change**. These three timestamps are an important part of file metadata, which we cover next.
 
 #### File metadata <a name="file_metadata"></a>
 
