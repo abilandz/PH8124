@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260430-3
+**Last update**: 20260501-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -160,18 +160,20 @@ We finalize the explanation of **PATH** variable with the following concluding r
 Some frequently used **Linux** commands to work within the file system are:
 
 * **cp** : copy file(s)
-```bash
-cp file1 file2 # copying and renaming a file
-cp file1 file2 ... someDirectory # copying two or more files into someDirectory 
-                                 # the names of original files are preserved
-```
-Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
+
+	```bash
+    cp file1 file2 # copying and renaming a file
+    cp file1 file2 ... someDirectory # copying two or more files into someDirectory 
+                                     # the names of original files are preserved
+    ```
+    Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
 * **cp -r** : copy directory and preserve its subdirectory structure
-```bash
-cp -r directory1 directory2 # this will copy the first directory into 
-                            # a new subdirectory of the second directory
-```
+
+    ```bash
+    cp -r directory1 directory2 # this will copy the first directory into 
+                                # a new subdirectory of the second directory
+    ```
 
 * **rm** : delete file(s)
 ```bash
