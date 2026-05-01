@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260501-2
+**Last update**: 20260501-3
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -165,8 +165,8 @@ Some frequently used **Linux** commands to work within the file system are:
     cp file1 file2 # copying and renaming a file
     cp file1 file2 ... someDirectory # copying two or more files into someDirectory 
                                      # the names of original files are preserved
-    ```
-    Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
+  ```
+  Files and directories in the arguments of **cp** can be specified either with the absolute or the relative paths. This is true in general for all commands which take files and directories as arguments. 
 
 * **cp -r** : copy directory and preserve its subdirectory structure
 
@@ -206,24 +206,24 @@ Some frequently used **Linux** commands to work within the file system are:
                       # if 'dirN' doesn't exist, syntax error   
     ```
 
-* **du -sh** : ('disk usage') : Estimate the disk space used by files and directories. For directories, the flag **-s** prints the summary size for all nested subdirectories. The flag **-h** prints the size in a human-readable format. 
+* **du -sh** ('disk usage') : Estimate the disk space used by files and directories. For directories, the flag **-s** prints the summary size for all nested subdirectories. The flag **-h** prints the size in a human-readable format. 
 
     ```bash
     $ du -sh ${HOME} # prints how much disk space your home directory is taking
     967M
-    $ du -h --max-depth=1 ${HOME} # the size of directory, and differentially 
+    $ du -h --max-depth=1 ${HOME} # the size of directory, and differentially
                                   # of its subdirectories
-    $ du -h --max-depth=2 ${HOME} # the size of directory, differentially of its 
-                                  # subdirectories and all sub-subdirectories                            
+    $ du -h --max-depth=2 ${HOME} # the size of directory, differentially of its
+                                  # subdirectories and all sub-subdirectories
     $ du -h file1.txt file2.txt # prints size of two specified files
     20K  	file1.txt
-    192K	file2.txt                           
+    192K	file2.txt
     ```
 
-* **df -h** : ('disk free') : get the used disk space of all disks
+* **df -h** ('disk free') : get the used disk space of all disks in a human-readable format (the flag **-h** ). 
 
     ```bash
-    $ df -h # get the status of all disks on your computer 
+    $ df -h # get the status of all disks
     file system      Size  Used Avail Use% Mounted on
     /dev/sda1        1.8T  1.6T  132G  93% /
     ```
@@ -248,6 +248,7 @@ Some frequently used **Linux** commands to work within the file system are:
     ```
     For the size of a directory, use instead **du -sh** as explained above. 
     
+
 As you can see from the above output of **stat**, the example file ```Lecture_2.md``` is characterized by three timestamps: **Access**, **Modify** and **Change**. These three timestamps are an important part of file metadata, which we cover next.
 
 #### File metadata <a name="file_metadata"></a>
@@ -614,7 +615,7 @@ unalias someAliasName
 
 or temporarily with
 
-```bash
+```
 \someAliasName
 ```
 
