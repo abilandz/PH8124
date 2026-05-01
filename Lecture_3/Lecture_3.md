@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260501-3
+**Last update**: 20260501-4
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -105,7 +105,7 @@ The output could look like this:
 ```bash
 /home/abilandz/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
-This output looks messy, but in fact it has a well-defined structure which is easy to decipher. In the above output, we can recognize absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters: When **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
+This output looks messy, but in fact it has a well-defined structure which is easy to decipher. In the above output, we can recognize absolute paths to a few directories, which are separated in this context with the field separator ```:``` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable ```/bin/date``` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters &mdash; when **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. ```/bin/date``` and ```/usr/bin/date```, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute ```/usr/bin/date``` and not ```/bin/date```, because ```/usr/bin``` is specified before ```/bin``` in the **PATH** variable. However, since there is no **date** executable in ```/usr/bin```, **Bash** continues the search for it in ```/bin```, finally finds it there, and then executes ```/bin/date``` . 
 
 By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command &mdash; just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in ```/home/abilandz/bin```). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like ```/bin```, ```/usr/bin```, etc.). This is achieved with the following standard code snippet:
 
@@ -194,7 +194,7 @@ Some frequently used **Linux** commands to work within the file system are:
     ```bash
     mv someFile someDir/   # moving a file into new directory
     mv file1 someDir/file2 # content of 'file1' overwrites 'file2', and 'file1' is deleted
-    mv file1 file2         # effectively renaming - 'file2' becomes 'file1' 
+    mv file1 file2         # effectively renaming: 'file2' becomes 'file1' 
                            # (they are in the same directory!)
     ```
     The command **mv** uses the same syntax for directories (no additional flags are needed).
@@ -202,8 +202,8 @@ Some frequently used **Linux** commands to work within the file system are:
     ```bash
     mv dir1 dir2      # if 'dir2' exists, 'dir1' becomes the subdirectory of 'dir2' 
                       # if 'dir2' doesn't exist, 'dir1' is renamed into 'dir2'
-    mv dir1 dir2 dirN # if 'dirN' exists, 'dir1' and 'dir2' become subdirectories of 'dirN' 
-                      # if 'dirN' doesn't exist, syntax error   
+    mv dir1 dir2 ... dirN # if 'dirN' exists, 'dir1', 'dir2', ..., become subdirectories of 'dirN' 
+                          # if 'dirN' doesn't exist, syntax error   
     ```
 
 * **du -sh** ('disk usage') : Estimate the disk space used by files and directories. For directories, the flag **-s** prints the summary size for all nested subdirectories. The flag **-h** prints the size in a human-readable format. 
@@ -220,7 +220,7 @@ Some frequently used **Linux** commands to work within the file system are:
     192K	file2.txt
     ```
 
-* **df -h** ('disk free') : get the used disk space of all disks in a human-readable format (the flag **-h** ). 
+* **df -h** ('disk free') : get the used disk space of all disks in a human-readable format (the flag **-h**). 
 
     ```bash
     $ df -h # get the status of all disks
@@ -228,7 +228,7 @@ Some frequently used **Linux** commands to work within the file system are:
     /dev/sda1        1.8T  1.6T  132G  93% /
     ```
 
-* **stat** : display the detailed metadata of file or directory
+* **stat** : display the detailed metadata of file or directory.
 
     ```bash
     $ stat Lecture_2.md # just specify the abs. or rel. path to file as an argument
@@ -241,7 +241,7 @@ Some frequently used **Linux** commands to work within the file system are:
     Change: 2020-04-28 11:45:14.515681300 +0200
      Birth: -
     ```
-    Later we will learn how to parse through and extract programmatically from any command output (or from any physical file) only the information we need. For the time being, if you want to get only the size of the file in bytes, use:
+    Later we will learn how to parse through and extract programmatically from any command output (or from any physical file) only the information we need. Specifically for the **stat** command, if you want to get only the size of the file in bytes, use directly:
     ```bash
     $ stat -c %s Lecture_2.md
     97805
@@ -288,17 +288,17 @@ you can get the following example output:
 It is very important to understand all entries in this output, and how to modify or set some of them. Reading from left to right:
 
 * **Column #1:**  
-  * the very first character is the file type : ```-``` is an ordinary file, ```d``` is a directory, ```l``` is a soft link, etc.  
+  * the very first character is the file type: ```-``` is an ordinary file, ```d``` is a directory, ```l``` is a soft link, etc.  
   * characters 2, 3 and 4 are fields for ```r```, ```w``` or ```x``` permissions for the user (i.e. for you)   
   * characters 5, 6 and 7 are fields for ```r```, ```w``` or ```x``` permissions for the group (i.e. wider group of people where your account belongs to)   
   * characters 8, 9 and 10 are fields for ```r```, ```w``` or ```x``` permissions for anybody else    
   
 * **Column #2:** For a file, it is always 1. For a directory, it is the number of immediate subdirectories in it, plus its parent directory and itself. Therefore, for directories, this number is always greater than or equal to 2. It is equal to 2 for an empty directory, and for a directory that contains only files (i.e. there are no subdirectories). It is greater than 2 for a directory if there is at least one subdirectory in that directory.
-* **Column #3:** The user who owns the file ('abilandz' in this case)
-* **Column #4:** The group of users to which the file belongs (ALICE experiment at CERN in this case)
-* **Column #5:** The size of the file in bytes (for directories, it has another meaning, it is NOT the size of the directory!) 
+* **Column #3:** The user who owns the file ('abilandz' in this case).
+* **Column #4:** The group of users to which the file belongs (ALICE experiment at CERN in this case).
+* **Column #5:** The size of the file in bytes (for directories, it has another meaning, it is NOT the size of the directory!).
 
-The meaning of the remaining columns is trivial. 
+The meaning of the remaining columns is trivial.
 
 File permissions are changed with the **Linux** command **chmod** ('change mode'). This is best illustrated with a few concrete examples:
 ```bash
@@ -316,12 +316,17 @@ would ensure that for others, only ```r``` is set, while ```w``` and ```x``` fla
 chmod go-w someFile.txt
 ```
 group members to which your account belongs to (```g```) and all others (```o```) can not (```-```) modify or write (```w```) to your file ```someFile.txt```. Therefore, after this simple command execution, only you can edit this file!
+
+With this syntax:
+
 ```bash
 chmod u+x someFile.txt
 ```
-With the above syntax, the file ```someFile.txt``` is declared to be an executable and only you as a user (```u```) can (```+```) execute (```x```) it. Remember that only the files which are executables are taken into account by **Bash** when searching through the content of directories in **PATH** variable. Therefore, when making your own **Linux** command, two formal aspects must be always met:
+the file ```someFile.txt``` is declared to be an executable and only you as a user (```u```) can (```+```) execute (```x```) it. 
 
-1. the directory containing your executable must be included in **PATH**; 
+Remember that only the files which are executables are taken into account by **Bash** when searching through the content of directories in **PATH** variable. Therefore, when making your own **Linux** command, two formal aspects must be always met:
+
+1. the directory containing your executable must be included in the content of **PATH** variable; 
 2. your executable must have ```x``` permission.
 
 Next example:
@@ -402,7 +407,7 @@ $ ls -al file*
 -rw-rw-rw- 1 abilandz abilandz 0 Mai 14 14:19 file3.txt
 ```
 
-As we can see above, the new file _file2.txt_ was created with default permissions if **cp** was used without any options. Permissions were correctly copied over into the new file _file3.txt_ only if **cp -a** was used (in this context, the flag '-a' means 'preserve all'). The same thing happens when on a shared computer we copy a file from the home directory of another user into our home directory. As a side remark, we indicate that the default permissions for files and directories can be modified with shell's built-in command **umask**. 
+As we can see above, the new file _file2.txt_ was created with default permissions if **cp** was used without any options. Permissions were correctly copied over into the new file _file3.txt_ only if **cp -a** was used (in this context, the flag **-a** means 'preserve all'). The same thing happens when on a shared computer we copy a file from the home directory of another user into our home directory. As a side remark, we mention that the default permissions for files and directories can be modified with shell's built-in command **umask**. 
 
 Before we start developing the new commands from scratch in **Linux**, we need to introduce one very important and fairly generic concept: _positional parameters_ (or _script arguments_).
 
@@ -420,7 +425,7 @@ In this section we discuss how some arguments can be supplied to your script at 
 My favorite collider is <some-collider>
 My favorite experiment at <some-collider> is <some-experiment>
 ```
-The solution goes as follows. In **nano** edit the file ```favorite.sh``` with the following content:
+The solution goes as follows &mdash; edit the file ```favorite.sh``` with the following content:
 ```bash
 #!/bin/bash
 
@@ -464,7 +469,7 @@ Few additional remarks on positional parameters:
 
 In combination with looping, you can programmatically parse over all supplied arguments to your script (i.e. there is no need to hardwire in the script that you expect exactly a certain number of arguments, etc.). 
 
-**Example**: Proof of the principle. Below is the script ```arguments.sh```, which uses the **for** loop in **Bash** (loops are covered in detail later!), and just counts and prints all arguments supplied to the script:
+**Example**: Below is the script ```arguments.sh```, which uses the **for** loop in **Bash** (loops are covered in detail later!), and just counts and prints all arguments supplied to the script:
 
 ```bash
 #!/bin/bash
@@ -522,7 +527,7 @@ function Hello
 }
 ```
 
-Save the above code snippet in the file ```functions.sh```. Then, in order to execute your function **Hello**, just source that file:
+Save the above code snippet in the file ```functions.sh```. Then, in order to execute your function **Hello**, first you have to source that file:
 
 ```bash
 source functions.sh
@@ -542,13 +547,34 @@ Your name is: Alice
 
 When compared to the script implementation, there are few differences:
 
-* Usage of keyword **function** (an alternative syntax exists, ```someName()```, but it is really a matter of taste which one you prefer)
+* Usage of keyword **function** (an alternative and more portable syntax exists, ```someName()```, but it is really a matter of taste which one you prefer)
+
 * Body of the function must be embedded within ```{ ... }```
+
 * For any variable needed only within the function, use the **Bash** built-in command **local**, to restrict its lifetime only within the body of that function. Every time **local** is executed, it creates a new local variable, which exists until the function exits. In this way, you will never encounter the clash between variables that were defined with the same name in the function, and in the terminal or within some other code from where you have called the function. If a variable is defined in the function without the **local**, a call to that function can severely spoil the environment from which the call to the function was executed, which can have dire consequences... As a rule of thumb, declare each variable you need only in the function as **local** .
+
+* Functions can be called recursively in a standard way
+
+* Similar to variables, functions can be made global by using **export -f**, for instance:
+
+  ```bash
+  # define some shell function:
+  $ fun(){ echo abc; } 
+  
+  # make that function global:
+  $ export -f fun
+  
+  # start a new shell instance in its own process:
+  $ bash
+  
+  # call that function in a new process:
+  $ fun
+  abc
+  ```
 
 The rest is the same as for the scripts:
 
-* Functions handle arguments in exactly the same way as scripts, via special ```${1}```, ```${2}```, ... variables
+* Functions handle arguments in exactly the same way as scripts, via special ```${1}```, ```${2}```, ..., variables
 * You can call a function within another function, but only if it was defined first &mdash; order of implementation matters in scripting languages!
 * Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time, functions are executed equivalently as commands, and then their exit status clearly matters. Functions cannot return values (e.g. string) directly to the caller, apart from the exit status set via **return**, which must be in the interval 0..255
 * Typically, you implement all your functions in some file, let's say ```functions.sh```, and save it in your home directory (or anywhere else). Then, at the end of ```${HOME}/.bash_profile``` and ```${HOME}/.bashrc``` you insert the line:
