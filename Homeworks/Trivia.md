@@ -3,10 +3,9 @@ There will be a bonus (one intermediate stepping of "0,3" to the better grade) o
 
 ## Homework score sheet:
 
-**Last update**: 20260429-1
+**Last update**: 20260503-1
 
 | Student ID | #1   | #2   | #3   | #4   | #5   | #6   | #7   | #8   | #9   | #10  | Sum  |
 | ---------- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 01234567 |  |  |  |  |  |  |  |  |  |  |  |
-
+| 03825804 | 1.0  |  |  |  |  |  |  |  |  |  |  |
 
