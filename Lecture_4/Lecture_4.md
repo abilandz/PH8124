@@ -1,6 +1,6 @@
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20260326-1
+**Last update**: 20260504-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -23,20 +23,28 @@ The first case corresponds to the following syntax:
 ```bash 
 source someScript.sh # sourcing the script
 ```
-When executed this way, all lines in the script are read and executed by **Bash** one by one, just as if they were typed separately line by line in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of script must be specified with the keyword **return**. The script does not run in a separate process (more on this later).
+When executed this way, all lines in the script are read and executed by **Bash** one by one, just as if they were typed separately line by line in the terminal. The sourced script inherits the environment from the terminal (i.e. from the current shell), and can modify it globally. The exit status of the script must be specified with the keyword **return**. The script does not run in a separate process (more on this later).
 
 The second case corresponds to the following syntax:
 
 ```bash 
 someScript # executing the script 
 ```
-This way, you run your script like any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of script sits was added to the environment variable **PATH**, and if that file also has the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal (only variables, functions, etc., which were defined with **export** are inherited), and cannot modify it globally. Therefore, it is much safer to run scripts this way if you want to keep your current shell environment clean. The exit status of the executed script is specified with the keyword **exit**. When executed this way, the script runs in a separate process (more on this later). 
+This way, you run your script like any other **Linux** or **Bash** command. As we already saw, this will work only if the directory where the file with the source code of the script sits was added to the environment variable **PATH**, and if that file also has the execute (```x```) permission. The executed script does not inherit by default the environment from the terminal (only variables, functions, etc., which were defined with **export** are inherited), and cannot modify it globally. Therefore, it is much safer to run scripts this way if you want to keep your current shell environment clean. The exit status of the executed script is specified with the keyword **exit**. When executed this way, the script runs in a separate process (more on this later). 
 
-If you do not want to make the script executable by adding to it (```x```) permission, you can always run the shell explicitly and tell it to process the file like it was an executable with the following syntax:
+If you do not want to make the script executable by adding to it (```x```) permission, you can always start the new shell explicitly from the current shell and execute the script in its own process like it was an executable with the following syntax:
 
 ```bash
 bash someScript.sh # executing the non-executable script
 ```
+
+Analogously, to execute commands in a new shell instance started from the current shell, this syntax can be used:
+
+```bash
+bash -c 'command1; command2; ...'
+```
+
+It is important to use the option **-c** in this context, otherwise the shell would attempt to process each of executables _command1, command2, ..._, line-by-line, as if they were scripts. In both cases above, the new shell instance is automatically terminated upon execution of all its arguments, and the command input control is returned to the current shell.
 
 On the other hand, functions behave differently. After you source the file where a function is implemented, **Bash** stores that function in the computer's memory, and from that point onwards, you can use that function as any other **Linux** or **Bash** command. For functions, there is no need to bother using keyword **source**, setting the execute permission, modifying **PATH**, etc. That means that if you have added to your ```~/.bashrc``` the following line:
 
@@ -45,9 +53,25 @@ source ~/functions.sh
 ```
 where in the example file ```~/functions.sh``` you have the implementation of your **Bash** functions, you can use all your functions effortlessly in any new terminal you open.
 
-Functions are much more suitable for making long scripts modular. In terms of environment protection, functions are much cleaner to use than scripts due to the built-in command **local**, which can be used only in the function body and which limits the scope and lifetime of a variable defined in the function only to the execution of that function.
+Functions are much more suitable for making long scripts modular. In terms of environmental protection, functions are much cleaner to use than scripts due to the built-in command **local**, which can be used only in the function body and which limits the scope and lifetime of a variable defined in the function only to the execution of that function.
 
-Suppose a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation. In that case, executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because **Bash** function does not start a separate process.
+Suppose a function **someFunction** and a script **someScript** with execute permission have exactly the same implementation. In that case, executing in the terminal **someFunction** only by its name is more efficient than executing in the terminal a script **someScript** only by its name, because a **Bash** function does not start a separate process. 
+
+If one wants to execute a shell function in its own process, the following syntax can be used:
+
+```bash
+# define some shell function:
+$ fun(){ echo "some message"; }
+
+# export its definition:
+$ export -f fun
+
+# execute function in its own process:
+$ bash -c 'fun'
+some message
+```
+
+Alternatively, although not exactly the same from the perspective of the inherited environment, a shell function can be executed in its own process using subshells (to be introduced in later sections).
 
 Programmatically, you can fetch the function name within the source code of its implementation via the built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of the function implementation). For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints the line number of the source code where this variable is referenced).
 
