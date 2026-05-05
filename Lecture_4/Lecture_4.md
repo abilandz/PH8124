@@ -1,6 +1,6 @@
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20260504-1
+**Last update**: 20260505-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -192,12 +192,14 @@ someOtherCommand || exit 2
 ...
 ```
 
-This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable ```$?```, it is also possible, by inspecting its content upon termination, to fix the particular reason of the failure programmatically, without intervening manually in the code. 
+This way, it is possible to add easily an additional layer of protection for the execution of any command in your **Bash** code. Moreover, since the exit status is stored in the special variable ```$?```, it is also possible, by inspecting its content upon termination, to fix the specific reason for the failure programmatically at run time, and automatically restart the original script or executable. 
 
 
 
-### 3. Test construct: **[[ ... ]]** <a name="test"></a>
-For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` since it supports more operators, but it was added to **Bash** later than ```[ ... ]```, meaning that it will not work with some older **Bash** versions. There are corner cases where their behavior differs, since their implementation is conceptually different:
+### 3. Test construct: **[[ ... ]]** <a name="test"></a>  
+For simple testing in **Bash**, we can use either ```[[ ... ]]``` or ```[ ... ]``` constructs. The construct ```[[ ... ]]``` is more powerful than ```[ ... ]``` because it supports more operators, but it was added to **Bash** later than ```[ ... ]```, so it may not work with older **Bash** versions. On the other hand, only the syntax ```[ ... ]``` is **POSIX**-compliant and supported by all shells (**POSIX** is an acronym for "Portable Operating System Interface", which defines a set of standard to ensure compatibility of software across different operating systems &mdash; the shell standard can be found at this [link](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html)). Most notably, the original Bourne shell from 1977, ```/bin/sh```, supports only ```[ ... ]```.
+
+In **Bash**, there are corner cases where the behavior of ```[[ ... ]]``` and ```[ ... ]``` differs, since their implementation is conceptually different:
 
 ```bash
 $ type [[
@@ -206,7 +208,18 @@ $ type [
 [ is a shell builtin
 ```
 
-For instance, the quotes can be omitted inside ```[[``` but not inside ```[```. But in most cases of practical interest,   ```[[ ... ]]``` and ```[ ... ]``` behave in the same way and yield the same results.
+For instance, the quotes can be omitted inside ```[[``` but not inside ```[```:
+
+```bash
+$ Var="a b"
+$ [[ -n "$Var" ]] # ok
+$ [[ -n $Var ]]   # ok
+$ [ -n "$Var" ]   # ok
+$ [ -n $Var ]     # wrong
+bash: [: a: binary operator expected
+```
+
+But in most cases of practical interest,   ```[[ ... ]]``` and ```[ ... ]``` behave in the same way and yield the same results.
 
 Test constructs also return the exit status &mdash; if the test was successful the exit status is set to 0 in this context. Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use cases of the test construct ```[[ ... ]]```  into the following three categories, and we enlist the meaningful operators for each category:
 
@@ -272,7 +285,7 @@ Var1=abcd
 Var2=bc
 [[ ${Var1} =~ ${Var2} ]] && echo "Var1 contains Var2"
 ```
-The frequently used operator  ```=~```  is supported only within ```[[ ... ]]```, but not within ```[ ... ]```. 
+The frequently used operator ```=~``` is supported only within ```[[ ... ]]```, but not within ```[ ... ]```. Only through the operator ```=~``` does Bash fully support the Extended Regular Expressions (ERE) (i.e. it supports additional metacharacters, namely `+`, `?`, `|`, and`()`, when compared to the standard set of Basic Regular Expressions (BRE)).
 
 The executive summary for the first category of operators is provided in the following table:
 
@@ -286,7 +299,7 @@ The executive summary for the first category of operators is provided in the fol
 
 
 #### Integers
-Regarding the second group of operators, ```-gt, -ge, -lt, -le, -eq```, they are specific in that they can accept only integers as arguments. 
+Regarding the second group of operators, ```-gt```, ```-ge```, ```-lt```, ```-le```, ```-eq```, they are specific in that they can accept only integers as arguments. 
 
 **Example 4**: How do you check if one integer is greater than another integer?
 
@@ -298,16 +311,21 @@ Quite frequently, if your script or function demands that a user must provide pr
 ```bash
 [[ $# -eq 2 ]] || return 1
 ```
-In the above example, if a user does not provide exactly two arguments, the code execution terminates. It is always safer to compare two integers with ```-eq``` than to treat them as strings and use ```==``` for comparison, due to corner cases like this one:
+In the above example, if a user does not provide exactly two arguments, the code execution terminates. 
+
+It is always safer to compare two integers with ```-eq``` than to treat them as strings and use ```==``` for comparison, due to corner cases like this one:
 
 ```bash
-[[ 1 == 01 ]] && echo Yes || echo  No # prints No
+[[ 1 == 01 ]] && echo Yes || echo No  # prints No
 [[ 1 -eq 01 ]] && echo Yes || echo No # prints Yes, but it works accidentally
 ```
 
-As a side remark, we indicate that prepending '0' to a number is not trivial. In fact, that is a widely accepted convention in a lot of programming languages to change the representation of a number from decimal (default) to an octal base. Therefore, this doesn't work:
+As a side remark, we indicate that prepending '0' to a number is not trivial. In fact, that is a widely accepted convention in a lot of programming languages to change the representation of a number from decimal (default) to an octal base. Therefore, this (mis)behavior:
 
 ```bash
+$ [[ 7 -eq 07 ]] && echo Yes || echo No
+Yes
+
 $ [[ 8 -eq 08 ]] && echo Yes || echo No
 bash: [[: 08: value too great for base (error token is "08")
 No
@@ -325,7 +343,7 @@ Since the meaning of integer operators is rather obvious, we provide only the ex
 
 
 #### Files and directories
-The operators in the last group, ```-f```, ```-d```, ```-e```, ```-s```, ```-nt```, ```-ot```, expect their argument(s) to be files or directories. The first four accept one argument, while the last two take two arguments. Their meaning is illustrated in the following examples.
+The operators in the last group, ```-f```, ```-d```, ```-e```, ```-s```, ```-nt```, ```-ot```, expect their arguments to be files or directories. The first four accept one argument, while the last two take two arguments. Their meaning is illustrated in the following examples.
 
 **Example 5**: How to check whether the file ```${HOME}/test.txt``` exists?
 
@@ -339,7 +357,7 @@ Analogously, we can check for the existence of a directory with operator ```-d``
 Var=${HOME}/SomeDirectory
 [[ -d ${Var} ]] && echo "${Var} exists." || echo "${Var} doesn't exist."
 ```
-Frequently, we want to trigger some code execution only if the file is non-empty, we can check that with the operator ```-s```, as in the following example: 
+Frequently, we want to trigger some code execution only if the file is non-empty &mdash; we can check that with the operator ```-s```, as in the following example: 
 
 ```bash
 Var=${HOME}/test.txt
@@ -355,8 +373,8 @@ Finally, it is possible to directly compare some specific attributes of file met
 
 This can be answered with operator ```-nt``` ('newer than'), which takes two arguments:
 ```bash
-File1=${HOME}/test1.txt
-File2=${HOME}/test2.txt
+File1=test1.txt
+File2=test2.txt
 [[ ${File1} -nt ${File2} ]] && echo "${File1} is newer" || echo "${File2} is newer"
 ```
 
@@ -385,7 +403,7 @@ In this section, we have summarized the most important options &mdash; for the o
 help test
 ```
 
-In the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch the code execution, depending on whether some command executed correctly or has failed. If it has failed, we can branch the code execution even further depending on the exit status of a particular error. This is achieved by storing and testing the content of special variable ```$?```, schematically:
+In the end, we indicate that the test construct ```[[ ... ]]``` can be used to branch code execution, based on whether a command executed correctly or has failed. If it has failed, we can branch the code execution even further based on the exit status of a specific error. This is achieved by storing and testing the content of special variable ```$?```, schematically:
 
 ```bash
 someCommand # variable $? gets updated with the exit status of this command
@@ -396,6 +414,45 @@ ExitStatus=$? # store permanently the exit status of the previous command in thi
 ...
 ```
 Later, we will see that such a code branching can be optimized even further with ```if-elif-else-fi``` or ```case-in-esac``` command blocks. 
+
+Finally, we conclude this section with the following example, which avoids the common problem of using either **return** or **exit** in a shell script to set its exit status.
+
+**Example 7:** A given shell script can be either sourced or executed. How to programatically set its exit status using **return** if it was sourced, and using **exit** if it was executed?
+
+This can be solved by using the shell positional parameter ```0``` and the built-in array variable ```BASH_SOURCE```, whose meaning is illustrated with the following code snippet saved in the file ```test.sh```:
+
+```bash
+#!/bin/bash
+echo $0
+echo $BASH_SOURCE
+```
+
+Since ```BASH_SOURCE``` is an array variable, we can use the array name, ```$BASH_SOURCE```, as a shortcut for the first element, ```${BASH_SOURCE[0]}```. 
+
+We proceed as follows:
+
+````bash
+# source the code snippet line by line in the process of the current shell:
+$ . test.sh
+test.sh
+bash
+
+# add execute permission to the file test.sh:
+$ chmod ugo+x test.sh
+
+# execute the code in its own process:
+$ ./test.sh 
+./test.sh
+./test.sh
+````
+
+Therefore, the solution to the original problem is:
+
+```bash
+[[ "$0" == "$BASH_SOURCE" ]] && exit 1 || return 1
+```
+
+With the above code snippet, the script will exit or return, depending on whether the file was sourced or not.
 
 
 
