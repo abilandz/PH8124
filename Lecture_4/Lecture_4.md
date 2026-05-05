@@ -1,6 +1,6 @@
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20260505-1
+**Last update**: 20260505-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -73,7 +73,7 @@ some message
 
 Alternatively, although not exactly the same from the perspective of the inherited environment, a shell function can be executed in its own process using subshells (to be introduced in later sections).
 
-Programmatically, you can fetch the function name within the source code of its implementation via the built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of the function implementation). For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints the line number of the source code where this variable is referenced).
+Programmatically, you can fetch the function name within the source code of its implementation via the built-in variable **FUNCNAME** (typically by having **echo $FUNCNAME** at the beginning of the function implementation). For scripts, the file name in which the script was implemented can be obtained programmatically from the built-in array variable **BASH_SOURCE**. This becomes very important when inspecting only the printout of your code execution (e.g. for debugging purposes), when it is easy to trace back which function or script produced which part of the final result (in this context, the built-in variable **LINENO** can also be handy, because **echo $LINENO** prints the line number of the source code where this variable is referenced).
 
 We summarize the above thorough comparison with the following final conclusion: Use **Bash** scripts only for very simple cases and **Bash** functions for everything else.
 
@@ -434,8 +434,8 @@ We proceed as follows:
 ````bash
 # source the code snippet line by line in the process of the current shell:
 $ . test.sh
-test.sh
 bash
+test.sh
 
 # add execute permission to the file test.sh:
 $ chmod ugo+x test.sh
