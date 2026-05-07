@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20260506
+**Last update**: 20260507
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
@@ -33,7 +33,7 @@ For **ROOT**, the official documentation is used:
 * [Lecture 12: ROOT - basic classes (Part 2/2)](./Lecture_12/Lecture_12.md)
 * [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1: Using shell aliases as your simplest commands](./Homeworks/Homework_1.md)
-    * [Homework 2: User-made executables as Linux/Bash commands](./Homeworks/Homework_2.md_TBI)
+    * [Homework 2: User-made executables as Linux/Bash commands](./Homeworks/Homework_2.md)
     * [Homework 3: ](./Homeworks/Homework_3.md_TBI)
     * [Homework 4: ](./Homeworks/Homework_4.md_TBI)
     * [Homework 5: ](./Homeworks/Homework_5.md_TBI)
