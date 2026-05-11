@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20260507
+**Last update**: 20260511
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 

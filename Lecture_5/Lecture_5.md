@@ -1,6 +1,6 @@
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20260408-3
+**Last update**: 20260511-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -16,7 +16,7 @@
 
 
 ### 1. Command substitution: $( ... ) <a name="command_substitution"></a>
-We have already seen that a value can be stored in a variable by explicit assignment (using the operator ```=```),  or if the user supplies variables as command line arguments (positional parameters) to a script or a function. In practice, however, one frequently wants to store the output of some command directly into the variable, or even the content of an external file. This can be achieved with the so-called _command substitution operator_ ```$( ... )```.  For instance, we have already seen that the file size in bytes can be printed with the following:
+We have already seen that a value can be stored in a variable by explicit assignment (using the operator ```=```),  or by supplying variables as command-line arguments (positional parameters) to a script or a function. In practice, however, one often wants to store the output of some command, or even the content of an external file, directly into a variable. This can be achieved with the so-called _command substitution operator_ ```$( ... )```.  For instance, we have already seen that the file size in bytes can be printed with the following:
 
 ```bash
 stat -c %s someFile
@@ -41,7 +41,7 @@ This can be achieved with:
 ```bash
 echo "Today is $(date) . What a nice day..."
 ```
-The command substitution operator literally in-lined the output of **date** command at the place where it was used. This way, we can very elegantly achieve the desired more complex functionality by combining in the very same command input multiple commands, which otherwise we would need to execute one-by-one. 
+The command substitution operator literally in-lined the output of the **date** command at the place where it was used. This way, we can very elegantly achieve the desired more complex functionality by combining in the very same command input multiple commands, which otherwise we would need to execute one-by-one. 
 
 Command substitution operator ``` $( ... ) ``` is a very neat construct, and it is used frequently. One classical use case is to avoid hardwiring any specific information in your code, since that specification can change from one computer to another. In this way, we can improve a lot the portability of code. 
 
@@ -72,14 +72,48 @@ $ dirname ${DirectoryPath}
 ```
 The commands **basename** and **dirname** can be used in exactly the same way for files.
 
-Therefore, the solution to our initial problem can be fairly elegant and concise, if we use these two commands in combination with command substitution operator:
+Therefore, the solution to our initial problem can be fairly elegant and concise, if we use these two commands in combination with the command substitution operator:
 ```bash
 $ DirectoryPath=/home/abilandz/Lecture/PH8124/Lecture_5
 $ ParentDirectoryName=$(basename $(dirname $DirectoryPath))
 $ echo $ParentDirectoryName
-PH8124 # only the parent directory name is printed
+PH8124 # only the parent directory name of DirectoryPath is printed
 ```
+In case a directory or file path is given in terms of a relative path, one first resolves that relative path into an absolute path using the command **realpath**, whose example use case is illustrated here:
+
+```bash
+# print current working directory:
+$ echo $PWD
+/home/abilandz/Lecture/PH8124
+
+# define directory path using relative path to current working directory:
+$ DirectoryPath="./Lecture_5"
+
+# resolve the relative path into absolute path:
+$ realpath $DirectoryPath
+/home/abilandz/Lecture/PH8124/Lecture_5
+
+# resolve the relative path of current working directory:
+$ realpath .
+/home/abilandz/Lecture/PH8124
+
+# resolve the relative path of the parent directory of current working directory:
+$ realpath ..
+/home/abilandz/Lecture
+```
+
+Therefore, the previous example using relative paths, and in addition the **realpath** command, is:
+
+```bash
+$ cd /home/abilandz/Lecture/PH8124
+$ DirectoryPath=./Lecture_5
+$ ParentDirectoryName=$(basename $(dirname $(realpath $DirectoryPath)))
+$ echo $ParentDirectoryName
+PH8124 # only the parent directory name of DirectoryPath is printed
+```
+
 We can use multiple commands within the same command substitution operator, they just need to be separated with delimiter ```;``` as in the following example:
+
 ```bash
 Var=$(date;pwd)
 echo "$Var"
@@ -97,13 +131,13 @@ It is perfectly fine to inline the output of function call with this operator as
 echo "Output of my function is: $(someFunction) . Very nice!" 
 ```
 
-or to store the printout of a function in the variable:
+or to store the printout of a function in a variable:
 
 ```bash
 Var=$(someFunction)
 ```
 
-Finally, the very neat use case of the command substitution operator is to store the content of some external file in the variable. The relevant syntax is:
+Finally, the very neat use case of the command substitution operator is to store the content of some external file in a variable. The relevant syntax is:
 
 ```bash
 FileContent=$(< someFile) 
@@ -120,7 +154,7 @@ This great functionality circumvents the necessity of dealing with too many temp
 cat someFile # reads the content of a physical file
 echo "${FileContent}" # obtain the same content from variable
 ```
-However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file &mdash; if we store that information in the variable, we have removed completely the dependency of our code on that external file.
+However, if the content of the physical file ```someFile``` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file, which can be modified concurrently with some other running process &mdash; if we store that information in a variable, we have removed completely the dependency of our code on that external file.
 
 The command substitution operator is frequently used in combination with the **for** loop, when we want to iterate over all elements in the output of some command. Also in this context the distinct elements of the list are separated with one or more empty characters. This is best illustrated with the following example:
 
