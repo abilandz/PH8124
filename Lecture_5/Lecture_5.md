@@ -1,6 +1,6 @@
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20260511-1
+**Last update**: 20260512-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -269,7 +269,7 @@ For instance, if we want to redirect the _stdout_ stream of **date** command int
 ```bash
 date 1> output.log
 ```
-Whatever the command **date** was printing on the terminal, now it is re-directed to the physical file named ```output.log```. If that file does not exist, it will be automatically created at this point. The file's location in the file system can also be specified in this context both with an absolute and a relative path. If you now execute:
+Whatever the command **date** was printing on the terminal, after it executed correctly, now it is re-directed to the physical file named ```output.log```. If that file does not exist, it will be automatically created at this point. The file's location in the file system can also be specified in this context both with an absolute and a relative path. If you now execute:
 
 ```bash
 cat output.log
@@ -283,7 +283,7 @@ Sun May 17 11:53:03 CEST 2020
 
 In this sense, by using ```1>``` redirection, the printout of some command during execution is stored permanently in the physical file on a local disk.
 
-Analogously, we can also programmatically redirect the error message of command &mdash; we just need to change the file descriptor:
+Analogously, we can also programmatically redirect the error message of a command &mdash; we just need to change the file descriptor:
 
 ```bash
 date -q 2> error.log
@@ -297,7 +297,7 @@ We can also redirect both _stdout_ and _stderr_ in the same file with ```&>``` o
 someCommand &> outputAndError.log
 ```
 
-This way, we can keep the whole printout the command has produced during execution permanently in some local files, separately for _stdout_ and _stderr_, or combined. Then, at any point later, by inspecting those printouts in the files we can trace back the whole execution, which helps enormously the code development and debugging.
+This way, we can keep the entire printout the command produces during execution permanently in local files, separately for _stdout_ and _stderr_, or combined. Then, at any point later, by inspecting those printouts in the files we can trace back the whole execution, which helps enormously the code development and debugging.
 
 If we re-execute the above examples, the previous content of specified files will be overwritten with the new information. If, instead, you want the new information to be appended to the existing content of those files, use instead the operators: ```1>>```, ```2>>``` and ```&>>```. 
 
@@ -345,13 +345,13 @@ Arguments supplied
 $ cat error.log # empty file
 ```
 
-On the other hand, if the function is called this way, the _stderr_ stream becomes relevant:
+On the other hand, if the function is called without arguments, the _stderr_ stream becomes relevant:
 
 ```bash
 myFunction 1>output.log 2>error.log
 ```
 
-In the above example, no arguments were supplied. This is treated as an error within the function and it triggers its _stderr_ stream, so we end up with the following situation:
+Since no arguments were supplied., this is treated as an error within the function and it triggers its _stderr_ stream, so we end up with the following situation:
 
 ```bash
 $ cat output.log # empty file
@@ -359,19 +359,19 @@ $ cat error.log
 Error: No arguments
 ```
 
-Let us also say a few words about the last file descriptor 0, _stdin_ ('standard input'). In general, _stdin_ comes from the keyboard, but we can also feed a command with the content of some file. Schematically, we would use:
+Let us also say a few words about the last file descriptor 0, _stdin_ ('standard input'). In general, one can think of _stdin_ as the special file into which any interactive input from the user (typically via keyboard) is stored temporarily, and automatically read by the command one line at a time while that command is running. If we redirect to _stdin_ a content of a file, the command will read the content of that file in the same way. Schematically, we would use:
 
 ```bash
 someCommand < someFile
 ```
-The operator ```<``` redirects the content of ```someFile``` into the argument of ```someCommand```. In fact, ```<``` is nothing but the shortcut synonym for ```0<``` redirection. Because a lot of commands, e.g. **cat** or **more**, expect by default input from a file, the below three versions are all equivalent:
+The operator ```<``` redirects the content of ```someFile``` into the _stdin_ file of **someCommand**, which then reads it line-by-line automatically. In fact, ```<``` is nothing but the shortcut synonym for ```0<``` redirection. Because a lot of commands, e.g. **cat** or **more**, expect by default input from a file, the below three versions are all equivalent:
 ```bash
 cat someFile
 cat < someFile
 cat 0< someFile
 ```
 
-When you check the content of some file with **cat**, you are essentially redirecting its content into _stdin_ (file descriptor 0) for the **cat** command. 
+When you check the content of some file with **cat**, you are essentially redirecting its content into _stdin_ (file descriptor 0) for the **cat** command.
 
 
 
@@ -743,7 +743,7 @@ function Parse
 }
 ```
 
-With the above implementation, we have the following behavior at execution, from example directory ```/home/abilandz/Test```:
+The special syntax ```:-``` to set the default values of shell variables will be discussed in detail in later sections. With the above implementation, we have the following behavior at execution, from example directory ```/home/abilandz/Test```:
 
 ```bash
 # call function with default configuration:
