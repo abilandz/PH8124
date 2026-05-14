@@ -1,6 +1,6 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **sed**, **awk** and **grep** 
 
-**Last update**: 20260323-2
+**Last update**: 20260514-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -17,9 +17,9 @@
 
 String operators in **Bash** can be used only in combination with curly-brace syntax ```${Var}```. String operators are used to manipulate the content of variables, typically in one of the following ways:     
 
-1. Remove, replace, or modify a portion of the variable's content that matches some patterns   
-2. Ensure that the variable exists (i.e. that it is defined and has a non-zero value)   
-3. Set the default value for a variable   
+1. Remove, replace, or modify a portion of the variable's content that matches some patterns;   
+2. Ensure that the variable exists (i.e. that it is defined and has a non-zero value);   
+3. Set the default value for a variable.   
 
 The generic syntax for manipulating the content of the variable is:
 ```bash
@@ -106,7 +106,7 @@ $ echo ${Var:$((Start+1)):$((Length-2))}
 def
 ```
 
-Finally, it is mandatory to embed negative offset within round braces ```( ... )``` in the above examples, since otherwise **Bash** interprets negative integers after the colon ```:``` in this context in a very special way &mdash; this is clarified next.
+Finally, it is mandatory to embed negative offset within round braces ```( ... )``` in the above examples, since otherwise **Bash** interprets in this context ```-``` from negative integers after the colon ```:``` in a very special way &mdash; this is clarified next.
 
 By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:  
 
@@ -130,7 +130,7 @@ By using string operators one can set the default value of a variable. Most freq
    ```
    This literally means that _Var_ is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code could still execute by setting _Var_ to _defaultValue_. 
    
-2. ```${Var:?someMessage}``` &mdash; if _Var_ exists and it is not null, return its current value. Otherwise, it prints _Var_, followed by hardwired text _someMessage_, and aborts the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
+2. ```${Var:?someMessage}``` &mdash; if _Var_ exists and it is not null, return its current value. Otherwise, it prints on the _stderr_ stream the name of variable, _Var_, followed by hardwired text _someMessage_, and aborts the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
 
    ```bash
    function myFunction
@@ -171,7 +171,10 @@ $ echo ${Var-44} # prints nothing
 2.  ```?``` : any single character     
 3.  ```[ ... ]``` : character sets and ranges
 
+These wildcards behave in the same way as when **Bash** performs filename expansion (or globbing). Their meaning is not to be confused with their meaning in Basic Regular Expressions (BRE) or Extended Regular Expressions (ERE) &mdash; as already mentioned in previous sections, ERE is supported in **Bash** only through operator ```=~``` within a new form of test construct ```[[ ... ]]```.  
+
 Their usage is best illustrated with a few concrete examples:
+
 ```bash
 Var=1234a5678
 echo ${Var/a*/TEST} # prints 1234TEST
@@ -209,7 +212,7 @@ The pattern '^^[c-f]' will capitalize all single characters, but only in the spe
 
 ### 2. Arrays: ```=( )``` <a name="arrays"></a>
 
-**Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways &mdash; the quickest one is to use the round braces ```( ... )```. This syntax is illustrated with the following code snippet:
+**Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways &mdash; the quickest one is to use the round brace syntax ```=( ... )```. This syntax is illustrated with the following code snippet:
 
 ```bash
 SomeArray=( 5 a ccc 44 )
@@ -219,7 +222,7 @@ One or more empty characters separate array elements. To obtain the content of a
 echo ${SomeArray[0]} # prints 5
 echo ${SomeArray[2]} # prints ccc 
 ```
-To get programmatically all array entries, we can use ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax, for instance:
+To get programmatically all array entries, we can use ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax:
 ```bash
 echo ${SomeArray[*]} # prints 5 a ccc 44
 ```
@@ -241,8 +244,6 @@ ccc
 44
 ```
 
-If an array element itself has an empty character, it will be correctly obtained in the above code snippet only if ```${SomeArray[*]}``` is replaced with ```"${SomeArray[@]}"```, but such cases rarely occur in practice.  
-
 The total number of elements in an array is given by the syntax ```${#ArrayName[*]}```:
 
 ```bash
@@ -260,8 +261,8 @@ An alternative syntax for setting array elements using ```+=``` operator is illu
 
 ```bash
 $ arr=()
-$ arr+=( "abc" )
-$ arr+=( "123" "ddd" )
+$ arr+=( abc )
+$ arr+=( 123 ddd )
 $ echo ${arr[0]}
 abc
 $ echo ${arr[1]}
@@ -319,6 +320,36 @@ SomeArray[${#SomeArray[*]}]=SomeValue
 ```
 
 The above syntax works, because array indexing starts from 0 and ends with N-1, where N is the total number of array elements. Since ```${#SomeArray[*]}``` gives the total number of array elements N, the above syntax just appends the new N-th element.
+
+
+
+If an array element itself has an empty character, it will be correctly obtained in the loop only if ```${SomeArray[*]}``` is replaced with ```"${SomeArray[@]}"```, but such cases rarely occur in practice.  Nevertheless, mind the difference in notation and behaviour:
+
+```bash
+# define array elements, some of which contain empty characters:
+$ SomeArray=( a b "c d" e)
+
+# wrong way of looping:
+$ for Entry in ${SomeArray[*]}; do echo $Entry; done
+a
+b
+c
+d
+e
+
+# another wrong way of looping:
+$ for Entry in "${SomeArray[*]}"; do echo $Entry; done
+a b c d e
+
+# finally, the correct way of looping:
+$ for Entry in "${SomeArray[@]}"; do echo $Entry; done
+a
+b
+c d
+e
+```
+
+
 
 Quite frequently, we need to prepend or append the same string to all array elements. This can be achieved  elegantly with the following syntax:
 
