@@ -1,6 +1,6 @@
-# Lecture 6: String manipulation. Arrays. Pipes. **sed**, **awk** and **grep** 
+# Lecture 6: String manipulation. Arrays. Pipes. **grep**, **awk** and **sed** 
 
-**Last update**: 20260515-1
+**Last update**: 20260515-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -8,7 +8,7 @@
 1. [String manipulation](#string_manipulation)
 2. [Arrays: ```=( )```](#arrays)
 3. [Pipes: ```|```](#pipes)
-4. [**sed**, **awk** and **grep**](#sed_awk_grep)
+4. [**grep**, **awk** and **sed**](#grep_awk_sed)
 
 
 
@@ -644,7 +644,7 @@ The power of pipes is best illustrated in combination with the three powerful co
 
 
 
-### 4. **sed**, **awk** and **grep** <a name="sed_awk_grep"></a>
+### 4. **grep**, **awk** and **sed** <a name="grep_awk_sed"></a>
 
 A text must frequently be parsed through, inspected, or updated after the search for some patterns has been performed. In general, we want to be able to modify programmatically some text for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution or any text saved in a physical file. Clearly, there are cases in which it is impractical or even unfeasible to make all such changes in some graphics-based editors. In this section, we cover how the text can be manipulated programmatically with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
 
@@ -943,7 +943,7 @@ $ grep -- -v example_4.txt
 1 2 -v 3
 ```
 
-After ```--``` in the command input above, '-v' is no longer an internally supported option in **grep**; instead it becomes an ordinary argument, which in this context is interpreted by **grep** as a search pattern for the file specified via the next argument.
+After ```--``` in the command input above, '-v' is no longer an internally supported option in **grep**; instead it becomes an ordinary argument, which in this context is interpreted by **grep** as a literal search pattern '-v' for the file specified via the next argument.
 
 We close this section by indicating that **grep** by default supports _"Basic Regular Expressions (BRE)"_, its variants **grep -E** or **egrep** support _"Extended Regular Expressions (ERE)"_, and **grep -P** supports _"Perl-Compatible Regular Expressions (PCRE)"_.
 
