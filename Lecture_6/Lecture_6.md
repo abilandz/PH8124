@@ -1,6 +1,6 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **sed**, **awk** and **grep** 
 
-**Last update**: 20260514-1
+**Last update**: 20260515-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -567,6 +567,8 @@ firstCommand | secondCommand | thirdCommand | ...
 
 In the above example, the successful output, i.e., the _stdout_ stream of ```firstCommand``` has become the input, i.e., the _stdin_, to ```secondCommand```. That command now processes that input, and produces its own output, which is then becoming the input to ```thirdCommand```, and so on.
 
+We remark that each command in the pipe can be implemented in a different programming language. This way, the pipe mechanism enables modularity in project design across different programming languages, in a manner analogous to how modularity is achieved by implementing separate functions within a given language. 
+
 It is possible to redirect simultaneously both _stdout_ and _stderr_ stream of one command into _stdin_ of another, with the slightly modified pipe operator ```|&```, schematically:
 
 ```bash
@@ -577,7 +579,7 @@ In the above example, both the successful output stream and the error message of
 
 Using pipe ```|``` eliminates the need to make temporary files to redirect and store the output of one command and then supply that temporary file as an input to another command.  The data flow among all commands chained with ```|``` in the pipeline is automated without any restriction on the size. 
 
-We now provide a few frequently use cases  of pipes. We have already seen that **Bash** supports directly only integer arithmetic with the construct ```(( ... ))```. The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator'). 
+We now provide a few frequently use cases  of pipes. We have already seen that **Bash** supports directly only integer arithmetic within the mathematical environment ```(( ... ))``` (the support for floating point arithmetics was introduced starting with version 5.3 in 2025, but only using **fltexpr** loadable builtin). The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator'). 
 
 **Example 1:** How would you divide 10/7 at the precision of 30 significant digits? 
 
@@ -589,7 +591,7 @@ $ echo "scale=30; 10/7" | bc
 ```
 The internal keyword **scale** sets the precision in **bc** program. Instead of using **bc** interactively and providing via keyboard _stdin_ for its execution, we have just piped the _stdout_ of **echo** as an input to **bc**.
 
-For more sophisticated use cases, for instance when using special mathematical functions, etc., use **bc -l**. The flag '-l' (ell) additionally loads in the memory the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the scale is not specified, it is defaulted to 1 when only **bc** is executed, and to 20 when **bc -l** is executed.
+For more sophisticated use cases, for instance when using special mathematical functions, etc., use **bc -l**. The flag '-l' (ell) additionally loads in the memory the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the precision is not specified with keyword **scale**, it is defaulted to 1 when only **bc** is executed, and to 20 when **bc -l** is executed.
 
 The math library of **bc** defines the following example functions:
 ```bash
@@ -621,7 +623,7 @@ date | tee date.log
 ```
 will print the current time on the screen, but it will also simultaneously dump it in the file named ```date.log``` (check its content with **cat date.log**). In the very same spirit, it is possible to keep the full execution log of any script, function, code block ```{ ... }```, loops, etc.
 
-The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to the files. By default, **tee** overwrites the content of a file &mdash; if we want instead to append to the already existing non-empty file, the following version can be used:
+The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to files. By default, **tee** overwrites the content of a file &mdash; if we want instead to append to the already existing non-empty file, the following version can be used:
 ```bash
 someCommand | tee -a someFile.log 
 ```
@@ -644,7 +646,7 @@ The power of pipes is best illustrated in combination with the three powerful co
 
 ### 4. **sed**, **awk** and **grep** <a name="sed_awk_grep"></a>
 
-A text must frequently be parsed through, inspected, or updated after the search for some patterns has been performed. In general, we want to be able to modify programmatically some text for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution or any text saved in some physical file. Clearly, there are cases in which it is impractical or even unfeasible to make all such changes in some graphics-based editors. In this section, we cover how the text can be manipulated programmatically with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
+A text must frequently be parsed through, inspected, or updated after the search for some patterns has been performed. In general, we want to be able to modify programmatically some text for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution or any text saved in a physical file. Clearly, there are cases in which it is impractical or even unfeasible to make all such changes in some graphics-based editors. In this section, we cover how the text can be manipulated programmatically with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
 
 **grep**
 
@@ -786,7 +788,7 @@ Complementary to this option, we can filter out all lines in the file that conta
 grep "ST\>" grepExample.txt
 ```
 
-Now only 'TEST' will match, because this is the only word in the file which ends up with the specified pattern 'ST', and in the printout we get only the three lines that contain the word 'TEST':
+Now only 'TEST' will match, because this is the only word in the file which ends up with the specified pattern 'ST', and in the printout we get these three lines that contain the word 'TEST':
 
 ```
 TEST Test test 11test test22
@@ -828,7 +830,7 @@ It is also possible to combine patterns with the special character ```\|```:
 grep "11test\|test22" grepExample.txt
 ```
 
-This prints all lines containing either the pattern '11test' or 'test22' (this is the logical OR operation):
+This prints all lines containing either the pattern '11test' or 'test22' (basically, in **grep** ```\|``` acts as a logical OR operation):
 
 ```
 TEST Test test 11test test22
@@ -842,7 +844,7 @@ We cannot directly use **grep** to obtain the logical AND operation in the patte
 grep "11test" grepExample.txt | grep "test22"
  ```
 
-This will print all lines that contain both specified patterns:
+This will print all lines that contain both specified patterns "11test" and "test22":
 
 ```
 TEST Test test 11test test22
@@ -897,7 +899,7 @@ ce8.dat
 ce9.dat
 ```
 
-Finally, we mention the flag '-r', which will force **grep** to search for specified patterns recursively in all files of specified directories, their subdirectories, etc. Generic syntax is: 
+Next, we mention the flag '-r', which will force **grep** to search for specified patterns recursively in all files of specified directories, their subdirectories, etc. Generic syntax is: 
 
 ```bash
 grep -r somePattern dir1 dir2 ...
@@ -915,6 +917,37 @@ $ grep -r "Bash" ~/Lectures/PH8124
 
 ... many more lines ...
 ```
+
+Finally, we clarify how to use **grep** to extract lines holding patterns which have the same syntax as **grep** options.
+
+**Example 4:** Filter out lines holding the pattern '-v' from the following file 'example_4.txt':
+
+```bash
+a b c
+-v
+1 2 -v 3
+-a
+```
+
+Naively, one proceeds as follows:
+
+```bash
+$ grep -v example_4.txt
+```
+
+and nothing happens &mdash; **grep** is hanging, because it interpreted '-v' as an option, not the search pattern. After that, it mistakenly interpreted the file name 'example_4.txt' as a search pattern. Finally, there are no further arguments on the command line, **grep** doesn't see the file it needs to search through, and is therefore expecting command input to be provided interactively from _stdin_ (i.e. from keyboard). To circumvent this general problem, a double dash ```--``` is used in most commands, not only in **grep**, to signify the end of command options, after which only arguments are accepted. Therefore, the correct solution is:
+
+```bash
+$ grep -- -v example_4.txt
+-v
+1 2 -v 3
+```
+
+After ```--``` in the command input above, '-v' is no longer an internally supported option in **grep**; instead it becomes an ordinary argument, which in this context is interpreted by **grep** as a search pattern for the file specified via the next argument.
+
+We close this section by indicating that **grep** by default supports _"Basic Regular Expressions (BRE)"_, its variants **grep -E** or **egrep** support _"Extended Regular Expressions (ERE)"_, and **grep -P** supports _"Perl-Compatible Regular Expressions (PCRE)"_.
+
+
 
 **awk**
 
@@ -1053,7 +1086,15 @@ CC
 
 In the above snippet, we have defined the field delimiter with the flag '-d' to be the empty character " " (by default, the field delimiter in **cut** command is TAB), and with the flag '-f' we have specified that we want the content of the 3rd field, which is 'CC' in the example above.
 
+We remark that unlike **grep**, **awk** by default supports _"Extended Regular Expressions (ERE)"_.
+
 The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables before we can use them during **awk** execution, which in practice can be a bit, well, awkward... This particular limitation is not present in the command **sed**, which we cover next.
+
+
+
+
+
+
 
 **sed**
 
@@ -1298,4 +1339,4 @@ $ echo "some text" | sed -e "s/text/TEXT/; s/some/SOME/"
 SOME TEXT
 ```
 
-Finally, we remark that **grep**, **awk**, and **sed** provide full support for pattern matching via regular expressions (```*```, ```?```, ```[...]```, etc.), which increases their power and applicability tremendously.
+Finally, we remark that **sed** by default supports _"Basic Regular Expressions (BRE)"_, while its variant **sed -E** supports _"Extended Regular Expressions (ERE)"_.
