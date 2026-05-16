@@ -1,6 +1,6 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **grep**, **awk** and **sed** 
 
-**Last update**: 20260515-2
+**Last update**: 20260516-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -949,9 +949,95 @@ We close this section by indicating that **grep** by default supports _"Basic Re
 
 
 
+
+
 **awk**
 
-Now we move to **awk** (named after the initials of its authors: Aho, Weinberg and Kernighan), which is a programming language by itself, designed for text processing. One can easily teach the whole semester only about **awk**, here we will cover only its most important functionalities which are not available as built-in **Bash** functionalities. The frequently heard comment about **awk** is that its syntax and usage are awkward. Nevertheless, in many cases of practical interest, **awk** provides the best and the most elegant solution.
+Now we move to **awk** (named after the initials of its authors: Aho, Weinberg and Kernighan), which is not only a core Linux utility but a full-fledged programming language, designed for text processing. One can easily teach the whole semester only about **awk**, here we will cover only its most important functionalities which are not available as built-in **Bash** functionalities. The frequently heard comment about **awk** is that its syntax and usage are awkward. Nevertheless, in many cases of practical interest, **awk** provides the best, simplest and most elegant solution.
+
+The general structure of **awk** program is as follows:
+
+```bash
+awk someOptions(s) '
+  PATTERN_1 { ACTION_1 }
+  PATTERN_2 { ACTION_2 }
+  ...
+' someFile(s)
+```
+
+or equivalently a one-liner:
+
+```bash
+awk someOptions(s) ' PATTERN_1 { ACTION_1 } PATTERN_2 { ACTION_2 } ... ' someFile(s)
+```
+
+Each line of input is matched against each ```PATTERN```, and whenever the pattern is matched, the corresponding ```ACTION``` is executed for that line. 
+
+A few remarks on the general **awk** syntax above:
+
+* ```someOptions(s)``` &mdash; these are the options which **awk** supports internally and which can be used to modify its default behavior, in an analogous way as for other Linux commands (check the **awk**'s manual pages for further details');
+* `'...'` &mdash; when **awk** programme is specified directly in the terminal (and not written and read from a file as an **awk** script), it has to be embedded within the strong quotes ```'...'```, so that during parsing of the command input shell does not attempt to interpret it itself;
+* ```PATTERN``` &mdash; can be a numerical expression, a string relation, or a regular expression. In the latter case, ```PATTERN``` must be enclosed with slashes, i.e. **awk** will interpret ```/ab*/``` as a pattern corresponding to the regular expression ```ab*```, where ```*``` acquires a metacharacter meaning, i.e. it's not a literal ```*``` character. We remark that unlike **grep**, **awk** by default supports _"Extended Regular Expressions (ERE)"_. On the other hand, if ```PATTERN``` is specified as ```length > 0```, **awk** will interpret it as a numerical expression, in which **awk** is checking if the length of the line is bigger than 0 (```length``` is an internal variable in **awk**, calculated automatically for each line of input). If ```PATTERN``` is not specified, all lines of input are trivially matched;
+* ```ACTION``` &mdash; written in an internal language whose syntax is similar to the **C** programming language. If the corresponding ```PATTERN``` is matched for a line of input, this ```ACTION``` will be executed for that line. If ```ACTION``` is not specified, it defaults to printing the whole line that matched the corresponding ```PATTERN```;
+* ```someFiles()``` &mdash; one or more files which **awk** will parse line-by-line automatically. During parsing, each line of a file becomes a line of input to **awk**, on which ```PATTERN { ACTION }``` sequences are tested and executed.  
+
+The above general syntax is demonstrated on the example file ```test.txt``` with the following content:
+
+```bash  
+abc
+abcefgh 9876 
+12345
+```
+
+To print all lines whose length is less than 6 characters, we proceed as follows:
+
+```bash
+$ awk 'length < 6 { print }' test.txt
+abc
+12345
+```
+
+The ```PATTERN``` is a numerical expression ```length < 6```, and the ```ACTION``` is ```{ print }```, i.e. all lines whose length is less than 6 characters are printed (since the default action is to print the matched line, in this simple example ```{ print }``` could be dropped).
+
+To print the length of all lines that contain the pattern ```abc```, we use the syntax ```/.../``` for patterns that need to be interpreted as regular expressions:
+
+```bash 
+$ awk '/abc/ { print length }' test.txt
+3
+13
+```
+
+We can apply both ```PATTERN``` and ```ACTION``` sequences from above:
+
+```bash
+$ awk 'length < 6 { print } /abc/ { print length }' test.txt
+abc
+3
+13
+12345
+```
+
+Patterns can be grouped for the same action with the standard syntax for logical AND and OR operations using ```&&``` and ```||``` operators:
+
+```bash
+$ awk 'length < 6 && /abc/ { print }' test.txt 
+abc
+
+$ awk 'length < 6 || /abc/ { print }' test.txt 
+abc
+abcefgh 9876 
+12345
+```
+
+Finally, multiple actions can be specified for the same pattern:
+
+```bash
+$ awk 'length < 6 { print; print length; }' test.txt 
+abc
+3
+12345
+5
+```
 
 After we supply some input to **awk**, it will break each line of input into fields, which by default are separated with one or more empty characters. After that, **awk** parses the input and operates on each separate field. Just like with the **grep** command, **awk** can take its input either from a physical file, or from the output stream of another command via a pipe. For instance, if a specific command has produced an output that consists of column-wise entries separated by one or more empty characters, we can get hold of each field programmatically. For instance:
 
@@ -1086,11 +1172,17 @@ CC
 
 In the above snippet, we have defined the field delimiter with the flag '-d' to be the empty character " " (by default, the field delimiter in **cut** command is TAB), and with the flag '-f' we have specified that we want the content of the 3rd field, which is 'CC' in the example above.
 
-We remark that unlike **grep**, **awk** by default supports _"Extended Regular Expressions (ERE)"_.
+The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax using the option ```-v``` some internal **awk** variables with the content of **Bash** variables before we can use them during **awk** execution, which in practice can be a bit, well, awkward... 
 
-The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax some internal **awk** variables with the content of **Bash** variables before we can use them during **awk** execution, which in practice can be a bit, well, awkward... This particular limitation is not present in the command **sed**, which we cover next.
+```bash
+$ Var=44
+$ awk 'BEGIN {print Var}'
 
+$ awk -v x=$Var 'BEGIN {print x}'
+44
+```
 
+This particular limitation is not present in the command **sed**, which we cover next.
 
 
 
