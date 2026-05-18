@@ -1,6 +1,6 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **grep**, **awk** and **sed** 
 
-**Last update**: 20260518-1
+**Last update**: 20260518-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -1447,13 +1447,13 @@ $ echo "some text" | sed -e "s/text/TEXT/; s/some/SOME/"
 SOME TEXT
 ```
 
-This will run faster than colling separately two instances of **sed** for each pattern replacement:
+This will run faster than calling separately two instances of **sed** for each pattern replacement:
 
 ```bash
 $ echo "some text" | sed "s/text/TEXT/" | sed "s/some/SOME/"
 SOME TEXT
 ```
 
-This is true in general when calling external-to-shell commands: Instead of running each command in its own process, you do as many things as possible in a single command invocation, otherwise, you lose performance.
+This is true in general when calling external-to-shell commands: Instead of running each command invocation in its own process, you do as many things as possible in a single command invocation, otherwise, you lose performance.
 
 Finally, we remark that **sed** by default supports _"Basic Regular Expressions (BRE)"_, while its variant **sed -E** supports _"Extended Regular Expressions (ERE)"_.
