@@ -1,6 +1,6 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **grep**, **awk** and **sed** 
 
-**Last update**: 20260516-1
+**Last update**: 20260518-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -8,7 +8,10 @@
 1. [String manipulation](#string_manipulation)
 2. [Arrays: ```=( )```](#arrays)
 3. [Pipes: ```|```](#pipes)
-4. [**grep**, **awk** and **sed**](#grep_awk_sed)
+4. [Programmmatic text processing](#programmmatic_text_processing)
+	* [**grep**](#grep)
+	* [**awk**](#awk)
+	* [**sed**](#sed)
 
 
 
@@ -644,11 +647,10 @@ The power of pipes is best illustrated in combination with the three powerful co
 
 
 
-### 4. **grep**, **awk** and **sed** <a name="grep_awk_sed"></a>
-
+### 4. Programmmatic text processing <a name="programmmatic_text_processing"></a>
 A text must frequently be parsed through, inspected, or updated after the search for some patterns has been performed. In general, we want to be able to modify programmatically some text for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution or any text saved in a physical file. Clearly, there are cases in which it is impractical or even unfeasible to make all such changes in some graphics-based editors. In this section, we cover how the text can be manipulated programmatically with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
 
-**grep**
+#### **grep** <a name="grep"></a>
 
 The command **grep** ('Globally search a Regular Expression and Print') filters out from the command output or the physical file the lines containing a certain pattern. Typically, this command is used as follows:
 
@@ -950,8 +952,7 @@ We close this section by indicating that **grep** by default supports _"Basic Re
 
 
 
-
-**awk**
+#### **awk** <a name="awk"></a>
 
 Now we move to **awk** (named after the initials of its authors: Aho, Weinberg and Kernighan), which is not only a core Linux utility but a full-fledged programming language, designed for text processing. One can easily teach the whole semester only about **awk**, here we will cover only its most important functionalities which are not available as built-in **Bash** functionalities. The frequently heard comment about **awk** is that its syntax and usage are awkward. Nevertheless, in many cases of practical interest, **awk** provides the best, simplest and most elegant solution.
 
@@ -1187,15 +1188,14 @@ This particular limitation is not present in the command **sed**, which we cover
 
 
 
-
-**sed**
+#### **sed** <a name="sed"></a>
 
 Finally, there is **sed** ('Stream Editor'), a non-interactive text file editor. It parses the command output or file content line-by-line, and performs specified operations on them. Typically, **sed** covers the following use cases:   
 
-1. printing selected lines from a file
-2. inserting new lines in a file
-3. deleting specified lines in a file
-4. searching for and replacing the patterns in a file
+1. printing selected lines from a file;
+2. inserting new lines in a file;
+3. deleting specified lines in a file;
+4. searching for and replacing the patterns in a file.
 
 We illustrate all four use cases with a few basic examples.
 
@@ -1284,10 +1284,10 @@ sed -i "2i Some text" sedTest.dat
 ```
 This will insert in the 2nd line of the file ```sedTest.dat``` the new text 'Some text' and the original file is modified, without backup. Remember in this context the different meanings of 'i':   
 
-* '-i' used as a flag instructs **sed** that we want to modify the original file in-place
-* 'ni' used as an argument indicates that we want to insert something on the nth line
+* '-i' used as a flag instructs **sed** that we want to modify the original file in-place;
+* 'ni' used as an argument indicates that we want to insert something on the nth line.
 
-Clearly, it can be potentially dangerous to modify the original file in-place directly, because once the original file is overwritten, there is no way back. To prevent that, we can automatically create the backup of the original file by using the slightly modified flag '-i.backup':
+Clearly, modifying the original file in place can be dangerous, because once it's overwritten, there is no easy way to recover it. To prevent that, we can automatically create a backup of the original file by using the slightly modified flag '-i.backup':
 
 ```bash
 sed -i.backup "2i Some text" sedTest.dat
@@ -1364,7 +1364,7 @@ Access: 2020-05-01 12:46:20.551223700 +0200
 
 have been deleted.
 
-**Example 4:** Finally, we also illustrate how to replace one pattern in the file with another. This is achieved with the following generic syntax:
+**Example 4:** We also illustrate how to replace one pattern in the file with another. This is achieved with the following generic syntax:
 
 ```bash
 sed "s/firstPattern/secondPattern/" someFile
@@ -1409,7 +1409,23 @@ energy p p
 p energy p
 ```
 
-The very convenient thing about **sed** is that it can interpret **Bash** variables directly. It is perfectly feasible in to have in a script something like:
+**Example 5:** Finally, and continuing with the previous example, we illustrate how to delete a string within a line of input &mdash; one simply specifies as a second pattern in substitution a zero-length string:
+
+```bash
+# delete first occurence of "momentum" on each line:
+$ sed "s/momentum//g" example.log
+ energy
+energy  momentum
+ energy momentum
+
+# delete all occurences of "momentum" on each line:
+$ sed "s/momentum//g" example.log
+ energy
+energy  
+ energy
+```
+
+The very convenient thing about **sed** is that it can interpret **Bash** variables directly. It is perfectly feasible to have in a script something like:
 
 ```bash
 Before=OldPatern
@@ -1424,11 +1440,20 @@ Wed Jun  3 21:08:49 CEST 2020
 $ date | sed "s/Wed/Wednesday/"
 Wednesday Jun  3 21:08:49 CEST 2020
 ```
-As a concluding remark about **sed**, we indicate that multiple commands can be specified and executed in one go by using option '-e' and by separating multiple commands with ';' &mdash; for instance:
+As a concluding remark about **sed**, we note that multiple commands can be specified and executed in one go using the option '-e' and separating them with ';' as an end of command input separator. For instance:
 
 ```bash
 $ echo "some text" | sed -e "s/text/TEXT/; s/some/SOME/"
 SOME TEXT
 ```
+
+This will run faster than colling separately two instances of **sed** for each pattern replacement:
+
+```bash
+$ echo "some text" | sed "s/text/TEXT/" | sed "s/some/SOME/"
+SOME TEXT
+```
+
+This is true in general when calling external-to-shell commands: Instead of running each command in its own process, you do as many things as possible in a single command invocation, otherwise, you lose performance.
 
 Finally, we remark that **sed** by default supports _"Basic Regular Expressions (BRE)"_, while its variant **sed -E** supports _"Extended Regular Expressions (ERE)"_.
