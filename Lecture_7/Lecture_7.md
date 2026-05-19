@@ -1,6 +1,6 @@
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20260519-1
+**Last update**: 20260519-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -312,7 +312,7 @@ On the other hand, if we drop weak quotes,
 echo $Var
 ```
 
-this version will strip off from each line the trailing hidden new line character '\n', and the printout is scrambled. The technical reason for that is that in the 2nd example **Bash** will use by default the new line character```\n```, alongside an empty character and the tab character ```\t``` to break the command input into tokens. 
+this version will strip off from each line the trailing hidden new line character ```\n```, and the printout is scrambled. The technical reason for that is that in the 2nd example **Bash** will use by default the new line character```\n```, alongside an empty character and the tab character ```\t``` to break the command input into tokens. 
 
 To quote or not to quote: As a rule of thumb, and whenever in doubt, it is always safer to use weak quotes than not to quote. 
 
