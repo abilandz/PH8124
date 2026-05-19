@@ -1,6 +1,6 @@
 # Lecture 7: Escaping. Quotes. Handling processes and jobs. 
 
-**Last update**: 20260408-1
+**Last update**: 20260519-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -33,9 +33,9 @@ The above code snippet produces the following output:
 44
 $Var
 ```
-It is possible in the same way to escape the special meaning of any other special character, and in any other context (not necessarily only in their printout, as demonstrated here). If there are multiple special characters in the input expression, they can be escaped one by one with a backslash ```\```. 
+It is possible in the same way to escape the special meaning of any other special character, and in any other context (not necessarily only in their printout, as demonstrated here). If there are multiple special characters in the input expression, they can be escaped one by one with a backslash ```\``` (or more conveniently with the _strong quotes_ ```'...'```, as discussed in the next section). 
 
-As another example, we consider the double quotes ```"..."```, which also have a special meaning in **Bash** (clarified in the next section!) and are not printed by default:
+As another example, we consider the double quotes ```"..."```, which also have a special meaning in **Bash** (clarified also in the next section!) and are not printed by default:
 ```bash
 $ echo "Hi "there""
 Hi there # no quotes in the printout
@@ -91,7 +91,7 @@ Alternatively, we can escape the meaning of special characters with strong (sing
 
 **Strong (single) quotes**
 
-In complex expressions, that contain a huge number of special characters, it becomes quickly impractical to escape the special meaning of every special character separately with ```\```. Instead, they can be escaped all in one go by embedding the whole expression within strong (single) quotes ```'...'``` . This is the primary use case of strong quotes, and their meaning can be literally understood with the following phrase: _what you see is what you get_. 
+In complex expressions, that contain a huge number of special characters, it becomes quickly impractical to escape the special meaning of every single special character separately with ```\```. Instead, they can be escaped all in one go by embedding the whole expression within strong (single) quotes ```'...'``` . This is the primary use case of strong quotes, and their meaning can be literally understood with the following phrase: _what you see is what you get_. 
 
 For instance:
 
@@ -132,7 +132,7 @@ $ echo '100 > 10'
 
 Single quotes may not occur between single quotes, even when preceded by a backslash.
 
-As the last remark, strong quotes appear in a rarely used context, which is outlined here just for completeness's sake. Some characters cannot be represented with literal syntax &mdash; instead, we need to use _backslash-escaped characters_ for them. The best examples are new line and tab space, which are represented with '\n' and '\t', respectively. However, neither **Bash** nor a lot of **Linux** commands by default interpret such backslash-escaped characters. For instance:
+As the last remark, strong quotes appear in a rarely used context, which is outlined here just for completeness's sake. Some characters cannot be represented with literal syntax &mdash; instead, we need to use _backslash-escaped characters_ for them. The best examples are new line and tab space, which are represented with ```\n``` and ```\t```, respectively. However, neither **Bash** nor a lot of **Linux** commands by default interpret such backslash-escaped characters. For instance:
 
 ```bash
 echo "Hi\nthere"
@@ -190,11 +190,11 @@ Hi
 there
 ```
 
-Now **Bash** has interpreted the special meaning of '\n' character, not **echo**.
+Now **Bash** has interpreted the special meaning of '\n' character, but not **echo** specifically.
 
-**Example:** Prompt the user with the following multi-line question in the **read** command:
+**Example:** _Multi-line prompt message in the shell's built-in **read** command_. Prompt the user with the following multi-line question in the **read** command:
 
-```bash
+```linux
 Dear User,
 do you want to continue [Y/n]? 
 ```
@@ -212,14 +212,10 @@ In the next section, we clarify the meaning of weak (double) quotes ```"..."```.
 Unlike the strong quotes, the weak (double) quotes ```"..."``` preserve the special meaning of some special characters, while the special meaning of all others is stripped off. Just like within single quotes, within double quotes the empty character does not retain its special meaning, i.e. it is not any longer the default field separator. The exact number of empty characters is preserved within weak quotes:
 
 ```bash
-echo "a b    c"
-echo  a b    c
-```
-
-The output of the above two lines is:
-
-```bash
+$ echo "a b    c"
 a b    c
+
+$ echo  a b    c
 a b c
 ```
 
@@ -255,12 +251,12 @@ In each case, we got a different result. Within double quotes, the content of va
 
 The special meaning of the following special characters or constructs is preserved within weak quotes ```"..."```:
 
-* ```$``` : referencing the content of a variable   
-* ```$( ... )``` : command substitution operator
-* ```$(( ... ))``` : arithmetic expression evaluation
+* ```$``` : referencing the content of a variable;   
+* ```$( ... )``` : command substitution operator;
+* ```$(( ... ))``` : arithmetic expression evaluation;
 * ```\``` : backslash preserves its special meaning within double quotes only in some cases, for instance, when it is followed by ```$```, ```"```, `\`, or newline.
 
-Since this is a common mistake, we stress that tilde ```~``` as a shortcut for a home directory does not preserve that special meaning within quotes, instead, within quotes we have to use ${HOME} to get the full path to the home directory:
+Since this is a common mistake, we stress that the tilde ```~``` metacharacter as a shortcut for a home directory does not preserve that special meaning within quotes, instead, within quotes we have to use ${HOME} to get the full path to the home directory:
 
 ```bash
 $ echo 'Home directory: ~'
@@ -271,7 +267,7 @@ $ echo "Home directory: ${HOME}"
 Home directory: /home/abilandz
 ```
 
-Nested double quotes are allowed as long as the inner ones are escaped with ```\``` . For instance, 
+Nested double quotes are allowed as long as the inner ones are escaped with ```\```. For instance, 
 
 ```bash
 echo "\"test\""
@@ -316,7 +312,7 @@ On the other hand, if we drop weak quotes,
 echo $Var
 ```
 
-this version will strip off from each line the trailing hidden new line character '\n', and the printout is scrambled. 
+this version will strip off from each line the trailing hidden new line character '\n', and the printout is scrambled. The technical reason for that is that in the 2nd example **Bash** will use by default the new line character```\n```, alongside an empty character and the tab character ```\t``` to break the command input into tokens. 
 
 To quote or not to quote: As a rule of thumb, and whenever in doubt, it is always safer to use weak quotes than not to quote. 
 
