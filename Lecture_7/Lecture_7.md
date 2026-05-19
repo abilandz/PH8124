@@ -312,7 +312,7 @@ On the other hand, if we drop weak quotes,
 echo $Var
 ```
 
-this version will strip off from each line the trailing hidden new line character ```\n```, and the printout is scrambled. The technical reason for that is that in the 2nd example **Bash** will use by default the new line character```\n```, alongside an empty character and the tab character ```\t``` to break the command input into tokens. 
+this version will strip off from each line the trailing hidden new line character ```\n```, and the printout is scrambled. The technical reason for that is that in the 2nd example **Bash** identifies the new line character ```\n```, alongside an empty character and the tab character ```\t```, as the default field separators to break the command input into tokens (i.e. by default, the content of the **Bash** special internal variable ```IFS``` is an empty character, new line, and tab space). 
 
 To quote or not to quote: As a rule of thumb, and whenever in doubt, it is always safer to use weak quotes than not to quote. 
 
