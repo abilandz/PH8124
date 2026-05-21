@@ -15,7 +15,7 @@
 * [Homeworks](./Homeworks/Trivia.md)
     * [Homework 1: Using shell aliases as your simplest commands](./Homeworks/Homework_1.md)
     * [Homework 2: User-made executables as Linux/Bash commands](./Homeworks/Homework_2.md)
-    * [Homework 3: ](./Homeworks/Homework_3.md_TBI)
+    * [Homework 3: **Bash** functions](./Homeworks/Homework_3.md)
     * [Homework 4: ](./Homeworks/Homework_4.md_TBI)
     * [Homework 5: ](./Homeworks/Homework_5.md_TBI)
     * [Homework 6: ](./Homeworks/Homework_6.md_TBI)
