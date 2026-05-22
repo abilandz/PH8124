@@ -1,6 +1,6 @@
-# **Bash** functions
+# Shell functions
 
-**Last update:** 20260520-1
+**Last update:** 20260522-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
