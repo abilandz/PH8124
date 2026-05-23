@@ -1,6 +1,6 @@
 # Lecture 4: Loops and few other thingies
 
-**Last update**: 20260506-1
+**Last update**: 20260523-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -44,7 +44,14 @@ Analogously, to execute commands in a new shell instance started from the curren
 bash -c 'command1; command2; ...'
 ```
 
-It is important to use the option **-c** in this context, otherwise the shell would attempt to process each of executables _command1, command2, ..._, line-by-line, as if they were scripts. In both cases above, the new shell instance is automatically terminated upon execution of all its arguments, and the command input control is returned to the current shell.
+It is important to use the option **-c** in this context, otherwise the shell would attempt to process each of executables _command1, command2, ..._, line-by-line, as if they were scripts. In both cases above, the new shell instance is automatically terminated upon execution of all its arguments, and the command input control is returned to the current shell. On a side note, this syntax is used frequently to check how the same built-in shell command was implemented and behaves in another shell:
+
+```bash 
+# execute commands in zsh shell in a terminal which runs bash shell:
+$ zsh -c 'command1; command2; ...'
+```
+
+In the above example, although we are in a terminal which runs the **Bash** shell, we can temporarily invoke another shell, e.g. **zsh**, and use that another shell to execute commands **command1; command2; ...** . When those commands are executed in the **zsh** shell, the command input control is returned automatically to the **Bash** shell.
 
 On the other hand, functions behave differently. After you source the file where a function is implemented, **Bash** stores that function in the computer's memory, and from that point onwards, you can use that function as any other **Linux** or **Bash** command. For functions, there is no need to bother using keyword **source**, setting the execute permission, modifying **PATH**, etc. That means that if you have added to your ```~/.bashrc``` the following line:
 
