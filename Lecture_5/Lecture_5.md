@@ -1,6 +1,6 @@
 # Lecture 5: Command substitution. Input/Output (I/O). Conditional statements
 
-**Last update**: 20260512-1
+**Last update**: 20260602-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -412,7 +412,7 @@ before code block
 ```
 because we did not redirect the first **echo** command anywhere.
 
-Some other piece of code in the same script or function can be embedded into another code block, and then redirected to some other files. This way, we can easily profile the code with redirectors, and decide what goes on the screen and what is dumped in files. Typically, code blocks ```{ ... }``` are used when breaking down some large monolithic script into functions is not beneficial.
+Some other piece of code in the same script or function can be embedded into another code block, and then redirected to some other files. This way, we can easily profile the code with redirections, and decide what goes on the screen and what is dumped in files. Typically, code blocks ```{ ... }``` are used when breaking down some large monolithic script into functions is not beneficial.
 
 Regarding redirections, it is possible to treat loops analogously as code blocks. In particular, **for** and **while** loops have their own _stdout_ and _stderr_ streams, which can be redirected to the output files with ```1>``` and ```2>``` operators. In this way, we can easily disentangle what is happening in a particular loop from what is happening in the rest of the code. Schematically, we would use for **for** loop:
 
@@ -567,9 +567,9 @@ else
 fi
 ```
 
-However, if the keyword **then** is placed on the same line with keywords **if** and **elif**, it has to be separated with semicolon ```;```.  
+However, if the keyword **then** is placed on the same line with keywords **if** and **elif**, it has to be separated with the semicolon ```;``` metacharacter.  
 
-Another typical use case of an **if-elif-else-fi** conditional statement is to branch the code execution depending on whether a command or a function execution succeeded (exit status 0) or failed (exifailedt status 1 to 255). Schematically:
+Another typical use case of an **if-elif-else-fi** conditional statement is to branch the code execution depending on whether a command or a function execution succeeded (exit status 0) or failed (exit status 1 to 255). Schematically:
 ```bash
 if someCommand; then
   some code when someCommand succeeded
@@ -622,7 +622,7 @@ The usage of **case-in-esac** conditional statement is best illustrated with a f
 
 **Example 1:** How do you implement the support for options in your script or function? 
 
-Schematically, for the simplest cases, that can be achieved with the following code snippet:
+Schematically, for the simplest cases, that can be achieved with the following example code snippet:
 
 ```bash
 Flag=$1
@@ -653,7 +653,7 @@ case someValue in
       ... some code when one option from this group is met ... 
     ;;
     ... even more options ... 
- *) some code when all specified options are not met ;;
+ *) ... some code when all specified options are not met ... ;;
 esac 
 ```
 This functionality can be combined with the shell built-in command **shift**, to implement support for option which takes its own argument, covering both short and lengthy format for option names. When you use **shift N** in the script or function body, basically you drop the first **N** arguments supplied to that script or function. For instance, if the function is defined this way:
