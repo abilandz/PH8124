@@ -36,7 +36,7 @@ For **ROOT**, the official documentation is used:
     * [Homework 2: User-made executables as Linux/Bash commands](./Homeworks/Homework_2.md)
     * [Homework 3: Shell functions](./Homeworks/Homework_3.md)
     * [Homework 4: Filtering and reformatting the file content programmatically](./Homeworks/Homework_4.md)
-    * [Homework 5: ](./Homeworks/Homework_5.md_TBI)
+    * [Homework 5: Mastering the command substitution operator](./Homeworks/Homework_5.md)
     * [Homework 6: ](./Homeworks/Homework_6.md_TBI)
     * [Homework 7: ](./Homeworks/Homework_7.md_TBI)
     * [Homework 8: ](./Homeworks/Homework_8.md_TBI)

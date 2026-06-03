@@ -1,10 +1,10 @@
-# Homework #5: Mastering the command substitution operator.
+# Homework #5: Mastering the command substitution operator
 
-**Last update:** 20260429-1
+**Last update:** 20260603-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
-The developer is testing the execution time of a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following generic way:
+The developer is testing the execution time of a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following general way:
 
 ```bash
 Started=$(date -R)
