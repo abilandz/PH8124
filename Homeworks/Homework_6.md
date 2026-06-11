@@ -1,6 +1,6 @@
-# Playing with **Bash** strings and arrays.
+# Playing with shell's strings and arrays
 
-**Last update:** 20260429-1
+**Last update:** 20260611-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -25,9 +25,9 @@ Have a nice time!
 
 Everything is the same as in the standard **date** command, except that:  
 
-1. The output stream is formatted in a different way  
-2. The name of the month is printed in all capital letters
-3. The time zone is dropped 
+1. The output stream is formatted in a different way; 
+2. The name of the month is printed in all capital letters;
+3. The time zone is dropped. 
 
 **Hint**: Implement **Date** as a **Bash** function, in its body execute the standard **date** command, and store the output in an array, something like:
 

@@ -1,6 +1,6 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **grep**, **awk** and **sed** 
 
-**Last update**: 20260518-2
+**Last update**: 20260611-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -145,7 +145,7 @@ By using string operators one can set the default value of a variable. Most freq
 
    In case a user has forgotten to provide the first argument, your function will terminate automatically with the error message: 
    ```bash
-   myFunction
+   $ myFunction
    bash: 1: first argument is missing
    ```
    If the message is not specified, the default message will be produced. For instance:
