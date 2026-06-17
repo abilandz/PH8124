@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20260611
+**Last update**: 20260617
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
@@ -38,7 +38,7 @@ For **ROOT**, the official documentation is used:
     * [Homework 4: Filtering and reformatting the file content programmatically](./Homeworks/Homework_4.md)
     * [Homework 5: Mastering the command substitution operator](./Homeworks/Homework_5.md)
     * [Homework 6: Playing with shell's strings and arrays](./Homeworks/Homework_6.md)
-    * [Homework 7: ](./Homeworks/Homework_7.md_TBI)
+    * [Homework 7: Coding adventures with grep, awk and sed](./Homeworks/Homework_7.md)
     * [Homework 8: ](./Homeworks/Homework_8.md_TBI)
     * [Homework 9: ](./Homeworks/Homework_9.md_TBI)
     * [Homework 10: ](./Homeworks/Homework_10.md_TBI)

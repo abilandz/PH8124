@@ -1,6 +1,6 @@
 # Coding adventures with grep, awk and sed
 
-**Last update:** 20260429-1
+**Last update:** 20260617-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -35,7 +35,7 @@ Px = 0.324 , Py = -1.133
 Px = 0.355 , Py = -2.134
 ```
 
-**Hint #1:**  For security reasons, within the same pipe chain ```... | ... | ...``` you cannot read and modify on-the-fly the very same file, but it is possible if you combine command chain operators (```&&``` and ```||```) and pipes in the same line. It's perfectly fine to introduce an intermediate temporary file. 
+**Hint #1:**  For security reasons, within the same pipe chain ```... | ... | ...``` you cannot read and modify on-the-fly the very same file, but it is possible if you combine command chain operators (```&&``` and ```||```) and pipes in the same line. It's perfectly fine to introduce an intermediate temporary file. Think whether it's better to keep lines containing specified pattern(s), or to filter out all lines that contain specified pattern(s). 
 
 **Challenge #2**: Define your own version of **ls** command named **Ls**, which takes as arguments one or more directories, and whose printout is:
 
