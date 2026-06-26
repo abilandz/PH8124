@@ -1,6 +1,6 @@
 # Lecture 6: String manipulation. Arrays. Pipes. **grep**, **awk** and **sed** 
 
-**Last update**: 20260611-1
+**Last update**: 20260626-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -1413,7 +1413,7 @@ p energy p
 
 ```bash
 # delete first occurence of "momentum" on each line:
-$ sed "s/momentum//g" example.log
+$ sed "s/momentum//" example.log
  energy
 energy  momentum
  energy momentum
