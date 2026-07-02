@@ -20,7 +20,7 @@
     * [Homework 5: Mastering the command substitution operator](./Homeworks/Homework_5.md)
     * [Homework 6: Playing with shell's strings and arrays](./Homeworks/Homework_6.md)
     * [Homework 7: Coding adventures with grep, awk and sed](./Homeworks/Homework_7.md)
-    * [Homework 8: ](./Homeworks/Homework_8.md_TBI)
+    * [Homework 8: Jobs and processes](./Homeworks/Homework_8.md)
     * [Homework 9: ](./Homeworks/Homework_9.md_TBI)
     * [Homework 10: ](./Homeworks/Homework_10.md_TBI)
 * [Final Project](./Final_Project/FinalProject.md_TBI)
