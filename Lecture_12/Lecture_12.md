@@ -2,28 +2,27 @@
 
 **Last update**: 20260408-2
 
-![](../Common_Figures/LinuxBashROOT_logos.png)
+![](../.gitbook/assets/LinuxBashROOT_logos.png)
 
 ### Disclaimer
-Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
+
+Here is a just a collection of code snippets which were used in the lecture — for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
 
 * Overview of all tutorials: [https://root.cern/manual/](https://root.cern/manual/)
-
 * Primer (for beginners): [https://root.cern/primer/](https://root.cern/primer/) (or [pdf](https://cernbox.cern.ch/index.php/s/bmbmbqUMA1keZCH) version)
-
 * Users Guide (last update 2018, not maintained anymore): [html](https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html) or [pdf](https://cernbox.cern.ch/index.php/s/N4k9AQ8LtCFWQIc) version
 
-
 ### Table of Contents
-1. [Superimposing different plots](#superimposing)
-2. [Playing with ROOT files](#root_files)
-3. [TFileMerger and 'hadd'](#tfilemerger)
-4. [TTree](#ttree)
 
+1. [Superimposing different plots](Lecture_12.md#superimposing)
+2. [Playing with ROOT files](Lecture_12.md#root_files)
+3. [TFileMerger and 'hadd'](Lecture_12.md#tfilemerger)
+4. [TTree](Lecture_12.md#ttree)
 
+### 1. Superimposing different plots <a href="#superimposing" id="superimposing"></a>
 
-### 1. Superimposing different plots <a name="superimposing"></a>
 Frequently, we want to show for instance two or more histograms (or graphs or functions) on the same canvas, superimposed on top of each other. The question then is which object will determine the common axes ranges. This problem is illustrated with the following code snippets:
+
 ```cpp
 {
  TH1F *hist1 = new TH1F("hist1","title 1",10,0.,10.);
@@ -37,22 +36,30 @@ Frequently, we want to show for instance two or more histograms (or graphs or fu
  hist2->Fill(22.22);
 }
 ```
+
 If we now add at then end:
+
 ```cpp
 hist1->Draw();
 hist2->Draw();
 ```
+
 only the histogram 'hist2' is shown on the canvas. If we change the order, i.e.:
+
 ```cpp
 hist2->Draw();
 hist1->Draw();
 ```
-only the histogram 'hist1' is shown. This indicates that the histogram we have drawn last by default overwrites what was drawn previously in the same default canvas. We can instead superimpose the current object on what is already plotted on the canvas, by passing argument ```"same"``` to member function ```Draw()```. For instance, if we use:
+
+only the histogram 'hist1' is shown. This indicates that the histogram we have drawn last by default overwrites what was drawn previously in the same default canvas. We can instead superimpose the current object on what is already plotted on the canvas, by passing argument `"same"` to member function `Draw()`. For instance, if we use:
+
 ```cpp
 hist2->Draw();
 hist1->Draw("same");
 ```
+
 then first histogram 'hist2' is plotted, and then 'hist1' is drawn on top of it. On the resulting superimposed figure, the axes ranges are being determined with the first object drawn in the canvas. Therefore, in order to prevent ordering problem, the convenient solution is always to have one dummy histogram with no content, just to set all common plotting information (e.g. axis ranges, axis titles, etc.). This strategy is illustrated with the following code:
+
 ```cpp
 {
  // Define the dummy histogram just to set all common plotting thingies:
@@ -82,26 +89,25 @@ then first histogram 'hist2' is plotted, and then 'hist1' is drawn on top of it.
 }
 ```
 
+### 2. Playing with ROOT files <a href="#root_files" id="root_files"></a>
 
+ROOT files are made in a very straightforward way by using class `TFile`:
 
-
-
-
-### 2. Playing with ROOT files <a name="root_files"></a>
-ROOT files are made in a very straightforward way by using class ```TFile```:
 ```cpp
 {
  TFile *file = new TFile("someFileName.root","NEW");
 }
 ```
-This simple one-line code snippet created a new physical file on the hard disk, in the current working directory (otherwise, in the first argument we need to specify absolute path), named ```someFileName.root```. If the file with that name already exists in the current working directory, that file will NOT be overwritten, because we have made a new file with the option 'NEW'. The meaning of 4 most important options in ```TFile``` constructor is summarized here: 
+
+This simple one-line code snippet created a new physical file on the hard disk, in the current working directory (otherwise, in the first argument we need to specify absolute path), named `someFileName.root`. If the file with that name already exists in the current working directory, that file will NOT be overwritten, because we have made a new file with the option 'NEW'. The meaning of 4 most important options in `TFile` constructor is summarized here:
 
 * **NEW** or **CREATE** : Create a new file and open it for writing, if the file already exists the file is not opened.
 * **RECREATE** : Create a new file, if the file already exists it will be overwritten.
 * **UPDATE** : Open an existing file for writing. If no file exists, it is created.
 * **READ** : Open an existing file for reading (default).
 
-But there is much more happening here behind the scene, when new ROOT file is being created. By design, ROOT has a global variable  ```gFile``` which is always initialized to the latest open file. This is illustrated in the following code snippet:
+But there is much more happening here behind the scene, when new ROOT file is being created. By design, ROOT has a global variable `gFile` which is always initialized to the latest open file. This is illustrated in the following code snippet:
+
 ```cpp
 {
  cout<<"0: "<<gFile<<endl;
@@ -116,7 +122,9 @@ But there is much more happening here behind the scene, when new ROOT file is be
  cout<<"3: "<<gFile<<endl;
 }
 ```
-That being said, in order to save for instance histogram in the ROOT file, by using histogram's member functions, we need to know to which ROOT file the global variable ```gFile``` is initialized. This is illustrated with the following code snippet:
+
+That being said, in order to save for instance histogram in the ROOT file, by using histogram's member functions, we need to know to which ROOT file the global variable `gFile` is initialized. This is illustrated with the following code snippet:
+
 ```cpp
 {
  TFile *file = new TFile("someFileName.root","RECREATE");
@@ -131,23 +139,29 @@ That being said, in order to save for instance histogram in the ROOT file, by us
  file->Close();
 }
 ```
-The same principle works with the other classes we want to save in the ROOT file (e.g. ```TF1```, ```TGraphErrors```, etc.). The object appears in the ROOT file under its name (the first argument you have used in the constructor when declaring that object). Objects with the same name in the ROOT file get different cycle number.
 
-Next, we discuss how to retrieve programmatically pointer to the object which was saved in the ROOT file, modify those objects, and then save them modified into another ROOT file. Let's assume that in the starting physical ROOT file named ```myFile.root``` (e.g. download it from: https://cernbox.cern.ch/index.php/s/Q6qVW5yVrIozAaa ) we have one TH1F object named 'hist' and TF1 object named 'fun'. First, we can inspect the file content with the following code snippet:
+The same principle works with the other classes we want to save in the ROOT file (e.g. `TF1`, `TGraphErrors`, etc.). The object appears in the ROOT file under its name (the first argument you have used in the constructor when declaring that object). Objects with the same name in the ROOT file get different cycle number.
+
+Next, we discuss how to retrieve programmatically pointer to the object which was saved in the ROOT file, modify those objects, and then save them modified into another ROOT file. Let's assume that in the starting physical ROOT file named `myFile.root` (e.g. download it from: https://cernbox.cern.ch/index.php/s/Q6qVW5yVrIozAaa ) we have one TH1F object named 'hist' and TF1 object named 'fun'. First, we can inspect the file content with the following code snippet:
+
 ```cpp
 {
  TFile *file = new TFile("myFile.root","READ");
  file->ls();
 }
 ```
+
 This produces the following example output:
+
 ```linux
 TFile**		myFile.root	
  TFile*		myFile.root	
   KEY: TH1F	hist;1	title
   KEY: TF1	fun;1	cos(x)
 ```
+
 We see clearly our two objects in this printout, let us now fetch their pointers programmatically, modify them, and saved modified in the new file, by using the following code snippet:
+
 ```cpp
 {
  TFile *file = new TFile("myFile.root","READ");
@@ -179,16 +193,14 @@ We see clearly our two objects in this printout, let us now fetch their pointers
 }
 ```
 
+### 3. TFileMerger and 'hadd' <a href="#tfilemerger" id="tfilemerger"></a>
 
-
-
-
-### 3. TFileMerger and 'hadd' <a name="tfilemerger"></a>
-When part of the data is analyzed with one process, and another part with another process, the output ROOT files have exactly the same internal structure (e.g. number of histograms), only the histogram content is different. In situations like this, and in order to achieve the total statistics in the analysis, one is interested in merging (i.e. summing up) all histogram together. This can be achieved very conveniently with the ```TFileMerger``` class, which will merge automatically the content of all mergeable objects within the ROOT files (typically histograms and profiles).
+When part of the data is analyzed with one process, and another part with another process, the output ROOT files have exactly the same internal structure (e.g. number of histograms), only the histogram content is different. In situations like this, and in order to achieve the total statistics in the analysis, one is interested in merging (i.e. summing up) all histogram together. This can be achieved very conveniently with the `TFileMerger` class, which will merge automatically the content of all mergeable objects within the ROOT files (typically histograms and profiles).
 
 As an important remark, we stress it out again that the ROOT files we want to merge must have exactly the same internal structure, otherwise weird things can happen, as ROOT cannot easily determine the internal structure of final merged file.
 
 If in two subdirectories of your current working directory, named 10 and 11 let's say, you have file named 'mergeMe.root'
+
 ```bash
 $ ls 10 11
 10:
@@ -197,7 +209,9 @@ mergeMe.root
 11:
 mergeMe.root
 ```
+
 we can merge them with the following code snippet:
+
 ```cpp
 {
  TFileMerger *fileMerger = new TFileMerger(); 
@@ -211,9 +225,11 @@ we can merge them with the following code snippet:
  fileMerger->Merge();
 }
 ```
-The new file 'merged.root' has full statistics, which was initially fragmented in the files '10/mergeMe.root' and '11/mergeMe.root' summed up. This simple example can be trivially generalized for any number of histograms per ROOT file, and for any number of ROOT files. 
+
+The new file 'merged.root' has full statistics, which was initially fragmented in the files '10/mergeMe.root' and '11/mergeMe.root' summed up. This simple example can be trivially generalized for any number of histograms per ROOT file, and for any number of ROOT files.
 
 Alternatively, it is possible to use ROOT executable **hadd** to merge ROOT files directly from the terminal. This is particularly handy if merging has to be done on the fly in some script. For the above example, the syntax is:
+
 ```bash
 $ hadd merged.root 10/mergeMe.root 11/mergeMe.root
 ```
@@ -226,17 +242,18 @@ $ hadd merged.root $(find $PWD -name mergeMe.root)
 
 For other supported options in **hadd**, see its documentation **hadd -h**.
 
+### 4. TTree <a href="#ttree" id="ttree"></a>
 
+ROOT uses a data container called `TTree`to store raw data efficiently. Typically in high-energy physics, raw data is filtered out and only the most important information is stored in `TTree` class, usually one `TTree` per event (where event can be for instance one proton-proton or one heavy-ion collision and Large Hadron Collider). Then, few `TTree`'s are being saved in one ROOT file. Therefore, the starting point of data analysis in high-energy physics amounts to opening ROOT files, and reading the data from `TTree` containers.
 
+Here we provide code snippets how the raw data in ASCII files can be directly imported in `TTree` container, and saved in ROOT files. To generate some stream of raw data in the file `someData.dat`, which consists of 1 million measurements of 4 quantities, we use the following construct:
 
-### 4. TTree <a name="ttree"></a>
-ROOT uses a data container called ```TTree```to store raw data efficiently. Typically in high-energy physics, raw data is filtered out and only the most important information is stored in ```TTree``` class, usually one ```TTree``` per event (where event can be for instance one proton-proton or one heavy-ion collision and Large Hadron Collider). Then, few ```TTree```'s are being saved in one ROOT file. Therefore, the starting point of data analysis in high-energy physics amounts to opening ROOT files, and reading the data from ```TTree``` containers.
-
-Here we provide code snippets how the raw data in ASCII files can be directly imported in ```TTree``` container, and saved in ROOT files. To generate some stream of raw data in the file ```someData.dat```, which consists of 1 million measurements of 4 quantities, we use the following construct:
 ```linux
 for i in {1..1000000}; do echo {1..4}.$RANDOM; done > someData.dat
 ```
-The content of the file ```someData.dat``` looks for instance as:
+
+The content of the file `someData.dat` looks for instance as:
+
 ```bash
 1.10247 2.11951 3.14323 4.23073
 1.28850 2.23902 3.31925 4.29658
@@ -250,7 +267,9 @@ The content of the file ```someData.dat``` looks for instance as:
 1.18069 2.10334 3.31529 4.7834
 1.19776 2.29649 3.25466 4.15146
 ```
-Let us assume that in this toy example the first three columns represent x, y, and z components of particle momenta, and the last column is particle energy. We can import that data in ```TTree``` and then save it in ROOT file named 'output.root' in the following way:
+
+Let us assume that in this toy example the first three columns represent x, y, and z components of particle momenta, and the last column is particle energy. We can import that data in `TTree` and then save it in ROOT file named 'output.root' in the following way:
+
 ```cpp
 #include "TFile.h"
 #include "TTree.h"
@@ -265,20 +284,26 @@ void importASCIIfileIntoTTree(const char *filename)
  file->Close();
 }
 ```
+
 Then, just execute that macro either in interpreted or in compiled mode, for instance with:
+
 ```linux
 root -b -q importASCIIfileIntoTTree.C\(\"someData.dat\"\)
 ```
+
 It is instructive to compare the sizes of initial ASCII file, and the resulting ROOT file:
+
 ```linux
 $ stat -c '%s' someData.dat 
 30643925
 $ stat -c '%s' output.root 
 12142219
 ```
+
 So almost factor 3 gain in size, even for such a simple example!
 
-Finally, we provide the code snippet how to read data from ```TTree``` stored in ROOT file:
+Finally, we provide the code snippet how to read data from `TTree` stored in ROOT file:
+
 ```cpp
 // Example macro to read TTree from the file, and then all particles from the current TTree
 
@@ -327,7 +352,9 @@ void readDataFromTTree(const char *filename)
 
 }
 ```
+
 Execute that code in the terminal with:
+
 ```bash
 $ root readDataFromTTree.C\(\"output.root\"\)
 ```

@@ -1,8 +1,8 @@
-# Homework #5: Mastering the command substitution operator
+# Homework 5: Mastering the command substitution operator
 
 **Last update:** 20260603-1
 
-![](../Common_Figures/LinuxBashROOT_logos.png)
+![](../.gitbook/assets/LinuxBashROOT_logos.png)
 
 The developer is testing the execution time of a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following general way:
 
@@ -19,7 +19,7 @@ The desired example printout is formatted as:
 Time duration is: 12345 seconds.
 ```
 
-**Challenge**: Develop the function **TimeDuration** which will accomplish the above goal. 
+**Challenge**: Develop the function **TimeDuration** which will accomplish the above goal.
 
 **Hint**: In the body of **TimeDuration** convert the two input time stamps into the new format known as 'Unix epoch'. 'Unix epoch' is the number of seconds that have elapsed since January 1, 1970, for instance:
 
@@ -32,7 +32,7 @@ $ echo $UnixEpochTime
 1656062271
 ```
 
-After that, simply use ```$(( ... ))``` to perform integer subtraction, and use **echo** to print the final result. 
+After that, simply use `$(( ... ))` to perform integer subtraction, and use **echo** to print the final result.
 
 **Remark**: Yes, the developer could have obtained directly the relevant time stamps in the 'Unix epoch' format with
 
