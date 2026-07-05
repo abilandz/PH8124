@@ -2,41 +2,41 @@
 
 **Last update**: 20260408-1
 
-![](../Common_Figures/LinuxBashROOT_logos.png)
+![](../.gitbook/assets/LinuxBashROOT_logos.png)
 
 ### Disclaimer
-Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
+
+Here is a just a collection of code snippets which were used in the lecture — for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
 
 * Overview of all tutorials: [https://root.cern/manual/](https://root.cern/manual/)
-
 * Primer (for beginners): [https://root.cern/primer/](https://root.cern/primer/) (or [pdf](https://cernbox.cern.ch/index.php/s/bmbmbqUMA1keZCH) version)
-
 * Users Guide (last update 2018, not maintained anymore): [html](https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html) or [pdf](https://cernbox.cern.ch/index.php/s/N4k9AQ8LtCFWQIc) version
 
-
 ### Table of Contents
-1. [Interpreted 'Hello World' example in ROOT](#hello_int)
-2. [Compiled 'Hello World' example in ROOT](#hello_comp)
-3. [TGraphErrors](#TGraphErrors)
-4. [TF1](#TF1)
-5. [TF2](#TF2)
-6. [TStopWatch](#TStopwatch)
-7. [TH1F](#TH1F)
-8. [TProfile](#TProfile)
-9. [Cosmetics](#Cosmetics)
 
+1. [Interpreted 'Hello World' example in ROOT](Lecture_11.md#hello_int)
+2. [Compiled 'Hello World' example in ROOT](Lecture_11.md#hello_comp)
+3. [TGraphErrors](Lecture_11.md#TGraphErrors)
+4. [TF1](Lecture_11.md#TF1)
+5. [TF2](Lecture_11.md#TF2)
+6. [TStopWatch](Lecture_11.md#TStopwatch)
+7. [TH1F](Lecture_11.md#TH1F)
+8. [TProfile](Lecture_11.md#TProfile)
+9. [Cosmetics](Lecture_11.md#Cosmetics)
 
+### 1. Interpreted 'Hello World' example in ROOT <a href="#hello_int" id="hello_int"></a>
 
+Save in the file `hello_interpreted.C` the following code snippet:
 
-### 1. Interpreted 'Hello World' example in ROOT <a name="hello_int"></a>
-Save in the file ```hello_interpreted.C``` the following code snippet:
 ```cpp
 {
  printf("Hello World!\n"); // C style
  cout<<"Hello World!"<<endl; // C++ style
 }
 ```
+
 Execute then the above code simply via:
+
 ```bash
 root hello_interpreted.C
 ```
@@ -59,11 +59,9 @@ Hello World!
 root [1]
 ```
 
+### 2. Compiled 'Hello World' example in ROOT <a href="#hello_int" id="hello_int"></a>
 
-
-
-### 2. Compiled 'Hello World' example in ROOT <a name="hello_int"></a>
-Save in the file ```hello_compiled.C``` the following code snippet:
+Save in the file `hello_compiled.C` the following code snippet:
 
 ```cpp
 #include "Riostream.h"
@@ -76,15 +74,20 @@ Int_t hello_compiled()
  return 0;
 }
 ```
+
 Compile by using **ACLiC** either in the following way
+
 ```bash
 root hello_compiled.C+
 ```
+
 or
+
 ```bash
 root hello_compiled.C++
 ```
-**ACliC** is an interface which ensures that a machine independent ```C++``` compiler is used. By default, the same compiler and the compiler options are used which were used to compile the **ROOT** executable. The difference between appending ```++``` or ```+``` when compiling is that in the former case all shared libraries are always rebuilt from scratch.
+
+**ACliC** is an interface which ensures that a machine independent `C++` compiler is used. By default, the same compiler and the compiler options are used which were used to compile the **ROOT** executable. The difference between appending `++` or `+` when compiling is that in the former case all shared libraries are always rebuilt from scratch.
 
 When running in the compiled mode, the output on the screen is slightly different:
 
@@ -108,10 +111,10 @@ root [1]
 
 In the next section with concrete code snippets we illustrate how some frequently used classes in **ROOT** can be used.
 
+### 3. TGraphErrors <a href="#tgrapherrors" id="tgrapherrors"></a>
 
+Imagine that you have ASCII file `someData.dat` with the following points:
 
-### 3. TGraphErrors <a name="TGraphErrors"></a>
-Imagine that you have ASCII file ```someData.dat``` with the following points:
 ```bash
 0.5    4.440    0.5    0.01
 1.5    3.123    0.5    0.02
@@ -120,16 +123,20 @@ Imagine that you have ASCII file ```someData.dat``` with the following points:
 4.5    2.561    0.5    0.04
 5.5    3.432    0.5    0.05
 ```
-The columns are interpreted by class ```TGraphErrors``` in the following way: _x_-value, _y_-value, error on _x_, error on _y_. The file can be processed and plotted automatically with the following code snippet:
+
+The columns are interpreted by class `TGraphErrors` in the following way: _x_-value, _y_-value, error on _x_, error on _y_. The file can be processed and plotted automatically with the following code snippet:
+
 ```cpp
 {
  TGraphErrors *ge = new TGraphErrors("someData.dat","%lg %lg %lg %lg"); 
  ge->Draw("ap"); 
 }
 ```
-If you use only two field specifiers in the constructor, ```%lg %lg```, then the first column is defaulted to _x_-values and the second one to _y_-values (by default, markers are points, and not best visible).
 
-If on the other hand we have the data points stored in arrays within the code, then we need to use another constructor for ```TGraphErrors```, which can handle arrays as arguments:
+If you use only two field specifiers in the constructor, `%lg %lg`, then the first column is defaulted to _x_-values and the second one to _y_-values (by default, markers are points, and not best visible).
+
+If on the other hand we have the data points stored in arrays within the code, then we need to use another constructor for `TGraphErrors`, which can handle arrays as arguments:
+
 ```cpp
 {
  Float_t x[6] = {0.5,1.5,2.5,3.5,4.5,5.5};
@@ -142,18 +149,19 @@ If on the other hand we have the data points stored in arrays within the code, t
 }
 ```
 
+### 4. TF1 <a href="#tf1" id="tf1"></a>
 
-
-
-### 4. TF1 <a name="TF1"></a>
 This is a **ROOT** class to define 1-dimensional function, which can be used for instance as a probability density function (p.d.f.) for sampling.
+
 ```cpp
 {
  TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
  f1->Draw();
 }
 ```
-Thing to remember is that ```x``` has to be used to denote variable. In the case you want to introduce parameters, the notation ```[ ] ``` must be used for them:
+
+Thing to remember is that `x` has to be used to denote variable. In the case you want to introduce parameters, the notation `[ ]` must be used for them:
+
 ```cpp
 {
  TF1 *f1 = new TF1("f1","[0]*exp(-x*x) + [1]",-2.,2.);
@@ -162,7 +170,9 @@ Thing to remember is that ```x``` has to be used to denote variable. In the case
  f1->Draw();
 }
 ```
-In order to use ```TF1``` object as a p.d.f., we can perform the sampling as follows (**ROOT** takes automatically care of normalization!). For instance, to sample 10 random numbers from ```TF1``` we can use:
+
+In order to use `TF1` object as a p.d.f., we can perform the sampling as follows (**ROOT** takes automatically care of normalization!). For instance, to sample 10 random numbers from `TF1` we can use:
+
 ```cpp
 {
  TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
@@ -172,7 +182,9 @@ In order to use ```TF1``` object as a p.d.f., we can perform the sampling as fol
  }
 }
 ```
+
 This produces the following random sequence:
+
 ```cpp
 1.97629
 -0.690266
@@ -185,7 +197,9 @@ This produces the following random sequence:
 0.0707625
 0.452367
 ```
+
 If we now re-execute the above code, we get exactly the same random sequence. We can make random sequence in general unique in time and space by inserting the following two lines of code at the beginning:
+
 ```cpp
 {
  // Ensure that random sequence is unique in time and space:
@@ -200,7 +214,9 @@ If we now re-execute the above code, we get exactly the same random sequence. We
  }
 }    
 ```
-When doing a large scale Monte Carlo simulations, performance clearly matters, and it is preferred to do simulations in compiled mode. The version of above code snippet which can be saved in the file ```f1_random_compiled.C``` and compiled is:
+
+When doing a large scale Monte Carlo simulations, performance clearly matters, and it is preferred to do simulations in compiled mode. The version of above code snippet which can be saved in the file `f1_random_compiled.C` and compiled is:
+
 ```cpp
 #include<Riostream.h>
 #include<TF1.h>
@@ -222,14 +238,17 @@ Int_t f1_random_compiled()
  return 0;
 }
 ```
+
 And you can compile and execute simply with:
+
 ```bash
 root f1_random_compiled.C++
 ```
 
-Let us now check the performance of interpreted vs. compiled mode.  
+Let us now check the performance of interpreted vs. compiled mode.
 
-The following interpreted code is saved in the file ```f1_random_interpreted.C```:
+The following interpreted code is saved in the file `f1_random_interpreted.C`:
+
 ```cpp
 {
  delete gRandom;
@@ -243,7 +262,8 @@ The following interpreted code is saved in the file ```f1_random_interpreted.C``
 }
 ```
 
-We time its execution with the **Bash** built-in command **time**:  
+We time its execution with the **Bash** built-in command **time**:
+
 ```bash
 time root -b -q f1_random_interpreted.C
 root [0] 
@@ -254,7 +274,7 @@ user    1m2.484s
 sys     0m0.438s
 ```
 
-The following analogous compiled version is saved in the file ```f1_random_compiled.C```:
+The following analogous compiled version is saved in the file `f1_random_compiled.C`:
 
 ```cpp
 #include<Riostream.h>
@@ -277,6 +297,7 @@ Int_t f1_random_compiled()
  return 0;
 }
 ```
+
 We now time its execution in the same way (in the timing also the overhead from compilation is accounted for!):
 
 ```bash
@@ -290,15 +311,14 @@ real    0m55.320s
 user    0m53.266s
 sys     0m1.906s
 ```
+
 In above examples, we have used 3 frequently used flags for **ROOT** with the following meaning:
 
 * -b : run **ROOT** in the batch mode
 * -q : exit **ROOT** upon execution
 
+### 5. TF2 <a href="#tf2" id="tf2"></a>
 
-
-
-### 5. TF2 <a name="TF2"></a>
 **ROOT** supports also multivariate functions and p.d.f.'s, we here discuss explicitly 2D case, and the rest can be achieved by analogy.
 
 ```cpp
@@ -322,11 +342,11 @@ In above examples, we have used 3 frequently used flags for **ROOT** with the fo
  }
 }
 ```
-The thing to note is that the two variables need to be declared first, and then their values are being randomly updated with the call to member function ```f2->GetRandom2(var1,var2);```. Everything else is analogous to the 1D case.
 
+The thing to note is that the two variables need to be declared first, and then their values are being randomly updated with the call to member function `f2->GetRandom2(var1,var2);`. Everything else is analogous to the 1D case.
 
+### 6. TStopWatch <a href="#tstopwatch" id="tstopwatch"></a>
 
-### 6. TStopWatch <a name="TStopWatch"></a>
 **ROOT** has its own class for timing, it is used in the following way:
 
 ```cpp
@@ -341,13 +361,12 @@ The thing to note is that the two variables need to be declared first, and then 
 }
 ```
 
+### 7. TH1F <a href="#th1f" id="th1f"></a>
 
-
-
-### 7. TH1F <a name="TH1F"></a>
-To illustrate histogramming in ROOT, we use 1 dimensional histogram class with the floating point precision, ```TH1F```.  Other supported classes are for instance ```TH1I``` (for integers), ```TH1D``` (for doubles), etc. Corresponding classes exist for 2D and 3D, e.g. ```TH2F``` and ```TH3F```. For even higher number of dimensions, there exists a class ```THnSparse```. 
+To illustrate histogramming in ROOT, we use 1 dimensional histogram class with the floating point precision, `TH1F`. Other supported classes are for instance `TH1I` (for integers), `TH1D` (for doubles), etc. Corresponding classes exist for 2D and 3D, e.g. `TH2F` and `TH3F`. For even higher number of dimensions, there exists a class `THnSparse`.
 
 Histogramming is illustrated in the following example:
+
 ```cpp
 {
  // Define some p.d.f. for sampling:
@@ -377,13 +396,12 @@ Histogramming is illustrated in the following example:
 }
 ```
 
+### 8. TProfile <a href="#tprofile" id="tprofile"></a>
 
-
-
-### 8. TProfile <a name="TProfile"></a>
-```TProfile``` class is a special histogram class, with double precision, which instead of plotting the entire distributions focuses only on average values. This class has a rather neat use cases when our observables of interest are all-event averages. 
+`TProfile` class is a special histogram class, with double precision, which instead of plotting the entire distributions focuses only on average values. This class has a rather neat use cases when our observables of interest are all-event averages.
 
 Its usage is illustrated in the following example:
+
 ```cpp
 {
  // Define some p.d.f. for sampling:
@@ -426,18 +444,17 @@ Its usage is illustrated in the following example:
 }
 ```
 
+### 9. Cosmetics <a href="#cosmetics" id="cosmetics"></a>
 
-
-
-### 9. Cosmetics <a name="Cosmetics"></a>
 To change the style, colour, size, etc. of lines, markers, etc. ROOT provides the following example attribute classes:
 
-* ```TAttLine```
-* ```TAttMarker```
-* ```TAttFill```
-* ```TColor```
+* `TAttLine`
+* `TAttMarker`
+* `TAttFill`
+* `TColor`
 
 For instance, in the previous example, you could have changed the histogram plotting appearance with:
+
 ```cpp
 {
  hist->SetLineColor(kRed); 
@@ -449,7 +466,8 @@ For instance, in the previous example, you could have changed the histogram plot
  hist->SetMarkerSize(1.4);
 } 
 ```
-The above functions can be called also for the classes ```TF1```, ```TGraphErrors```, etc. 
+
+The above functions can be called also for the classes `TF1`, `TGraphErrors`, etc.
 
 For instance, used in a concrete example:
 
@@ -502,10 +520,11 @@ For instance, used in a concrete example:
 
 Another direction where ROOT is very powerful is a wide support for drawing options, documented in the following example class:
 
-* ```TGraphPainter```
-* ```THistPainter```
+* `TGraphPainter`
+* `THistPainter`
 
 Its usage is illustrated in the following code snippet
+
 ```cpp
 {
  TH2D *hist = new TH2D("hist","title",100,-10.,10.,50,0,10.);

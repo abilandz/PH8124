@@ -1,38 +1,43 @@
-# Lecture 6: String manipulation. Arrays. Pipes. **grep**, **awk** and **sed** 
+# Lecture 6: String manipulation. Arrays. Pipes. grep, awk and sed
 
 **Last update**: 20260626-1
 
-![](../Common_Figures/LinuxBashROOT_logos.png)
+![](../.gitbook/assets/LinuxBashROOT_logos.png)
 
 ### Table of Contents
-1. [String manipulation](#string_manipulation)
-2. [Arrays: ```=( )```](#arrays)
-3. [Pipes: ```|```](#pipes)
-4. [Programmmatic text processing](#programmmatic_text_processing)
-	* [**grep**](#grep)
-	* [**awk**](#awk)
-	* [**sed**](#sed)
 
+1. [String manipulation](Lecture_6.md#string_manipulation)
+2. [Arrays: `=( )`](Lecture_6.md#arrays)
+3. [Pipes: `|`](Lecture_6.md#pipes)
+4. [Programmmatic text processing](Lecture_6.md#programmmatic_text_processing)
+   * [**grep**](Lecture_6.md#grep)
+   * [**awk**](Lecture_6.md#awk)
+   * [**sed**](Lecture_6.md#sed)
 
+### 1. String manipulation <a href="#string_manipulation" id="string_manipulation"></a>
 
-### 1. String manipulation <a name="string_manipulation"></a>
 **Bash** offers a lot of built-in functionalities to manipulate the content of variables programmatically. Since the content of an external file can be stored in a **Bash** variable, we can, to a certain extent, solely with built-in **Bash** features manipulate the content of external files as well. However, performance starts to matter typically for large files, when **Linux** core utilities **sed**, **awk** and/or **grep** are more suitable. For very large files, when performance becomes critical, one needs to use high-level programming languages like **Perl**.
 
-String operators in **Bash** can be used only in combination with curly-brace syntax ```${Var}```. String operators are used to manipulate the content of variables, typically in one of the following ways:     
+String operators in **Bash** can be used only in combination with curly-brace syntax `${Var}`. String operators are used to manipulate the content of variables, typically in one of the following ways:
 
-1. Remove, replace, or modify a portion of the variable's content that matches some patterns;   
-2. Ensure that the variable exists (i.e. that it is defined and has a non-zero value);   
-3. Set the default value for a variable.   
+1. Remove, replace, or modify a portion of the variable's content that matches some patterns;
+2. Ensure that the variable exists (i.e. that it is defined and has a non-zero value);
+3. Set the default value for a variable.
 
 The generic syntax for manipulating the content of the variable is:
+
 ```bash
 ${Var/OldPattern/NewPattern}
 ```
-or 
+
+or
+
 ```bash
 ${Var//OldPattern/NewPattern}
 ```
+
 The first version will replace only the first occurrence of the pattern _OldPattern_ with _NewPattern_ within the string which is stored in the variable _Var_, while the second version will replace all occurrences. This is illustrated with the following code snippet:
+
 ```bash
 $ Var=aaBBaa
 $ echo ${Var/aa/CCC}
@@ -40,17 +45,22 @@ CCCBBaa
 $ echo ${Var//aa/CCC}
 CCCBBCCC
 ```
+
 It is perfectly fine to re-define the variable on the spot with the new content:
+
 ```bash
 Var=${Var/aa/CCC}
 ```
+
 The new and old patterns do not have to be hardwired, instead, they can be specified via variables:
+
 ```bash
 Var=aaBBaa
 Old=aa
 New=CCC
 Var=${Var/$Old/$New}
 ```
+
 The curly-brace syntax interprets some characters in a special way. This is illustrated with the following examples.
 
 **Example 1:** How do you programmatically get the length of the string?
@@ -71,14 +81,16 @@ $ echo ${Var^^}
 ABCDEF 
 ```
 
-If in the above example only a single ```,``` or ```^``` is used, then only the first character is printed in lower or upper case, respectively.
+If in the above example only a single `,` or `^` is used, then only the first character is printed in lower or upper case, respectively.
 
 It is also possible with the curly-brace syntax to select substring from variable content, with the following generic syntax:
 
 ```bash
 ${Var:offset:length} 
 ```
+
 The above construct returns substring, starting at _offset_, and continuing up to _length_ characters. By convention, the first character in the content of variable _Var_ is at the offset 0. If _length_ is omitted, it goes all the way until the end of _Var_. If _offset_ is less than 0, then it counts from the end of _Var_. All this is illustrated with the following examples:
+
 ```bash
 $ Var=abcdefghij
 $ echo ${Var:0:4}
@@ -92,7 +104,8 @@ ij
 $ echo ${Var:(-3):2}
 hi
 ```
-We remark that in the expression ```${Var:offset:length}``` both _offset_ and _length_ are evaluated automatically in a mathematical context. Therefore, we can write directly code snippets like this
+
+We remark that in the expression `${Var:offset:length}` both _offset_ and _length_ are evaluated automatically in a mathematical context. Therefore, we can write directly code snippets like this
 
 ```bash
 $ Var=abcdefgh
@@ -102,65 +115,71 @@ $ echo ${Var:Start+1:Length-2}
 def
 ```
 
-instead of a lengthier version, where mathematical context is explicitly requested via ```$(( ... ))```:
+instead of a lengthier version, where mathematical context is explicitly requested via `$(( ... ))`:
 
 ```bash
 $ echo ${Var:$((Start+1)):$((Length-2))}
 def
 ```
 
-Finally, it is mandatory to embed negative offset within round braces ```( ... )``` in the above examples, since otherwise **Bash** interprets in this context ```-``` from negative integers after the colon ```:``` in a very special way &mdash; this is clarified next.
+Finally, it is mandatory to embed negative offset within round braces `( ... )` in the above examples, since otherwise **Bash** interprets in this context `-` from negative integers after the colon `:` in a very special way — this is clarified next.
 
-By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:  
+By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:
 
-1. ```${Var:-defaultValue}``` &mdash; if _Var_ exists and it is not null, return its current value. Otherwise, return the hardwired _defaultValue_. This is basically protection that the variable always has some content. For instance:
+1.  `${Var:-defaultValue}` — if _Var_ exists and it is not null, return its current value. Otherwise, return the hardwired _defaultValue_. This is basically protection that the variable always has some content. For instance:
 
-   ```bash
-   $ Var=44
-   $ echo ${Var:-100}
-   44
-   ```
-   However:
-   ```bash
-   $ unset Var
-   $ echo ${Var:-100}
-   100
-   ```
-   This syntax has a very important use case when a script or a function expects the user to supply an argument. Even if the user forgot to do it, we can nevertheless execute the code for some default and meaningful value of that argument. For instance:
-   
-   ```bash
-   Var=${1:-defaultValue}
-   ```
-   This literally means that _Var_ is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code could still execute by setting _Var_ to _defaultValue_. 
-   
-2. ```${Var:?someMessage}``` &mdash; if _Var_ exists and it is not null, return its current value. Otherwise, it prints on the _stderr_ stream the name of variable, _Var_, followed by hardwired text _someMessage_, and aborts the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
+    ```bash
+    $ Var=44
+    $ echo ${Var:-100}
+    44
+    ```
 
-   ```bash
-   function myFunction
-   {
-    local Var=${1:?first argument is missing}
-    ... some code ... 
-   } 
-   ```
+    However:
 
-   In case a user has forgotten to provide the first argument, your function will terminate automatically with the error message: 
-   ```bash
-   $ myFunction
-   bash: 1: first argument is missing
-   ```
-   If the message is not specified, the default message will be produced. For instance:
+    ```bash
+    $ unset Var
+    $ echo ${Var:-100}
+    100
+    ```
 
-   ```bash
-   unset someVariable 
-   Var=${someVariable:?}
-   ```
-   will produce the following default error message:
-   ```bash
-   bash: someVariable: parameter null or not set
-   ```
+    This syntax has a very important use case when a script or a function expects the user to supply an argument. Even if the user forgot to do it, we can nevertheless execute the code for some default and meaningful value of that argument. For instance:
 
+    ```bash
+    Var=${1:-defaultValue}
+    ```
 
-In both of these examples, we have used colon ```:``` within the curly braces, but this is optional. However, if we omit the colon ```:``` and use instead the syntax ```${Var-defaultValue}``` and ```${Var?someMessage}```, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns only the corner cases like this:
+    This literally means that _Var_ is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code could still execute by setting _Var_ to _defaultValue_.
+2.  `${Var:?someMessage}` — if _Var_ exists and it is not null, return its current value. Otherwise, it prints on the _stderr_ stream the name of variable, _Var_, followed by hardwired text _someMessage_, and aborts the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
+
+    ```bash
+    function myFunction
+    {
+     local Var=${1:?first argument is missing}
+     ... some code ... 
+    } 
+    ```
+
+    In case a user has forgotten to provide the first argument, your function will terminate automatically with the error message:
+
+    ```bash
+    $ myFunction
+    bash: 1: first argument is missing
+    ```
+
+    If the message is not specified, the default message will be produced. For instance:
+
+    ```bash
+    unset someVariable 
+    Var=${someVariable:?}
+    ```
+
+    will produce the following default error message:
+
+    ```bash
+    bash: someVariable: parameter null or not set
+    ```
+
+In both of these examples, we have used colon `:` within the curly braces, but this is optional. However, if we omit the colon `:` and use instead the syntax `${Var-defaultValue}` and `${Var?someMessage}`, the meaning is slightly different: the previous phrase 'exists and it is not null' translates now only into 'exists'. This difference concerns only the corner cases like this:
 
 ```bash
 $ Var= # Var exists but it is NULL
@@ -168,13 +187,14 @@ $ echo ${Var:-44}
 44
 $ echo ${Var-44} # prints nothing
 ```
-**Bash** can handle a few wildcard characters when replacing old patterns with new ones. The most important wildcards are:  
 
-1.  ```*``` : zero or more characters    
-2.  ```?``` : any single character     
-3.  ```[ ... ]``` : character sets and ranges
+**Bash** can handle a few wildcard characters when replacing old patterns with new ones. The most important wildcards are:
 
-These wildcards behave in the same way as when **Bash** performs filename expansion (or globbing). Their meaning is not to be confused with their meaning in Basic Regular Expressions (BRE) or Extended Regular Expressions (ERE) &mdash; as already mentioned in previous sections, ERE is supported in **Bash** only through operator ```=~``` within a new form of test construct ```[[ ... ]]```.  
+1. `*` : zero or more characters
+2. `?` : any single character
+3. `[ ... ]` : character sets and ranges
+
+These wildcards behave in the same way as when **Bash** performs filename expansion (or globbing). Their meaning is not to be confused with their meaning in Basic Regular Expressions (BRE) or Extended Regular Expressions (ERE) — as already mentioned in previous sections, ERE is supported in **Bash** only through operator `=~` within a new form of test construct `[[ ... ]]`.
 
 Their usage is best illustrated with a few concrete examples:
 
@@ -182,54 +202,68 @@ Their usage is best illustrated with a few concrete examples:
 Var=1234a5678
 echo ${Var/a*/TEST} # prints 1234TEST
 ```
-Here the pattern with the wildcard 'a*' matches any string starting with 'a' and followed by 0 or more other characters.
+
+Here the pattern with the wildcard 'a\*' matches any string starting with 'a' and followed by 0 or more other characters.
+
 ```bash
 Var=a1234a5678
 echo ${Var//a?/TEST} # prints TEST234TEST678
 ```
-The pattern with the wildcard 'a?' matches a string starting with the character 'a' and followed by exactly one other character (in the above example, it matched both 'a1' and 'a5', which were both replaced, due to ```//``` specification within curly braces, into a new pattern 'TEST').
+
+The pattern with the wildcard 'a?' matches a string starting with the character 'a' and followed by exactly one other character (in the above example, it matched both 'a1' and 'a5', which were both replaced, due to `//` specification within curly braces, into a new pattern 'TEST').
+
 ```bash
 Var=abcde12345
 echo ${Var//[b24]/TEST} # prints aTESTcde1TEST3TEST5
 ```
-The pattern '[b24]' matches any single character specified within ```[ ... ]``` (in the above example, 'b', '2' and '4' were all replaced with 'TEST').
+
+The pattern '\[b24]' matches any single character specified within `[ ... ]` (in the above example, 'b', '2' and '4' were all replaced with 'TEST').
+
 ```bash
 Var=abcde12345
 echo ${Var//[b-e]/TEST} # prints aTESTTESTTESTTEST12345
 ```
-The pattern '[b-e]' matches all single characters in the specified range within ```[ ... ]``` (in the above example, 'b', 'c', 'd' and 'e', i.e. all characters in the range 'b-e' were all replaced with the new pattern 'TEST').
+
+The pattern '\[b-e]' matches all single characters in the specified range within `[ ... ]` (in the above example, 'b', 'c', 'd' and 'e', i.e. all characters in the range 'b-e' were all replaced with the new pattern 'TEST').
 
 The real power of wildcards is manifested when they are combined:
+
 ```bash
 Var=a1b2c3d4e5
 echo ${Var//[b-d]?/TEST} # prints a1TESTTESTTESTe5
 ```
-The pattern '[b-d]?' matches all single characters in the specified range 'b-d' followed up by exactly one other character (in the above example, 'b2', 'c3' and 'd4' were all replaced with 'TEST').
+
+The pattern '\[b-d]?' matches all single characters in the specified range 'b-d' followed up by exactly one other character (in the above example, 'b2', 'c3' and 'd4' were all replaced with 'TEST').
+
 ```bash
 Var=acebfd11g
 echo ${Var^^[c-f]} # prints aCEbFD11g
 ```
-The pattern '^^[c-f]' will capitalize all single characters, but only in the specified range 'c-f', therefore only 'c', 'd', 'e' and 'f' in the above example get capitalized. 
 
- 
+The pattern '^^\[c-f]' will capitalize all single characters, but only in the specified range 'c-f', therefore only 'c', 'd', 'e' and 'f' in the above example get capitalized.
 
-### 2. Arrays: ```=( )``` <a name="arrays"></a>
+### 2. Arrays: `=( )` <a href="#arrays" id="arrays"></a>
 
-**Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways &mdash; the quickest one is to use the round brace syntax ```=( ... )```. This syntax is illustrated with the following code snippet:
+**Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways — the quickest one is to use the round brace syntax `=( ... )`. This syntax is illustrated with the following code snippet:
 
 ```bash
 SomeArray=( 5 a ccc 44 )
 ```
-One or more empty characters separate array elements. To obtain the content of a particular array element, we use the curly-brace notation ```${ArrayName[index]}``` again. For instance, for the above example, we have:
+
+One or more empty characters separate array elements. To obtain the content of a particular array element, we use the curly-brace notation `${ArrayName[index]}` again. For instance, for the above example, we have:
+
 ```bash
 echo ${SomeArray[0]} # prints 5
 echo ${SomeArray[2]} # prints ccc 
 ```
-To get programmatically all array entries, we can use ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax:
+
+To get programmatically all array entries, we can use `${ArrayName[*]}` or `${ArrayName[@]}` syntax:
+
 ```bash
 echo ${SomeArray[*]} # prints 5 a ccc 44
 ```
-The difference between ```${ArrayName[*]}``` or ```${ArrayName[@]}``` syntax matters only when used within double quotes, and the explanation is the same as for a difference between ```"$*"``` and ```"$@"``` when referring to the list of positional parameters (see Lecture #2). 
+
+The difference between `${ArrayName[*]}` or `${ArrayName[@]}` syntax matters only when used within double quotes, and the explanation is the same as for a difference between `"$*"` and `"$@"` when referring to the list of positional parameters (see Lecture #2).
 
 This means that we can very conveniently loop over all array entries with:
 
@@ -238,6 +272,7 @@ for Entry in ${SomeArray[*]}; do
  echo $Entry
 done
 ```
+
 The printout is:
 
 ```bash
@@ -247,20 +282,25 @@ ccc
 44
 ```
 
-The total number of elements in an array is given by the syntax ```${#ArrayName[*]}```:
+The total number of elements in an array is given by the syntax `${#ArrayName[*]}`:
 
 ```bash
 echo ${#SomeArray[*]} # prints 4
 ```
+
 We can set the value of a particular array element directly:
+
 ```bash
 SomeArray[2]=ddd
 ```
+
 Now if we print all elements, the initial 3rd element 'ccc' was replaced with the new value 'ddd', and we get:
+
 ```bash
 echo ${SomeArray[*]} # prints 5 a ddd 44
 ```
-An alternative syntax for setting array elements using ```+=``` operator is illustrated in this example:
+
+An alternative syntax for setting array elements using `+=` operator is illustrated in this example:
 
 ```bash
 $ arr=()
@@ -283,11 +323,14 @@ unset SomeArray[2]
 echo ${SomeArray[*]} # prints 5 a 44
 echo ${#SomeArray[*]} # prints 3, the array was resized
 ```
+
 On the other hand, unsetting the array element with:
+
 ```bash
 SomeArray[2]= # WRONG!!
 ```
-is wrong, since the total size of an array was not reset, i.e., this particular element is still counted as a part of an array, but it now has NULL content. 
+
+is wrong, since the total size of an array was not reset, i.e., this particular element is still counted as a part of an array, but it now has NULL content.
 
 The whole array can be reset either with
 
@@ -295,7 +338,7 @@ The whole array can be reset either with
 unset SomeArray
 ```
 
-or 
+or
 
 ```bash
 SomeArray=()
@@ -313,20 +356,22 @@ The array index also works backward. The last array element is:
 ```bash
 echo ${SomeArray[-1]}
 ```
+
 the penultimate array entry is:
+
 ```bash
 echo ${SomeArray[-2]}
 ```
+
 and so on. To append directly to the already existing array a new element, we can use programmatically the following code snippet:
+
 ```bash
 SomeArray[${#SomeArray[*]}]=SomeValue
 ```
 
-The above syntax works, because array indexing starts from 0 and ends with N-1, where N is the total number of array elements. Since ```${#SomeArray[*]}``` gives the total number of array elements N, the above syntax just appends the new N-th element.
+The above syntax works, because array indexing starts from 0 and ends with N-1, where N is the total number of array elements. Since `${#SomeArray[*]}` gives the total number of array elements N, the above syntax just appends the new N-th element.
 
-
-
-If an array element itself has an empty character, it will be correctly obtained in the loop only if ```${SomeArray[*]}``` is replaced with ```"${SomeArray[@]}"```, but such cases rarely occur in practice.  Nevertheless, mind the difference in notation and behaviour:
+If an array element itself has an empty character, it will be correctly obtained in the loop only if `${SomeArray[*]}` is replaced with `"${SomeArray[@]}"`, but such cases rarely occur in practice. Nevertheless, mind the difference in notation and behaviour:
 
 ```bash
 # define array elements, some of which contain empty characters:
@@ -352,9 +397,7 @@ c d
 e
 ```
 
-
-
-Quite frequently, we need to prepend or append the same string to all array elements. This can be achieved  elegantly with the following syntax:
+Quite frequently, we need to prepend or append the same string to all array elements. This can be achieved elegantly with the following syntax:
 
 ```bash
 SomeArray=( ${SomeArray[*]/#/SomePattern} ) # prepend
@@ -367,7 +410,7 @@ SomeArray=( ${SomeArray[*]/%/SomePattern} ) # append
 Files=( file_0 file_1 file_2 )
 ```
 
-How to append to all file names the same file extension '.dat'? How to prepend the same string 'some_' to all file names?
+How to append to all file names the same file extension '.dat'? How to prepend the same string 'some\_' to all file names?
 
 The solution to the first question is:
 
@@ -375,7 +418,7 @@ The solution to the first question is:
 Files=( ${Files[*]/%/.dat} )
 ```
 
-In the above code snippet, we have first appended (by specifying ```%```) the same extension '.dat' to all array elements and immediately redefined the array to the new content. The array elements are now:
+In the above code snippet, we have first appended (by specifying `%`) the same extension '.dat' to all array elements and immediately redefined the array to the new content. The array elements are now:
 
 ```bash
 $ echo ${Files[*]}
@@ -383,28 +426,31 @@ file_0.dat file_1.dat file_2.dat
 ```
 
 The solution to the second question is:
+
 ```bash
 Files=( ${Files[*]/#/some_} )
 ```
-In the above code snippet, we have first prepended (by specifying ```#```) to all array elements the same string 'some_' , and we have then redefined the array to the new content, so the array elements are now:
+
+In the above code snippet, we have first prepended (by specifying `#`) to all array elements the same string 'some\_' , and we have then redefined the array to the new content, so the array elements are now:
 
 ```bash
 $ echo ${Files[*]}
 some_file_0.dat some_file_1.dat some_file_2.dat some_file_3.dat
 ```
 
-The power and flexibility of arrays come from the fact that at array declaration within ```( ... )```, a lot of other **Bash** functionalities are supported, for instance, the command substitution operator ```$( ... )``` and brace expansion ```{ ... }```. That, in particular, means that we can effortlessly store the entire output of a command into an array and then do some manipulation element-by-element. 
+The power and flexibility of arrays come from the fact that at array declaration within `( ... )`, a lot of other **Bash** functionalities are supported, for instance, the command substitution operator `$( ... )` and brace expansion `{ ... }`. That, in particular, means that we can effortlessly store the entire output of a command into an array and then do some manipulation element-by-element.
 
-**Example 2:** Count the number of words in an external file using arrays. 
+**Example 2:** Count the number of words in an external file using arrays.
 
 The solution is straightforward and elegant:
+
 ```bash
 FileContent=$(< SomeFile)
 SomeArray=( ${FileContent} )
 echo "Number of words: ${#SomeArray[*]}"
 ```
 
-In the first line, we have stored the content of an external file ```SomeFile``` into variable **FileContent**, and then just defined the array elements by obtaining its content. The empty characters which separate the words in the file, now separate the array elements in the definition. 
+In the first line, we have stored the content of an external file `SomeFile` into variable **FileContent**, and then just defined the array elements by obtaining its content. The empty characters which separate the words in the file, now separate the array elements in the definition.
 
 At the expense of becoming a bit cryptic, the above solution can be condensed even further:
 
@@ -416,6 +462,7 @@ echo "Number of words: ${#SomeArray[*]}"
 **Example 3:** How to merge entries of two arrays into one array without using loops?
 
 The solution is:
+
 ```bash
 Array_1=( 1 2 3 )
 Array_2=( a b c d )
@@ -429,14 +476,16 @@ echo ${NewArray[*]} # prints 1 2 3 a b c d
 SomeArray=( file_{0..3}.{pdf,eps} )
 echo ${SomeArray[*]}
 ```
+
 The printout is:
+
 ```bash
 file_0.pdf file_0.eps file_1.pdf file_1.eps file_2.pdf file_2.eps file_3.pdf file_3.eps
 ```
 
 **Example 5:** How to initialize all entries of an array with the same value?
 
-Here we can use the shell builtin command **declare** with flag **-a** (for "array", not for "all" in this context!), to set desired attribute to variable: 
+Here we can use the shell builtin command **declare** with flag **-a** (for "array", not for "all" in this context!), to set desired attribute to variable:
 
 ```bash
 $ declare -a arr[{0..4}]=someValue
@@ -464,10 +513,12 @@ Current time: 16:24:25
 **Example 7:** How can we directly catch the user's input into an array?
 
 We have already seen that by using **read** command we can catch the user's input, but if we want to store the input in a few different variables, that quickly becomes inconvenient. And quite frequently, we cannot foresee the length of the user's input. For instance, how to handle the user's reply to the question: "Which countries have you visited ?" That can be solved elegantly with arrays:
+
 ```bash
 read -p "Which countries have you visited? " -a Countries
 ```
-By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be split according to the empty character (i.e. the default input field separator) into words, and then each word is stored as a separate element in an array (in the above example, that array is named 'Countries'). 
+
+By using the flag **-a** for command **read**, we have indicated that whatever user types, it will be split according to the empty character (i.e. the default input field separator) into words, and then each word is stored as a separate element in an array (in the above example, that array is named 'Countries').
 
 We can then immediately write for instance:
 
@@ -476,9 +527,10 @@ echo "Number of countries is: ${#Countries[*]}"
 echo "The first country is: ${Countries[0]}"
 echo "The last country is: ${Countries[-1]}"
 ```
+
 But what if the user visited New Zealand or Northern Ireland? Since these two countries have empty characters in their names, the code above clearly cannot correctly handle these cases. In general, the problems of this type are solved by temporarily changing the default input field separator. The default input field separator is stored in the environment variable **IFS**, and many **Linux** commands rely on its content. We can proceed in the following schematic way:
 
-``` bash
+```bash
 DefaultIFS="$IFS" # save default setting
 IFS=somethingNew
 ... some code with new IFS ...
@@ -491,7 +543,7 @@ Since this is the frequently encountered case in practice, when a specific varia
 SomeVariable=someValue SomeCommand
 ```
 
-Remember that there is no semicolon ```;``` between variable definition and command execution; this way, the new definition of variable **SomeVariable** is visible only during the execution of **SomeCommand**. As soon as command terminates, **SomeVariable** gets automatically reset to its default value (if any).
+Remember that there is no semicolon `;` between variable definition and command execution; this way, the new definition of variable **SomeVariable** is visible only during the execution of **SomeCommand**. As soon as command terminates, **SomeVariable** gets automatically reset to its default value (if any).
 
 The final solution for our example is therefore:
 
@@ -499,7 +551,7 @@ The final solution for our example is therefore:
 IFS=',' read -p "List (comma separated) countries you have visited: " -a Countries
 ```
 
-This way, the input field separator will be comma ```,``` but only during the execution of **read**.
+This way, the input field separator will be comma `,` but only during the execution of **read**.
 
 Now if a user replies 'New Zealand,Northern Ireland' we have that:
 
@@ -515,18 +567,22 @@ As the final remark on arrays, we indicate that multidimensional (associative) a
 ```bash
 declare -A SomeArray
 ```
+
 After such declaration, **Bash** understands how to cope with the following syntax:
+
 ```bash
 SomeArray[1,2,3]=a
 SomeArray[2,3,1]=bb
 ```
+
 To reference the content of elements in multidimensional arrays, we use:
+
 ```bash
 echo ${SomeArray[1,2,3]} # prints a 
 echo ${SomeArray[2,3,1]} # prints bb
 ```
 
-The indices do not have to be hardwired &mdash; the index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer. 
+The indices do not have to be hardwired — the index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer.
 
 **Example 8:** How to initialize all entries of an associative array with the same value?
 
@@ -550,41 +606,39 @@ $ declare -p ARR
 declare -A ARR=([e]="X" [d]="X" [c]="X" [b]="X" [a]="X" )
 ```
 
+### 3. Pipes: `|` <a href="#pipes" id="pipes"></a>
 
+We have already seen that commands can take their input directly from the user or from files. But in general, one command can take directly the output of another command as its input. This mechanism is called a _pipe_ and is a very generic concept in **Linux**.
 
-
-
-### 3. Pipes: ```|``` <a name="pipes"></a>
-We have already seen that commands can take their input directly from the user or from files. But in general, one command can take directly the output of another command as its input. This mechanism is called a _pipe_ and is a very generic concept in **Linux**. 
-
-To use the output of one command as the input to another, we use operator ```|``` ('pipe'), schematically as:
+To use the output of one command as the input to another, we use operator `|` ('pipe'), schematically as:
 
 ```bash
 firstCommand | secondCommand
 ```
-It is possible to chain with the pipe operator ```|``` multiple commands:
+
+It is possible to chain with the pipe operator `|` multiple commands:
 
 ```bash
 firstCommand | secondCommand | thirdCommand | ...
 ```
 
-In the above example, the successful output, i.e., the _stdout_ stream of ```firstCommand``` has become the input, i.e., the _stdin_, to ```secondCommand```. That command now processes that input, and produces its own output, which is then becoming the input to ```thirdCommand```, and so on.
+In the above example, the successful output, i.e., the _stdout_ stream of `firstCommand` has become the input, i.e., the _stdin_, to `secondCommand`. That command now processes that input, and produces its own output, which is then becoming the input to `thirdCommand`, and so on.
 
-We remark that each command in the pipe can be implemented in a different programming language. This way, the pipe mechanism enables modularity in project design across different programming languages, in a manner analogous to how modularity is achieved by implementing separate functions within a given language. 
+We remark that each command in the pipe can be implemented in a different programming language. This way, the pipe mechanism enables modularity in project design across different programming languages, in a manner analogous to how modularity is achieved by implementing separate functions within a given language.
 
-It is possible to redirect simultaneously both _stdout_ and _stderr_ stream of one command into _stdin_ of another, with the slightly modified pipe operator ```|&```, schematically:
+It is possible to redirect simultaneously both _stdout_ and _stderr_ stream of one command into _stdin_ of another, with the slightly modified pipe operator `|&`, schematically:
 
 ```bash
 firstCommand |& secondCommand
 ```
 
-In the above example, both the successful output stream and the error message of the first command are simultaneously redirected as an input to the second command. 
+In the above example, both the successful output stream and the error message of the first command are simultaneously redirected as an input to the second command.
 
-Using pipe ```|``` eliminates the need to make temporary files to redirect and store the output of one command and then supply that temporary file as an input to another command.  The data flow among all commands chained with ```|``` in the pipeline is automated without any restriction on the size. 
+Using pipe `|` eliminates the need to make temporary files to redirect and store the output of one command and then supply that temporary file as an input to another command. The data flow among all commands chained with `|` in the pipeline is automated without any restriction on the size.
 
-We now provide a few frequently use cases  of pipes. We have already seen that **Bash** supports directly only integer arithmetic within the mathematical environment ```(( ... ))``` (the support for floating point arithmetics was introduced starting with version 5.3 in 2025, but only using **fltexpr** loadable builtin). The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator'). 
+We now provide a few frequently use cases of pipes. We have already seen that **Bash** supports directly only integer arithmetic within the mathematical environment `(( ... ))` (the support for floating point arithmetics was introduced starting with version 5.3 in 2025, but only using **fltexpr** loadable builtin). The floating-point arithmetic in **Bash** can be done by piping the desired expression into the external **Linux** program called **bc** ('basic calculator').
 
-**Example 1:** How would you divide 10/7 at the precision of 30 significant digits? 
+**Example 1:** How would you divide 10/7 at the precision of 30 significant digits?
 
 The solution is given by the following:
 
@@ -592,11 +646,13 @@ The solution is given by the following:
 $ echo "scale=30; 10/7" | bc
 1.428571428571428571428571428571
 ```
+
 The internal keyword **scale** sets the precision in **bc** program. Instead of using **bc** interactively and providing via keyboard _stdin_ for its execution, we have just piped the _stdout_ of **echo** as an input to **bc**.
 
 For more sophisticated use cases, for instance when using special mathematical functions, etc., use **bc -l**. The flag '-l' (ell) additionally loads in the memory the heavy mathematical libraries, which are otherwise not needed for simple calculations. If the precision is not specified with keyword **scale**, it is defaulted to 1 when only **bc** is executed, and to 20 when **bc -l** is executed.
 
 The math library of **bc** defines the following example functions:
+
 ```bash
 s(x) : The sine of x, x is in radians.
 c(x) : The cosine of x, x is in radians.
@@ -606,27 +662,31 @@ e(x) : The exponential function of raising e to the value x.
 j(n,x) : The bessel function of integer order n of x.
 ```
 
-**Example 2:** How would you calculate ```e^2``` to the precision of 20 significant digits? 
+**Example 2:** How would you calculate `e^2` to the precision of 20 significant digits?
 
 ```bash
 $ echo "e(2)" | bc -l
 7.38905609893065022723
 ```
 
-Another typical use case of the pipe operator ```|``` is in combination with the **tee** command. Quite frequently, when a specific command is executing, we would like to see its output on the screen, but also simultaneously redirected to some file, so that at any time later, we can carefully inspect the whole command output by reading through the content of that file.    
+Another typical use case of the pipe operator `|` is in combination with the **tee** command. Quite frequently, when a specific command is executing, we would like to see its output on the screen, but also simultaneously redirected to some file, so that at any time later, we can carefully inspect the whole command output by reading through the content of that file.
 
 This can be achieved with the **tee** command schematically as:
+
 ```bash
 someCommand | tee someFile.log  
 ```
+
 For instance, the code snippet:
 
 ```bash
 date | tee date.log
 ```
-will print the current time on the screen, but it will also simultaneously dump it in the file named ```date.log``` (check its content with **cat date.log**). In the very same spirit, it is possible to keep the full execution log of any script, function, code block ```{ ... }```, loops, etc.
 
-The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to files. By default, **tee** overwrites the content of a file &mdash; if we want instead to append to the already existing non-empty file, the following version can be used:
+will print the current time on the screen, but it will also simultaneously dump it in the file named `date.log` (check its content with **cat date.log**). In the very same spirit, it is possible to keep the full execution log of any script, function, code block `{ ... }`, loops, etc.
+
+The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to files. By default, **tee** overwrites the content of a file — if we want instead to append to the already existing non-empty file, the following version can be used:
+
 ```bash
 someCommand | tee -a someFile.log 
 ```
@@ -641,16 +701,15 @@ $ echo ${PIPESTATUS[*]}
 0 0 0 # exit status of the last command ('echo', 'bc' and 'more') in the pipe above 
 ```
 
-In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully; therefore, the array **PIPESTATUS** holds three zeros. When only the single command has been executed, that is a trivial pipeline, and the **PIPESTATUS** array has only one entry, the very same information that is stored in the special **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute the command, even the trivial ones like **echo**.  
+In the above example, we want to determine the result to 5000 significant digits, and then inspect through it screen-by-screen with the **more** command. All three commands in the pipeline, **echo**, **bc** and **more**, executed successfully; therefore, the array **PIPESTATUS** holds three zeros. When only the single command has been executed, that is a trivial pipeline, and the **PIPESTATUS** array has only one entry, the very same information that is stored in the special **$?** variable. The thing to remember is that **PIPESTATUS** gets updated each time we execute the command, even the trivial ones like **echo**.
 
 The power of pipes is best illustrated in combination with the three powerful commands **sed**, **awk**, and **grep**, the three widely used **Linux** utilities for text parsing and manipulation, which we cover in the next section.
 
+### 4. Programmmatic text processing <a href="#programmmatic_text_processing" id="programmmatic_text_processing"></a>
 
-
-### 4. Programmmatic text processing <a name="programmmatic_text_processing"></a>
 A text must frequently be parsed through, inspected, or updated after the search for some patterns has been performed. In general, we want to be able to modify programmatically some text for one reason or another. The text in this context can stand for any textual stream coming out of command upon execution or any text saved in a physical file. Clearly, there are cases in which it is impractical or even unfeasible to make all such changes in some graphics-based editors. In this section, we cover how the text can be manipulated programmatically with the three core **Linux** commands: **grep**, **awk** and **sed**. Combining functionalities of all three of them gives a lot of power when it comes to programmatic text manipulation, and typically covers all cases of practical interest. The usage of these three commands is best learned from concrete examples.
 
-#### **grep** <a name="grep"></a>
+#### **grep** <a href="#grep" id="grep"></a>
 
 The command **grep** ('Globally search a Regular Expression and Print') filters out from the command output or the physical file the lines containing a certain pattern. Typically, this command is used as follows:
 
@@ -666,9 +725,9 @@ Another frequent use case is:
 SomeCommand | grep SomePattern(s)
 ```
 
-The above syntax will select on-the-fly from the output stream of a command only the lines which conform to the specified patterns, and will print them on the screen. 
+The above syntax will select on-the-fly from the output stream of a command only the lines which conform to the specified patterns, and will print them on the screen.
 
-**Example 1:** Copy and paste in the file ```grepExample.txt``` the following lines:
+**Example 1:** Copy and paste in the file `grepExample.txt` the following lines:
 
 ```
 TEST Test test 11test test22
@@ -706,11 +765,11 @@ grep -n "test" grepExample.txt
 
 The result is:
 
-````
+```
 1:TEST Test test 11test test22
 2:test TEST Test 11test test22
 4:test TEST Test 11test test
-````
+```
 
 We can easily inverse the pattern search when we need to print all lines in a file that do not contain the pattern 'test' by using the flag '-v':
 
@@ -743,7 +802,7 @@ TeST2 TEST2 TEsT2 TEST2 tEST2
 
 Since each line has at least one case-insensitive variant of the specified pattern 'test', the whole file is printed in this example.
 
-Very frequently, we need to filter out all lines in the file that contain the specified pattern only at the very beginning of the line. This is achieved by using the special character ```^``` (caret):
+Very frequently, we need to filter out all lines in the file that contain the specified pattern only at the very beginning of the line. This is achieved by using the special character `^` (caret):
 
 ```bash
 grep "^test" grepExample.txt
@@ -756,7 +815,7 @@ test TEST Test 11test test22
 test TEST Test 11test test
 ```
 
-The special character ```^``` is an anchor for the beginning of a line, and many other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use ```$``` :
+The special character `^` is an anchor for the beginning of a line, and many other commands interpret this character in the same fashion. Opposite to it, if we need to print all lines in the file which contain the specified pattern only at the end of the line, we need to use `$` :
 
 ```bash
 grep "t22$" grepExample.txt
@@ -769,9 +828,9 @@ TEST Test test 11test test22
 test TEST Test 11test test22
 ```
 
-In this particular context, the special character ```$``` is an anchor for the end of a line.
+In this particular context, the special character `$` is an anchor for the end of a line.
 
-We can perform the pattern search with **grep** even more differentially. If we need to filter out all lines in the file that contain at least one word _beginning_ with the specified pattern, we need to use ```\<```. For instance,  we can proceed in the following way:
+We can perform the pattern search with **grep** even more differentially. If we need to filter out all lines in the file that contain at least one word _beginning_ with the specified pattern, we need to use `\<`. For instance, we can proceed in the following way:
 
 ```bash
 grep "\<TeST" grepExample.txt
@@ -826,13 +885,13 @@ test
 Test
 ```
 
-It is also possible to combine patterns with the special character ```\|```:
+It is also possible to combine patterns with the special character `\|`:
 
 ```bash
 grep "11test\|test22" grepExample.txt
 ```
 
-This prints all lines containing either the pattern '11test' or 'test22' (basically, in **grep** ```\|``` acts as a logical OR operation):
+This prints all lines containing either the pattern '11test' or 'test22' (basically, in **grep** `\|` acts as a logical OR operation):
 
 ```
 TEST Test test 11test test22
@@ -842,9 +901,9 @@ test TEST Test 11test test
 
 We cannot directly use **grep** to obtain the logical AND operation in the pattern search, but this limitation can be circumvented with the usage of pipe:
 
- ```bash
+```bash
 grep "11test" grepExample.txt | grep "test22"
- ```
+```
 
 This will print all lines that contain both specified patterns "11test" and "test22":
 
@@ -853,7 +912,7 @@ TEST Test test 11test test22
 test TEST Test 11test test22
 ```
 
-In this example, the first **grep** in the pipeline acted on a physical file, while the second **grep** got its input from the output stream of the first **grep**. Whether the input to **grep** comes from the physical file, or via pipe ```|``` from the _stdout_ or _stderr_ stream of some other command, its usage is entirely equivalent. 
+In this example, the first **grep** in the pipeline acted on a physical file, while the second **grep** got its input from the output stream of the first **grep**. Whether the input to **grep** comes from the physical file, or via pipe `|` from the _stdout_ or _stderr_ stream of some other command, its usage is entirely equivalent.
 
 For instance, you can check if the variable contains some pattern schematically with:
 
@@ -882,11 +941,14 @@ be0.dat    be5.dat  ce0.dat  ce2.log  ce5.dat  ce7.log  grepExample.txt
 be1.dat    be6.dat  ce0.log  ce3.dat  ce5.log  ce8.dat  test.sh
 be2.dat    be7.dat  ce1.dat  ce3.log  ce6.dat  ce8.log  test.sh~
 ```
+
 The solution is:
+
 ```bash
 ls | grep "^ce" | grep ".dat$"
 ```
-The **ls** command will print the list of all files in the current directory, and pipe that list to **grep** for further filtering. Then **grep** filters out the lines in the output of **ls** which begin (the anchor ```^```) with the pattern 'ce'. That result is then filtered further by chaining another pipe. In the 2nd **grep** we used the anchor ```$``` since we are interested in the ending '.dat'. The final output is:
+
+The **ls** command will print the list of all files in the current directory, and pipe that list to **grep** for further filtering. Then **grep** filters out the lines in the output of **ls** which begin (the anchor `^`) with the pattern 'ce'. That result is then filtered further by chaining another pipe. In the 2nd **grep** we used the anchor `$` since we are interested in the ending '.dat'. The final output is:
 
 ```bash
 ce0.dat
@@ -901,28 +963,28 @@ ce8.dat
 ce9.dat
 ```
 
-Next, we mention the flag '-r', which will force **grep** to search for specified patterns recursively in all files of specified directories, their subdirectories, etc. Generic syntax is: 
+Next, we mention the flag '-r', which will force **grep** to search for specified patterns recursively in all files of specified directories, their subdirectories, etc. Generic syntax is:
 
 ```bash
 grep -r somePattern dir1 dir2 ...
 ```
 
-If directories are not specified, the top-level search directory is defaulted to the current working directory, and then the search is performed in all files in all its subdirectories. 
+If directories are not specified, the top-level search directory is defaulted to the current working directory, and then the search is performed in all files in all its subdirectories.
 
-**Example 3:** Print all lines in all files in this lecture's documentation containing the word "Bash". 
+**Example 3:** Print all lines in all files in this lecture's documentation containing the word "Bash".
 
-```bash
+````bash
 $ grep -r "Bash" ~/Lectures/PH8124
 /home/abilandz/Lectures/PH8124/Homeworks/Homework_1.md:# Using **Bash** aliases as your simplest commands
 /home/abilandz/Lectures/PH8124/Homeworks/Homework_1.md:**Challenge #1**: Develop a **Bash** script named ```timeZones.sh``` which is used as
 /home/abilandz/Lectures/PH8124/Homeworks/Homework_2.md:# Using external executable as Linux/Bash command
 
 ... many more lines ...
-```
+````
 
 Finally, we clarify how to use **grep** to extract lines holding patterns which have the same syntax as **grep** options.
 
-**Example 4:** Filter out lines holding the pattern '-v' from the following file 'example_4.txt':
+**Example 4:** Filter out lines holding the pattern '-v' from the following file 'example\_4.txt':
 
 ```bash
 a b c
@@ -937,7 +999,7 @@ Naively, one proceeds as follows:
 $ grep -v example_4.txt
 ```
 
-and nothing happens &mdash; **grep** is hanging, because it interpreted '-v' as an option, not the search pattern. After that, it mistakenly interpreted the file name 'example_4.txt' as a search pattern. Finally, there are no further arguments on the command line, **grep** doesn't see the file it needs to search through, and is therefore expecting command input to be provided interactively from _stdin_ (i.e. from keyboard). To circumvent this general problem, a double dash ```--``` is used in most commands, not only in **grep**, to signify the end of command options, after which only arguments are accepted. Therefore, the correct solution is:
+and nothing happens — **grep** is hanging, because it interpreted '-v' as an option, not the search pattern. After that, it mistakenly interpreted the file name 'example\_4.txt' as a search pattern. Finally, there are no further arguments on the command line, **grep** doesn't see the file it needs to search through, and is therefore expecting command input to be provided interactively from _stdin_ (i.e. from keyboard). To circumvent this general problem, a double dash `--` is used in most commands, not only in **grep**, to signify the end of command options, after which only arguments are accepted. Therefore, the correct solution is:
 
 ```bash
 $ grep -- -v example_4.txt
@@ -945,14 +1007,11 @@ $ grep -- -v example_4.txt
 1 2 -v 3
 ```
 
-After ```--``` in the command input above, '-v' is no longer an internally supported option in **grep**; instead it becomes an ordinary argument, which in this context is interpreted by **grep** as a literal search pattern '-v' for the file specified via the next argument.
+After `--` in the command input above, '-v' is no longer an internally supported option in **grep**; instead it becomes an ordinary argument, which in this context is interpreted by **grep** as a literal search pattern '-v' for the file specified via the next argument.
 
 We close this section by indicating that **grep** by default supports _"Basic Regular Expressions (BRE)"_, its variants **grep -E** or **egrep** support _"Extended Regular Expressions (ERE)"_, and **grep -P** supports _"Perl-Compatible Regular Expressions (PCRE)"_.
 
-
-
-
-#### **awk** <a name="awk"></a>
+#### **awk** <a href="#awk" id="awk"></a>
 
 Now we move to **awk** (named after the initials of its authors: Aho, Weinberg and Kernighan), which is not only a core Linux utility but a full-fledged programming language, designed for text processing. One can easily teach the whole semester only about **awk**, here we will cover only its most important functionalities which are not available as built-in **Bash** functionalities. The frequently heard comment about **awk** is that its syntax and usage are awkward. Nevertheless, in many cases of practical interest, **awk** provides the best, simplest and most elegant solution.
 
@@ -972,19 +1031,19 @@ or equivalently a one-liner:
 awk someOptions(s) ' PATTERN_1 { ACTION_1 } PATTERN_2 { ACTION_2 } ... ' someFile(s)
 ```
 
-Each line of input is matched against each ```PATTERN```, and whenever the pattern is matched, the corresponding ```ACTION``` is executed for that line. 
+Each line of input is matched against each `PATTERN`, and whenever the pattern is matched, the corresponding `ACTION` is executed for that line.
 
 A few remarks on the general **awk** syntax above:
 
-* ```someOptions(s)``` &mdash; these are the options which **awk** supports internally and which can be used to modify its default behavior, in an analogous way as for other Linux commands (check the **awk**'s manual pages for further details);
-* `'...'` &mdash; when **awk** programme is specified directly in the terminal (and not written and read from a file as an **awk** script), it has to be embedded within the strong quotes ```'...'```, so that during parsing of the command input shell does not attempt to interpret it itself (shell quoting rules are discussed in detail in the next lecture);
-* ```PATTERN``` &mdash; can be a numerical expression, a string relation, or a regular expression. In the latter case, ```PATTERN``` must be enclosed with slashes, i.e. **awk** will interpret ```/ab*/``` as a pattern corresponding to the regular expression ```ab*```, where ```*``` acquires a metacharacter meaning, i.e. it's not a literal ```*``` character. We remark that unlike **grep**, **awk** by default supports _"Extended Regular Expressions (ERE)"_. On the other hand, if ```PATTERN``` is specified for instance as ```length > 0```, **awk** will interpret it as a numerical expression, in which **awk** is checking if the length of the line is bigger than 0 (```length``` is an internal variable in **awk**, calculated automatically for each line of input). If ```PATTERN``` is not specified, all lines of input are trivially matched;
-* ```ACTION``` &mdash; written in an internal language whose syntax is similar to the **C** programming language. If the corresponding ```PATTERN``` is matched for a line of input, this ```ACTION``` will be executed for that line. If ```ACTION``` is not specified, it defaults to printing the whole line that matched the corresponding ```PATTERN```;
-* ```someFiles()``` &mdash; one or more files which **awk** will parse line-by-line automatically. During parsing, each line of a file becomes a line of input to **awk**, on which ```PATTERN { ACTION }``` sequences are tested and executed.  
+* `someOptions(s)` — these are the options which **awk** supports internally and which can be used to modify its default behavior, in an analogous way as for other Linux commands (check the **awk**'s manual pages for further details);
+* `'...'` — when **awk** programme is specified directly in the terminal (and not written and read from a file as an **awk** script), it has to be embedded within the strong quotes `'...'`, so that during parsing of the command input shell does not attempt to interpret it itself (shell quoting rules are discussed in detail in the next lecture);
+* `PATTERN` — can be a numerical expression, a string relation, or a regular expression. In the latter case, `PATTERN` must be enclosed with slashes, i.e. **awk** will interpret `/ab*/` as a pattern corresponding to the regular expression `ab*`, where `*` acquires a metacharacter meaning, i.e. it's not a literal `*` character. We remark that unlike **grep**, **awk** by default supports _"Extended Regular Expressions (ERE)"_. On the other hand, if `PATTERN` is specified for instance as `length > 0`, **awk** will interpret it as a numerical expression, in which **awk** is checking if the length of the line is bigger than 0 (`length` is an internal variable in **awk**, calculated automatically for each line of input). If `PATTERN` is not specified, all lines of input are trivially matched;
+* `ACTION` — written in an internal language whose syntax is similar to the **C** programming language. If the corresponding `PATTERN` is matched for a line of input, this `ACTION` will be executed for that line. If `ACTION` is not specified, it defaults to printing the whole line that matched the corresponding `PATTERN`;
+* `someFiles()` — one or more files which **awk** will parse line-by-line automatically. During parsing, each line of a file becomes a line of input to **awk**, on which `PATTERN { ACTION }` sequences are tested and executed.
 
-The above general syntax is demonstrated on the example file ```test.txt``` with the following content:
+The above general syntax is demonstrated on the example file `test.txt` with the following content:
 
-```bash  
+```bash
 abc
 abcefgh 9876 
 12345
@@ -998,17 +1057,17 @@ abc
 12345
 ```
 
-The ```PATTERN``` is a numerical expression ```length < 6```, and the ```ACTION``` is ```{ print }```, i.e. all lines whose length is less than 6 characters are printed (since the default action is to print the matched line, in this simple example ```{ print }``` could be dropped).
+The `PATTERN` is a numerical expression `length < 6`, and the `ACTION` is `{ print }`, i.e. all lines whose length is less than 6 characters are printed (since the default action is to print the matched line, in this simple example `{ print }` could be dropped).
 
-To print the length of all lines that contain the pattern ```abc```, we use the syntax ```/.../``` for patterns that need to be interpreted as regular expressions:
+To print the length of all lines that contain the pattern `abc`, we use the syntax `/.../` for patterns that need to be interpreted as regular expressions:
 
-```bash 
+```bash
 $ awk '/abc/ { print length }' test.txt
 3
 13
 ```
 
-We can apply both ```PATTERN``` and ```ACTION``` sequences from above:
+We can apply both `PATTERN` and `ACTION` sequences from above:
 
 ```bash
 $ awk 'length < 6 { print } /abc/ { print length }' test.txt
@@ -1018,7 +1077,7 @@ abc
 12345
 ```
 
-Patterns can be grouped for the same action with the standard syntax for logical AND and OR operations using ```&&``` and ```||``` operators:
+Patterns can be grouped for the same action with the standard syntax for logical AND and OR operations using `&&` and `||` operators:
 
 ```bash
 $ awk 'length < 6 && /abc/ { print }' test.txt 
@@ -1048,12 +1107,14 @@ Wed Jun  3 15:36:12 CEST 2020
 $ date | awk '{print $4}'
 15:36:12
 ```
-In the 2nd command input above, by using **awk**, we have isolated directly only the 4th field in the output of **date**. In a similar fashion: 
+
+In the 2nd command input above, by using **awk**, we have isolated directly only the 4th field in the output of **date**. In a similar fashion:
 
 ```bash
 $ date | awk '{print $6}'
 2020
 ```
+
 prints only the year, because the 6th field in the output of **date** is reserved for a year.
 
 We can select multiple fields and immediately on-the-fly do some additional editing:
@@ -1063,7 +1124,7 @@ $ date | awk '{print $4, "some text", $6}'
 15:36:12 some text 2020
 ```
 
-In the same way **awk** operates on the file content. It is very convenient, for instance, to use **awk** to extract only the values from the specified column(s) in a file. For example, if the content of the file ```someFile.dat``` is:
+In the same way **awk** operates on the file content. It is very convenient, for instance, to use **awk** to extract only the values from the specified column(s) in a file. For example, if the content of the file `someFile.dat` is:
 
 ```bash
 a 1
@@ -1105,6 +1166,7 @@ Wed Jun  3 15:36:12 CEST 2020
 $ date | awk '{print NF}'
 6
 ```
+
 Since the output stream of **date** has 6 entries separated by the empty character, we got 6 as the total number of fields.
 
 The entry from the last field can be achieved directly by obtaining the content of **NF** variable:
@@ -1113,39 +1175,46 @@ The entry from the last field can be achieved directly by obtaining the content 
 $ date | awk '{print $NF}'
 2020
 ```
+
 Similarly, the entry from the penultimate field can be obtained directly with:
+
 ```bash
 $ date | awk '{print $(NF-1)}'
 CEST
 ```
-and so on. 
 
-But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of the **date** command only the seconds, and not the full timestamp '15:36:12' by specifying the 4th field? To achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator variable **FS** to some non-default value,  we use schematically the following syntax:
+and so on.
+
+But what if we want to parse the command output or the file content even more differentially? For instance, what if we want to extract programmatically from the output of the **date** command only the seconds, and not the full timestamp '15:36:12' by specifying the 4th field? To achieve that, we need to change the field separator in **awk** to some non-default value. This is achieved by manipulating the **awk** built-in variable **FS**. To set the field separator variable **FS** to some non-default value, we use schematically the following syntax:
 
 ```bash
 awk 'BEGIN {FS="some-new-single-character-field-separator"} ... '
 ```
-The key word 'BEGIN' next to the code snippet enclosed in ```{ ... }``` ensures that that particular code snippet is executed only once, at the very beginning (analogously, there exists a key word 'END' in **awk** with the opposite meaning, i.e., that code snippet is executed only once at the very end). 
 
-For instance, if we want to use colon ```:``` as a field separator in **awk**, we must start with the following:
+The key word 'BEGIN' next to the code snippet enclosed in `{ ... }` ensures that that particular code snippet is executed only once, at the very beginning (analogously, there exists a key word 'END' in **awk** with the opposite meaning, i.e., that code snippet is executed only once at the very end).
+
+For instance, if we want to use colon `:` as a field separator in **awk**, we must start with the following:
 
 ```bash
 awk 'BEGIN {FS=":"} ... '
 ```
+
 Therefore, to extract only the seconds from the output of the **date** command, we can use the following code snippet:
+
 ```bash
 $ date
 Wed Jun  3 16:18:44 CEST 2020
 $ date | awk '{print $4}' | awk 'BEGIN {FS=":"}{print $3}'
 44
 ```
-What happened above is literally the following:  
 
-1. the command **date** produced the output stream ```Wed Jun  3 16:18:44 CEST 2020```    
-2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was ```16:18:44```  
-3. this intermediate output stream ```16:18:44``` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator ```:``` . With respect to ```:``` as a field separator in the stream ```16:18:44```, the 3rd field is seconds, which yields as the final output ```44```   
+What happened above is literally the following:
 
-As a rule of thumb, field separators in **awk** shall always be single characters &mdash; composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, **nawk**, etc.).  
+1. the command **date** produced the output stream `Wed Jun 3 16:18:44 CEST 2020`
+2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was `16:18:44`
+3. this intermediate output stream `16:18:44` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator `:` . With respect to `:` as a field separator in the stream `16:18:44`, the 3rd field is seconds, which yields as the final output `44`
+
+As a rule of thumb, field separators in **awk** shall always be single characters — composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, **nawk**, etc.).
 
 Very conveniently, with **awk** we can also calculate directly the length of the field, for instance:
 
@@ -1155,15 +1224,18 @@ echo "a:12454:b34d" | awk 'BEGIN {FS=":"}{print length($2)}' # prints 5
 echo "a:12345:b34d" | awk 'BEGIN {FS=":"}{print length($3)}' # prints 4
 ```
 
-On the other hand, multiple single characters can be treated as field separators simultaneously &mdash; they just all need to be embedded within ```[ ... ]```. For instance, we can treat during the same **awk** execution all three characters colon ```:```, semi-colon ```;``` and comma ```,``` as equivalent field separators in the following code snippet:
+On the other hand, multiple single characters can be treated as field separators simultaneously — they just all need to be embedded within `[ ... ]`. For instance, we can treat during the same **awk** execution all three characters colon `:`, semi-colon `;` and comma `,` as equivalent field separators in the following code snippet:
 
 ```bash
 echo "1,22;abc:44:1000;123" | awk 'BEGIN {FS="[:;,]"} {print $4}' 
 ```
+
 The output is
+
 ```bash
 44
 ```
+
 As a side remark: If you find it very difficult to use **awk** to extract content from the specific fields, there is also a much simpler, but also much less powerful, command **cut**. For instance:
 
 ```bash
@@ -1173,7 +1245,7 @@ CC
 
 In the above snippet, we have defined the field delimiter with the flag '-d' to be the empty character " " (by default, the field delimiter in **cut** command is TAB), and with the flag '-f' we have specified that we want the content of the 3rd field, which is 'CC' in the example above.
 
-The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax using the option ```-v``` some internal **awk** variables with the content of **Bash** variables before we can use them during **awk** execution, which in practice can be a bit, well, awkward... 
+The main limitation of **awk**, when used within **Bash** scripts, is that it cannot directly process the values from the **Bash** variables. We need to initialize first with additional syntax using the option `-v` some internal **awk** variables with the content of **Bash** variables before we can use them during **awk** execution, which in practice can be a bit, well, awkward...
 
 ```bash
 $ Var=44
@@ -1185,12 +1257,9 @@ $ awk -v x=$Var 'BEGIN {print x}'
 
 This particular limitation is not present in the command **sed**, which we cover next.
 
+#### **sed** <a href="#sed" id="sed"></a>
 
-
-
-#### **sed** <a name="sed"></a>
-
-Finally, there is **sed** ('Stream Editor'), a non-interactive text file editor. It parses the command output or file content line-by-line, and performs specified operations on them. Typically, **sed** covers the following use cases:   
+Finally, there is **sed** ('Stream Editor'), a non-interactive text file editor. It parses the command output or file content line-by-line, and performs specified operations on them. Typically, **sed** covers the following use cases:
 
 1. printing selected lines from a file;
 2. inserting new lines in a file;
@@ -1238,7 +1307,7 @@ stat test.sh | sed -n 2,5p
 
 will print lines 2, 3, 4 and 5, and so on.
 
-**Example 2:** How to insert a new 2nd line of text in the already existing file ```sedTest.dat```, which has the following content:
+**Example 2:** How to insert a new 2nd line of text in the already existing file `sedTest.dat`, which has the following content:
 
 ```
 line 1
@@ -1246,11 +1315,15 @@ line 2
 line 3
 line 4
 ```
+
 In general, to insert a new line with **sed**, we need to use the specifier 'i'. The solution is:
+
 ```bash
 sed "2i Some text" sedTest.dat
 ```
-This will insert in the second line (the meaning of '2i' specifier) of the file ```sedTest.dat``` the new text 'Some text'. The original file has not been modified, only the **sed** output stream. The **sed** output stream on the screen is:
+
+This will insert in the second line (the meaning of '2i' specifier) of the file `sedTest.dat` the new text 'Some text'. The original file has not been modified, only the **sed** output stream. The **sed** output stream on the screen is:
+
 ```bash
 line 1
 Some text
@@ -1258,7 +1331,8 @@ line 2
 line 3
 line 4
 ```
-We remark that a number of empty characters between the specifier 'i' and the following text is irrelevant &mdash; the very same results as above are achieved, for instance, with:
+
+We remark that a number of empty characters between the specifier 'i' and the following text is irrelevant — the very same results as above are achieved, for instance, with:
 
 ```bash
 sed "2iSome text" sedTest.dat
@@ -1268,21 +1342,22 @@ sed "2   i    Some text" sedTest.dat
 
 In case we want to start a new text with a literal empty character, we have to escape it:
 
-````bash
+```bash
 $ sed "2i\ Some text" sedTest.dat
 line 1
  Some text
 line 2
 line 3
 line 4
-````
+```
 
-The above modified output stream can be redirected to a new file with ```1> someFile```, but we can also modify in-place the original file. To achieve this, we need to use the flag ```-i``` ('in-place edit') for **sed** :
+The above modified output stream can be redirected to a new file with `1> someFile`, but we can also modify in-place the original file. To achieve this, we need to use the flag `-i` ('in-place edit') for **sed** :
 
 ```bash
 sed -i "2i Some text" sedTest.dat
 ```
-This will insert in the 2nd line of the file ```sedTest.dat``` the new text 'Some text' and the original file is modified, without backup. Remember in this context the different meanings of 'i':   
+
+This will insert in the 2nd line of the file `sedTest.dat` the new text 'Some text' and the original file is modified, without backup. Remember in this context the different meanings of 'i':
 
 * '-i' used as a flag instructs **sed** that we want to modify the original file in-place;
 * 'ni' used as an argument indicates that we want to insert something on the nth line.
@@ -1292,7 +1367,8 @@ Clearly, modifying the original file in place can be dangerous, because once it'
 ```bash
 sed -i.backup "2i Some text" sedTest.dat
 ```
-This will insert in the second line of the file ```sedTest.dat``` the new text 'Some text'. The original file is modified, but now also the backup of the original file was created automatically, and is saved in a new file named ```sedTest.dat.backup```. 
+
+This will insert in the second line of the file `sedTest.dat` the new text 'Some text'. The original file is modified, but now also the backup of the original file was created automatically, and is saved in a new file named `sedTest.dat.backup`.
 
 Analogously, we can insert a new line on-the-fly in the output stream of some command:
 
@@ -1316,18 +1392,21 @@ Change: 2020-05-14 13:13:46.970442600 +0200
 
 Using this functionality, we can easily personalize the printout of any command.
 
-**Example 3a:** How to delete the 4th line from the above file ```sedTest.dat```?
+**Example 3a:** How to delete the 4th line from the above file `sedTest.dat`?
 
-We need to use the specifier 'd' ('delete') in **sed**, to delete lines in the file's or in the command's output stream. For instance, if we want to delete the 4th line, we can use the following syntax: 
+We need to use the specifier 'd' ('delete') in **sed**, to delete lines in the file's or in the command's output stream. For instance, if we want to delete the 4th line, we can use the following syntax:
 
 ```bash
 sed "4d" sedTest.dat
 ```
-This will delete the 4th line ('4d' specifier) in the file ```sedTest.dat```. We can also specify the line ranges for deletion, for instance:
+
+This will delete the 4th line ('4d' specifier) in the file `sedTest.dat`. We can also specify the line ranges for deletion, for instance:
+
 ```bash
 sed "2,4d" sedTest.dat
 ```
-This will delete the 2nd, 3rd and 4th lines in the file ```sedTest.dat```. The previous comments about in-place modification and how to make a backup of the original file apply also in this context.
+
+This will delete the 2nd, 3rd and 4th lines in the file `sedTest.dat`. The previous comments about in-place modification and how to make a backup of the original file apply also in this context.
 
 **Example 3b:** How to delete the lines holding only specific text pattern?
 
@@ -1369,11 +1448,14 @@ have been deleted.
 ```bash
 sed "s/firstPattern/secondPattern/" someFile
 ```
-This will substitute (the 's' specifier) in each line of file ```someFile``` only the first occurrence of ```firstPattern``` with ```secondPattern```. On the other hand, if we want to replace all occurrences, we need to use the following, slightly modified syntax: 
+
+This will substitute (the 's' specifier) in each line of file `someFile` only the first occurrence of `firstPattern` with `secondPattern`. On the other hand, if we want to replace all occurrences, we need to use the following, slightly modified syntax:
+
 ```bash
 sed "s/firstPattern/secondPattern/g" someFile
 ```
-Note the additional specifier 'g' (for 'global') at the end of an expression. For instance, if we consider the file ```example.log``` with the following content:
+
+Note the additional specifier 'g' (for 'global') at the end of an expression. For instance, if we consider the file `example.log` with the following content:
 
 ```bash
 momentum energy
@@ -1409,7 +1491,7 @@ energy p p
 p energy p
 ```
 
-**Example 5:** Finally, and continuing with the previous example, we illustrate how to delete a string within a line of input &mdash; one simply specifies as a second pattern in substitution a zero-length string:
+**Example 5:** Finally, and continuing with the previous example, we illustrate how to delete a string within a line of input — one simply specifies as a second pattern in substitution a zero-length string:
 
 ```bash
 # delete first occurence of "momentum" on each line:
@@ -1432,6 +1514,7 @@ Before=OldPatern
 After=NewPatern
 sed "s/${Before}/${After}/" someFile
 ```
+
 This gives a lot of flexibility because old and new patterns can be supplied via arguments to scripts or functions, etc. In the same spirit, we can use **sed** to modify on-the-fly the output stream of any command:
 
 ```bash
@@ -1440,6 +1523,7 @@ Wed Jun  3 21:08:49 CEST 2020
 $ date | sed "s/Wed/Wednesday/"
 Wednesday Jun  3 21:08:49 CEST 2020
 ```
+
 As a concluding remark about **sed**, we note that multiple commands can be specified and executed in one go using the option '-e' and separating them with ';' as an end of command input separator. For instance:
 
 ```bash
