@@ -2,7 +2,7 @@
 
 **Last update:** 20260429-6
 
-![](../Common_Figures/LinuxBashROOT_logos.png)
+![](<../.gitbook/assets/LinuxBashROOT_logos (1).png>)
 
 **Challenge #1**: Develop a **Bash** script named `timeZones.sh` which is used as
 
@@ -32,7 +32,7 @@ This prints the current time in Tokyo, and switches back immediately to your def
 Var=value command # definition 'Var=value' is available only in 'command' during its execution
 ```
 
-In this case, the command **date** has an internal variable called `TZ` , which can be set temporarily like in this example &mdash; see the _man pages_ of **date** for further details.
+In this case, the command **date** has an internal variable called `TZ` , which can be set temporarily like in this example — see the _man pages_ of **date** for further details.
 
 The following will not work:
 
@@ -56,7 +56,7 @@ export TZ=Asia/Tokyo; date # variable 'TZ' is exported, i.e. set to be global;
                            # and in the environment of any new process started from it 
 ```
 
-Based on the above example, we see the advantage of a special `Var=value command` syntax &mdash; values of environment variables can be changed for the execution of the command, and those changes are not propagated in the current working environment when that command terminates.
+Based on the above example, we see the advantage of a special `Var=value command` syntax — values of environment variables can be changed for the execution of the command, and those changes are not propagated in the current working environment when that command terminates.
 
 The supported time zones are typically sorted out in the directory `/usr/share/zoneinfo/`, just inspect its content with the **ls** command, and figure out the analogous syntax for the time zone you need!
 
