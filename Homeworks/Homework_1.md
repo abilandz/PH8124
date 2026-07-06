@@ -1,8 +1,8 @@
 # Homework 1: Using shell aliases as your simplest commands
 
-**Last update:** 20260429-3
+**Last update:** 20260429-4
 
-![](<../.gitbook/assets/LinuxBashROOT_logos (1).png>)
+![](<../Common_Figures/LinuxBashROOT_logos (1).png>)
 
 **Challenge #1**: Develop a **Bash** script named `timeZones.sh` which is used as
 
