@@ -574,13 +574,13 @@ When compared to the script implementation, there are few differences:
     ```bash
     # define some shell function:
     $ fun(){ echo abc; } 
-
+    
     # make that function global:
     $ export -f fun
-
+    
     # start a new shell instance in its own process:
     $ bash
-
+    
     # call that function in a new process:
     $ fun
     abc
