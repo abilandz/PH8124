@@ -1,4 +1,6 @@
-**Last update**: 20260702
+**Last update**: 20260707
+
+**IMPORTANT: As of 20260707, this webpage is not any longer actively maintained, due to conflicts with recent changes in GitBook &mdash; use instead GitHub Pages version of the webpage at this link:** https://abilandz.github.io/PH8124/ 
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
@@ -13,5 +15,4 @@ For **ROOT**, the official documentation is used:
 * Primer (for beginners): [https://root.cern/primer/](https://root.cern/primer/) (or [pdf](https://cernbox.cern.ch/index.php/s/bmbmbqUMA1keZCH) version)
 
 * Users Guide (last update 2018, not maintained anymore): [html](https://root.cern.ch/root/htmldoc/guides/users-guide/ROOTUsersGuide.html) or [pdf](https://cernbox.cern.ch/index.php/s/N4k9AQ8LtCFWQIc) version 
-
 
