@@ -6,7 +6,7 @@
 
 ### Disclaimer
 
-Here is a just a collection of code snippets which were used in the lecture — for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
+Here is a just a collection of code snippets which were used in the lecture &mdash; for the full description of the functionalities of **ROOT** classes in question, consult the official documentation:
 
 * Overview of all tutorials: [https://root.cern/manual/](https://root.cern/manual/)
 * Primer (for beginners): [https://root.cern/primer/](https://root.cern/primer/) (or [pdf](https://cernbox.cern.ch/index.php/s/bmbmbqUMA1keZCH) version)

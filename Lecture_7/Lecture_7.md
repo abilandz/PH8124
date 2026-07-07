@@ -138,7 +138,7 @@ $ echo '100 > 10'
 
 Single quotes may not occur between single quotes, even when preceded by a backslash.
 
-As the last remark, strong quotes appear in a rarely used context, which is outlined here just for completeness's sake. Some characters cannot be represented with literal syntax — instead, we need to use _backslash-escaped characters_ for them. The best examples are new line and tab space, which are represented with `\n` and `\t`, respectively. However, neither **Bash** nor a lot of **Linux** commands by default interpret such backslash-escaped characters. For instance:
+As the last remark, strong quotes appear in a rarely used context, which is outlined here just for completeness's sake. Some characters cannot be represented with literal syntax &mdash; instead, we need to use _backslash-escaped characters_ for them. The best examples are new line and tab space, which are represented with `\n` and `\t`, respectively. However, neither **Bash** nor a lot of **Linux** commands by default interpret such backslash-escaped characters. For instance:
 
 ```bash
 echo "Hi\nthere"
@@ -326,7 +326,7 @@ In the **Linux** world, an executable stored on a disk is called a _program_. Lo
 
 Jobs launched from the shell can be divided into two important groups: _foreground_ and _background_ jobs. Foreground jobs are jobs that have control over the terminal, i.e. while they are running nothing else can be done in the current terminal session by the user. The control over the terminal is regained only when the foreground job has finished its execution. Background jobs are jobs that do not have control over the terminal during their execution. They are typically started on multicore machines, when the parallelization of jobs makes perfect sense and reduces the overall execution time a lot. While jobs launched from the current terminal session are running in the background, in that terminal session we have full control over the terminal and can do additionally whatever we want.
 
-By default, any job that starts from the terminal is executed in the foreground. If we want to submit a job execution to the background, we need to end the command line input with the special character `&`. For testing purposes, in this section, we use the dummy command **sleep**, which runs a perfectly valid process even though it does nothing besides blocking the execution of subsequent commands for the specified time interval. Whatever is demonstrated in this section for the **sleep** command applies also to any other command — we use the **sleep** command merely because of its simplicity. In addition, the word command is used in this section in a broader sense, and it also encapsulates functions, scripts, code blocks, etc.
+By default, any job that starts from the terminal is executed in the foreground. If we want to submit a job execution to the background, we need to end the command line input with the special character `&`. For testing purposes, in this section, we use the dummy command **sleep**, which runs a perfectly valid process even though it does nothing besides blocking the execution of subsequent commands for the specified time interval. Whatever is demonstrated in this section for the **sleep** command applies also to any other command &mdash; we use the **sleep** command merely because of its simplicity. In addition, the word command is used in this section in a broader sense, and it also encapsulates functions, scripts, code blocks, etc.
 
 To illustrate the difference between foreground and background job execution, we first execute a job in the foreground:
 
@@ -409,7 +409,7 @@ we now see that both commands are running in parallel in the background (remembe
 
 In the above output, the symbol `+` next to the job number indicates the most recent job sent to the background in the current terminal, while the symbol `-` indicates the one before the most recent job sent to the background. Only these two jobs get the special treatment and notation in the output of the **jobs** command.
 
-We now demonstrate how the running job or process can be terminated programmatically. To terminate the particular job, we need to use the **Bash** built-in command **kill**, either by specifying the job number or PID as an argument. The syntax is a bit different — to kill a job by using its job number we use:
+We now demonstrate how the running job or process can be terminated programmatically. To terminate the particular job, we need to use the **Bash** built-in command **kill**, either by specifying the job number or PID as an argument. The syntax is a bit different &mdash; to kill a job by using its job number we use:
 
 ```bash
 kill %2
@@ -421,7 +421,7 @@ and to kill a job via its PID we use:
 kill 17
 ```
 
-Note the usage of percentage symbol `%` in the first case — without it, **Bash** would attempt to kill the process with system-wide PID 2. Only after the percentage symbol `%` is used, **Bash** will interpret the following number as the job number, which is specific and known only to the shell in the current terminal. Note also that only the second version can be used from any terminal, as the PID of any job or process is the same in all terminals. Later we will see that the command **kill**, despite its terse name, can do much more than mere termination of running jobs.
+Note the usage of percentage symbol `%` in the first case &mdash; without it, **Bash** would attempt to kill the process with system-wide PID 2. Only after the percentage symbol `%` is used, **Bash** will interpret the following number as the job number, which is specific and known only to the shell in the current terminal. Note also that only the second version can be used from any terminal, as the PID of any job or process is the same in all terminals. Later we will see that the command **kill**, despite its terse name, can do much more than mere termination of running jobs.
 
 We have already seen how we can get the list of all background jobs started from the current terminal with the **jobs** command. With the more general command named **top** we can get the list of all running processes on the computer, from all users, running both in foreground and background.
 
@@ -618,7 +618,7 @@ To restart in the background the above **sleep** command, whose job number is `2
 bg %2
 ```
 
-There is an alternative syntax, which is more limited in scope but sometimes can be nevertheless more convenient — to restart the suspended job in the background we can also use:
+There is an alternative syntax, which is more limited in scope but sometimes can be nevertheless more convenient &mdash; to restart the suspended job in the background we can also use:
 
 ```bash
 bg %commandName
@@ -808,7 +808,7 @@ kill -KILL 9485
 kill -kill 9485
 ```
 
-From the table above, we see there are 64 different signals we can send to the running process. Note, however, that some signals are typically used only by the operating system to tell the process that something went wrong (e.g. division by zero was encountered). As another remark, we indicate that it is somewhat more portable to use a signal by its name instead of by its number across different platforms — it is unlikely that the name of the signal, like `KILL`, will be interpreted in any other way, however, number `9` can be.
+From the table above, we see there are 64 different signals we can send to the running process. Note, however, that some signals are typically used only by the operating system to tell the process that something went wrong (e.g. division by zero was encountered). As another remark, we indicate that it is somewhat more portable to use a signal by its name instead of by its number across different platforms &mdash; it is unlikely that the name of the signal, like `KILL`, will be interpreted in any other way, however, number `9` can be.
 
 After we have illustrated the simple use case of **Bash** built-in command **kill**, let us now elaborate on it in more detail. The command **kill** is used to send signals to the already running job, or to any new job. If used without arguments, it will send the default signal to the running process. That default signal is `TERM` ('terminate', number `15`), which usually has the same effect as the signal `INT` ('interrupt', number `2`). Whenever we execute the following command in a shell:
 
@@ -951,7 +951,7 @@ After sending the signal `ÙSR2`:
 kill -USR2 %1
 ```
 
-the script execution is paused again — this time the two commands **pwd** and **ls** are executed, and the script resumes execution.
+the script execution is paused again &mdash; this time the two commands **pwd** and **ls** are executed, and the script resumes execution.
 
 After sending these two signals, the script is still running in the background:
 

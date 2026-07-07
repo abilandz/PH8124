@@ -4,7 +4,7 @@
 
 ![](../.gitbook/assets/LinuxBashROOT_logos.png)
 
-As a starting point for this homework, write the following simple code snippet of C/C++ programming language (this is just an example choice — this homework is fairly general, and you can instead use some other programming language that you prefer more) into the file `Hello.C`
+As a starting point for this homework, write the following simple code snippet of C/C++ programming language (this is just an example choice &mdash; this homework is fairly general, and you can instead use some other programming language that you prefer more) into the file `Hello.C`
 
 ```c
 #include <stdio.h>
@@ -48,4 +48,4 @@ hello: command not found
 
 If you are in the same directory where `hello` sits, you can circumvent this by using `./hello` instead. If you are outside that directory, you have to prepend the absolute path to that directory before the executable's name `hello`, which is tedious and inconvenient.
 
-What do you need to do to fix this problem permanently, i.e., you want to be able to use this external C/C++ executable in the terminal only by its name **hello**, at any place in the file system, each time you login, and each time you open a new terminal — just like any other **Linux** or **Bash** command?
+What do you need to do to fix this problem permanently, i.e., you want to be able to use this external C/C++ executable in the terminal only by its name **hello**, at any place in the file system, each time you login, and each time you open a new terminal &mdash; just like any other **Linux** or **Bash** command?

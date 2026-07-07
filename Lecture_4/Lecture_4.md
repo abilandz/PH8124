@@ -206,7 +206,7 @@ This way, it is possible to add easily an additional layer of protection for the
 
 ### 3. Test construct: **\[\[ ... ]]** <a href="#test" id="test"></a>
 
-For simple testing in **Bash**, we can use either `[[ ... ]]` or `[ ... ]` constructs. The construct `[[ ... ]]` is more powerful than `[ ... ]` because it supports more operators, but it was added to **Bash** later than `[ ... ]`, so it may not work with older **Bash** versions. On the other hand, only the syntax `[ ... ]` is **POSIX**-compliant and supported by all shells (**POSIX** is an acronym for "Portable Operating System Interface", which defines a set of standard to ensure compatibility of software across different operating systems — the shell standard can be found at this [link](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html)). Most notably, the original Bourne shell from 1977, `/bin/sh`, supports only `[ ... ]`.
+For simple testing in **Bash**, we can use either `[[ ... ]]` or `[ ... ]` constructs. The construct `[[ ... ]]` is more powerful than `[ ... ]` because it supports more operators, but it was added to **Bash** later than `[ ... ]`, so it may not work with older **Bash** versions. On the other hand, only the syntax `[ ... ]` is **POSIX**-compliant and supported by all shells (**POSIX** is an acronym for "Portable Operating System Interface", which defines a set of standard to ensure compatibility of software across different operating systems &mdash; the shell standard can be found at this [link](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/V3_chap02.html)). Most notably, the original Bourne shell from 1977, `/bin/sh`, supports only `[ ... ]`.
 
 In **Bash**, there are corner cases where the behavior of `[[ ... ]]` and `[ ... ]` differs, since their implementation is conceptually different:
 
@@ -230,13 +230,13 @@ bash: [: a: binary operator expected
 
 But in most cases of practical interest, `[[ ... ]]` and `[ ... ]` behave in the same way and yield the same results.
 
-Test constructs also return the exit status — if the test was successful the exit status is set to 0 in this context. Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use cases of the test construct `[[ ... ]]` into the following three categories, and we enlist the meaningful operators for each category:
+Test constructs also return the exit status &mdash; if the test was successful the exit status is set to 0 in this context. Which operators we can use within these two test constructs depends on the nature of the content of the variable(s) we are putting to the test. Roughly, we can divide the use cases of the test construct `[[ ... ]]` into the following three categories, and we enlist the meaningful operators for each category:
 
 * General case: `-z, -n, ==, != , =~`
 * Integers: `-gt, -ge, -lt, -le, -eq`
 * Files and directories: `-f, -d, -e, -s, -nt, -ot`
 
-These three distinct categories of `[[ ... ]]` usage are best explained with a few concrete examples — we start with the general case.
+These three distinct categories of `[[ ... ]]` usage are best explained with a few concrete examples &mdash; we start with the general case.
 
 #### General case
 
@@ -374,7 +374,7 @@ Var=${HOME}/SomeDirectory
 [[ -d ${Var} ]] && echo "${Var} exists." || echo "${Var} doesn't exist."
 ```
 
-Frequently, we want to trigger some code execution only if the file is non-empty — we can check that with the operator `-s`, as in the following example:
+Frequently, we want to trigger some code execution only if the file is non-empty &mdash; we can check that with the operator `-s`, as in the following example:
 
 ```bash
 Var=${HOME}/test.txt
@@ -416,7 +416,7 @@ When it makes sense, and it is convenient, it is possible to refine further the 
 [[ ! -f ${Var} ]] # true (0) if Var is NOT the existing file
 ```
 
-In this section, we have summarized the most important options — for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
+In this section, we have summarized the most important options &mdash; for the other available options, check the corresponding documentation of test constructs by executing in the terminal:
 
 ```bash
 help test
@@ -593,7 +593,7 @@ read -t 5
 
 the user is given 5 seconds to provide some input from a keyboard. If the user does not provide any input within the specified time interval, the **read** command times out and terminates. The code execution proceeds as if nothing happened. Therefore, within the specified time interval, we are given the chance to type something and modify the default execution of the code. All the above flags can be combined, which can make the usage of **read** command quite handy, and scripts can be both interactive and flexible during execution.
 
-The command **read** can be also used in some other contexts, e.g. to parse the file content line-by-line in combination with the **while** loop — this is covered at the end of today's lecture.
+The command **read** can be also used in some other contexts, e.g. to parse the file content line-by-line in combination with the **while** loop &mdash; this is covered at the end of today's lecture.
 
 ### 5. Arithmetic in **Bash** <a href="#arithmetic" id="arithmetic"></a>
 
@@ -643,7 +643,7 @@ Exp=2
 echo $((Int**Exp)) # prints 25
 ```
 
-As you can see from the above example, it is not necessary within `(( ... ))` to reference the content of the variable explicitly with `$` — the arithmetic expansion environment itself takes care of that. The following alternatives with lengthier code are also correct:
+As you can see from the above example, it is not necessary within `(( ... ))` to reference the content of the variable explicitly with `$` &mdash; the arithmetic expansion environment itself takes care of that. The following alternatives with lengthier code are also correct:
 
 ```bash
 echo $(($Int**$Exp)) # prints 25
@@ -659,7 +659,7 @@ $ echo $((1+2.4))
 bash: 1+2.4: syntax error: invalid arithmetic operator (error token is ".4")
 ```
 
-Floating point arithmetic cannot be done directly in **Bash** (the support for floating point arithmetics was introduced starting with version 5.3 in 2025, but only using **fltexpr** loadable builtin). However, this is not a severe limitation, because we can always invoke some standard **Linux** command to perform floating point arithmetics, like **bc** ('basic calculator') — this command is covered in detail later!
+Floating point arithmetic cannot be done directly in **Bash** (the support for floating point arithmetics was introduced starting with version 5.3 in 2025, but only using **fltexpr** loadable builtin). However, this is not a severe limitation, because we can always invoke some standard **Linux** command to perform floating point arithmetics, like **bc** ('basic calculator') &mdash; this command is covered in detail later!
 
 When it comes to the division which does not yield as the final result an integer, **Bash** does not report the error, instead, it reports as the result the integer after the fractional part (remainder) is discarded:
 
@@ -938,4 +938,4 @@ I am reading now: 100 200
 I am reading now: abcd
 ```
 
-As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** — if we do not specify any variable, then the variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have the content of a line from the external file in the variable at our disposal, and then we can manipulate its content within the script programmatically.
+As we can see, **while+read** construct automatically reads through all the lines in the file, and in each iteration the whole content of the current line is stored in the variable which we have passed as an argument to the **read** command (in the above example it is the variable named **Line** &mdash; if we do not specify any variable, then the variable **REPLY** of command **read** is used automatically). That means that in each iteration within the **while** loop we have the content of a line from the external file in the variable at our disposal, and then we can manipulate its content within the script programmatically.

@@ -122,11 +122,11 @@ $ echo ${Var:$((Start+1)):$((Length-2))}
 def
 ```
 
-Finally, it is mandatory to embed negative offset within round braces `( ... )` in the above examples, since otherwise **Bash** interprets in this context `-` from negative integers after the colon `:` in a very special way — this is clarified next.
+Finally, it is mandatory to embed negative offset within round braces `( ... )` in the above examples, since otherwise **Bash** interprets in this context `-` from negative integers after the colon `:` in a very special way &mdash; this is clarified next.
 
 By using string operators one can set the default value of a variable. Most frequently, one encounters the following two use cases:
 
-1.  `${Var:-defaultValue}` — if _Var_ exists and it is not null, return its current value. Otherwise, return the hardwired _defaultValue_. This is basically protection that the variable always has some content. For instance:
+1.  `${Var:-defaultValue}` &mdash; if _Var_ exists and it is not null, return its current value. Otherwise, return the hardwired _defaultValue_. This is basically protection that the variable always has some content. For instance:
 
     ```bash
     $ Var=44
@@ -149,7 +149,7 @@ By using string operators one can set the default value of a variable. Most freq
     ```
 
     This literally means that _Var_ is set to the first argument the user has supplied to a script or a function, but even if the user forgot to do it, the code could still execute by setting _Var_ to _defaultValue_.
-2.  `${Var:?someMessage}` — if _Var_ exists and it is not null, return its current value. Otherwise, it prints on the _stderr_ stream the name of variable, _Var_, followed by hardwired text _someMessage_, and aborts the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
+2.  `${Var:?someMessage}` &mdash; if _Var_ exists and it is not null, return its current value. Otherwise, it prints on the _stderr_ stream the name of variable, _Var_, followed by hardwired text _someMessage_, and aborts the current execution of a function (in case this syntax is used in a script, it only prints the error message). For instance, in the body of a function you can add protection via:
 
     ```bash
     function myFunction
@@ -194,7 +194,7 @@ $ echo ${Var-44} # prints nothing
 2. `?` : any single character
 3. `[ ... ]` : character sets and ranges
 
-These wildcards behave in the same way as when **Bash** performs filename expansion (or globbing). Their meaning is not to be confused with their meaning in Basic Regular Expressions (BRE) or Extended Regular Expressions (ERE) — as already mentioned in previous sections, ERE is supported in **Bash** only through operator `=~` within a new form of test construct `[[ ... ]]`.
+These wildcards behave in the same way as when **Bash** performs filename expansion (or globbing). Their meaning is not to be confused with their meaning in Basic Regular Expressions (BRE) or Extended Regular Expressions (ERE) &mdash; as already mentioned in previous sections, ERE is supported in **Bash** only through operator `=~` within a new form of test construct `[[ ... ]]`.
 
 Their usage is best illustrated with a few concrete examples:
 
@@ -244,7 +244,7 @@ The pattern '^^\[c-f]' will capitalize all single characters, but only in the sp
 
 ### 2. Arrays: `=( )` <a href="#arrays" id="arrays"></a>
 
-**Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways — the quickest one is to use the round brace syntax `=( ... )`. This syntax is illustrated with the following code snippet:
+**Bash** also supports arrays, i.e., variables containing multiple values. Since all variables in **Bash** by default are strings, you can store in the very same array integers, text, etc. The array index in **Bash** starts with zero, and there is no limit to the size of an array. An array can be initialized with its elements in a few ways &mdash; the quickest one is to use the round brace syntax `=( ... )`. This syntax is illustrated with the following code snippet:
 
 ```bash
 SomeArray=( 5 a ccc 44 )
@@ -582,7 +582,7 @@ echo ${SomeArray[1,2,3]} # prints a
 echo ${SomeArray[2,3,1]} # prints bb
 ```
 
-The indices do not have to be hardwired — the index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer.
+The indices do not have to be hardwired &mdash; the index of **Bash** arrays can be any expression that evaluates to 0 or a positive integer.
 
 **Example 8:** How to initialize all entries of an associative array with the same value?
 
@@ -685,7 +685,7 @@ date | tee date.log
 
 will print the current time on the screen, but it will also simultaneously dump it in the file named `date.log` (check its content with **cat date.log**). In the very same spirit, it is possible to keep the full execution log of any script, function, code block `{ ... }`, loops, etc.
 
-The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to files. By default, **tee** overwrites the content of a file — if we want instead to append to the already existing non-empty file, the following version can be used:
+The command **tee** writes simultaneously its input to _stdout_ (screen) and redirects it to files. By default, **tee** overwrites the content of a file &mdash; if we want instead to append to the already existing non-empty file, the following version can be used:
 
 ```bash
 someCommand | tee -a someFile.log 
@@ -999,7 +999,7 @@ Naively, one proceeds as follows:
 $ grep -v example_4.txt
 ```
 
-and nothing happens — **grep** is hanging, because it interpreted '-v' as an option, not the search pattern. After that, it mistakenly interpreted the file name 'example\_4.txt' as a search pattern. Finally, there are no further arguments on the command line, **grep** doesn't see the file it needs to search through, and is therefore expecting command input to be provided interactively from _stdin_ (i.e. from keyboard). To circumvent this general problem, a double dash `--` is used in most commands, not only in **grep**, to signify the end of command options, after which only arguments are accepted. Therefore, the correct solution is:
+and nothing happens &mdash; **grep** is hanging, because it interpreted '-v' as an option, not the search pattern. After that, it mistakenly interpreted the file name 'example\_4.txt' as a search pattern. Finally, there are no further arguments on the command line, **grep** doesn't see the file it needs to search through, and is therefore expecting command input to be provided interactively from _stdin_ (i.e. from keyboard). To circumvent this general problem, a double dash `--` is used in most commands, not only in **grep**, to signify the end of command options, after which only arguments are accepted. Therefore, the correct solution is:
 
 ```bash
 $ grep -- -v example_4.txt
@@ -1035,11 +1035,11 @@ Each line of input is matched against each `PATTERN`, and whenever the pattern i
 
 A few remarks on the general **awk** syntax above:
 
-* `someOptions(s)` — these are the options which **awk** supports internally and which can be used to modify its default behavior, in an analogous way as for other Linux commands (check the **awk**'s manual pages for further details);
-* `'...'` — when **awk** programme is specified directly in the terminal (and not written and read from a file as an **awk** script), it has to be embedded within the strong quotes `'...'`, so that during parsing of the command input shell does not attempt to interpret it itself (shell quoting rules are discussed in detail in the next lecture);
-* `PATTERN` — can be a numerical expression, a string relation, or a regular expression. In the latter case, `PATTERN` must be enclosed with slashes, i.e. **awk** will interpret `/ab*/` as a pattern corresponding to the regular expression `ab*`, where `*` acquires a metacharacter meaning, i.e. it's not a literal `*` character. We remark that unlike **grep**, **awk** by default supports _"Extended Regular Expressions (ERE)"_. On the other hand, if `PATTERN` is specified for instance as `length > 0`, **awk** will interpret it as a numerical expression, in which **awk** is checking if the length of the line is bigger than 0 (`length` is an internal variable in **awk**, calculated automatically for each line of input). If `PATTERN` is not specified, all lines of input are trivially matched;
-* `ACTION` — written in an internal language whose syntax is similar to the **C** programming language. If the corresponding `PATTERN` is matched for a line of input, this `ACTION` will be executed for that line. If `ACTION` is not specified, it defaults to printing the whole line that matched the corresponding `PATTERN`;
-* `someFiles()` — one or more files which **awk** will parse line-by-line automatically. During parsing, each line of a file becomes a line of input to **awk**, on which `PATTERN { ACTION }` sequences are tested and executed.
+* `someOptions(s)` &mdash; these are the options which **awk** supports internally and which can be used to modify its default behavior, in an analogous way as for other Linux commands (check the **awk**'s manual pages for further details);
+* `'...'` &mdash; when **awk** programme is specified directly in the terminal (and not written and read from a file as an **awk** script), it has to be embedded within the strong quotes `'...'`, so that during parsing of the command input shell does not attempt to interpret it itself (shell quoting rules are discussed in detail in the next lecture);
+* `PATTERN` &mdash; can be a numerical expression, a string relation, or a regular expression. In the latter case, `PATTERN` must be enclosed with slashes, i.e. **awk** will interpret `/ab*/` as a pattern corresponding to the regular expression `ab*`, where `*` acquires a metacharacter meaning, i.e. it's not a literal `*` character. We remark that unlike **grep**, **awk** by default supports _"Extended Regular Expressions (ERE)"_. On the other hand, if `PATTERN` is specified for instance as `length > 0`, **awk** will interpret it as a numerical expression, in which **awk** is checking if the length of the line is bigger than 0 (`length` is an internal variable in **awk**, calculated automatically for each line of input). If `PATTERN` is not specified, all lines of input are trivially matched;
+* `ACTION` &mdash; written in an internal language whose syntax is similar to the **C** programming language. If the corresponding `PATTERN` is matched for a line of input, this `ACTION` will be executed for that line. If `ACTION` is not specified, it defaults to printing the whole line that matched the corresponding `PATTERN`;
+* `someFiles()` &mdash; one or more files which **awk** will parse line-by-line automatically. During parsing, each line of a file becomes a line of input to **awk**, on which `PATTERN { ACTION }` sequences are tested and executed.
 
 The above general syntax is demonstrated on the example file `test.txt` with the following content:
 
@@ -1214,7 +1214,7 @@ What happened above is literally the following:
 2. that output was piped as an input for further processing to **awk** command, which extracted the 4th field, taking into account that the default field separator is one or more empty characters. The result after this step was `16:18:44`
 3. this intermediate output stream `16:18:44` was then sent via another pipe to **awk** command, which, however, in the 2nd pipe runs with non-default field separator `:` . With respect to `:` as a field separator in the stream `16:18:44`, the 3rd field is seconds, which yields as the final output `44`
 
-As a rule of thumb, field separators in **awk** shall always be single characters — composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, **nawk**, etc.).
+As a rule of thumb, field separators in **awk** shall always be single characters &mdash; composite multi-character field separators are possible, but can lead to some inconsistent behaviour among different **awk** versions (e.g. **gawk**, **mawk**, **nawk**, etc.).
 
 Very conveniently, with **awk** we can also calculate directly the length of the field, for instance:
 
@@ -1224,7 +1224,7 @@ echo "a:12454:b34d" | awk 'BEGIN {FS=":"}{print length($2)}' # prints 5
 echo "a:12345:b34d" | awk 'BEGIN {FS=":"}{print length($3)}' # prints 4
 ```
 
-On the other hand, multiple single characters can be treated as field separators simultaneously — they just all need to be embedded within `[ ... ]`. For instance, we can treat during the same **awk** execution all three characters colon `:`, semi-colon `;` and comma `,` as equivalent field separators in the following code snippet:
+On the other hand, multiple single characters can be treated as field separators simultaneously &mdash; they just all need to be embedded within `[ ... ]`. For instance, we can treat during the same **awk** execution all three characters colon `:`, semi-colon `;` and comma `,` as equivalent field separators in the following code snippet:
 
 ```bash
 echo "1,22;abc:44:1000;123" | awk 'BEGIN {FS="[:;,]"} {print $4}' 
@@ -1332,7 +1332,7 @@ line 3
 line 4
 ```
 
-We remark that a number of empty characters between the specifier 'i' and the following text is irrelevant — the very same results as above are achieved, for instance, with:
+We remark that a number of empty characters between the specifier 'i' and the following text is irrelevant &mdash; the very same results as above are achieved, for instance, with:
 
 ```bash
 sed "2iSome text" sedTest.dat
@@ -1491,7 +1491,7 @@ energy p p
 p energy p
 ```
 
-**Example 5:** Finally, and continuing with the previous example, we illustrate how to delete a string within a line of input — one simply specifies as a second pattern in substitution a zero-length string:
+**Example 5:** Finally, and continuing with the previous example, we illustrate how to delete a string within a line of input &mdash; one simply specifies as a second pattern in substitution a zero-length string:
 
 ```bash
 # delete first occurence of "momentum" on each line:

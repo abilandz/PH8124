@@ -27,7 +27,7 @@ The output could look like:
 bin  boot  dev  etc  home  lib  media  opt  proc  root  run  sbin  sys  tmp  usr  var
 ```
 
-All files and directories on your computer are in one of these subdirectories. Depending on which Linux distribution you are using, the details might differ — you can programmatically inspect which Linux distribution is installed on your computer with the following command:
+All files and directories on your computer are in one of these subdirectories. Depending on which Linux distribution you are using, the details might differ &mdash; you can programmatically inspect which Linux distribution is installed on your computer with the following command:
 
 ```bash
 $ cat /etc/os-release 
@@ -103,7 +103,7 @@ $ /bin/date
 Mon Apr 27 16:12:06 CEST 2020
 ```
 
-It would be very tedious and impractical if each time we would like to use some command, it would be necessary to type in the terminal the absolute path to its executable sitting somewhere in the **Linux** file system, both in terms of typing and in terms of memorizing the exact locations. This is precisely where **Bash** (or any other **shell**) is extremely helpful — **shell** finds the correct executable in the file system for us, after we have typed only the short command name in the terminal, and executes it. Clearly, something is happening here behind the scene: How does **shell** know which physical executable in the file system is linked with the short command name you have typed in the terminal? Hypothetically, we could also have another version of **date** command sitting somewhere else in the file system, e.g. in the directory `/usr/bin/date`. Then there is an ambiguity, since after we have typed in the terminal **date**, it is not clear whether we want `/bin/date` or `/usr/bin/date` to be executed.
+It would be very tedious and impractical if each time we would like to use some command, it would be necessary to type in the terminal the absolute path to its executable sitting somewhere in the **Linux** file system, both in terms of typing and in terms of memorizing the exact locations. This is precisely where **Bash** (or any other **shell**) is extremely helpful &mdash; **shell** finds the correct executable in the file system for us, after we have typed only the short command name in the terminal, and executes it. Clearly, something is happening here behind the scene: How does **shell** know which physical executable in the file system is linked with the short command name you have typed in the terminal? Hypothetically, we could also have another version of **date** command sitting somewhere else in the file system, e.g. in the directory `/usr/bin/date`. Then there is an ambiguity, since after we have typed in the terminal **date**, it is not clear whether we want `/bin/date` or `/usr/bin/date` to be executed.
 
 This is resolved with a very important environment variable **PATH**. To see its current content, simply type:
 
@@ -117,9 +117,9 @@ The output could look like this:
 /home/abilandz/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
 
-This output looks messy, but in fact it has a well-defined structure which is easy to decipher. In the above output, we can recognize absolute paths to a few directories, which are separated in this context with the field separator `:` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable `/bin/date` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters — when **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. `/bin/date` and `/usr/bin/date`, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute `/usr/bin/date` and not `/bin/date`, because `/usr/bin` is specified before `/bin` in the **PATH** variable. However, since there is no **date** executable in `/usr/bin`, **Bash** continues the search for it in `/bin`, finally finds it there, and then executes `/bin/date` .
+This output looks messy, but in fact it has a well-defined structure which is easy to decipher. In the above output, we can recognize absolute paths to a few directories, which are separated in this context with the field separator `:` (colon). The directories specified in the environment variable **PATH** are extremely important, because only inside them **Bash** will be searching for a corresponding executable, after you have typed the short command name in the terminal. Literally, the command **date** works because the directory **/bin**, where its corresponding executable `/bin/date` sits, was added to the content of **PATH** variable. The order of directories in **PATH** variable matters &mdash; when **Bash** finds your executable in some directory specified in **PATH**, it will stop searching in the other directories specified in **PATH**. The priority of the search is from left to right. Therefore, if you have two executables in the file system for the same command name, e.g. `/bin/date` and `/usr/bin/date`, and if the content of **PATH** is as in the example above, after you have typed in the terminal **date**, **Bash** would try first to execute `/usr/bin/date` and not `/bin/date`, because `/usr/bin` is specified before `/bin` in the **PATH** variable. However, since there is no **date** executable in `/usr/bin`, **Bash** continues the search for it in `/bin`, finally finds it there, and then executes `/bin/date` .
 
-By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command — just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in `/home/abilandz/bin`). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like `/bin`, `/usr/bin`, etc.). This is achieved with the following standard code snippet:
+By manipulating the ordering of directories in **PATH** variable, you can also have your own version of any **Linux** command &mdash; just place the directory with your own executables at the beginning of **PATH** variable, and then those directories will be searched first by **Bash**. For instance, you can have your own executable for **date** in your local directory for binaries (e.g. in `/home/abilandz/bin`). Then, you need to redefine **PATH** in such a way that it has your personal directory with higher priority, when compared to standard system-wide directories for command executables (like `/bin`, `/usr/bin`, etc.). This is achieved with the following standard code snippet:
 
 ```bash
 PATH="/home/abilandz/bin:${PATH}"
@@ -133,15 +133,15 @@ For the lower priority of your executables, use an alternative standard code sni
 PATH="${PATH}:/home/abilandz/bin"
 ```
 
-In this example, you have appended the directory with your executables to what is already set in **PATH** — this way you indicate that you want to use your own version of some standard system-wide **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new terminal you open, add the above redefinitions of **PATH** into `~/.bashrc` file. In case you want the redefinition of **PATH** to be persistent in all new processes you start from a terminal, use in addition the command **export** at the first redefinition of **PATH** variable.
+In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard system-wide **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new terminal you open, add the above redefinitions of **PATH** into `~/.bashrc` file. In case you want the redefinition of **PATH** to be persistent in all new processes you start from a terminal, use in addition the command **export** at the first redefinition of **PATH** variable.
 
 From the above explanation, it is clear that if you unset **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
 
 We finalize the explanation of **PATH** variable with the following concluding remarks:
 
 * The search for the corresponding executable, after you have typed the short command name in the terminal, is optimized in the following ways:
-  * Not all the files in the specified directories in **PATH** are considered during the search — only the files which have _execute permission_ (`x`) are taken into account (more on this in a moment!);
-  *   The recently used commands are _hashed_ in the table — this table is then looked up first by **Bash** after you type the command name in the terminal. To see the current content of the hash table, just type **Bash** built-in command **hash** in the terminal:
+  * Not all the files in the specified directories in **PATH** are considered during the search &mdash; only the files which have _execute permission_ (`x`) are taken into account (more on this in a moment!);
+  *   The recently used commands are _hashed_ in the table &mdash; this table is then looked up first by **Bash** after you type the command name in the terminal. To see the current content of the hash table, just type **Bash** built-in command **hash** in the terminal:
 
       ```bash
       hash
@@ -159,7 +159,7 @@ We finalize the explanation of **PATH** variable with the following concluding r
       ```
 
       Clearly, the hash mechanism adds a lot to the efficiency of commands' usage in **Linux**. Each time you login for the first time on computer the hash table is empty. Each terminal session keeps its own hash table.
-*   The **PATH** search can be skipped by the user. In particular, when the command name contains the `/` (slash) character, not necessarily at the beginning of the name, **Bash** will not perform the search for the corresponding executable — underlying assumption is that you have now yourself specified the path in the file system, either absolute or relative, to the corresponding executable. In this case, **Bash** tries to execute that command name on the spot. This explains the standard syntax to run the command whose executable is in your current directory:
+*   The **PATH** search can be skipped by the user. In particular, when the command name contains the `/` (slash) character, not necessarily at the beginning of the name, **Bash** will not perform the search for the corresponding executable &mdash; underlying assumption is that you have now yourself specified the path in the file system, either absolute or relative, to the corresponding executable. In this case, **Bash** tries to execute that command name on the spot. This explains the standard syntax to run the command whose executable is in your current directory:
 
     ```bash
     ./someCommand
@@ -393,7 +393,7 @@ chmod 714 file.log
 # the final pattern is: -rwx--xr--
 ```
 
-It practice, it is not needed to remove old permissions and only then to set the new ones — it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
+It practice, it is not needed to remove old permissions and only then to set the new ones &mdash; it was done here that way only for the sake of this exercise, but the old permissions can be directly overwritten.
 
 **Example:** Does command **cp** copy also the permissions of original file into a new file?
 
@@ -441,7 +441,7 @@ My favorite collider is <some-collider>
 My favorite experiment at <some-collider> is <some-experiment>
 ```
 
-The solution goes as follows — edit the file `favorite.sh` with the following content:
+The solution goes as follows &mdash; edit the file `favorite.sh` with the following content:
 
 ```bash
 #!/bin/bash
@@ -465,7 +465,7 @@ My favorite collider is LHC
 My favorite experiment at LHC is ALICE
 ```
 
-So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after `source favorite.sh` , and before the next empty character is encountered in the command input, was declared as the 1st positional parameter (or the 1st script argument). The value of the 1st positional parameter is stored in the internal variable `${1}` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable `${2}` ('ALICE' in the above example). And so on — in this way you can pass to your script as many arguments as you wish!
+So how does this work? It is very simple and straightforward, there is no black magic happening here! Whatever you have typed first after `source favorite.sh` , and before the next empty character is encountered in the command input, was declared as the 1st positional parameter (or the 1st script argument). The value of the 1st positional parameter is stored in the internal variable `${1}` ('LHC' in the above example). Whatever you have typed next, and before the next empty character is encountered, is declared as the 2nd positional parameter, and its value is stored in the internal variable `${2}` ('ALICE' in the above example). And so on &mdash; in this way you can pass to your script as many arguments as you wish!
 
 Once you fetch programmatically in the body of your script the supplied arguments via variables `${1}`, `${2}`, etc., you can do all sorts of manipulations on them, which can completely modify the behavior of your script.
 
@@ -473,7 +473,7 @@ Few additional remarks on positional parameters:
 
 * You can programmatically fetch their total number via the special variable: `$#`
 * You can programmatically fetch them all in one go via the variables: `$*` or `$@`. In most cases of interest, these two variables are the same. For the purists: `"$*"` is equal to `"$1 $2 $3 ..."`, while `"$@"` is equal to `"$1" "$2" "$3" ...` . This means that `"$*"` is a single string, while `"$@"` is not, and this will cause a different behavior when you loop over all entries in `"$*"` or `"$@"`. But if you drop the double quotes, there is no difference between the content of special variables `$*` and `$@`.
-*   It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator `!` — the syntax for the last positional parameter is `${!#}`. As a side remark, indirect reference `!` is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
+*   It is also possible to access directly the very last positional parameter, by using the _indirect reference_ ('value of the value') operator `!` &mdash; the syntax for the last positional parameter is `${!#}`. As a side remark, indirect reference `!` is a 'sort of pointer' in **Bash**, and its general usage is illustrated with the following code snippet:
 
     ```bash
     Alice=44 
@@ -591,7 +591,7 @@ When compared to the script implementation, there are few differences:
 The rest is the same as for the scripts:
 
 * Functions handle arguments in exactly the same way as scripts, via special `${1}`, `${2}`, ..., variables
-* You can call a function within another function, but only if it was defined first — order of implementation matters in scripting languages!
+* You can call a function within another function, but only if it was defined first &mdash; order of implementation matters in scripting languages!
 * Do not forget to provide the return value at the end of the function, which sets its exit status. For most of the time, functions are executed equivalently as commands, and then their exit status clearly matters. Functions cannot return values (e.g. string) directly to the caller, apart from the exit status set via **return**, which must be in the interval 0..255
 *   Typically, you implement all your functions in some file, let's say `functions.sh`, and save it in your home directory (or anywhere else). Then, at the end of `${HOME}/.bash_profile` and `${HOME}/.bashrc` you insert the line:
 
@@ -599,7 +599,7 @@ The rest is the same as for the scripts:
     source ${HOME}/functions.sh
     ```
 
-    If you have added the above line to `${HOME}/.bashrc` , your functions defined in the file `functions.sh` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands — in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
+    If you have added the above line to `${HOME}/.bashrc` , your functions defined in the file `functions.sh` will be automatically loaded in computer's memory and are ready for usage in each terminal session, just as **Linux** commands &mdash; in this sense the first **Bash** function you have written can be regarded also as your first **Linux** command!
 
 Finally, we remark that functions are superior to aliases: anything that can be done with an alias can be done better with a function. For instance, the classical alias definition:
 
@@ -616,7 +616,7 @@ function ll
 }
 ```
 
-Note that only the above implementation of function can easily be generalized — within the function body we can programmatically manipulate the arguments and, for instance, use different formatting options for the printout depending upon which directory we are in, etc.
+Note that only the above implementation of function can easily be generalized &mdash; within the function body we can programmatically manipulate the arguments and, for instance, use different formatting options for the printout depending upon which directory we are in, etc.
 
 ### 4. Command precedence <a href="#precedence" id="precedence"></a>
 

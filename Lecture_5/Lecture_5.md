@@ -59,7 +59,7 @@ Version=$(commandName -v) # flag '-v' typically prints the command version
 [[ $Version -ge someTreshold ]] && use-newer-functionalities
 ```
 
-This is just a schematic solution — most likely the output of **commandName -v** will have some additional information that you need to filter out, but all that can be still done within the command substitution operator.
+This is just a schematic solution &mdash; most likely the output of **commandName -v** will have some additional information that you need to filter out, but all that can be still done within the command substitution operator.
 
 You can fearlessly nest the command substitution operators, like in the following example.
 
@@ -170,7 +170,7 @@ cat someFile # reads the content of a physical file
 echo "${FileContent}" # obtain the same content from variable
 ```
 
-However, if the content of the physical file `someFile` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file, which can be modified concurrently with some other running process — if we store that information in a variable, we have removed completely the dependency of our code on that external file.
+However, if the content of the physical file `someFile` has changed or if it was deleted, that does not affect the value of variable **FileContent**. This is very handy when we need to initialize our script or function with the content of some external file, which can be modified concurrently with some other running process &mdash; if we store that information in a variable, we have removed completely the dependency of our code on that external file.
 
 The command substitution operator is frequently used in combination with the **for** loop, when we want to iterate over all elements in the output of some command. Also in this context the distinct elements of the list are separated with one or more empty characters. This is best illustrated with the following example:
 
@@ -311,7 +311,7 @@ Sun May 17 11:53:03 CEST 2020
 
 In this sense, by using `1>` redirection, the printout of some command during execution is stored permanently in the physical file on a local disk.
 
-Analogously, we can also programmatically redirect the error message of a command — we just need to change the file descriptor:
+Analogously, we can also programmatically redirect the error message of a command &mdash; we just need to change the file descriptor:
 
 ```bash
 date -q 2> error.log
@@ -335,7 +335,7 @@ If we re-execute the above examples, the previous content of specified files wil
 
 If the file descriptor number is not specified, it is defaulted to 1, i.e. `>` is exactly the same as `1>`, and `>>` is exactly the same as `1>>`.
 
-Especially in the older **Bash** scripts you will see also `2>&1` redirection, but it has exactly the same meaning as `&>`, which was added only in more recent versions of **Bash**. The redirector `2>&1` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) was sent. When `2>&1` is used, the order matters — first we need to indicate where `1>` is redirected, and only then it makes sense to use `2>&1`. Because of this limitation, in practice it is much easier to use `&>` in such a context.
+Especially in the older **Bash** scripts you will see also `2>&1` redirection, but it has exactly the same meaning as `&>`, which was added only in more recent versions of **Bash**. The redirector `2>&1` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) was sent. When `2>&1` is used, the order matters &mdash; first we need to indicate where `1>` is redirected, and only then it makes sense to use `2>&1`. Because of this limitation, in practice it is much easier to use `&>` in such a context.
 
 ![](../.gitbook/assets/blackHole.jpg)
 
@@ -491,7 +491,7 @@ Inside : 44
 After  : 55
 ```
 
-From this example, we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different types of braces, namely the round braces `( ... )`, to define the _subshell_ — this will be covered later.
+From this example, we can easily see that the code block inherits all settings from the global environment, and that all modifications made inside the code block (e.g. a variable gets a new value) are propagated outside to the global environment, after the code block terminates. The different behavior can be obtained by enclosing the particular code within different types of braces, namely the round braces `( ... )`, to define the _subshell_ &mdash; this will be covered later.
 
 Very conveniently, the code block `{ ... }` can be combined with the command chain operators, as the following example illustrates.
 
@@ -509,7 +509,7 @@ By using the code blocks, this can be rewritten as:
 someCommand && { command1 && command2 && ... ; } 
 ```
 
-Note the mandatory trailing semicolon `;` within the code block in this context. This is important because you need to indicate that `}` is not an argument to the last command within the code block — the last command input is terminated with semicolon `;`.
+Note the mandatory trailing semicolon `;` within the code block in this context. This is important because you need to indicate that `}` is not an argument to the last command within the code block &mdash; the last command input is terminated with semicolon `;`.
 
 **Brace expansion**
 
@@ -845,9 +845,9 @@ Use with care, though, the shell built-in command **shift** as the code quickly 
 
 The **case-in-esac** conditional statement recognizes the so-called POSIX brackets. The most important examples are:
 
-* `[[:alpha:]]` — Alphabetic characters \[a-zA-Z]
-* `[[:digit:]]` — Digits \[0-9]
-* `[[:alnum:]]` — Alphanumeric characters \[a-zA-Z0-9]
+* `[[:alpha:]]` &mdash; Alphabetic characters \[a-zA-Z]
+* `[[:digit:]]` &mdash; Digits \[0-9]
+* `[[:alnum:]]` &mdash; Alphanumeric characters \[a-zA-Z0-9]
 
 Example use case:
 
@@ -936,4 +936,4 @@ someCommand || :
 
 The above construct always evaluates to true, irrespectively of what was the exit status of 'someCommand'.
 
-We can also use 'do-nothing' `:` command to write a multi-line comment in **Bash** in combination with the so-called _here-documents_ — this will be covered later.
+We can also use 'do-nothing' `:` command to write a multi-line comment in **Bash** in combination with the so-called _here-documents_ &mdash; this will be covered later.

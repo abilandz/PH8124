@@ -60,7 +60,7 @@ How to select your favorite **shell**? It is simple, just type its name in the t
 bash
 ```
 
-and press 'Enter' — now you are in the **Bash** wonderland! Since that is by far the most popular **shell** nowadays, this lecture will focus exclusively on its concepts, syntax and commands. But no worries, at least conceptually, a lot of subjects covered in this lecture apply also to other **shells**! The difference between **shells** is mostly in the syntax, but in essence, they all aim to provide the same functionalities.
+and press 'Enter' &mdash; now you are in the **Bash** wonderland! Since that is by far the most popular **shell** nowadays, this lecture will focus exclusively on its concepts, syntax and commands. But no worries, at least conceptually, a lot of subjects covered in this lecture apply also to other **shells**! The difference between **shells** is mostly in the syntax, but in essence, they all aim to provide the same functionalities.
 
 In this lecture we will cover only the **Bash** essentials, i.e. we will make you going, but how far you want to go eventually, it depends on your personal determination and time investment.
 
@@ -150,7 +150,7 @@ $ cat -n /etc/shells
 
 The flag **-n** causes command **cat** to enumerate all lines in its printout.
 
-In general, all **Bash** and **Linux** commands are conceptually implemented in the same way — let us now discuss what is conceptually always the same in their implementation and usage.
+In general, all **Bash** and **Linux** commands are conceptually implemented in the same way &mdash; let us now discuss what is conceptually always the same in their implementation and usage.
 
 Generically, for most cases of interest, we are executing commands in the terminal in the following way:
 
@@ -197,9 +197,9 @@ In the first case, **Bash** first parses the syntax of `firstCommand` and execut
 Let us now scrutinize the above generic syntax for command execution term by term:
 
 * `<command-name>` : Whatever you type first in the terminal, i.e. before the next empty character is being encountered on terminal input, **Bash** is trying to interpret as some **Linux** command, **Bash** built-in command, **Bash** keyword, etc. In general, _command-name_ stands for one of the following:
-  * **Linux** command (i.e. system-wide executable or binary) — example: **cat**
-  * **Bash** built-in command — example: **echo**
-  * **Bash** keyword — example: **for**
+  * **Linux** command (i.e. system-wide executable or binary) &mdash; example: **cat**
+  * **Bash** built-in command &mdash; example: **echo**
+  * **Bash** keyword &mdash; example: **for**
   * alias
   * function
   * script
@@ -376,7 +376,7 @@ where also for the command **unalias** the option **-a** stands for 'all'.
 
 Aliases are definitely a nice feature, but do not overuse them, because:
 
-* By default, aliases are available only in the terminal in which you have defined them. But this can be easily circumvented by modifying the special configuration file `.bashrc` and/or an additional customary file `.bash_aliases` — to be clarified later in this section;
+* By default, aliases are available only in the terminal in which you have defined them. But this can be easily circumvented by modifying the special configuration file `.bashrc` and/or an additional customary file `.bash_aliases` &mdash; to be clarified later in this section;
 * When you move to another computer your personal aliases are clearly not available there by default;
 *   Aliases can overwrite the name of the existing **Linux** or **Bash** command, and aliases will have the higher precedence in execution. In this case, you can execute the overwritten command by prepending backslash `\` to its name, i.e. with `\commandName`. For instance:
 
@@ -388,11 +388,11 @@ Aliases are definitely a nice feature, but do not overuse them, because:
     ... standard list of files and directories ...
     ```
 
-    In this context, we have _escaped_ the alias definition of 'ls' with the special symbol backslash `\` — this escaping mechanism is elaborated more in detail and in a wider context later;
+    In this context, we have _escaped_ the alias definition of 'ls' with the special symbol backslash `\` &mdash; this escaping mechanism is elaborated more in detail and in a wider context later;
 * Aliases cannot process programmatically options or arguments, like regular commands (or **Bash** functions, as we will see later). In fact, any alias implementation can be reimplemented as a **Bash** function in a more general and flexible way. However, the function implementation requires more coding;
 * Do not use alias definitions in the shell scripts, that's considered to be both bad coding and bad design practice.
 
-In summary, aliases are literally shortcuts for lengthy commands or any other lengthy terminal input, and aliases are meant to be used directly in the terminal merely to save time on typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute — nothing more nor less than that!
+In summary, aliases are literally shortcuts for lengthy commands or any other lengthy terminal input, and aliases are meant to be used directly in the terminal merely to save time on typing. Whatever you have defined an alias to stand for, **Bash** with simply inline or replace the alias name in the terminal with its definition, and then execute &mdash; nothing more nor less than that!
 
 #### Variables <a href="#variables" id="variables"></a>
 
@@ -422,7 +422,7 @@ That means that the command input `Var= 44` **Bash** will interpret as follows: 
 
 Therefore, when introducing and initializing a new variable in **Bash**, make sure there are no empty characters on both sides of the _assignment operator_ **=** .
 
-As a side remark, from the above three lines, we can also see how to make a comment in **Bash** — simply use the special character **#** (hash symbol) to start your comment. Once this character is used on the particular line, any text after it is being ignored by **Bash**. You can not terminate the comment within a given line in which you have used **#** to start the comment. Therefore, you can terminate the commented text only by starting to write in the new line.
+As a side remark, from the above three lines, we can also see how to make a comment in **Bash** &mdash; simply use the special character **#** (hash symbol) to start your comment. Once this character is used on the particular line, any text after it is being ignored by **Bash**. You can not terminate the comment within a given line in which you have used **#** to start the comment. Therefore, you can terminate the commented text only by starting to write in the new line.
 
 **Example:** Writing a comment in **Bash**.
 
@@ -520,7 +520,7 @@ test 2
 CTRL+d
 ```
 
-The operator `>>` appends the text at the end of an already existing file. If we would have used `>` to redirect the new content to the already existing file, that file would be overwritten with this new content — use `>` in such a context with great care! This, however, also implies that the above **cat** construct is rather limited, as it can be used either to write a new file from scratch or to append new content at the very end of an already existing file. But what if we want to edit the already existing content of the file?
+The operator `>>` appends the text at the end of an already existing file. If we would have used `>` to redirect the new content to the already existing file, that file would be overwritten with this new content &mdash; use `>` in such a context with great care! This, however, also implies that the above **cat** construct is rather limited, as it can be used either to write a new file from scratch or to append new content at the very end of an already existing file. But what if we want to edit the already existing content of the file?
 
 For that sake, we need to use some simple editor which can be run in the terminal (i.e. without graphics). One such, wide-spread, open-source, editor is **nano**, which includes only the bare minimum of functionality needed to edit documents, making it very simple to use. In addition, the syntax coloring is available for most of the programming languages. As an exercise, let us edit the content of already existing non-empty file `someFile.txt` from the previous **cat** example.
 
@@ -528,7 +528,7 @@ For that sake, we need to use some simple editor which can be run in the termina
 nano someFile.txt
 ```
 
-Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press `CTRL+o` (to write out into the physical file `someFile.txt` what you have edited so far in the editor — this is the same thing as saving, just jargon is different...). When you are done with editing, press `CTRL+x` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated — it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics). For editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however, they offer much more features and are regularly used by professional programmers.
+Now you are in the **nano** wonderland, not any longer in the **Bash** shell. This means that the commands you type now and all keyboard strokes are interpreted differently. After you have edited some existing text or wrote something new, simply in **nano** press `CTRL+o` (to write out into the physical file `someFile.txt` what you have edited so far in the editor &mdash; this is the same thing as saving, just jargon is different...). When you are done with editing, press `CTRL+x` to exit **nano** (and type 'y' followed by 'Enter' if you want to save the changes in the same file you have started with), and get back to the terminal. Of course, usage of **nano** is not mandatory to edit files, and for large files it is very inconvenient, but there are two nice things about **nano** which shouldn't be underestimated &mdash; it is always available on basically all **Linux** distributions, and it can be run in the terminal (this becomes very relevant when connecting and working remotely on some computer, where access to graphics by default is not enabled, or when the network connection itself is too slow to sustain transmission of graphics). For editing of lengthy files, use some graphics-based editor: **gedit** is very easy to use without any prior experience, while **emacs** or **vim** are difficult for beginners, however, they offer much more features and are regularly used by professional programmers.
 
 ### 4. Your first **Bash** script <a href="#first-script" id="first-script"></a>
 
@@ -540,7 +540,7 @@ Let us now write the first **Bash** script! For instance, you can type in the te
 nano first.sh
 ```
 
-Recall that now you are not any longer in the terminal, but in the very simple textual editor called **nano**. Whatever you are typing now, it will be saved in the file `first.sh` — the file which will hold your first **Bash** script (by convention **Bash** scripts always have an extension **.sh**). Your first **Bash** script could look as follows:
+Recall that now you are not any longer in the terminal, but in the very simple textual editor called **nano**. Whatever you are typing now, it will be saved in the file `first.sh` &mdash; the file which will hold your first **Bash** script (by convention **Bash** scripts always have an extension **.sh**). Your first **Bash** script could look as follows:
 
 ```bash
 #!/bin/bash
@@ -558,9 +558,9 @@ Now let us have a closer look at the content of your first **Bash** script:
 * The first line is mandatory, namely: `#!/bin/bash`
 * The first two characters in the first line are mandatory, namely: `#!` (the combination of these two characters is called _shebang_ or _hashbang_)
 
-What is happening here is the following: `#!` in the first line indicates to the operating system that whatever follows next on the first line, must be interpreted as a path to the executable (e.g. `/bin/bash` if you want to run **Bash**), which then must be used to interpret the code in all the remaining lines in the script. In this way, you can put up together any script, not necessarily the one for **Bash** — you just need to change `/bin/bash` in the first line, and point out to some other executable.
+What is happening here is the following: `#!` in the first line indicates to the operating system that whatever follows next on the first line, must be interpreted as a path to the executable (e.g. `/bin/bash` if you want to run **Bash**), which then must be used to interpret the code in all the remaining lines in the script. In this way, you can put up together any script, not necessarily the one for **Bash** &mdash; you just need to change `/bin/bash` in the first line, and point out to some other executable.
 
-From the above example, it can be seen that whatever we have previously executed directly in the terminal (e.g. **echo** or **date** commands), we can also write in the script, and then execute all commands in one go, by executing the script. That being said, at the very basic level, scripting saves you the time needed to retype again and again any regular sequence of commands, after you open a new terminal — for instance, the file `first.sh` you just made, is available in any new terminal you open!
+From the above example, it can be seen that whatever we have previously executed directly in the terminal (e.g. **echo** or **date** commands), we can also write in the script, and then execute all commands in one go, by executing the script. That being said, at the very basic level, scripting saves you the time needed to retype again and again any regular sequence of commands, after you open a new terminal &mdash; for instance, the file `first.sh` you just made, is available in any new terminal you open!
 
 How to execute the **Bash** script? It's simple, just pass the file name as an argument to the command **source** (i.e. in jargon, you need to _source_ your script):
 
@@ -634,16 +634,16 @@ By convention, the name of all configuration files in the home directory begins 
 
 These are the personal configuration files in the user's home directory, which can be edited directly:
 
-* `~/.bash_profile` — this configuration file is only executed by **Bash** each time you log in to the computer, i.e. it is executed by the _login shell_. There are two synonyms for this file: `~/.bash_login` and `~/.profile` , and they are executed at login only if `~/.bash_profile` is not present in your home directory. The files `~/.bash_profile` and `~/.bash_login` can be read only by the login instance of **Bash** shell, while `~/.profile` is also read by some other shells, e.g. **sh** and **ksh**.
-* `~/.bashrc` — this configuration file is read with the highest priority when you open a new terminal, or in general, whenever you start in its own process a new instance of **Bash** shell after you are already logged in. This file will also be read at login only if you add a line `source ~/.bashrc` in `~/.bash_profile` .
-* `~/.bash_logout` — executed whenever the login shell exits (e.g. when you log out from the computer). This configuration file is rarely used, but by editing it, you can for instance automatically delete all temporary files at exit.
+* `~/.bash_profile` &mdash; this configuration file is only executed by **Bash** each time you log in to the computer, i.e. it is executed by the _login shell_. There are two synonyms for this file: `~/.bash_login` and `~/.profile` , and they are executed at login only if `~/.bash_profile` is not present in your home directory. The files `~/.bash_profile` and `~/.bash_login` can be read only by the login instance of **Bash** shell, while `~/.profile` is also read by some other shells, e.g. **sh** and **ksh**.
+* `~/.bashrc` &mdash; this configuration file is read with the highest priority when you open a new terminal, or in general, whenever you start in its own process a new instance of **Bash** shell after you are already logged in. This file will also be read at login only if you add a line `source ~/.bashrc` in `~/.bash_profile` .
+* `~/.bash_logout` &mdash; executed whenever the login shell exits (e.g. when you log out from the computer). This configuration file is rarely used, but by editing it, you can for instance automatically delete all temporary files at exit.
 
 #### System-wide (default) configuration files
 
 If by accident you have deleted your personal configuration files in your home directory, as a backup solution you can always rely on the two system-wide configuration files, which you cannot edit directly without having the administrator privileges:
 
-* `/etc/profile` — the default, system-wide, configuration file which is read at login. It is read before `~/.bash_profile`. This means that you will always have some default settings enabled after you log in on the computer, whether or not `~/.bash_profile` with your personal settings exists or not.
-* `/etc/bash.bashrc` — the default, system-wide, configuration file which is read each time you open a new terminal or start a new instance of **Bash** shell in its own process after you are already logged in. It is read before `~/.bashrc`. This means that you will always have some default settings enabled after you open a new terminal or start a subshell, whether or not `~/.bashrc` with your personal settings exists or not.
+* `/etc/profile` &mdash; the default, system-wide, configuration file which is read at login. It is read before `~/.bash_profile`. This means that you will always have some default settings enabled after you log in on the computer, whether or not `~/.bash_profile` with your personal settings exists or not.
+* `/etc/bash.bashrc` &mdash; the default, system-wide, configuration file which is read each time you open a new terminal or start a new instance of **Bash** shell in its own process after you are already logged in. It is read before `~/.bashrc`. This means that you will always have some default settings enabled after you open a new terminal or start a subshell, whether or not `~/.bashrc` with your personal settings exists or not.
 
 We now elaborate on the usage of these configurations files by considering a few concrete examples.
 
@@ -657,9 +657,9 @@ bash
 
 each time you login on that remote computer, **sh** will execute the content of `~/.profile`, i.e. it will start the **Bash** shell for you automatically, which in turn at its startup will read some of its own configuration files discussed above. The net effect is that you will transparently run and configure the **Bash** shell at login on a remote computer, even though it is not the default shell on that computer.
 
-**Example 2:** _Making definitions of variables and aliases permanent_. We have already seen how to define your own aliases and variables and we already stressed out one important point: Their lifetime is limited to the duration of the terminal session in which you have defined them. In any new terminal you start, their definitions are not known. But there is one important thing which happens behind the scene each time you start a new terminal, and before you can start typing anything — **Bash** reads automatically the configuration files end executes line-by-line whatever is being set in them.
+**Example 2:** _Making definitions of variables and aliases permanent_. We have already seen how to define your own aliases and variables and we already stressed out one important point: Their lifetime is limited to the duration of the terminal session in which you have defined them. In any new terminal you start, their definitions are not known. But there is one important thing which happens behind the scene each time you start a new terminal, and before you can start typing anything &mdash; **Bash** reads automatically the configuration files end executes line-by-line whatever is being set in them.
 
-In the most cases of interest, it suffices to know that you need to edit directly your personal file, e.g. `~/.bash_aliases`, and then in the **Bash** configuration files `~/.bash_profile` and `~/.bashrc`, both of which must be stored directly in your home directory, you insert the line (if this line is already not inside those files — by default it is already inside on most **Linux** distributions):
+In the most cases of interest, it suffices to know that you need to edit directly your personal file, e.g. `~/.bash_aliases`, and then in the **Bash** configuration files `~/.bash_profile` and `~/.bashrc`, both of which must be stored directly in your home directory, you insert the line (if this line is already not inside those files &mdash; by default it is already inside on most **Linux** distributions):
 
 ```bash
 source ~/.bash_aliases

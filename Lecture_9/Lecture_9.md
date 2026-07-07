@@ -382,8 +382,8 @@ $ find pathToDirectory(-ies) -mindepth 2 -maxdepth 2 -type f -name "*.pdf"
 
 Finally, and very importantly, we describe the flag `-exec` that is used to specify the 'Action' part in the previously mentioned generic syntax, i.e. the command input that **find** needs to execute on the spot on the outcome of the search. The syntax for the flag `-exec` is a bit peculiar, but there are essentially two important things to remember:
 
-* `\;` — the command input after the flag `-exec` is determined this way
-* `{}` — when used in combination with`-exec`, this is a placeholder for the found file or directory
+* `\;` &mdash; the command input after the flag `-exec` is determined this way
+* `{}` &mdash; when used in combination with`-exec`, this is a placeholder for the found file or directory
 
 **Example 10:** Find all empty files in the specified directory(-ies), and for each of them, print its size.
 
@@ -407,7 +407,7 @@ $ find pathToDirectory(-ies) -type f -size 0 -delete
 
 To delete recursively non-empty directories found by **find**, only the first version will work, but only after we replace **rm** with **rm -rf** (use with great care!).
 
-It is also possible to execute multiple commands on the files or directories that **find** has found — we just need to use a separate `-exec` flag for each command input.
+It is also possible to execute multiple commands on the files or directories that **find** has found &mdash; we just need to use a separate `-exec` flag for each command input.
 
 **Example 12:** Find all files in the specified directory(-ies), and for each of them: a) print the full metadata with **ls -al**; and b) print the size with **stat -c %s**.
 
@@ -428,13 +428,13 @@ The second solution is more readable, less error prone and easier to generalize 
 
 Here we enlist a few additional flags of **find** command, which can become handy in practice:
 
-* `-ls` — print also file ownerships and timestamps, etc. (like `ls -l`)
-* `-user alice` — search for files or directories only belonging to the specific user named 'alice'
-* `-perm 755` — search for files or directories with specific permission '755'
-* `-ok` — same as flag `-exec` , but for each result found we are prompted with the question whether the specified command shall be executed
-* `\( -user chris -o -user joe \)` — example syntax to group multiple options in the common logical branch
-* `-not -user someUser` — exclude files or directories belonging to the user 'someUser' from search
-*   `-not -path somePattern` — exclude from search all results which would match the pattern 'somePattern'. Example:
+* `-ls` &mdash; print also file ownerships and timestamps, etc. (like `ls -l`)
+* `-user alice` &mdash; search for files or directories only belonging to the specific user named 'alice'
+* `-perm 755` &mdash; search for files or directories with specific permission '755'
+* `-ok` &mdash; same as flag `-exec` , but for each result found we are prompted with the question whether the specified command shall be executed
+* `\( -user chris -o -user joe \)` &mdash; example syntax to group multiple options in the common logical branch
+* `-not -user someUser` &mdash; exclude files or directories belonging to the user 'someUser' from search
+*   `-not -path somePattern` &mdash; exclude from search all results which would match the pattern 'somePattern'. Example:
 
     ```bash
     $ find someDir_{0..9} -not -path someDir_4/* -type f

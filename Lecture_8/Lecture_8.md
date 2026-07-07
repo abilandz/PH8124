@@ -252,7 +252,7 @@ because the output of the above line is the same as of:
 command <<< "someString"
 ```
 
-Therefore, instead of using the command **echo** in combination with pipe `|`, we can simply condense the syntax and only use `<<<` — the final printout is exactly the same.
+Therefore, instead of using the command **echo** in combination with pipe `|`, we can simply condense the syntax and only use `<<<` &mdash; the final printout is exactly the same.
 
 **Example 1:** Let's define `Var=20180524`. How to check programmatically with **grep** if this string begins with the pattern '2018'?
 
@@ -455,7 +455,7 @@ HERE-DOC
 ... code line 9 ...
 ```
 
-We have essentially declared lines from 2 to 8 to be the body of 'here document', and then its content redirected to the 'do-nothing' command `:` — this is yet another very neat use case of 'do-nothing' command! When using 'here documents' to comment out a piece of code, the version in which the opening delimiter is enclosed in quotes is safer because it prevents any potential variable or command substitution in the body before passing the code over to the 'do-nothing' command.
+We have essentially declared lines from 2 to 8 to be the body of 'here document', and then its content redirected to the 'do-nothing' command `:` &mdash; this is yet another very neat use case of 'do-nothing' command! When using 'here documents' to comment out a piece of code, the version in which the opening delimiter is enclosed in quotes is safer because it prevents any potential variable or command substitution in the body before passing the code over to the 'do-nothing' command.
 
 As this is a frequent source of painful debugging, we close this section by remarking again that the closing delimiter in 'here documents' shall not be followed by any trailing empty character.
 
