@@ -1,6 +1,6 @@
 # Lecture 12: ROOT - basic classes (Part 2/2)
 
-**Last update**: 20260408-2
+**Last update**: 20260707-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -25,15 +25,15 @@ Frequently, we want to show for instance two or more histograms (or graphs or fu
 
 ```cpp
 {
- TH1F *hist1 = new TH1F("hist1","title 1",10,0.,10.);
- hist1->SetLineColor(kRed);
- hist1->SetFillColor(kRed-10);
- hist1->Fill(4.44);
+  TH1F *hist1 = new TH1F("hist1", "title 1", 10, 0., 10.);
+  hist1->SetLineColor(kRed);
+  hist1->SetFillColor(kRed - 10);
+  hist1->Fill(4.44);
 
- TH1F *hist2 = new TH1F("hist2","title 2",100,0.,100.);
- hist2->SetLineColor(kBlue);
- hist2->SetFillColor(kBlue-10);
- hist2->Fill(22.22);
+  TH1F *hist2 = new TH1F("hist2", "title 2", 100, 0., 100.);
+  hist2->SetLineColor(kBlue);
+  hist2->SetFillColor(kBlue - 10);
+  hist2->Fill(22.22);
 }
 ```
 
@@ -62,30 +62,30 @@ then first histogram 'hist2' is plotted, and then 'hist1' is drawn on top of it.
 
 ```cpp
 {
- // Define the dummy histogram just to set all common plotting thingies:
- TH1F *histStyle = new TH1F("histStyle","common title",20,0.,20.);
- histStyle->GetXaxis()->SetTitle("transverse momentum");
- histStyle->GetYaxis()->SetTitle("counts");
- histStyle->SetStats(kFALSE); // do not show stat box
+  // Define the dummy histogram just to set all common plotting thingies:
+  TH1F *histStyle = new TH1F("histStyle", "common title", 20, 0., 20.);
+  histStyle->GetXaxis()->SetTitle("transverse momentum");
+  histStyle->GetYaxis()->SetTitle("counts");
+  histStyle->SetStats(kFALSE); // do not show stat box
 
- // Define some other histogram you want to plot:
- TH1F *hist1 = new TH1F("hist1","title 1",10,0.,10.);
- hist1->SetLineColor(kRed);
- hist1->SetFillColor(kRed-10);
- hist1->Fill(4.44);
+  // Define some other histogram you want to plot:
+  TH1F *hist1 = new TH1F("hist1", "title 1", 10, 0., 10.);
+  hist1->SetLineColor(kRed);
+  hist1->SetFillColor(kRed - 10);
+  hist1->Fill(4.44);
 
- // Define some other object you want to plot:
- TF1 *f1 = new TF1("f1","exp(-x/4)",0.,15.); 
- f1->SetLineColor(kGreen+2);
+  // Define some other object you want to plot:
+  TF1 *f1 = new TF1("f1", "exp(-x/4)", 0., 15.);
+  f1->SetLineColor(kGreen + 2);
 
- // Final plotting:
- TCanvas *c = new TCanvas("c","some canvas");
- histStyle->Draw();
- hist1->Draw("same");
- f1->Draw("same");
+  // Final plotting:
+  TCanvas *c = new TCanvas("c", "some canvas");
+  histStyle->Draw();
+  hist1->Draw("same");
+  f1->Draw("same");
 
- // Final saving:
- c->SaveAs("superimposing.pdf"); 
+  // Final saving:
+  c->SaveAs("superimposing.pdf");
 }
 ```
 
@@ -95,7 +95,7 @@ ROOT files are made in a very straightforward way by using class `TFile`:
 
 ```cpp
 {
- TFile *file = new TFile("someFileName.root","NEW");
+  TFile *file = new TFile("someFileName.root", "NEW");
 }
 ```
 
@@ -110,16 +110,16 @@ But there is much more happening here behind the scene, when new ROOT file is be
 
 ```cpp
 {
- cout<<"0: "<<gFile<<endl;
+  cout << "0: " << gFile << endl;
 
- TFile *file_1 = new TFile("someFileName_1.root","RECREATE");
- cout<<"1: "<<gFile->GetName()<<endl;
+  TFile *file_1 = new TFile("someFileName_1.root", "RECREATE");
+  cout << "1: " << gFile->GetName() << endl;
 
- TFile *file_2 = new TFile("someFileName_2.root","RECREATE");
- cout<<"2: "<<gFile->GetName()<<endl;
+  TFile *file_2 = new TFile("someFileName_2.root", "RECREATE");
+  cout << "2: " << gFile->GetName() << endl;
 
- file_2->Close(); // close this file in memory
- cout<<"3: "<<gFile<<endl;
+  file_2->Close(); // close this file in memory
+  cout << "3: " << gFile << endl;
 }
 ```
 
@@ -127,16 +127,17 @@ That being said, in order to save for instance histogram in the ROOT file, by us
 
 ```cpp
 {
- TFile *file = new TFile("someFileName.root","RECREATE");
+  TFile *file = new TFile("someFileName.root", "RECREATE");
 
- TH1F *hist = new TH1F("hist","title",10,0.,10.);
- hist->SetLineColor(kRed);
- hist->SetFillColor(kRed-10);
- hist->Fill(4.44);
+  TH1F *hist = new TH1F("hist", "title", 10, 0., 10.);
+  hist->SetLineColor(kRed);
+  hist->SetFillColor(kRed - 10);
+  hist->Fill(4.44);
 
- hist->Write(); // this saves the histogram to the file to which global variable 'gFile' points to
+  hist->Write(); // this saves the histogram to the file to which global
+                 // variable 'gFile' points to
 
- file->Close();
+  file->Close();
 }
 ```
 
@@ -146,8 +147,8 @@ Next, we discuss how to retrieve programmatically pointer to the object which wa
 
 ```cpp
 {
- TFile *file = new TFile("myFile.root","READ");
- file->ls();
+  TFile *file = new TFile("myFile.root", "READ");
+  file->ls();
 }
 ```
 
@@ -164,32 +165,33 @@ We see clearly our two objects in this printout, let us now fetch their pointers
 
 ```cpp
 {
- TFile *file = new TFile("myFile.root","READ");
- //file->ls(); // see the content of the file
- 
- // Get pointer to histogram:
- TH1F *hist = dynamic_cast<TH1F*>(file->Get("hist"));
- hist->SetDirectory(0); // very important!! Remove the original default ownership!
+  TFile *file = new TFile("myFile.root", "READ");
+  // file->ls(); // see the content of the file
 
- // Get pointer to function:
- TF1 *fun = dynamic_cast<TF1*>(file->Get("fun"));
+  // Get pointer to histogram:
+  TH1F *hist = dynamic_cast<TH1F *>(file->Get("hist"));
+  hist->SetDirectory(
+      0); // very important!! Remove the original default ownership!
 
- // Close the first file, as it is not needed any longer:
- file->Close();
+  // Get pointer to function:
+  TF1 *fun = dynamic_cast<TF1 *>(file->Get("fun"));
 
- // Modify the objects, for instance:
- hist->SetLineColor(kBlue);
- hist->SetFillColor(kBlue-10);
- hist->Fill(1.44);
- fun->SetLineColor(kBlue);
+  // Close the first file, as it is not needed any longer:
+  file->Close();
 
- // Open the new file and save:
- TFile *fileNew = new TFile("myFileNew.root","RECREATE");
- hist->Write();
- fun->Write();
+  // Modify the objects, for instance:
+  hist->SetLineColor(kBlue);
+  hist->SetFillColor(kBlue - 10);
+  hist->Fill(1.44);
+  fun->SetLineColor(kBlue);
 
- // Close the new file:
- fileNew->Close();
+  // Open the new file and save:
+  TFile *fileNew = new TFile("myFileNew.root", "RECREATE");
+  hist->Write();
+  fun->Write();
+
+  // Close the new file:
+  fileNew->Close();
 }
 ```
 
@@ -214,15 +216,15 @@ we can merge them with the following code snippet:
 
 ```cpp
 {
- TFileMerger *fileMerger = new TFileMerger(); 
+  TFileMerger *fileMerger = new TFileMerger();
 
- // Add files which need to be merged:
- fileMerger->AddFile("10/mergeMe.root",kFALSE);
- fileMerger->AddFile("11/mergeMe.root",kFALSE);
+  // Add files which need to be merged:
+  fileMerger->AddFile("10/mergeMe.root", kFALSE);
+  fileMerger->AddFile("11/mergeMe.root", kFALSE);
 
- // Final merging:
- fileMerger->OutputFile("merged.root");
- fileMerger->Merge();
+  // Final merging:
+  fileMerger->OutputFile("merged.root");
+  fileMerger->Merge();
 }
 ```
 
@@ -274,14 +276,16 @@ Let us assume that in this toy example the first three columns represent x, y, a
 #include "TFile.h"
 #include "TTree.h"
 
-void importASCIIfileIntoTTree(const char *filename)
-{
- TFile *file = new TFile("output.root","recreate"); // open ROOT file named 'output.root', where TTree will be saved.
- TTree *tree = new TTree("chunk","data from ascii file"); // make new TTree
+void importASCIIfileIntoTTree(const char *filename) {
+  TFile *file = new TFile("output.root",
+                          "recreate"); // open ROOT file named 'output.root',
+                                       // where TTree will be saved.
+  TTree *tree = new TTree("chunk", "data from ascii file"); // make new TTree
 
- Long64_t nlines = tree->ReadFile(filename,"px:py:pz:E"); // whatever you specify here, will be relevant when you start later reading the branches
- tree->Write(); // save TTree to 'output.root' file
- file->Close();
+  Long64_t nlines = tree->ReadFile(filename, "px:py:pz:E"); // whatever you specify here, will be relevant
+                                                            // when you start later reading the branches
+  tree->Write(); // save TTree to 'output.root' file
+  file->Close();
 }
 ```
 
@@ -305,51 +309,57 @@ So almost factor 3 gain in size, even for such a simple example!
 Finally, we provide the code snippet how to read data from `TTree` stored in ROOT file:
 
 ```cpp
-// Example macro to read TTree from the file, and then all particles from the current TTree
+// Example macro to read TTree from the file, and then all particles from the
+// current TTree
 
-void readDataFromTTree(const char *filename)
-{
+void readDataFromTTree(const char *filename) {
 
- TFile *file = new TFile("output.root","update"); // there multiple TTrees in this file, each corresponds to different event
+  // there are multiple TTrees in this file, each corresponds to different event:
+  TFile *file = new TFile("output.root", "update"); 
 
- TList *lofk = file->GetListOfKeys();
+  TList *lofk = file->GetListOfKeys();
 
- for(Int_t i=0; i<lofk->GetEntries(); i++)
- {
+  for (Int_t i = 0; i < lofk->GetEntries(); i++) {
 
-  TTree *tree = (TTree*) file->Get(Form("%s;%d",lofk->At(i)->GetName(),i+1)); // works if TTrees in ROOT file are named e.g. 'chunk;1', 'chunk;2'. Otherwise, adapt for your case
+    TTree *tree = (TTree *)file->Get(Form("%s;%d", lofk->At(i)->GetName(), i + 1));
+    // Remark: the line above works if TTrees in ROOT file are named e.g. 'chunk;1',
+    // 'chunk;2'. Otherwise, adapt for your case
 
-  if(!tree || strcmp(tree->ClassName(),"TTree")) // make sure the pointer is valid, and it points to TTree
-  {
-   cout<<Form("%s is not TTree!",lofk->At(i)->GetName())<<endl; 
-   continue;
-  }
+    // make sure the pointer is valid, and it points to TTree:
+    if (!tree || strcmp(tree->ClassName(), "TTree")) {
+      cout << Form("%s is not TTree!", lofk->At(i)->GetName()) << endl;
+      continue;
+    }
 
-  //tree->Print();  //from this printout, you can for instance inspect the names of the branches
+    // tree->Print(); // from this printout, you can for instance inspect the
+    // names of the branches
 
-  cout<<Form("Accessing TTree named: %s",tree->GetName())<<": "<<tree<<endl;
-  Int_t nParticles = (Int_t)tree->GetEntries(); // number of particles
-  cout<<Form("=> It has %d particles.",nParticles)<<endl;
+    cout << Form("Accessing TTree named: %s", tree->GetName()) << ": " << tree << endl;
+    Int_t nParticles = (Int_t)tree->GetEntries(); // number of particles
+    cout << Form("=> It has %d particles.", nParticles) << endl;
 
-  // Attach local variables to branches:
-  Float_t px = 0., py = 0., pz = 0. , E = 0.;
-  tree->SetBranchAddress("px",&px); // that the name of this branch is px, you can inspect from tree->Print() above, and so on
-  tree->SetBranchAddress("py",&py);
-  tree->SetBranchAddress("pz",&pz);
-  tree->SetBranchAddress("E",&E);
+    // Attach local variables to branches:
+    Float_t px = 0., py = 0., pz = 0., E = 0.;
+    tree->SetBranchAddress("px", &px); 
+    // Remark: that the name of this branch is px, you can
+    // inspect from tree->Print() above, and so on
+  
+    tree->SetBranchAddress("py", &py);
+    tree->SetBranchAddress("pz", &pz);
+    tree->SetBranchAddress("E", &E);
 
-  for(Int_t p = 0; p < nParticles; p++) // loop over all particles in a current TTree
-  {
-   tree->GetEntry(p);
-   cout<<Form("%d: %f %f %f %f",p,px,py,pz,E)<<endl; 
-  }
+    // loop over all particles in a current TTree:
+    for (Int_t p = 0; p < nParticles; p++)
+    {
+      tree->GetEntry(p);
+      cout << Form("%d: %f %f %f %f", p, px, py, pz, E) << endl;
+    }
 
-  cout<<"Done with this event, marching on...\n"<<endl; 
+    cout << "Done with this event, marching on...\n" << endl;
 
- } // for(Int_t i=0; i<lofk->GetEntries(); i++)
+  } // for(Int_t i=0; i<lofk->GetEntries(); i++)
 
- file->Close(); 
-
+  file->Close();
 }
 ```
 

@@ -1,6 +1,6 @@
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20260408-1
+**Last update**: 20260707-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -30,8 +30,8 @@ Save in the file `hello_interpreted.C` the following code snippet:
 
 ```cpp
 {
- printf("Hello World!\n"); // C style
- cout<<"Hello World!"<<endl; // C++ style
+  printf("Hello World!\n");       // C style
+  cout << "Hello World!" << endl; // C++ style
 }
 ```
 
@@ -66,12 +66,11 @@ Save in the file `hello_compiled.C` the following code snippet:
 ```cpp
 #include "Riostream.h"
 
-Int_t hello_compiled()
-{
- printf("Hello World!\n"); // C style
- cout<<"Hello World!"<<endl; // C++ style
+Int_t hello_compiled() {
+  printf("Hello World!\n");       // C style
+  cout << "Hello World!" << endl; // C++ style
 
- return 0;
+  return 0;
 }
 ```
 
@@ -128,8 +127,8 @@ The columns are interpreted by class `TGraphErrors` in the following way: _x_-va
 
 ```cpp
 {
- TGraphErrors *ge = new TGraphErrors("someData.dat","%lg %lg %lg %lg"); 
- ge->Draw("ap"); 
+  TGraphErrors *ge = new TGraphErrors("someData.dat", "%lg %lg %lg %lg");
+  ge->Draw("ap");
 }
 ```
 
@@ -139,13 +138,13 @@ If on the other hand we have the data points stored in arrays within the code, t
 
 ```cpp
 {
- Float_t x[6] = {0.5,1.5,2.5,3.5,4.5,5.5};
- Float_t y[6] = {4.440,3.123,2.111,1.211,2.561,3.432};
- Float_t ex[6] = {0.5,0.5,0.5,0.5,0.5,0.5};
- Float_t ey[6] = {0.01,0.02,0.01,0.03,0.04,0.05};
+  Float_t x[6] = {0.5, 1.5, 2.5, 3.5, 4.5, 5.5};
+  Float_t y[6] = {4.440, 3.123, 2.111, 1.211, 2.561, 3.432};
+  Float_t ex[6] = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+  Float_t ey[6] = {0.01, 0.02, 0.01, 0.03, 0.04, 0.05};
 
- TGraphErrors *ge = new TGraphErrors(6,x,y,ex,ey); 
- ge->Draw("ap"); 
+  TGraphErrors *ge = new TGraphErrors(6, x, y, ex, ey);
+  ge->Draw("ap");
 }
 ```
 
@@ -155,8 +154,8 @@ This is a **ROOT** class to define 1-dimensional function, which can be used for
 
 ```cpp
 {
- TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- f1->Draw();
+  TF1 *f1 = new TF1("f1", "exp(-x*x)", -2., 2.);
+  f1->Draw();
 }
 ```
 
@@ -164,10 +163,10 @@ Thing to remember is that `x` has to be used to denote variable. In the case you
 
 ```cpp
 {
- TF1 *f1 = new TF1("f1","[0]*exp(-x*x) + [1]",-2.,2.);
- f1->SetParameter(0,4.123);
- f1->SetParameter(1,-2.123);
- f1->Draw();
+  TF1 *f1 = new TF1("f1", "[0]*exp(-x*x) + [1]", -2., 2.);
+  f1->SetParameter(0, 4.123);
+  f1->SetParameter(1, -2.123);
+  f1->Draw();
 }
 ```
 
@@ -175,11 +174,10 @@ In order to use `TF1` object as a p.d.f., we can perform the sampling as follows
 
 ```cpp
 {
- TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- for (Int_t i=0; i<10; i++)
- {
-  cout<<f1->GetRandom()<<endl;
- }
+  TF1 *f1 = new TF1("f1", "exp(-x*x)", -2., 2.);
+  for (Int_t i = 0; i < 10; i++) {
+    cout << f1->GetRandom() << endl;
+  }
 }
 ```
 
@@ -202,40 +200,37 @@ If we now re-execute the above code, we get exactly the same random sequence. We
 
 ```cpp
 {
- // Ensure that random sequence is unique in time and space:
- delete gRandom;
- gRandom = new TRandom3(0);
- 
- // Do the sampling:
- TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- for (Int_t i=0; i<10; i++)
- {
-  cout<<f1->GetRandom()<<endl;
- }
-}    
+  // Ensure that random sequence is unique in time and space:
+  delete gRandom;
+  gRandom = new TRandom3(0);
+
+  // Do the sampling:
+  TF1 *f1 = new TF1("f1", "exp(-x*x)", -2., 2.);
+  for (Int_t i = 0; i < 10; i++) {
+    cout << f1->GetRandom() << endl;
+  }
+}
 ```
 
 When doing a large scale Monte Carlo simulations, performance clearly matters, and it is preferred to do simulations in compiled mode. The version of above code snippet which can be saved in the file `f1_random_compiled.C` and compiled is:
 
 ```cpp
-#include<Riostream.h>
-#include<TF1.h>
-#include<TRandom3.h>
+#include <Riostream.h>
+#include <TF1.h>
+#include <TRandom3.h>
 
-Int_t f1_random_compiled()
-{
- // Ensure that random sequence is unique in time and space:
- delete gRandom;
- gRandom = new TRandom3(0);
+Int_t f1_random_compiled() {
+  // Ensure that random sequence is unique in time and space:
+  delete gRandom;
+  gRandom = new TRandom3(0);
 
   // Do the sampling:
- TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- for (Int_t i=0; i<10; i++)
- {
-  cout<<f1->GetRandom()<<endl;
- }
+  TF1 *f1 = new TF1("f1", "exp(-x*x)", -2., 2.);
+  for (Int_t i = 0; i < 10; i++) {
+    cout << f1->GetRandom() << endl;
+  }
 
- return 0;
+  return 0;
 }
 ```
 
@@ -251,14 +246,12 @@ The following interpreted code is saved in the file `f1_random_interpreted.C`:
 
 ```cpp
 {
- delete gRandom;
- gRandom = new TRandom3(0);
-
- TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- for (Int_t i=0; i<1e9; i++)
- {
-  f1->GetRandom();
- }
+  delete gRandom;
+  gRandom = new TRandom3(0);
+  TF1 *f1 = new TF1("f1", "exp(-x*x)", -2., 2.);
+  for (Int_t i = 0; i < 1e9; i++) {
+    f1->GetRandom();
+  }
 }
 ```
 
@@ -277,24 +270,22 @@ sys     0m0.438s
 The following analogous compiled version is saved in the file `f1_random_compiled.C`:
 
 ```cpp
-#include<Riostream.h>
-#include<TF1.h>
-#include<TRandom3.h>
+#include <Riostream.h>
+#include <TF1.h>
+#include <TRandom3.h>
 
-Int_t f1_random_compiled()
-{
- // Ensure that random sequence is unique in time and space:
- delete gRandom;
- gRandom = new TRandom3(0);
+Int_t f1_random_compiled() {
+  // Ensure that random sequence is unique in time and space:
+  delete gRandom;
+  gRandom = new TRandom3(0);
 
- // Do the sampling:
- TF1 *f1 = new TF1("f1","exp(-x*x)",-2.,2.);
- for (Int_t i=0; i<1e9; i++)
- {
-  f1->GetRandom();
- }
+  // Do the sampling:
+  TF1 *f1 = new TF1("f1", "exp(-x*x)", -2., 2.);
+  for (Int_t i = 0; i < 1e9; i++) {
+    f1->GetRandom();
+  }
 
- return 0;
+  return 0;
 }
 ```
 
@@ -323,23 +314,22 @@ In above examples, we have used 3 frequently used flags for **ROOT** with the fo
 
 ```cpp
 {
- // Make random sequence unique in tiem and space:
- delete gRandom;
- gRandom = new TRandom3(0);
+  // Make random sequence unique in tiem and space:
+  delete gRandom;
+  gRandom = new TRandom3(0);
 
- // Define and configure the 2D f(x,y):
- TF2 *f2 = new TF2("f2","[0]*x + [1]*y",-1,1,100,1000);
- f2->SetParameter(0,4.1234);
- f2->SetParameter(1,2.1234);
+  // Define and configure the 2D f(x,y):
+  TF2 *f2 = new TF2("f2", "[0]*x + [1]*y", -1, 1, 100, 1000);
+  f2->SetParameter(0, 4.1234);
+  f2->SetParameter(1, 2.1234);
 
- // Do the sampling:
- Double_t var1 = 0.;
- Double_t var2 = 0.;
- for(Int_t i=0; i<10; i++)
- {
-  f2->GetRandom2(var1,var2);
-  cout<<var1<<", "<<var2<<endl;
- }
+  // Do the sampling:
+  Double_t var1 = 0.;
+  Double_t var2 = 0.;
+  for (Int_t i = 0; i < 10; i++) {
+    f2->GetRandom2(var1, var2);
+    cout << var1 << ", " << var2 << endl;
+  }
 }
 ```
 
@@ -351,13 +341,13 @@ The thing to note is that the two variables need to be declared first, and then 
 
 ```cpp
 {
- TStopwatch watch;
- watch.Start();
+  TStopwatch watch;
+  watch.Start();
 
- // some code here
+  // some code here
 
- watch.Stop();
- watch.Print();
+  watch.Stop();
+  watch.Print();
 }
 ```
 
@@ -369,30 +359,33 @@ Histogramming is illustrated in the following example:
 
 ```cpp
 {
- // Define some p.d.f. for sampling:
- TF1 *funct = new TF1("funct","exp(-x*x)",-2.,2.);
+  // Define some p.d.f. for sampling:
+  TF1 *funct = new TF1("funct", "exp(-x*x)", -2., 2.);
 
- // Define some histogram to store the results of sampling:
- TH1F *hist = new TH1F("hist","hist title",100,-2.,2.);
+  // Define some histogram to store the results of sampling:
+  TH1F *hist = new TH1F("hist", "hist title", 100, -2., 2.);
 
- // Fill the histogram with 10000 sampled points from pre-defined p.d.f:
- hist->FillRandom("funct",10000);
+  // Fill the histogram with 10000 sampled points from pre-defined p.d.f:
+  hist->FillRandom("funct", 10000);
 
- // Plot both the starting p.d.f. and resulting histogram:
- TCanvas *c = new TCanvas("c","canvas title",1400,700); // define a new 1400x700 canvas
- c->Divide(2,1); // divide horizontal axis in two, and vertical leave intact 
- 
- c->cd(1); // move to the first pad after canvas subdivision resulting from call to Divide()
- funct->Draw();
- 
- c->cd(2); // move to the second pad after canvas subdivision resulting from call to Divide()
- hist->Draw();
- 
- // Save the canvas in 4 different formats:
- c->SaveAs("histExample.pdf"); 
- c->SaveAs("histExample.eps"); 
- c->SaveAs("histExample.png"); 
- c->SaveAs("histExample.C"); 
+  // Plot both the starting p.d.f. and resulting histogram:
+  TCanvas *c = new TCanvas("c", "canvas title", 1400,
+                           700); // define a new 1400x700 canvas
+  c->Divide(2, 1); // divide horizontal axis in two, and vertical leave intact
+
+  c->cd(1); // move to the first pad after canvas subdivision resulting from
+            // call to Divide()
+  funct->Draw();
+
+  c->cd(2); // move to the second pad after canvas subdivision resulting from
+            // call to Divide()
+  hist->Draw();
+
+  // Save the canvas in 4 different formats:
+  c->SaveAs("histExample.pdf");
+  c->SaveAs("histExample.eps");
+  c->SaveAs("histExample.png");
+  c->SaveAs("histExample.C");
 }
 ```
 
@@ -404,43 +397,49 @@ Its usage is illustrated in the following example:
 
 ```cpp
 {
- // Define some p.d.f. for sampling:
- TF1 *funct = new TF1("funct","exp(-x*x)",-2.,2.);
+  // Define some p.d.f. for sampling:
+  TF1 *funct = new TF1("funct", "exp(-x*x)", -2., 2.);
 
- // Define some histogram to store the results of sampling:
- TH1F *hist = new TH1F("hist","hist title",100,-2.,2.);
+  // Define some histogram to store the results of sampling:
+  TH1F *hist = new TH1F("hist", "hist title", 100, -2., 2.);
 
- // Fill the histogram with 10000 sampled points from pre-define p.d.f:
- hist->FillRandom("funct",10000);
+  // Fill the histogram with 10000 sampled points from pre-define p.d.f:
+  hist->FillRandom("funct", 10000);
 
- // Define some profile to store only the average values of sampling in each interval:
- TProfile *pro = new TProfile("pro","profile: #LTx^{3}#GT vs. x",10,-2.,2.);
+  // Define some profile to store only the average values of sampling in each
+  // interval:
+  TProfile *pro =
+      new TProfile("pro", "profile: #LTx^{3}#GT vs. x", 10, -2., 2.);
 
- // Fill the profile with 10000 sampled points from pre-define p.d.f, to get <x^3> for each bin:
- for(Int_t i=0; i<10000; i++)
- {
-  Double_t value = funct->GetRandom();
-  pro->Fill(value,pow(value,3.)); // <x^3> vs. x
- }
+  // Fill the profile with 10000 sampled points from pre-define p.d.f, to get
+  // <x^3> for each bin:
+  for (Int_t i = 0; i < 10000; i++) {
+    Double_t value = funct->GetRandom();
+    pro->Fill(value, pow(value, 3.)); // <x^3> vs. x
+  }
 
- // Plot both the starting p.d.f. and resulting histogram:
- TCanvas *c = new TCanvas("c","canvas title",2100,700); // define a new 1400x700 canvas
- c->Divide(3,1); // divide horizontal axis in two, and vertical leave intact 
+  // Plot both the starting p.d.f. and resulting histogram:
+  TCanvas *c = new TCanvas("c", "canvas title", 2100,
+                           700); // define a new 1400x700 canvas
+  c->Divide(3, 1); // divide horizontal axis in two, and vertical leave intact
 
- c->cd(1); // move to the first pad after canvas subdivision resulting from call to Divide()
- funct->Draw();
+  c->cd(1); // move to the first pad after canvas subdivision resulting from
+            // call to Divide()
+  funct->Draw();
 
- c->cd(2); // move to the second pad after canvas subdivision resulting from call to Divide()
- hist->Draw();
+  c->cd(2); // move to the second pad after canvas subdivision resulting from
+            // call to Divide()
+  hist->Draw();
 
- c->cd(3); // move to the third pad after canvas subdivision resulting from call to Divide()
- pro->Draw();
+  c->cd(3); // move to the third pad after canvas subdivision resulting from
+            // call to Divide()
+  pro->Draw();
 
- // Save the canvas:
- c->SaveAs("profileExample.pdf"); 
- c->SaveAs("profileExample.eps"); 
- c->SaveAs("profileExample.png"); 
- c->SaveAs("profileExample.C"); 
+  // Save the canvas:
+  c->SaveAs("profileExample.pdf");
+  c->SaveAs("profileExample.eps");
+  c->SaveAs("profileExample.png");
+  c->SaveAs("profileExample.C");
 }
 ```
 
@@ -457,14 +456,14 @@ For instance, in the previous example, you could have changed the histogram plot
 
 ```cpp
 {
- hist->SetLineColor(kRed); 
- hist->SetLineStyle(2); 
- hist->SetLineWidth(4); 
+  hist->SetLineColor(kRed);
+  hist->SetLineStyle(2);
+  hist->SetLineWidth(4);
 
- hist->SetMarkerColor(kRed); 
- hist->SetMarkerStyle(kCircle);
- hist->SetMarkerSize(1.4);
-} 
+  hist->SetMarkerColor(kRed);
+  hist->SetMarkerStyle(kCircle);
+  hist->SetMarkerSize(1.4);
+}
 ```
 
 The above functions can be called also for the classes `TF1`, `TGraphErrors`, etc.
@@ -473,48 +472,54 @@ For instance, used in a concrete example:
 
 ```cpp
 {
- // Define some p.d.f. for sampling:
- TF1 *funct = new TF1("funct","exp(-x*x)",-2.,2.);
- funct->SetLineColor(kBlue);
+  // Define some p.d.f. for sampling:
+  TF1 *funct = new TF1("funct", "exp(-x*x)", -2., 2.);
+  funct->SetLineColor(kBlue);
 
- // Define some histogram to store the results of sampling:
- TH1F *hist = new TH1F("hist","hist title",100,-2.,2.);
- hist->SetFillColor(kBlue-10); 
+  // Define some histogram to store the results of sampling:
+  TH1F *hist = new TH1F("hist", "hist title", 100, -2., 2.);
+  hist->SetFillColor(kBlue - 10);
 
- // Fill the histogram with 10000 sampled points from pre-define p.d.f:
- hist->FillRandom("funct",10000);
+  // Fill the histogram with 10000 sampled points from pre-define p.d.f:
+  hist->FillRandom("funct", 10000);
 
- // Define some profile to store only the average values of sampling in each interval:
- TProfile *pro = new TProfile("pro","profile: #LTx^{3}#GT vs. x",10,-2.,2.);
- pro->SetMarkerStyle(kFullCircle);
- pro->SetMarkerColor(kRed);
- pro->SetLineColor(kRed);
+  // Define some profile to store only the average values of sampling in each
+  // interval:
+  TProfile *pro =
+      new TProfile("pro", "profile: #LTx^{3}#GT vs. x", 10, -2., 2.);
+  pro->SetMarkerStyle(kFullCircle);
+  pro->SetMarkerColor(kRed);
+  pro->SetLineColor(kRed);
 
- // Fill the profile with 10000 sampled points from pre-define p.d.f, to get <x^3> for each bin:
- for(Int_t i=0; i<10000; i++)
- {
-  Double_t value = funct->GetRandom();
-  pro->Fill(value,pow(value,3.)); // <x^3> vs. x
- }
+  // Fill the profile with 10000 sampled points from pre-define p.d.f, to get
+  // <x^3> for each bin:
+  for (Int_t i = 0; i < 10000; i++) {
+    Double_t value = funct->GetRandom();
+    pro->Fill(value, pow(value, 3.)); // <x^3> vs. x
+  }
 
- // Plot both the starting p.d.f. and resulting histogram:
- TCanvas *c = new TCanvas("c","canvas title",2100,700); // define a new 1400x700 canvas
- c->Divide(3,1); // divide horizontal axis in two, and vertical leave intact 
+  // Plot both the starting p.d.f. and resulting histogram:
+  TCanvas *c = new TCanvas("c", "canvas title", 2100,
+                           700); // define a new 1400x700 canvas
+  c->Divide(3, 1); // divide horizontal axis in two, and vertical leave intact
 
- c->cd(1); // move to the first pad after canvas subdivision resulting from call to Divide()
- funct->Draw();
+  c->cd(1); // move to the first pad after canvas subdivision resulting from
+            // call to Divide()
+  funct->Draw();
 
- c->cd(2); // move to the second pad after canvas subdivision resulting from call to Divide()
- hist->Draw();
+  c->cd(2); // move to the second pad after canvas subdivision resulting from
+            // call to Divide()
+  hist->Draw();
 
- c->cd(3); // move to the third pad after canvas subdivision resulting from call to Divide()
- pro->Draw();
+  c->cd(3); // move to the third pad after canvas subdivision resulting from
+            // call to Divide()
+  pro->Draw();
 
- // Save the canvas:
- c->SaveAs("profileCosmeticsExample.pdf"); 
- c->SaveAs("profileCosmeticsExample.eps"); 
- c->SaveAs("profileCosmeticsExample.png"); 
- c->SaveAs("profileCosmeticsExample.C"); 
+  // Save the canvas:
+  c->SaveAs("profileCosmeticsExample.pdf");
+  c->SaveAs("profileCosmeticsExample.eps");
+  c->SaveAs("profileCosmeticsExample.png");
+  c->SaveAs("profileCosmeticsExample.C");
 }
 ```
 
@@ -527,11 +532,10 @@ Its usage is illustrated in the following code snippet
 
 ```cpp
 {
- TH2D *hist = new TH2D("hist","title",100,-10.,10.,50,0,10.);
- for(Int_t i=0; i<10000; i++)
- {
-  hist->Fill(gRandom->Gaus(0,2),gRandom->Exp(1.5));
- }
- hist->Draw("surf3");
+  TH2D *hist = new TH2D("hist", "title", 100, -10., 10., 50, 0, 10.);
+  for (Int_t i = 0; i < 10000; i++) {
+    hist->Fill(gRandom->Gaus(0, 2), gRandom->Exp(1.5));
+  }
+  hist->Draw("surf3");
 }
 ```
