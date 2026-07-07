@@ -1,6 +1,6 @@
 # Lecture 11: ROOT - basic classes (Part 1/2)
 
-**Last update**: 20260707-1
+**Last update**: 20260707-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -368,9 +368,9 @@ Histogramming is illustrated in the following example:
   // Fill the histogram with 10000 sampled points from pre-defined p.d.f:
   hist->FillRandom("funct", 10000);
 
-  // Plot both the starting p.d.f. and resulting histogram:
-  TCanvas *c = new TCanvas("c", "canvas title", 1400,
-                           700); // define a new 1400x700 canvas
+  // Plot both the starting p.d.f. and resulting histogram,
+  // first define a new 1400x700 canvas:
+  TCanvas *c = new TCanvas("c", "canvas title", 1400, 700);
   c->Divide(2, 1); // divide horizontal axis in two, and vertical leave intact
 
   c->cd(1); // move to the first pad after canvas subdivision resulting from
@@ -406,10 +406,9 @@ Its usage is illustrated in the following example:
   // Fill the histogram with 10000 sampled points from pre-define p.d.f:
   hist->FillRandom("funct", 10000);
 
-  // Define some profile to store only the average values of sampling in each
-  // interval:
-  TProfile *pro =
-      new TProfile("pro", "profile: #LTx^{3}#GT vs. x", 10, -2., 2.);
+  // Define some profile to store only the average values of sampling
+  // in each interval:
+  TProfile *pro = new TProfile("pro", "profile: #LTx^{3}#GT vs. x", 10, -2., 2.);
 
   // Fill the profile with 10000 sampled points from pre-define p.d.f, to get
   // <x^3> for each bin:
@@ -418,9 +417,9 @@ Its usage is illustrated in the following example:
     pro->Fill(value, pow(value, 3.)); // <x^3> vs. x
   }
 
-  // Plot both the starting p.d.f. and resulting histogram:
-  TCanvas *c = new TCanvas("c", "canvas title", 2100,
-                           700); // define a new 1400x700 canvas
+  // Plot both the starting p.d.f. and resulting histogram,
+  // first define a new 1400x700 canvas:  
+  TCanvas *c = new TCanvas("c", "canvas title", 2100, 700);
   c->Divide(3, 1); // divide horizontal axis in two, and vertical leave intact
 
   c->cd(1); // move to the first pad after canvas subdivision resulting from
@@ -483,10 +482,9 @@ For instance, used in a concrete example:
   // Fill the histogram with 10000 sampled points from pre-define p.d.f:
   hist->FillRandom("funct", 10000);
 
-  // Define some profile to store only the average values of sampling in each
-  // interval:
-  TProfile *pro =
-      new TProfile("pro", "profile: #LTx^{3}#GT vs. x", 10, -2., 2.);
+  // Define some profile to store only the average values of sampling 
+  // in each interval:
+  TProfile *pro = new TProfile("pro", "profile: #LTx^{3}#GT vs. x", 10, -2., 2.);
   pro->SetMarkerStyle(kFullCircle);
   pro->SetMarkerColor(kRed);
   pro->SetLineColor(kRed);
@@ -498,9 +496,9 @@ For instance, used in a concrete example:
     pro->Fill(value, pow(value, 3.)); // <x^3> vs. x
   }
 
-  // Plot both the starting p.d.f. and resulting histogram:
-  TCanvas *c = new TCanvas("c", "canvas title", 2100,
-                           700); // define a new 1400x700 canvas
+  // Plot both the starting p.d.f. and resulting histogram, 
+  // first define a new 1400x700 canvas:
+  TCanvas *c = new TCanvas("c", "canvas title", 2100, 700);
   c->Divide(3, 1); // divide horizontal axis in two, and vertical leave intact
 
   c->cd(1); // move to the first pad after canvas subdivision resulting from
