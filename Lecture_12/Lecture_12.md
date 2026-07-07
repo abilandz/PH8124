@@ -2,7 +2,7 @@
 
 **Last update**: 20260408-2
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Disclaimer
 

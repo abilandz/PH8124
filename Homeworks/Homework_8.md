@@ -2,7 +2,7 @@
 
 **Last update:** 20260429-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge:** Develop a **Bash** function called **Safeguard**, which does the following:
 

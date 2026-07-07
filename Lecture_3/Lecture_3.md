@@ -2,7 +2,7 @@
 
 **Last update**: 20260501-5
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 
@@ -48,7 +48,7 @@ UBUNTU_CODENAME=focal
 
 Schematically, the **Linux** file system structure can be represented with the following diagram:
 
-![](../.gitbook/assets/linux_file_system.png)
+![](../Common_Figures/linux_file_system.png)
 
 The **Bash** built-in command **cd** ('change directory') is used to move from the current working directory to some other directory. It accepts only one argument, which is interpreted either as an _absolute path_ to the new directory (if the argument starts with `/`), or as a _relative path_ to the new directory (relative to your current working directory). If you use **cd** without any argument, the argument is defaulted to the home directory. Due to their special meanings, the only characters that cannot be part of a directory name are `/` and the null byte `\0`.
 
@@ -361,7 +361,7 @@ Note that it makes a perfect sense to use `x` permission also for directories, b
 
 Finally, we clarify that the setting for each permission can be represented alternatively by a numerical value. The rule is established with the following simple table:
 
-![](../.gitbook/assets/permissions.png)
+![](../Common_Figures/permissions.png)
 
 When these values are added together, the sum is used to set specific permissions.
 
@@ -369,7 +369,7 @@ For example, if you want to set only 'read' and 'write' permissions, you need to
 
 For convenience, all possibilities are documented in the table:
 
-![](../.gitbook/assets/permissionsAll.png)
+![](../Common_Figures/permissionsAll.png)
 
 **Example:** Make a new file with default permissions, then remove all permissions, and set the permission pattern to `-rwx--xr--` , by using both syntaxes described above. With the first syntax, we would have:
 

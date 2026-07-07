@@ -2,7 +2,7 @@
 
 **Last update:** 20260429-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge #1**: Develop a **Bash** function named `OldestFile` which takes as arguments a list of files. The function does the following:
 

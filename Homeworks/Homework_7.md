@@ -2,7 +2,7 @@
 
 **Last update:** 20260617-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge #1**: A Monte Carlo generator, clearly still under development, has produced the following shaky output for the _x_ and _y_ components of particle momenta:
 

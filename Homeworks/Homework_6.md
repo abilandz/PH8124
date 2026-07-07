@@ -2,7 +2,7 @@
 
 **Last update:** 20260611-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge #1:** Write down a **Bash** code snippet that will capitalize only a word's very last character. Example use case:
 

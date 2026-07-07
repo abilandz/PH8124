@@ -2,7 +2,7 @@
 
 **Last update**: 20260428-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 
@@ -18,7 +18,7 @@
 
 When it comes to the operating systems nowadays, in high-energy experimental physics we mostly rely on **Linux**. That being said, as an experimental physicist you are sooner or later faced with the following situation: You have turned on your computer and launched the terminal...
 
-![](../.gitbook/assets/terminal.png)
+![](../Common_Figures/terminal.png)
 
 ... and what now??
 
@@ -240,7 +240,7 @@ help echo
 
 The printout on the screen could look something like:
 
-![](../.gitbook/assets/help_echo_0b.png)
+![](../Common_Figures/help_echo_0b.png)
 
 The command **help** gives a complete description of the built-in **Bash** commands (e.g. **echo**, **jobs**, **read**, etc.) or of **Bash** keywords (e.g. **for**, **if**, etc.).
 
@@ -252,7 +252,7 @@ man date
 
 The first page of a rather lengthy output could look like:
 
-![](../.gitbook/assets/man_date_0b.png)
+![](../Common_Figures/man_date_0b.png)
 
 In order to exit the _man pages_, press 'q'. You can scroll down the _man page_ line-by-line by pressing 'Enter', or page-by-page by pressing 'Spacebar'.
 

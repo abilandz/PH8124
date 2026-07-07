@@ -2,7 +2,7 @@
 
 **Last update**: 20260602-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 
@@ -337,7 +337,7 @@ If the file descriptor number is not specified, it is defaulted to 1, i.e. `>` i
 
 Especially in the older **Bash** scripts you will see also `2>&1` redirection, but it has exactly the same meaning as `&>`, which was added only in more recent versions of **Bash**. The redirector `2>&1` means literally: Send _stderr_ (file descriptor 2) to the same place where _stdout_ (file descriptor 1) was sent. When `2>&1` is used, the order matters &mdash; first we need to indicate where `1>` is redirected, and only then it makes sense to use `2>&1`. Because of this limitation, in practice it is much easier to use `&>` in such a context.
 
-![](../.gitbook/assets/blackHole.jpg)
+![](../Common_Figures/blackHole.jpg)
 
 There is also a black hole in **Linux**, and it is called `/dev/null`. It happens frequently that you do not want to see the printout of some verbose command in the terminal, and you do not want to waste the disk space either by redirecting it to some file. Quite frequently, commands can print some warnings on the screen. After you have acknowledged them and concluded that those warnings are harmless, you clearly do not want to see them again and again. This is precisely where the special file `/dev/null` becomes very handy because whatever you redirect to it, it is lost forever.
 

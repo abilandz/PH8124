@@ -2,7 +2,7 @@
 
 **Last update:** 20260522-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 **Challenge #1**: Develop a **Bash** function named `Mkdir` which makes a directory and immediately goes into it. Directory names are specified as arguments, either via relative or absolute paths. If more than one directory name is supplied, all of them are made, and then it goes immediately into the very last directory.
 

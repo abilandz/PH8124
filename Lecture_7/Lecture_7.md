@@ -2,7 +2,7 @@
 
 **Last update**: 20260520-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 ### Table of Contents
 
@@ -433,7 +433,7 @@ top
 
 the output could look like this:
 
-![](../.gitbook/assets/top_0a.png)
+![](../Common_Figures/top_0a.png)
 
 The command **top** continuously updates the terminal display with the summary of the current status of system resources followed by the list of most CPU-intensive processes (default ordering). The first column contains the PID of each running process, followed by the user's name, priority of the process, 'nice' value of the process, memory and CPU consumption, total running time, etc. In order to parse the output of **top** programmatically, or to redirect it to some file, we need to run command **top** in the batch (text) mode via:
 

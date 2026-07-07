@@ -2,7 +2,7 @@
 
 **Last update:** 20260603-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 The developer is testing the execution time of a particular code segment in Bash script. He would like to have the function **TimeDuration**, which he would like to use in the following general way:
 

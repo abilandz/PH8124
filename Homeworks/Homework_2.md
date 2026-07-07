@@ -2,7 +2,7 @@
 
 **Last update:** 20260507-1
 
-![](../.gitbook/assets/LinuxBashROOT_logos.png)
+![](../Common_Figures/LinuxBashROOT_logos.png)
 
 As a starting point for this homework, write the following simple code snippet of C/C++ programming language (this is just an example choice &mdash; this homework is fairly general, and you can instead use some other programming language that you prefer more) into the file `Hello.C`
 
