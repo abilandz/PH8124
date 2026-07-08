@@ -1,6 +1,6 @@
 ### Introduction
 
-**Last update**: 20260707
+**Last update**: 20260708
 
 This webpage contains the lecturing material for the course PH8124, 'Scientific computing in high-energy physics', offered in SS2026.
 
@@ -40,6 +40,6 @@ For **ROOT**, the official documentation is used:
     * [Homework 6: Playing with shell's strings and arrays](./Homeworks/Homework_6.md)
     * [Homework 7: Coding adventures with grep, awk and sed](./Homeworks/Homework_7.md)
     * [Homework 8: Jobs and processes](./Homeworks/Homework_8.md)
-    * [Homework 9: ](./Homeworks/Homework_9.md_TBI)
+    * [Homework 9: Running in parallel and the lock mechanism](./Homeworks/Homework_9.md)
     * [Homework 10: ](./Homeworks/Homework_10.md_TBI)
-* [Final Project](./Final_Project/FinalProject.md_TBI)
+* [Final Project](./Final_Project/FinalProject.md)

@@ -1,6 +1,6 @@
-# Running in parallel and the lock mechanism
+# Homework 9: Running in parallel and the lock mechanism
 
-**Last update:** 20260429-1
+**Last update:** 20260708-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -10,7 +10,7 @@
 for i in {1..100000}; do echo $i; done > toyData.dat
 ```
 
-The toy dataset consists of the first 100000 integers, and in this challenge, the code needs to be developed which will sum them up, but working in parallel, by splitting the initial dataset across multiple processes running in parallel. This challenge illustrates in a very simplified way the frequently encountered problem in high-energy physics, when one needs to split and analyze the large initial dataset with parallel processes, gaining a lot in performance.   
+The toy dataset consists of the first 100000 integers, and in this challenge, the code needs to be developed which will sum them up, but working in parallel, by splitting the initial dataset across multiple processes running concurrently in parallel. This challenge illustrates in a very simplified way the frequently encountered problem in high-energy physics, when one needs to split and analyze the large initial dataset with parallel processes, gaining a lot in performance.   
 
 Develop a **Bash** function named **ParallelWorlds**, which does the following:  
 
@@ -34,11 +34,11 @@ This will dump only lines 1-10 (both ends included) from ```toyData.dat``` into 
 ```bash
 split -d -l 10000 toyData.dat someNamingPattern_
 ```
-If the file 'toyData' has 100000 lines, **split** will fragment it into 10 chunks each of which is holding 10000 lines (flag '-l' specifies number of lines in each chunk), and each chunk is named successively ```someNamingPattern_00```, ```someNamingPattern_01```, ..., ```someNamingPattern_09``` (numerical suffixes are used, because flag '-d' is specified). In case there is no exact divisor, the remainder goes into the last chunk.
+If the file `toyData.dat` has 100000 lines, **split** will fragment it into 10 chunks, each of which is holding 10000 lines (flag '-l' specifies number of lines in each chunk), and each chunk is named successively ```someNamingPattern_00```, ```someNamingPattern_01```, ..., ```someNamingPattern_09``` (numerical suffixes are used, because flag '-d' is specified). In case there is no exact divisor, the remainder goes into the last chunk.
 
 
 
-**Off the record (not a challenge!)**: The lock mechanism. When processes running in parallel are accessing and modifying the same file, it is extremely important to ensure that that file can be modified only by one process at a time. This is typically achieved by a lock mechanism, and here it is demonstrated how a simple lock mechanism can be implemented in **Bash**. The starting idea is to use some atomic command, i.e. command execution which is ensured by the underlying operating system to be possible only once. One such simple atomic command execution is
+**Off the record (not a challenge!)**: The lock mechanism. When processes running in parallel are accessing and modifying the same file, it is extremely important to ensure that that file can be modified only by one process at a time. This is typically achieved by a lock mechanism, and here it is demonstrated how a simple lock mechanism can be implemented in **Bash**. The starting idea is to use some _atomic_ command, i.e. command execution which is ensured by the underlying operating system to be possible only once. One such simple atomic command execution is
 
 ```bash
  mkdir someDir

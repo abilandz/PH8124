@@ -4,7 +4,7 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20250717
+**Last update:** 20260708-1
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jet production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions, and jet interaction in dense matter.
 
@@ -13,10 +13,10 @@ In this final project, you are challenged to use combined **Linux**, **Bash** an
 **Challenge #0: The dataset.** Download the compressed HIJING dataset (the compressed size is around 170 MB) from the following direct link: https://cernbox.cern.ch/index.php/s/BJern5Ky7ajoULd . From the terminal, you can download by using the command **wget**:
 
 ```bash
-wget https://cernbox.cern.ch/index.php/s/BJern5Ky7ajoULd/download -O HIJING_LBF_test.tar.gz
+wget https://cernbox.cern.ch/remote.php/dav/public-files/BJern5Ky7ajoULd/HIJING_LBF_test.tar.gz -O HIJING_LBF_test.tar.gz
 ```
 
-After downloading, extract the dataset (the size will be around 680 MB after this step!) by executing
+After downloading, extract the dataset (the size will be around 680 MB after this step!) by executing:
 
 ```bash
 tar xf HIJING_LBF_test.tar.gz
@@ -153,7 +153,7 @@ sed -n 123,123456p HIJING_LBF_test_small.out > event_0.dat
 while read File; do
  cd $(dirname $File) # go to the directory where the current file in the loop sits
  ... filter out the current file. Programmatically, its name is $(basename $File) ...
- cd - # go back
+ cd - # go back. To go back silently, replace - with ~-
 done < <(find <top-directory> -type f -name "event_*.dat")
 ```
 
@@ -355,7 +355,7 @@ where the content of the script ```TheFinalTouch.sh``` is:
 ```bash
 #!/bin/bash
 
-[[ ! -d $1 ]] && echo "Not a valid directory!" && return 6
+[[ ! -d $1 ]] && echo "Not a valid directory!" >&2 && return 6
 
 source Splitter.sh $1 && echo "Done with Splitter.sh" || return 5
 source Filter.sh $1 && echo "Done with Filter.sh" || return 4
