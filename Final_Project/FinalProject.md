@@ -4,7 +4,7 @@
 
 ## Final project: Fully automated analysis of HIJING output
 
-**Last update:** 20260708-1
+**Last update:** 20260708-2
 
 HIJING (_Heavy Ion Jet INteraction Generator_) is a widely used Monte Carlo generator in high-energy proton-proton, proton-nucleus and nucleus-nucleus collisions. The physics incorporated in this model is based on QCD-inspired models for jet production, and includes multiple mini-jet production, soft excitation, nuclear shadowing of parton distribution functions, and jet interaction in dense matter.
 
@@ -370,3 +370,12 @@ return 0
 **The final remark:** It's perfectly fine if you solve all steps by implementing shell functions, instead of scripts. 
 
  
+
+**When** $a \ne 0$, there are two solutions to $(ax^2 + bx + c = 0)$ **and** they are $$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $$
+
+
+
+```math
+\frac{a}{b}
+```
+
