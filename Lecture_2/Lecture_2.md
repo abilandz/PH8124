@@ -1,6 +1,6 @@
 # Lecture 2: Commands and variables
 
-**Last update**: 20260428-1
+**Last update**: 20260904-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -18,7 +18,7 @@
 
 When it comes to the operating systems nowadays, in high-energy experimental physics we mostly rely on **Linux**. That being said, as an experimental physicist you are sooner or later faced with the following situation: You have turned on your computer and launched the terminal...
 
-![](../Common_Figures/terminal.png)
+![](./terminal.png)
 
 ... and what now??
 
@@ -205,9 +205,9 @@ Let us now scrutinize the above generic syntax for command execution term by ter
   * script
 * `<option(s)>` : Options (or flags) are used to modify the default behaviour of command. Options are indicated either with:
   * **-** (single dash) followed by single character(s), or
-  * **--** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
+  * **\-\-** (two consecutive dashes) followed by more descriptive explanation about what needs to be modified in the default behaviour of command.
 
-For instance, the frequently used flags **-a** and **--all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the meaning of the second one is easier to memorize. Example for **date** command:
+For instance, the frequently used flags **-a** and **\-\-all** are synonyms, in a sense that they modify the default behavior of command in exactly the same way. The first version is easier to type, but the meaning of the second one is easier to memorize. Example for **date** command:
 
 ```bash
 $ date -u
@@ -216,9 +216,9 @@ $ date --utc
 Mon Apr 20 12:49:12 UTC 2020
 ```
 
-The output in both cases above is the same, because flags **-u** and **--utc** are synonyms when used for **date** command.
+The output in both cases above is the same, because flags **-u** and **\-\-utc** are synonyms when used for **date** command.
 
-But how do we know that for command **date** flags **-u** and **--utc** are available, and how do we know in which way they will modify the default behavior of command? All such options for each command are documented in so-called _man pages_. Whenever you develop a new command, it is also essential that you develop its documentation, otherwise nobody will be able to use your command. For built-in **Bash** commands, keywords, etc., the documentation is retrieved simply with:
+But how do we know that for command **date** flags **-u** and **\-\-utc** are available, and how do we know in which way they will modify the default behavior of command? All such options for each command are documented in so-called _man pages_. Whenever you develop a new command, it is also essential that you develop its documentation, otherwise nobody will be able to use your command. For built-in **Bash** commands, keywords, etc., the documentation is retrieved simply with:
 
 ```bash
 help <command-name>
