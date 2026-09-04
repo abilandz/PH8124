@@ -1,6 +1,6 @@
 # Lecture 2: Commands and variables
 
-**Last update**: 20260904-1
+**Last update**: 20260904-2
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -388,7 +388,7 @@ Aliases are definitely a nice feature, but do not overuse them, because:
     ... standard list of files and directories ...
     ```
 
-    In this context, we have _escaped_ the alias definition of 'ls' with the special symbol backslash `\` &mdash; this escaping mechanism is elaborated more in detail and in a wider context later;
+    In this context, we have _escaped_ the alias definition of **ls** with the special symbol backslash `\` &mdash; this escaping mechanism is elaborated more in detail and in a wider context later;
 * Aliases cannot process programmatically options or arguments, like regular commands (or **Bash** functions, as we will see later). In fact, any alias implementation can be reimplemented as a **Bash** function in a more general and flexible way. However, the function implementation requires more coding;
 * Do not use alias definitions in the shell scripts, that's considered to be both bad coding and bad design practice.
 
@@ -699,7 +699,7 @@ We remark that it is much safer to edit directly `~/.bash_aliases` than to edit 
 **Example 3:** _Automating some work at logout_. We can also edit the `~/.bash_logout` in the following example way:
 
 ```bash
-# Set what will be executed when shell exits (e.g. when you close the terminal):
+# Set what will be executed when the login shell exits (e.g. when logging out from computer):
 echo "Hasta la vista, that was all for today."; sleep 1s
 ```
 
