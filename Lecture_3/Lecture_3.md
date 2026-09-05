@@ -1,6 +1,6 @@
 # Lecture 3: Linux file system. Positional parameters. Your first Linux/Bash command. Command precedence
 
-**Last update**: 20260501-5
+**Last update**: 20260905-1
 
 ![](../Common_Figures/LinuxBashROOT_logos.png)
 
@@ -48,7 +48,7 @@ UBUNTU_CODENAME=focal
 
 Schematically, the **Linux** file system structure can be represented with the following diagram:
 
-![](../Common_Figures/linux_file_system.png)
+![](./linux_file_system.png)
 
 The **Bash** built-in command **cd** ('change directory') is used to move from the current working directory to some other directory. It accepts only one argument, which is interpreted either as an _absolute path_ to the new directory (if the argument starts with `/`), or as a _relative path_ to the new directory (relative to your current working directory). If you use **cd** without any argument, the argument is defaulted to the home directory. Due to their special meanings, the only characters that cannot be part of a directory name are `/` and the null byte `\0`.
 
@@ -133,7 +133,7 @@ For the lower priority of your executables, use an alternative standard code sni
 PATH="${PATH}:/home/abilandz/bin"
 ```
 
-In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard system-wide **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new terminal you open, add the above redefinitions of **PATH** into `~/.bashrc` file. In case you want the redefinition of **PATH** to be persistent in all new processes you start from a terminal, use in addition the command **export** at the first redefinition of **PATH** variable.
+In this example, you have appended the directory with your executables to what is already set in **PATH** &mdash; this way you indicate that you want to use your own version of some standard system-wide **Linux** command only if its executable is not found by **Bash**. As always, if you want to make such definitions permanent in any new terminal you open, add the above redefinitions of **PATH** into `~/.bashrc` file. On the other hand, the redefinition of **PATH** will be automatically persistent in all new processes started from a terminal, because **PATH** is a global environment variable.
 
 From the above explanation, it is clear that if you unset **PATH** variable, all commands will stop working when you type them in the terminal, because **Bash** does not know where to search for the corresponding executables.
 
